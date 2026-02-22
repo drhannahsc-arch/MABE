@@ -1,0 +1,193 @@
+"""
+knowledge/chelator_library.py — Curated chelator templates.
+
+Each template is a real molecule with a known SMILES, known donor atoms,
+and known metal preferences grounded in coordination chemistry.
+
+These are starting points, not final answers. The RDKit adapter uses
+these templates, evaluates them against the target's physics, and
+generates modified candidates where appropriate.
+"""
+
+CHELATOR_TEMPLATES = [
+    # ── Aminopolycarboxylates (hard donors: O, N) ────────────────
+    {
+        "name": "EDTA",
+        "smiles": "OC(=O)CN(CCN(CC(O)=O)CC(O)=O)CC(O)=O",
+        "donor_atoms": ["O", "N"],
+        "denticity": 6,
+        "donor_type": "hard",
+        "metal_preferences": ["Ca", "Mg", "Fe", "Pb", "Cd", "Zn", "Cu", "Ni", "Mn"],
+        "ph_optimal": (4.0, 10.0),
+        "log_k_range": {"Pb": 18.0, "Cu": 18.8, "Ni": 18.6, "Zn": 16.5, "Ca": 10.7, "Fe3": 25.1},
+        "cost_per_gram": "$0.05",
+        "accessibility": "commodity chemical, any lab",
+        "notes": "Gold standard chelator. Non-selective — binds most divalent metals.",
+    },
+    {
+        "name": "DTPA",
+        "smiles": "OC(=O)CN(CCN(CC(O)=O)CCN(CC(O)=O)CC(O)=O)CC(O)=O",
+        "donor_atoms": ["O", "N"],
+        "denticity": 8,
+        "donor_type": "hard",
+        "metal_preferences": ["Fe", "Gd", "Pb", "Cu", "Ni", "Zn", "Cd"],
+        "ph_optimal": (3.0, 10.0),
+        "log_k_range": {"Pb": 18.9, "Cu": 21.4, "Ni": 20.2, "Zn": 18.3, "Fe3": 28.0},
+        "cost_per_gram": "$0.50",
+        "accessibility": "commodity chemical, any lab",
+        "notes": "Higher denticity than EDTA. Stronger binding. Used in MRI contrast (Gd-DTPA).",
+    },
+    {
+        "name": "NTA",
+        "smiles": "OC(=O)CN(CC(O)=O)CC(O)=O",
+        "donor_atoms": ["O", "N"],
+        "denticity": 4,
+        "donor_type": "hard",
+        "metal_preferences": ["Ni", "Cu", "Zn", "Fe", "Co"],
+        "ph_optimal": (3.0, 10.0),
+        "log_k_range": {"Cu": 12.9, "Ni": 11.5, "Zn": 10.7, "Fe3": 15.9},
+        "cost_per_gram": "$0.10",
+        "accessibility": "commodity chemical, any lab",
+        "notes": "Tetradentate. Leaves coordination sites open — useful for His-tag purification.",
+    },
+
+    # ── Thiol-based (soft donors: S) ─────────────────────────────
+    {
+        "name": "DMSA (Succimer)",
+        "smiles": "OC(=O)C(S)C(S)C(O)=O",
+        "donor_atoms": ["S", "O"],
+        "denticity": 4,
+        "donor_type": "soft",
+        "metal_preferences": ["Pb", "Hg", "As", "Cd", "Au"],
+        "ph_optimal": (3.0, 8.0),
+        "log_k_range": {"Pb": 17.2, "Hg": 39.0, "As3": 15.0},
+        "cost_per_gram": "$2.00",
+        "accessibility": "pharmaceutical grade available, most labs",
+        "notes": "FDA-approved for lead poisoning treatment. Water-soluble. Oral bioavailability.",
+    },
+    {
+        "name": "DMPS (Unithiol)",
+        "smiles": "OC(=O)C(S)C(S)CO",
+        "donor_atoms": ["S", "O"],
+        "denticity": 3,
+        "donor_type": "soft",
+        "metal_preferences": ["Hg", "As", "Au", "Pb", "Cu"],
+        "ph_optimal": (3.0, 8.0),
+        "log_k_range": {"Hg": 38.0, "As3": 16.0, "Pb": 15.0},
+        "cost_per_gram": "$5.00",
+        "accessibility": "specialty chemical, university lab",
+        "notes": "Clinical chelation therapy agent. Strong soft-metal selectivity.",
+    },
+    {
+        "name": "Dithiocarbamate (diethyl)",
+        "smiles": "CCN(CC)C(=S)S",
+        "donor_atoms": ["S"],
+        "denticity": 2,
+        "donor_type": "soft",
+        "metal_preferences": ["Cu", "Ni", "Zn", "Pb", "Hg", "Cd", "Au"],
+        "ph_optimal": (4.0, 10.0),
+        "log_k_range": {"Cu": 14.0, "Pb": 10.0, "Ni": 9.0},
+        "cost_per_gram": "$0.20",
+        "accessibility": "commodity chemical, any lab",
+        "notes": "Simple bidentate soft donor. Easy to functionalize. Industrial water treatment use.",
+    },
+
+    # ── Crown ethers (size-selective) ────────────────────────────
+    {
+        "name": "18-Crown-6",
+        "smiles": "C1COCCOCCOCCOCCOCCO1",
+        "donor_atoms": ["O"],
+        "denticity": 6,
+        "donor_type": "hard",
+        "metal_preferences": ["K", "Ba", "Pb", "Sr"],
+        "ph_optimal": (2.0, 12.0),
+        "log_k_range": {"K": 6.1, "Ba": 3.9, "Pb": 4.3},
+        "cost_per_gram": "$1.00",
+        "accessibility": "specialty chemical, university lab",
+        "notes": "Size-selective for K+ ionic radius. Cavity diameter ~2.7A matches K+ (1.38A radius).",
+    },
+    {
+        "name": "15-Crown-5",
+        "smiles": "C1COCCOCCOCCOCCO1",
+        "donor_atoms": ["O"],
+        "denticity": 5,
+        "donor_type": "hard",
+        "metal_preferences": ["Na", "Ca", "Pb"],
+        "ph_optimal": (2.0, 12.0),
+        "log_k_range": {"Na": 3.2, "Ca": 2.8},
+        "cost_per_gram": "$2.00",
+        "accessibility": "specialty chemical, university lab",
+        "notes": "Smaller cavity than 18-crown-6. Selective for Na+ sized ions.",
+    },
+
+    # ── Hydroxamic acids (Fe-selective) ──────────────────────────
+    {
+        "name": "Deferiprone (3-hydroxy-4-pyridinone)",
+        "smiles": "CC1=CC(=O)C(O)=CN1C",
+        "donor_atoms": ["O"],
+        "denticity": 2,
+        "donor_type": "hard",
+        "metal_preferences": ["Fe3", "Al", "Cu"],
+        "ph_optimal": (5.0, 8.0),
+        "log_k_range": {"Fe3": 36.7, "Al": 32.0, "Cu": 19.6},
+        "cost_per_gram": "$3.00",
+        "accessibility": "pharmaceutical, university lab",
+        "notes": "FDA-approved iron chelator. Very high Fe(III) selectivity. Oral bioavailable.",
+    },
+    {
+        "name": "Desferrioxamine B (DFO)",
+        "smiles": "CC(=O)N(O)CCCCCNC(=O)CCC(=O)N(O)CCCCCNC(=O)CCC(=O)N(O)CCCCCN",
+        "donor_atoms": ["O", "N"],
+        "denticity": 6,
+        "donor_type": "hard",
+        "metal_preferences": ["Fe3", "Al", "Ga"],
+        "ph_optimal": (4.0, 9.0),
+        "log_k_range": {"Fe3": 30.6, "Al": 24.5, "Ga": 27.6},
+        "cost_per_gram": "$50.00",
+        "accessibility": "pharmaceutical, specialty supplier",
+        "notes": "Natural siderophore. Extremely high Fe(III) selectivity. Clinical use for iron overload.",
+    },
+
+    # ── Phosphonate-based (oxyanion targets) ─────────────────────
+    {
+        "name": "HEDP (Etidronic acid)",
+        "smiles": "OC(P(O)(O)=O)(P(O)(O)=O)C",
+        "donor_atoms": ["O", "P"],
+        "denticity": 4,
+        "donor_type": "hard",
+        "metal_preferences": ["Ca", "Fe", "Cu", "Zn", "Pb"],
+        "ph_optimal": (2.0, 10.0),
+        "log_k_range": {"Ca": 6.0, "Fe3": 15.0, "Cu": 10.5},
+        "cost_per_gram": "$0.10",
+        "accessibility": "commodity chemical, any lab",
+        "notes": "Bisphosphonate. Sequesters metals and inhibits scale formation. Industrial water treatment.",
+    },
+]
+
+
+# Map element symbols to common target identities
+ELEMENT_TO_TARGETS = {
+    "Pb": ["lead"],
+    "Hg": ["mercury"],
+    "As": ["arsenic"],
+    "Cd": ["cadmium"],
+    "Cu": ["copper"],
+    "Ni": ["nickel"],
+    "Zn": ["zinc"],
+    "Fe": ["iron"],
+    "Fe3": ["iron"],
+    "Au": ["gold"],
+    "Se": ["selenite", "selenium"],
+    "Cr": ["chromium"],
+    "Ca": ["calcium"],
+    "Mg": ["magnesium"],
+    "Na": ["sodium"],
+    "K": ["potassium"],
+    "Ba": ["barium"],
+    "Sr": ["strontium"],
+    "Al": ["aluminum"],
+    "Ga": ["gallium"],
+    "Gd": ["gadolinium"],
+    "Mn": ["manganese"],
+    "Co": ["cobalt"],
+}
