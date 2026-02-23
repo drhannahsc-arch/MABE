@@ -7,14 +7,19 @@ Contains all calibrated parameters baked in. No external dependencies beyond mat
 Physics terms included:
   1. Per-donor exchange energy (18 subtypes, subtype-resolved)
   2. Charge scaling (z²-dependent electrostatic enhancement)
-  3. HSAB match/mismatch (primary selectivity driver)
+  3. HSAB match/mismatch (multiplicative framework with f_size correction)
   4. Chelate effect (per-ring, charge/d-electron scaled)
-  5. Desolvation cost (metal-specific ΔG_hyd, fractional exchange)
+  5. Desolvation cost (metal-specific ΔG_hyd per-water exchange)
   6. ΔLFSE (ligand field vs aqua, CN-gated, capped)
   7. Jahn-Teller correction (d9, d4 high-spin)
   8. Covalent BDE contribution (metal-specific fractions for soft pairs)
   9. Translational entropy (+5.5 kJ/mol per ligand molecule)
-  10. pH-dependent protonation penalty
+  10. Macrocyclic/preorganization (entropic + cavity size-match Gaussian)
+  11. Chelate ring-size selectivity (Hancock rule: 5- vs 6-membered)
+  12. Electrostatic z-z charge-charge (anionic donors + cationic metals)
+  13. Metal-donor exchange matrix (multiplicative HSAB × size correction)
+  14. pH-dependent protonation penalty (conditional log K)
+  15. Irving-Williams enhancement (empirical d-electron stabilization curve)
 
 Regenerate from live engine: python scorer_frozen.py --freeze (future)
 
@@ -251,6 +256,66 @@ COVALENT_BDE = {
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# MODULE 11: DONOR CHARGE TABLE (for electrostatic z-z term)
+# Formal charge on donor atom when coordinating
+# ═══════════════════════════════════════════════════════════════════════════
+
+DONOR_FORMAL_CHARGE = {
+    # Anionic donors (negative charge)
+    "O_carboxylate": -1.0, "O_phenolate": -1.0, "O_hydroxamate": -1.0,
+    "O_catecholate": -1.0, "O_phosphate": -1.0, "O_sulfonate": -1.0,
+    "S_thiolate": -1.0, "S_thiosulfate": -1.0, "S_dithiocarbamate": -0.5,
+    "Cl_chloride": -1.0, "Br_bromide": -1.0, "I_iodide": -1.0,
+    # Neutral donors
+    "O_ether": 0.0, "O_hydroxyl": 0.0,
+    "N_amine": 0.0, "N_imine": 0.0, "N_pyridine": 0.0,
+    "N_imidazole": 0.0, "N_nitrile": 0.0, "N_amide": 0.0,
+    "S_thioether": 0.0,
+    "P_phosphine": 0.0,
+}
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 12: IRVING-WILLIAMS EMPIRICAL CURVE
+# Extra stabilization for 3d transition metals beyond what LFSE captures
+# Values in kJ/mol, referenced to Ca2+ = 0
+# These encode the experimental double-humped stability ordering
+# ═══════════════════════════════════════════════════════════════════════════
+
+IRVING_WILLIAMS_BONUS = {
+    "Ca2+":  0.0, "Mg2+":  0.0, "Ba2+": 0.0, "Sr2+": 0.0,
+    "Mn2+": -5.0,  "Fe2+": -9.0, "Co2+": -12.0,
+    "Ni2+": -15.0, "Cu2+": -18.0, "Zn2+": -7.0,
+    # Extended to other divalent
+    "Cd2+": -3.0,  "Pb2+": -2.0,  "Hg2+": -5.0,
+    # Trivalent: scaled by charge
+    "Fe3+": -12.0, "Cr3+": -10.0, "Co3+": -22.0,
+    "Al3+": -3.0,  "Ga3+": -5.0,
+}
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 13: CHELATE RING-SIZE PENALTY TABLE (Hancock Rule)
+# ΔΔH (kJ/mol) per ring for substituting 5→6 membered ring
+# Indexed by ionic radius range (pm)
+# Larger metals pay MORE penalty for 6-membered rings
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _hancock_ring_penalty(ionic_radius_pm: float) -> float:
+    """Per-ring ΔΔH penalty (kJ/mol) for 6-membered vs 5-membered chelate ring.
+
+    Hancock & Martell (Chem. Rev. 1989): larger metals are destabilized more
+    by 6-membered rings due to bite angle mismatch.
+    Returns positive value (penalty) in kJ/mol.
+    """
+    r_nm = ionic_radius_pm / 1000.0  # Convert pm → nm
+    r_optimal = 0.065  # nm, optimal metal size for 6-membered ring
+    if r_nm <= r_optimal:
+        return 2.0  # Small penalty for small metals
+    else:
+        # Linear scaling: ~2 kJ/mol per 0.01 nm above optimal
+        return 2.0 + 200.0 * (r_nm - r_optimal)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # PREDICTION ENGINE
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -286,8 +351,10 @@ def predict_log_k(
     metal_formula: str,
     donor_subtypes: list[str],
     chelate_rings: int = 0,
+    ring_sizes: Optional[list[int]] = None,
     pH: float = 7.0,
     is_macrocyclic: bool = False,
+    cavity_radius_nm: Optional[float] = None,
     n_ligand_molecules: int = 1,
     verbose: bool = False,
 ) -> float:
@@ -299,9 +366,11 @@ def predict_log_k(
     Args:
         metal_formula: e.g. "Pb2+", "Fe3+", "Cu2+"
         donor_subtypes: list of donor subtypes
-        chelate_rings: number of 5-membered chelate rings
+        chelate_rings: number of chelate rings (total)
+        ring_sizes: list of ring sizes (5 or 6) per ring; None = all 5-membered
         pH: solution pH (conditional correction)
-        is_macrocyclic: True for macrocycles
+        is_macrocyclic: True for macrocycles (crown ethers, cryptands, porphyrins)
+        cavity_radius_nm: macrocycle cavity radius in nm (for size-match); None = skip
         n_ligand_molecules: number of separate ligand molecules
         verbose: print term-by-term decomposition
 
@@ -334,19 +403,29 @@ def predict_log_k(
     # z²/r scaling: higher charge and smaller radius = stronger field
     dg_charge = -5.0 * (charge ** 2 - 1)
 
-    # ── Term 3: HSAB match/mismatch ──────────────────────────────────
-    # Mismatch penalty is the primary selectivity driver
-    # Match bonus is secondary (LFSE dominates Irving-Williams)
+    # ── Term 3: Metal-donor exchange matrix (multiplicative HSAB × size) ─
+    # Replaces additive HSAB with multiplicative framework:
+    # Good HSAB match amplifies exchange, mismatch dampens it
+    # f_size: smaller metals form stronger bonds with hard donors (z/r effect)
     dg_hsab = 0.0
+    r_ref = 85.0  # pm, reference radius (average of 3d divalent metals)
     for st in active_subtypes:
         softness_d = DONOR_SOFTNESS.get(st, 0.3)
         delta_soft = abs(softness_m - softness_d)
+
+        # f_size: small hard metals get bonus with hard donors, penalty with soft
+        f_size = 1.0
+        if softness_d < 0.3:  # Hard donor
+            f_size = 1.0 + 0.3 * (r_ref - r_pm) / r_ref  # Smaller = stronger
+        elif softness_d > 0.6:  # Soft donor
+            f_size = 1.0 - 0.2 * (r_ref - r_pm) / r_ref  # Smaller = weaker with soft
+
         if delta_soft < 0.30:
-            # Good match: small bonus
-            dg_hsab += -1.5 * (0.30 - delta_soft) / 0.30
+            # Good match: bonus scaled by match quality and size
+            dg_hsab += -1.5 * (0.30 - delta_soft) / 0.30 * f_size
         else:
-            # Mismatch: penalty — drives selectivity between different metals
-            dg_hsab += 10.0 * (delta_soft - 0.30)
+            # Mismatch: penalty
+            dg_hsab += 10.0 * (delta_soft - 0.30) * f_size
 
     # ── Term 4: Chelate effect ───────────────────────────────────────
     if metal.d_electrons > 0 and charge >= 2:
@@ -394,13 +473,53 @@ def predict_log_k(
     # ── Term 9: Translational entropy cost ───────────────────────────
     dg_trans = 5.5 * (n_ligand_molecules - 1) if n_ligand_molecules > 1 else 0.0
 
-    # ── Term 10: Macrocyclic effect ──────────────────────────────────
-    dg_macro = -10.0 if is_macrocyclic else 0.0
+    # ── Term 10: Macrocyclic/preorganization effect ────────────────
+    # Two components: (a) entropic preorganization, (b) cavity size-match
+    dg_macro = 0.0
+    if is_macrocyclic:
+        # (a) Entropic preorganization: ~5-8 kJ/mol for macrocycles
+        dg_macro = -6.0
+
+        # (b) Cavity size-match Gaussian (Pedersen selectivity)
+        if cavity_radius_nm is not None:
+            r_ion_nm = r_pm / 1000.0
+            sigma_cavity = 0.015  # nm, width of Gaussian
+            size_match = math.exp(-(r_ion_nm - cavity_radius_nm)**2
+                                  / (2 * sigma_cavity**2))
+            dg_macro += -8.0 * size_match  # Up to -8 kJ/mol extra for perfect match
+
+    # ── Term 11: Chelate ring-size selectivity (Hancock rule) ────────
+    # 6-membered rings destabilize large metals relative to 5-membered
+    dg_ring_size = 0.0
+    if ring_sizes:
+        penalty_per_6ring = _hancock_ring_penalty(r_pm)
+        for rs in ring_sizes:
+            if rs == 6:
+                dg_ring_size += penalty_per_6ring  # Positive = destabilizing
+            elif rs == 4:
+                dg_ring_size += 15.0  # Large penalty: 4-ring is strained for all metals
+            elif rs >= 7:
+                dg_ring_size += 8.0   # Moderate penalty: large rings are floppy
+
+    # ── Term 12: Electrostatic z-z charge-charge attraction ──────────
+    # Anionic donors are attracted to cationic metals: ΔG ∝ z_metal × z_donor / r
+    dg_elec = 0.0
+    k_elec = -1.8  # kJ/mol scaling factor per unit of z_M × |z_D| / (r/100)
+    for st in active_subtypes:
+        z_donor = DONOR_FORMAL_CHARGE.get(st, 0.0)
+        if z_donor < 0:
+            # Coulombic attraction: favorable (negative ΔG)
+            dg_elec += k_elec * charge * abs(z_donor) / (r_pm / 100.0)
+
+    # ── Term 13: Irving-Williams empirical enhancement ───────────────
+    # Extra stabilization for 3d metals beyond LFSE/JT
+    # Captures kinetic lability, nephelauxetic, and spin-orbit effects
+    dg_iw = IRVING_WILLIAMS_BONUS.get(metal.formula, 0.0)
 
     # ── Intrinsic ΔG and log K ───────────────────────────────────────
     dg_intrinsic = (dg_exchange + dg_charge + dg_hsab + dg_chelate
                     + dg_desolv + dg_lfse + dg_jt + dg_covalent
-                    + dg_trans + dg_macro)
+                    + dg_trans + dg_macro + dg_ring_size + dg_elec + dg_iw)
     log_k_intrinsic = -dg_intrinsic / RT_KJ
 
     # ── Conditional pH correction ────────────────────────────────────
@@ -409,7 +528,9 @@ def predict_log_k(
     ph_penalty = 0.0
     for st in active_subtypes:
         pka = DONOR_PKA.get(st, 99.0)
-        if pka < 50 and pka > pH - 5:  # Only relevant if pKa is near or above pH
+        if pka >= 50 or pka <= 0:
+            continue  # Non-protonable or always deprotonated
+        if pka > pH - 5:
             ph_penalty += math.log10(1.0 + 10.0 ** (pka - pH))
 
     log_k_cond = log_k_intrinsic - ph_penalty
@@ -418,11 +539,13 @@ def predict_log_k(
         print(f"  Metal: {metal_formula} (z={charge}, d={metal.d_electrons}, "
               f"σ={softness_m:.2f}, r={r_pm}pm)")
         print(f"  Donors: {active_subtypes} (eff_CN={eff_cn})")
-        print(f"  pH={pH}, macrocyclic={is_macrocyclic}")
+        print(f"  pH={pH}, macrocyclic={is_macrocyclic}, "
+              f"cavity={cavity_radius_nm}nm" if cavity_radius_nm else
+              f"  pH={pH}, macrocyclic={is_macrocyclic}")
         print(f"  ── Energy terms (kJ/mol) ──")
         print(f"  Exchange:     {dg_exchange:+8.1f}")
         print(f"  Charge:       {dg_charge:+8.1f}")
-        print(f"  HSAB:         {dg_hsab:+8.1f}")
+        print(f"  HSAB×size:    {dg_hsab:+8.1f}")
         print(f"  Chelate:      {dg_chelate:+8.1f}")
         print(f"  Desolvation:  {dg_desolv:+8.1f}")
         print(f"  ΔLFSE:        {dg_lfse:+8.1f}")
@@ -430,6 +553,9 @@ def predict_log_k(
         print(f"  Covalent:     {dg_covalent:+8.1f}")
         print(f"  Trans. S:     {dg_trans:+8.1f}")
         print(f"  Macrocyclic:  {dg_macro:+8.1f}")
+        print(f"  Ring-size:    {dg_ring_size:+8.1f}")
+        print(f"  Elec z-z:     {dg_elec:+8.1f}")
+        print(f"  Irving-Will:  {dg_iw:+8.1f}")
         print(f"  ─────────────────────────")
         print(f"  ΔG_intrinsic: {dg_intrinsic:+8.1f} kJ/mol")
         print(f"  log K (int):  {log_k_intrinsic:+8.1f}")
@@ -444,8 +570,10 @@ def predict_selectivity(
     interferent_metals: list[str],
     donor_subtypes: list[str],
     chelate_rings: int = 0,
+    ring_sizes: Optional[list[int]] = None,
     pH: float = 7.0,
     is_macrocyclic: bool = False,
+    cavity_radius_nm: Optional[float] = None,
     n_ligand_molecules: int = 1,
 ) -> dict:
     """Predict log K for target and all interferents; compute selectivity gaps.
@@ -454,8 +582,9 @@ def predict_selectivity(
         target_log_k, interferent_log_ks (dict), selectivity_gaps (dict),
         min_gap, worst_interferent
     """
-    kwargs = dict(chelate_rings=chelate_rings, pH=pH,
-                  is_macrocyclic=is_macrocyclic,
+    kwargs = dict(chelate_rings=chelate_rings, ring_sizes=ring_sizes,
+                  pH=pH, is_macrocyclic=is_macrocyclic,
+                  cavity_radius_nm=cavity_radius_nm,
                   n_ligand_molecules=n_ligand_molecules)
 
     target_lk = predict_log_k(target_metal, donor_subtypes, **kwargs)
@@ -487,18 +616,52 @@ def predict_selectivity(
 # ═══════════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    print("=== MABE Frozen Scorer — Self-Test ===\n")
+    print("=== MABE Frozen Scorer v3 — Self-Test (15 physics terms) ===\n")
 
     # EDTA-type donor set: N2O4, 5 chelate rings
     edta_donors = ["N_amine", "N_amine", "O_carboxylate", "O_carboxylate",
                    "O_carboxylate", "O_carboxylate"]
 
-    print("EDTA-type ligand vs Irving-Williams series:")
+    lit = {"Ca2+": 10.7, "Mn2+": 13.8, "Fe2+": 14.3, "Co2+": 16.3,
+           "Ni2+": 18.6, "Cu2+": 18.8, "Zn2+": 16.5}
+
+    print("EDTA-type ligand — Irving-Williams series (pH 7):")
+    print(f"  {'Metal':6s} {'Pred':>6s} {'Lit':>6s} {'Err':>6s}")
     for m in ["Ca2+", "Mn2+", "Fe2+", "Co2+", "Ni2+", "Cu2+", "Zn2+"]:
         lk = predict_log_k(m, edta_donors, chelate_rings=5, pH=7.0)
-        print(f"  {m:6s}  log K = {lk:5.1f}")
+        exp = lit.get(m, 0)
+        print(f"  {m:6s} {lk:6.1f} {exp:6.1f} {lk-exp:+6.1f}")
 
-    print("\nPb2+ selectivity over mine water interferents (pH 5):")
+    # Crown ether: 18-crown-6 (cavity = 0.13-0.16 nm)
+    crown_donors = ["O_ether"] * 6
+    print("\n18-Crown-6 with cavity size-match (pH 7):")
+    print(f"  {'Metal':6s} {'Pred':>6s} {'Lit':>6s}")
+    crown_lit = {"Na+": 0.7, "K+": 2.0, "Rb+": 1.6, "Cs+": 1.0,
+                 "Ca2+": 0.5, "Ba2+": 3.9}
+    for m in ["Na+", "K+", "Rb+", "Cs+", "Ca2+", "Ba2+"]:
+        lk = predict_log_k(m, crown_donors, chelate_rings=6,
+                           is_macrocyclic=True, cavity_radius_nm=0.14, pH=7.0)
+        exp = crown_lit.get(m, 0)
+        print(f"  {m:6s} {lk:6.1f} {exp:6.1f}")
+
+    # Ring-size selectivity: 5-membered vs 6-membered for large vs small metal
+    print("\nRing-size selectivity (Hancock rule):")
+    en_donors = ["N_amine", "N_amine"]  # ethylenediamine
+    for m in ["Cu2+", "Pb2+", "Ca2+"]:
+        lk_5 = predict_log_k(m, en_donors, chelate_rings=1,
+                              ring_sizes=[5], pH=7.0)
+        lk_6 = predict_log_k(m, en_donors, chelate_rings=1,
+                              ring_sizes=[6], pH=7.0)
+        print(f"  {m:6s}  5-ring: {lk_5:+5.1f}  6-ring: {lk_6:+5.1f}  "
+              f"Δ={lk_5-lk_6:+5.1f}")
+
+    # Electrostatic z-z: Fe3+ with anionic vs neutral donors
+    print("\nElectrostatic z-z effect (Fe3+):")
+    predict_log_k("Fe3+", ["O_carboxylate"]*6, chelate_rings=5, pH=7, verbose=True)
+    print()
+    predict_log_k("Fe3+", ["N_amine"]*6, chelate_rings=3, pH=7, verbose=True)
+
+    print(f"\nPb2+ selectivity over mine water (pH 5):")
     result = predict_selectivity(
         "Pb2+",
         ["Ca2+", "Mg2+", "Fe3+", "Zn2+", "Cu2+", "Mn2+"],
@@ -508,8 +671,8 @@ if __name__ == "__main__":
     for m, lk in result['interferent_log_ks'].items():
         gap = result['selectivity_gaps'][m]
         print(f"  {m:6s}  log K = {lk:5.1f}  gap = {gap:+5.1f}")
-    print(f"  Worst interferent: {result['worst_interferent']} "
+    print(f"  Worst: {result['worst_interferent']} "
           f"(gap = {result['min_gap']:+.1f})")
 
-    print(f"\n{len(METAL_DB)} metals in database.")
+    print(f"\n{len(METAL_DB)} metals in database. 15 physics terms active.")
     print("Self-test complete.")

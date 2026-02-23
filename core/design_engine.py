@@ -288,8 +288,10 @@ def design_binder(
                 target_formula, intf_formulas,
                 ds.donor_subtypes,
                 chelate_rings=ds.chelate_rings,
+                ring_sizes=ds.ring_sizes if ds.ring_sizes else None,
                 pH=pH,
                 is_macrocyclic=ds.is_macrocyclic,
+                cavity_radius_nm=ds.cavity_radius_nm,
                 n_ligand_molecules=ds.n_ligand_molecules,
             )
 

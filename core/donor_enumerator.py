@@ -28,9 +28,11 @@ from scorer_frozen import METAL_DB, DONOR_SOFTNESS, DONOR_PKA, SUBTYPE_EXCHANGE
 class DonorSet:
     """A candidate coordination environment for a metal ion."""
     donor_subtypes: list[str]           # e.g. ["N_amine", "N_amine", "O_carboxylate", ...]
-    chelate_rings: int = 0              # Number of 5-membered chelate rings
+    chelate_rings: int = 0              # Number of chelate rings (total)
     denticity: int = 1                  # Denticity of the (conceptual) ligand
     is_macrocyclic: bool = False        # Crown ether, cryptand, etc.
+    cavity_radius_nm: Optional[float] = None  # Cavity radius for size-match (nm)
+    ring_sizes: list[int] = field(default_factory=list)  # 5 or 6 per ring (Hancock)
     n_ligand_molecules: int = 1         # Number of separate ligand molecules
     archetype: str = ""                 # Human-readable description
     feasibility_notes: list[str] = field(default_factory=list)
@@ -152,76 +154,113 @@ CHELATE_PAIRS = {
 ARCHETYPES = [
     # EDTA family
     DonorSet(["N_amine","N_amine","O_carboxylate","O_carboxylate",
-              "O_carboxylate","O_carboxylate"], 5, 6, False, 1,
-             "EDTA-type (N₂O₄)"),
+              "O_carboxylate","O_carboxylate"],
+             chelate_rings=5, denticity=6, is_macrocyclic=False,
+             ring_sizes=[5,5,5,5,5], n_ligand_molecules=1,
+             archetype="EDTA-type (N₂O₄)"),
     DonorSet(["N_amine","N_amine","N_amine","O_carboxylate","O_carboxylate",
-              "O_carboxylate","O_carboxylate","O_carboxylate"], 8, 8, False, 1,
-             "DTPA-type (N₃O₅)"),
+              "O_carboxylate","O_carboxylate","O_carboxylate"],
+             chelate_rings=8, denticity=8, is_macrocyclic=False,
+             ring_sizes=[5]*8, n_ligand_molecules=1,
+             archetype="DTPA-type (N₃O₅)"),
     # Salen family
-    DonorSet(["N_imine","N_imine","O_phenolate","O_phenolate"], 2, 4, False, 1,
-             "Salen-type (N₂O₂)"),
+    DonorSet(["N_imine","N_imine","O_phenolate","O_phenolate"],
+             chelate_rings=2, denticity=4, is_macrocyclic=False,
+             ring_sizes=[5,6], n_ligand_molecules=1,
+             archetype="Salen-type (N₂O₂)"),
     # Bipyridine family
-    DonorSet(["N_pyridine","N_pyridine"], 1, 2, False, 1,
-             "Bipyridine (monodentate pair)"),
+    DonorSet(["N_pyridine","N_pyridine"],
+             chelate_rings=1, denticity=2, is_macrocyclic=False,
+             ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Bipyridine (monodentate pair)"),
     DonorSet(["N_pyridine","N_pyridine","N_pyridine","N_pyridine",
-              "N_pyridine","N_pyridine"], 3, 6, False, 3,
-             "Tris(bipyridine) (3 ligands)"),
+              "N_pyridine","N_pyridine"],
+             chelate_rings=3, denticity=6, is_macrocyclic=False,
+             ring_sizes=[5,5,5], n_ligand_molecules=3,
+             archetype="Tris(bipyridine) (3 ligands)"),
     # Catecholate family
-    DonorSet(["O_catecholate","O_catecholate"], 1, 2, False, 1,
-             "Catecholate (bidentate)"),
+    DonorSet(["O_catecholate","O_catecholate"],
+             chelate_rings=1, denticity=2, is_macrocyclic=False,
+             ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Catecholate (bidentate)"),
     DonorSet(["O_catecholate","O_catecholate","O_catecholate",
-              "O_catecholate","O_catecholate","O_catecholate"], 3, 6, False, 3,
-             "Tris(catecholate) siderophore"),
+              "O_catecholate","O_catecholate","O_catecholate"],
+             chelate_rings=3, denticity=6, is_macrocyclic=False,
+             ring_sizes=[5,5,5], n_ligand_molecules=3,
+             archetype="Tris(catecholate) siderophore"),
     # Hydroxamate family
     DonorSet(["O_hydroxamate","O_hydroxamate","O_hydroxamate",
-              "O_hydroxamate","O_hydroxamate","O_hydroxamate"], 3, 6, False, 3,
-             "Tris(hydroxamate) siderophore"),
-    # Crown ethers
-    DonorSet(["O_ether"]*4, 4, 4, True, 1, "12-crown-4"),
-    DonorSet(["O_ether"]*5, 5, 5, True, 1, "15-crown-5"),
-    DonorSet(["O_ether"]*6, 6, 6, True, 1, "18-crown-6"),
+              "O_hydroxamate","O_hydroxamate","O_hydroxamate"],
+             chelate_rings=3, denticity=6, is_macrocyclic=False,
+             ring_sizes=[5,5,5], n_ligand_molecules=3,
+             archetype="Tris(hydroxamate) siderophore"),
+    # Crown ethers (with cavity radii from Pedersen/Izatt data)
+    DonorSet(["O_ether"]*4, chelate_rings=4, denticity=4, is_macrocyclic=True,
+             cavity_radius_nm=0.060, ring_sizes=[5,5,5,5], n_ligand_molecules=1,
+             archetype="12-crown-4"),
+    DonorSet(["O_ether"]*5, chelate_rings=5, denticity=5, is_macrocyclic=True,
+             cavity_radius_nm=0.092, ring_sizes=[5,5,5,5,5], n_ligand_molecules=1,
+             archetype="15-crown-5"),
+    DonorSet(["O_ether"]*6, chelate_rings=6, denticity=6, is_macrocyclic=True,
+             cavity_radius_nm=0.140, ring_sizes=[5,5,5,5,5,5], n_ligand_molecules=1,
+             archetype="18-crown-6"),
     # Thiolate
-    DonorSet(["S_thiolate","S_thiolate"], 0, 2, False, 2,
-             "Bis(thiolate)"),
-    DonorSet(["S_thiolate","S_thiolate","S_thiolate","S_thiolate"], 0, 4, False, 4,
-             "Tetra(thiolate) — metallothionein-like"),
+    DonorSet(["S_thiolate","S_thiolate"],
+             chelate_rings=0, denticity=2, n_ligand_molecules=2,
+             archetype="Bis(thiolate)"),
+    DonorSet(["S_thiolate","S_thiolate","S_thiolate","S_thiolate"],
+             chelate_rings=0, denticity=4, n_ligand_molecules=4,
+             archetype="Tetra(thiolate) — metallothionein-like"),
     # Cysteine-type (S + N + O)
-    DonorSet(["S_thiolate","N_amine","O_carboxylate"], 2, 3, False, 1,
-             "Cysteine-type (SNO)"),
+    DonorSet(["S_thiolate","N_amine","O_carboxylate"],
+             chelate_rings=2, denticity=3, ring_sizes=[5,5], n_ligand_molecules=1,
+             archetype="Cysteine-type (SNO)"),
     # DTC
-    DonorSet(["S_dithiocarbamate","S_dithiocarbamate"], 1, 2, False, 1,
-             "Dithiocarbamate (bidentate)"),
+    DonorSet(["S_dithiocarbamate","S_dithiocarbamate"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Dithiocarbamate (bidentate)"),
     DonorSet(["S_dithiocarbamate","S_dithiocarbamate",
-              "S_dithiocarbamate","S_dithiocarbamate"], 2, 4, False, 2,
-             "Bis(dithiocarbamate)"),
+              "S_dithiocarbamate","S_dithiocarbamate"],
+             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
+             archetype="Bis(dithiocarbamate)"),
     # Ethylenediamine family
-    DonorSet(["N_amine","N_amine"], 1, 2, False, 1,
-             "Ethylenediamine (en)"),
+    DonorSet(["N_amine","N_amine"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Ethylenediamine (en)"),
     DonorSet(["N_amine","N_amine","N_amine","N_amine",
-              "N_amine","N_amine"], 3, 6, False, 3,
-             "Tris(ethylenediamine)"),
+              "N_amine","N_amine"],
+             chelate_rings=3, denticity=6, ring_sizes=[5,5,5], n_ligand_molecules=3,
+             archetype="Tris(ethylenediamine)"),
     # Glycinate family
-    DonorSet(["N_amine","O_carboxylate"], 1, 2, False, 1,
-             "Glycinate-type"),
-    DonorSet(["N_amine","O_carboxylate","N_amine","O_carboxylate"], 2, 4, False, 2,
-             "Bis(glycinate)"),
+    DonorSet(["N_amine","O_carboxylate"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Glycinate-type"),
+    DonorSet(["N_amine","O_carboxylate","N_amine","O_carboxylate"],
+             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
+             archetype="Bis(glycinate)"),
     # Picolinate family
-    DonorSet(["N_pyridine","O_carboxylate"], 1, 2, False, 1,
-             "Picolinate-type"),
+    DonorSet(["N_pyridine","O_carboxylate"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Picolinate-type"),
     DonorSet(["N_pyridine","O_carboxylate","N_pyridine","O_carboxylate",
-              "N_pyridine","O_carboxylate"], 3, 6, False, 3,
-             "Tris(picolinate)"),
+              "N_pyridine","O_carboxylate"],
+             chelate_rings=3, denticity=6, ring_sizes=[5,5,5], n_ligand_molecules=3,
+             archetype="Tris(picolinate)"),
     # Phosphine
-    DonorSet(["P_phosphine","P_phosphine"], 1, 2, False, 1,
-             "Bisphosphine (soft metal binder)"),
+    DonorSet(["P_phosphine","P_phosphine"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Bisphosphine (soft metal binder)"),
     # Imidazole family
-    DonorSet(["N_imidazole","N_imidazole","N_imidazole","N_imidazole"], 0, 4, False, 4,
-             "His-tag type (4× imidazole)"),
+    DonorSet(["N_imidazole","N_imidazole","N_imidazole","N_imidazole"],
+             chelate_rings=0, denticity=4, n_ligand_molecules=4,
+             archetype="His-tag type (4× imidazole)"),
     # Mixed O-hard chelators
-    DonorSet(["O_carboxylate","O_carboxylate","O_hydroxyl"], 2, 3, False, 1,
-             "Citrate-type (O₃)"),
-    DonorSet(["O_carboxylate","O_hydroxamate","N_amine"], 2, 3, False, 1,
-             "Mixed hard chelator (NHO₂)"),
+    DonorSet(["O_carboxylate","O_carboxylate","O_hydroxyl"],
+             chelate_rings=2, denticity=3, ring_sizes=[5,6], n_ligand_molecules=1,
+             archetype="Citrate-type (O₃)"),
+    DonorSet(["O_carboxylate","O_hydroxamate","N_amine"],
+             chelate_rings=2, denticity=3, ring_sizes=[5,5], n_ligand_molecules=1,
+             archetype="Mixed hard chelator (NHO₂)"),
 ]
 
 
@@ -394,6 +433,7 @@ def enumerate_donor_sets(
                     chelate_rings=rings,
                     denticity=dent,
                     is_macrocyclic=False,
+                    ring_sizes=[5] * rings if rings > 0 else [],
                     n_ligand_molecules=n_lig,
                 )
 
