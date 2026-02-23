@@ -163,24 +163,12 @@ def compute_enhanced_thermodynamics(recognition, structure, interior, problem):
                           "Cl": 0.50, "Br": 0.65, "I": 0.85}
 
     _SUBTYPE_EXCHANGE = {
-        "O_ether": -0.0,
-        "O_hydroxyl": -0.0,
-        "O_carboxylate": -0.0,
-        "O_phenolate": -2.19,
-        "O_hydroxamate": -49.88,
-        "O_catecholate": -67.2,
-        "O_carbonyl": -0.0,
-        "O_phosphoryl": -4.0,
-        "O_sulfonate": -0.0,
-        "N_amine": -20.0,
-        "N_imine": -13.31,
-        "N_pyridine": -16.77,
-        "N_imidazole": -24.85,
-        "S_thioether": -0.0,
-        "S_thiosulfate": -5.01,
-        "S_thiolate": -0.0,
-        "S_dithiocarbamate": -22.24,
-        "P_phosphine": -0.0,
+        "O_ether": 0.0, "O_hydroxyl": 0.0, "O_carboxylate": 0.0,
+        "O_phenolate": -4.26, "O_hydroxamate": -59.86, "O_catecholate": -77.0,
+        "O_carbonyl": 0.0, "O_phosphoryl": -5.93, "O_sulfonate": 0.0,
+        "N_amine": -7.49, "N_imine": 0.0, "N_pyridine": -1.4, "N_imidazole": -24.21,
+        "S_thioether": 0.0, "S_thiosulfate": -0.42, "S_thiolate": 0.0,
+        "S_dithiocarbamate": -14.73,
     }
     _ELEMENT_EXCHANGE = {"O": -4.0, "N": -6.0, "S": -18.0, "P": -15.0,
                          "Cl": -3.0, "Br": -6.0, "I": -12.0}
@@ -205,7 +193,7 @@ def compute_enhanced_thermodynamics(recognition, structure, interior, problem):
                "S_thiolate","S_thiosulfate","S_dithiocarbamate"}
         _AN_EL = {"Cl","Br","I"}
         _is_an = (donor_subtypes and i < len(donor_subtypes) and donor_subtypes[i] in _AN) or da in _AN_EL
-        charge_factor = -(1.00 if _is_an else 4.99) * (charge**2 - 1) / max(1, len(donors))
+        charge_factor = -(1.00 if _is_an else 3.41) * (charge**2 - 1) / max(1, len(donors))
         dg_exchange += charge_factor
 
         # HSAB MULTIPLICATIVE FACTOR [S36]
@@ -214,14 +202,14 @@ def compute_enhanced_thermodynamics(recognition, structure, interior, problem):
         mismatch = abs(softness - ds)
         if mismatch < 0.15:
             # Good match: amplify binding (up to 1.5×)
-            f_hsab = 1.0 + 0.9699 * max(softness, ds) * (1.0 - mismatch / 0.15)
+            f_hsab = 1.0 + 1.0000 * max(softness, ds) * (1.0 - mismatch / 0.15)
         elif mismatch < 0.35:
             # Neutral zone: ~1.0×
             f_hsab = 1.0
         else:
             # Mismatch: attenuate binding (down to 0.3× for extreme)
             # Steeper penalty for larger mismatch
-            f_hsab = max(0.3, 1.0 - 0.5000 * (mismatch - 0.35))
+            f_hsab = max(0.3, 1.0 - 2.1888 * (mismatch - 0.35))
 
         dg_exchange *= f_hsab
 
@@ -276,9 +264,9 @@ def compute_enhanced_thermodynamics(recognition, structure, interior, problem):
         if charge >= 3:
             base_f = 0.00500
         elif charge == 2:
-            base_f = 0.00500
+            base_f = 0.01150
         else:
-            base_f = 0.01000
+            base_f = 0.03770
 
         # HSAB match: well-matched donors replace water more efficiently
         if softness > 0.5 and any(d in ("S", "P", "I") for d in donors):
@@ -392,7 +380,7 @@ def compute_enhanced_thermodynamics(recognition, structure, interior, problem):
     #   Pb²⁺ (0.119 nm): ~4.3 kJ/mol penalty per 6-mem ring
     #   Cu²⁺ (0.073 nm): ~0.6 kJ/mol penalty (small)
 
-    chelate_base = -4.61 if d_electrons > 0 else -2.09
+    chelate_base = -4.00 if d_electrons > 0 else -2.00
     if charge == 1:
         chelate_base *= 0.5
 
@@ -446,7 +434,7 @@ def compute_enhanced_thermodynamics(recognition, structure, interior, problem):
 
     # Effective dielectric for inner-sphere: ~4 (Warshel 4-8 range;
     # calibrated against 47 training + 7705 NIST entries)
-    k_elec = 1389.4 / 2.00   # NIST-optimized
+    k_elec = 1389.4 / 2.20   # NIST-v2
 
     dg_zz = 0.0
     for i, da in enumerate(donors):
