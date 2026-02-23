@@ -1,0 +1,189 @@
+"""
+hg_calibrate.py — Phase 6 calibration: fit hydrophobic transfer parameters.
+
+Fits γ_flat, k_curvature, and portal correction terms against the
+host-guest dataset (hg_dataset.py).
+
+Strategy:
+  1. Pre-compute all guest SASA values (expensive, do once)
+  2. Bounded least-squares on 7 HG_PARAMS
+  3. Report R², MAE, and per-host-family performance
+"""
+
+import numpy as np
+from scipy.optimize import least_squares
+
+from hg_dataset import HG_DATA, HOST_DB
+from hg_scorer import (
+    HG_PARAMS, compute_guest_sasa, estimate_buried_sasa,
+    predict_hg_log_ka, evaluate_dataset, LN10_RT,
+)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PARAMETER SPECIFICATION
+# ═══════════════════════════════════════════════════════════════════════════
+# (name, key_in_HG_PARAMS, initial, lower, upper)
+
+HG_PARAM_SPEC = [
+    ("gamma_flat",       "gamma_flat",       0.022,  0.010,  0.050),
+    ("k_curvature",      "k_curvature",      1.25,   1.00,   2.50),
+    ("dg_dehydr_per_A2", "dg_dehydr_per_A2",-0.015, -0.120,  0.0),
+    ("dehydr_CB",        "dehydr_CB",         1.0,    0.5,    5.0),
+    ("dehydr_CD",        "dehydr_CD",         0.3,    0.0,    2.0),
+    ("dehydr_other",     "dehydr_other",      0.1,    0.0,    2.0),
+    ("epsilon_hbond",    "epsilon_hbond",    -2.5,  -10.0,    0.0),
+    ("epsilon_cation",   "epsilon_cation",   -5.0,  -25.0,    0.0),
+    ("k_electrostatic",  "k_electrostatic",  -3.0,  -15.0,    0.0),
+    ("k_size_penalty",   "k_size_penalty",    0.5,    0.0,    5.0),
+    ("k_undersize",      "k_undersize",       0.02,   0.0,    0.15),
+]
+
+N_HG_PARAMS = len(HG_PARAM_SPEC)
+
+
+def apply_hg_params(x):
+    """Patch HG_PARAMS from flat vector."""
+    for i, (_, key, *_) in enumerate(HG_PARAM_SPEC):
+        HG_PARAMS[key] = x[i]
+
+
+def get_hg_x0():
+    return [p[2] for p in HG_PARAM_SPEC]
+
+
+def get_hg_bounds():
+    lo = [p[3] for p in HG_PARAM_SPEC]
+    hi = [p[4] for p in HG_PARAM_SPEC]
+    return lo, hi
+
+
+def residuals(x):
+    """Residual vector for least-squares."""
+    apply_hg_params(x)
+    res = []
+    for e in HG_DATA:
+        try:
+            pred = predict_hg_log_ka(e)
+        except Exception:
+            pred = 0.0
+        res.append(pred - e["log_Ka"])
+    return res
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MAIN CALIBRATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+def calibrate():
+    print("═" * 65)
+    print("  MABE Phase 6: Host-Guest Hydrophobic Calibration")
+    print("═" * 65)
+    print(f"  Dataset:    {len(HG_DATA)} host-guest pairs")
+    print(f"  Parameters: {N_HG_PARAMS}")
+    print(f"  Ratio:      {len(HG_DATA)/N_HG_PARAMS:.1f}:1")
+
+    # Pre-warm SASA cache
+    print("\n── Pre-computing guest SASA ──")
+    for e in HG_DATA:
+        try:
+            compute_guest_sasa(e["guest_smiles"])
+        except Exception as ex:
+            print(f"  ⚠ SASA failed for {e['name']}: {ex}")
+
+    # Before calibration
+    x0 = get_hg_x0()
+    apply_hg_params(x0)
+    print("\n── BEFORE calibration ──")
+    stats = evaluate_dataset(HG_DATA)
+    print(f"  R²   = {stats['r2']:.4f}")
+    print(f"  MAE  = {stats['mae']:.2f} log Ka")
+    print(f"  RMSE = {stats['rmse']:.2f} log Ka")
+    print(f"  Max  = {abs(stats['max_err']):.1f} ({stats['worst']})")
+
+    # Phase 1: bounded least-squares
+    print("\n── Fitting (bounded least-squares) ──")
+    lo, hi = get_hg_bounds()
+    result = least_squares(
+        residuals, x0,
+        bounds=(lo, hi),
+        method="trf",
+        max_nfev=5000,
+    )
+    print(f"  Converged: {result.success}")
+    print(f"  Evaluations: {result.nfev}")
+
+    # Apply best params
+    apply_hg_params(result.x)
+
+    # After calibration
+    print("\n── AFTER calibration ──")
+    stats = evaluate_dataset(HG_DATA)
+    print(f"  R²   = {stats['r2']:.4f}")
+    print(f"  MAE  = {stats['mae']:.2f} log Ka")
+    print(f"  RMSE = {stats['rmse']:.2f} log Ka")
+    print(f"  Max  = {abs(stats['max_err']):.1f} ({stats['worst']})")
+
+    # Per-host performance
+    print("\n── Per-host family ──")
+    from collections import defaultdict
+    host_errors = defaultdict(list)
+    for e in HG_DATA:
+        try:
+            pred = predict_hg_log_ka(e)
+        except Exception:
+            pred = 0.0
+        host_errors[e["host"]].append(pred - e["log_Ka"])
+
+    print(f"  {'Host':15s} {'N':>3s} {'MAE':>6s} {'RMSE':>6s} {'Bias':>6s}")
+    for host in sorted(host_errors):
+        errs = np.array(host_errors[host])
+        mae = np.mean(np.abs(errs))
+        rmse = np.sqrt(np.mean(errs**2))
+        bias = np.mean(errs)
+        print(f"  {host:15s} {len(errs):3d} {mae:6.2f} {rmse:6.2f} {bias:+6.2f}")
+
+    # Print fitted parameters
+    print("\n── Fitted parameters ──")
+    print(f"  {'Name':20s} {'Value':>8s} {'Low':>8s} {'High':>8s} {'AtBound':>8s}")
+    print("  " + "─" * 55)
+    for i, (name, key, init, lb, ub) in enumerate(HG_PARAM_SPEC):
+        val = result.x[i]
+        at = ""
+        if abs(val - lb) < 1e-6:
+            at = "→LOW"
+        elif abs(val - ub) < 1e-6:
+            at = "→HIGH"
+        print(f"  {name:20s} {val:8.4f} {lb:8.4f} {ub:8.4f} {at:>8s}")
+
+    # Physical interpretation
+    gamma_flat = result.x[0]
+    k_curv = result.x[1]
+    dg_deh = result.x[2]
+    deh_CB = result.x[3]
+    deh_CD = result.x[4]
+    gamma_eff_concave = gamma_flat * k_curv
+    print(f"\n── Physical interpretation ──")
+    print(f"  γ_flat:                {gamma_flat:.4f} kJ/(mol·Å²)")
+    print(f"  γ_concave:             {gamma_eff_concave:.4f} kJ/(mol·Å²)")
+    print(f"  Literature γ range:    0.018–0.030 kJ/(mol·Å²)")
+    print(f"  Dehydr. base:          {dg_deh:.4f} kJ/(mol·Å²)")
+    print(f"  Total γ_eff (CB):      {gamma_eff_concave + abs(dg_deh)*deh_CB:.4f}")
+    print(f"  Total γ_eff (CD):      {gamma_eff_concave + abs(dg_deh)*deh_CD:.4f}")
+    in_range = 0.015 <= gamma_flat <= 0.040
+    print(f"  γ_flat {'✓ within' if in_range else '⚠ outside'} expected bounds")
+
+    # Export
+    print(f"\n# ═══════════════════════════════════════════")
+    print(f"# FITTED HG_PARAMS — paste into hg_scorer.py")
+    print(f"# ═══════════════════════════════════════════")
+    print(f"HG_PARAMS = {{")
+    for i, (name, key, *_) in enumerate(HG_PARAM_SPEC):
+        print(f'    "{key}": {result.x[i]:.4f},')
+    print(f"}}")
+
+    return result.x
+
+
+if __name__ == "__main__":
+    calibrate()
