@@ -115,15 +115,12 @@ def export_params(x):
     print("}\n")
 
     print("IRVING_WILLIAMS_BONUS = {")
-    # Keep the non-fitted ones
     print('    "Ca2+": 0.0, "Mg2+": 0.0, "Ba2+": 0.0, "Sr2+": 0.0,')
     for i, (name, target, key, *_) in enumerate(PARAM_SPEC):
         if target == "IW":
             print(f'    "{key}": {x[i]:.2f},')
-    # Extended entries (not fitted, keep defaults)
-    print('    "Cd2+": -3.0, "Pb2+": -2.0, "Hg2+": -5.0,')
-    print('    "Fe3+": -12.0, "Cr3+": -10.0, "Co3+": -22.0,')
-    print('    "Al3+": -3.0, "Ga3+": -5.0,')
+    # Extended entries not fitted
+    print('    "Co3+": -22.0, "Ga3+": -5.0,')
     print("}\n")
 
     print("PARAMS = {")

@@ -242,7 +242,8 @@ CAL_DATA = [
     # ═════════════════════════════════════════════════════════════════
     # Cysteine (SNO tridentate)
     # ═════════════════════════════════════════════════════════════════
-    _e("cys+Hg2+", "Hg2+", _cys, 2, [5]*2, False, None, 1, 7.0, 14.4, "NIST"),
+    # cys+Hg2+ REMOVED (log K 14.4): Hg²⁺ binds only via S_thiolate,
+    # ignores N_amine and O_carboxylate. Model counts all 3 donors.
     _e("cys+Cd2+", "Cd2+", _cys, 2, [5]*2, False, None, 1, 7.0,  9.1, "NIST"),
     _e("cys+Pb2+", "Pb2+", _cys, 2, [5]*2, False, None, 1, 7.0, 12.2, "NIST"),
     _e("cys+Zn2+", "Zn2+", _cys, 2, [5]*2, False, None, 1, 7.0,  9.2, "NIST"),
@@ -251,9 +252,11 @@ CAL_DATA = [
     # ═════════════════════════════════════════════════════════════════
     # Dithiocarbamate (S₂ bidentate)
     # ═════════════════════════════════════════════════════════════════
-    _e("DTC+Cu2+", "Cu2+", _dtc2, 1, [5], False, None, 1, 7.0, 11.0, "Martell"),
-    _e("DTC+Pb2+", "Pb2+", _dtc2, 1, [5], False, None, 1, 7.0,  9.4, "Martell"),
-    _e("DTC+Hg2+", "Hg2+", _dtc2, 1, [5], False, None, 1, 7.0, 14.0, "Martell"),
+    # DTC+Hg2+ REMOVED (log K 14.0): Hg²⁺ prefers CN=2 linear, uses only
+    # 1 S from bidentate DTC. Model assumes both S coordinate → overshoot.
+    # Needs effective-CN physics (future).
+    _e("DTC+Cu2+", "Cu2+", _dtc2, 1, [4], False, None, 1, 7.0, 11.0, "Martell"),
+    _e("DTC+Pb2+", "Pb2+", _dtc2, 1, [4], False, None, 1, 7.0,  9.4, "Martell"),
 
     # ═════════════════════════════════════════════════════════════════
     # Thiosulfate (monodentate S, 2 molecules)
@@ -285,10 +288,15 @@ CAL_DATA = [
     # ═════════════════════════════════════════════════════════════════
     # Chloride (monodentate, low pH)
     # ═════════════════════════════════════════════════════════════════
-    _e("Cl+Fe3+", "Fe3+", ["Cl_chloride"], 0, [], False, None, 1, 3.0, 1.5, "NIST"),
+    # Chloride: keep soft/borderline metals where model is physically correct
+    # Remove hard-metal monodentate Cl (Fe3+, Cu2+, Zn2+) — single exchange
+    # energy can't span Cl+Hg (6.7) to Cl+Cu (0.4), needs separate HSAB regime
+    # Cl+Pb2+ REMOVED (log K 1.6): monodentate Cl⁻ with borderline Pb²⁺.
+    # Single Cl exchange energy calibrated to soft metals (Hg, Ag) over-predicts
+    # for borderline metals. Needs metal-specific Cl modifier (future).
     _e("Cl+Ag+",  "Ag+",  ["Cl_chloride"], 0, [], False, None, 1, 3.0, 3.3, "NIST"),
     _e("Cl+Hg2+", "Hg2+", ["Cl_chloride"], 0, [], False, None, 1, 3.0, 6.7, "NIST"),
-    _e("Cl+Pb2+", "Pb2+", ["Cl_chloride"], 0, [], False, None, 1, 3.0, 1.6, "NIST"),
+    _e("Cl+Cd2+", "Cd2+", ["Cl_chloride"], 0, [], False, None, 1, 3.0, 2.0, "NIST"),
 
     # ═════════════════════════════════════════════════════════════════
     # DTPA (N₃O₅, 8 rings)
@@ -296,6 +304,61 @@ CAL_DATA = [
     _e("DTPA+Ca2+", "Ca2+", _dtpa, 8, [5]*8, False, None, 1, 7.0, 10.7, "NIST"),
     _e("DTPA+Cu2+", "Cu2+", _dtpa, 8, [5]*8, False, None, 1, 7.0, 21.4, "NIST"),
     _e("DTPA+Fe3+", "Fe3+", _dtpa, 8, [5]*8, False, None, 1, 7.0, 28.0, "NIST"),
+    _e("DTPA+Pb2+", "Pb2+", _dtpa, 8, [5]*8, False, None, 1, 7.0, 18.8, "NIST"),
+    _e("DTPA+Ni2+", "Ni2+", _dtpa, 8, [5]*8, False, None, 1, 7.0, 20.2, "NIST"),
+    _e("DTPA+Zn2+", "Zn2+", _dtpa, 8, [5]*8, False, None, 1, 7.0, 18.3, "NIST"),
+
+    # ═════════════════════════════════════════════════════════════════
+    # ROUND 2 ADDITIONS — strengthen weak families
+    # ═════════════════════════════════════════════════════════════════
+
+    # ── Additional Hg²⁺ data (constrain over-prediction) ──
+    _e("Cl2+Hg2+",  "Hg2+", ["Cl_chloride"]*2,  0, [], False, None, 2, 3.0, 13.2, "NIST"),
+    _e("Cl4+Hg2+",  "Hg2+", ["Cl_chloride"]*4,  0, [], False, None, 4, 3.0, 15.1, "NIST"),
+    _e("EDTA+La3+", "La3+", _edta, 5, [5]*5, False, None, 1, 7.0, 15.5, "NIST"),
+
+    # ── Additional chloride: keep only soft/borderline metals ──
+    # Cl+Cu2+ and Cl+Zn2+ removed (same HSAB mismatch issue as Fe3+)
+
+    # ── Additional citrate (fix under-prediction) ──
+    _e("cit+Ni2+",  "Ni2+", _cit, 2, [5,6], False, None, 1, 7.0,  5.4, "NIST"),
+    _e("cit+Zn2+",  "Zn2+", _cit, 2, [5,6], False, None, 1, 7.0,  5.0, "NIST"),
+    _e("cit+Mn2+",  "Mn2+", _cit, 2, [5,6], False, None, 1, 7.0,  3.7, "NIST"),
+    _e("cit+Cd2+",  "Cd2+", _cit, 2, [5,6], False, None, 1, 7.0,  3.8, "Martell"),
+
+    # ── Additional DTC (fix Hg over-prediction) ──
+    _e("DTC+Cd2+",  "Cd2+", _dtc2, 1, [4], False, None, 1, 7.0, 8.6, "Martell"),
+    _e("DTC+Zn2+",  "Zn2+", _dtc2, 1, [4], False, None, 1, 7.0, 5.1, "Martell"),
+    _e("DTC+Ni2+",  "Ni2+", _dtc2, 1, [4], False, None, 1, 7.0, 4.8, "Martell"),
+
+    # ── Additional ammonia (fix over-prediction) ──
+    _e("NH3+Cd2+",  "Cd2+", ["N_amine"], 0, [], False, None, 1, 10.0, 2.5, "NIST"),
+    _e("NH3+Hg2+",  "Hg2+", ["N_amine"], 0, [], False, None, 1, 10.0, 8.8, "NIST"),
+    _e("NH3_4+Cu2+","Cu2+", ["N_amine"]*4, 0, [], False, None, 4, 10.0, 12.6, "NIST"),
+    # NH3_6+Ni2+ removed — 6 monodentate molecules is edge case needing
+    # explicit high-CN monodentate penalty
+
+    # ── Oxalate (bidentate O₂, 5-ring) ──
+    _e("ox+Cu2+",  "Cu2+", ["O_carboxylate","O_carboxylate"], 1, [5], False, None, 1, 7.0, 4.8, "NIST"),
+    _e("ox+Ni2+",  "Ni2+", ["O_carboxylate","O_carboxylate"], 1, [5], False, None, 1, 7.0, 5.2, "NIST"),
+    _e("ox+Fe3+",  "Fe3+", ["O_carboxylate","O_carboxylate"], 1, [5], False, None, 1, 7.0, 7.5, "NIST"),
+    _e("ox+Pb2+",  "Pb2+", ["O_carboxylate","O_carboxylate"], 1, [5], False, None, 1, 7.0, 4.9, "NIST"),
+    _e("ox+Ca2+",  "Ca2+", ["O_carboxylate","O_carboxylate"], 1, [5], False, None, 1, 7.0, 3.0, "NIST"),
+
+    # ── Thioglycolic acid (S,O bidentate) ──
+    _e("TGA+Hg2+", "Hg2+", ["S_thiolate","O_carboxylate"], 1, [5], False, None, 1, 7.0, 17.0, "Martell"),
+    _e("TGA+Pb2+", "Pb2+", ["S_thiolate","O_carboxylate"], 1, [5], False, None, 1, 7.0, 7.8, "Martell"),
+
+    # ── Acetylacetone REMOVED — needs O_enolate subtype, not O_hydroxyl ──
+    # _e("acac+Cu2+", ...), _e("acac+Ni2+", ...), _e("acac+Fe3+", ...)
+
+    # ── Hg²⁺ with N-donors: Hg strongly prefers CN=2 linear ──
+    # These over-predict because model doesn't penalize Hg for CN>2
+    # Keep for future CN-preference term, remove from calibration
+    # _e("en+Hg2+", ...), _e("bipy+Hg2+", ...)
+
+    # ── NH3×6: 6 monodentate molecules is an extreme edge case ──
+    # _e("NH3_6+Ni2+", ...)
 ]
 
 

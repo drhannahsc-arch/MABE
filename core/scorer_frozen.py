@@ -374,6 +374,29 @@ def _cn_overpack_penalty(metal: 'MetalProperties', n_donors: int) -> float:
     return 0.0
 
 
+# Metals with strong preferred CN below their maximum CN
+# Relativistic 6s contraction: Hg²⁺ and Ag⁺ strongly prefer CN=2 linear
+PREFERRED_CN = {
+    "Hg2+": 2,   # 6s² → linear sp hybridization, very stable
+    "Ag+":  2,   # Similar relativistic preference, but weaker
+}
+
+
+def _cn_preference_penalty(metal: 'MetalProperties', n_donors: int) -> float:
+    """Penalty for exceeding a metal's PREFERRED CN (not max CN).
+
+    Distinct from overpack penalty: Hg²⁺ can accept CN=4-6, but strongly
+    prefers CN=2. Each additional donor costs energy.
+
+    Returns positive value (kJ/mol, unfavorable).
+    """
+    pref_cn = PREFERRED_CN.get(metal.formula, None)
+    if pref_cn is None or n_donors <= pref_cn:
+        return 0.0
+    excess = n_donors - pref_cn
+    return PARAMS["cn_pref_penalty"] * excess
+
+
 def _donor_donor_repulsion(active_subtypes: list, r_pm: float) -> float:
     """Repulsion between anionic donors crowded in the coordination sphere.
 
@@ -521,9 +544,11 @@ PARAMS = {
     "macro_sigma":         0.015,   # nm, Gaussian width of cavity match
     # Term 12: electrostatic z-z
     "elec_zz_k":          -2.68,    # kJ/mol scaling factor
-    # Term 14: repulsion
+    # Term 14b: repulsion terms
     "repul_anionic":       1.67,    # donor-donor anionic repulsion coeff
     "repul_steric":        0.15,    # steric overcrowding coeff (kJ/mol/degree)
+    # Term 14c: preferred CN penalty (relativistic metals)
+    "cn_pref_penalty":     0.0,     # kJ/mol per donor beyond preferred CN (disabled — needs effective-CN model)
     # Term 15: entropy decomposition
     "rotor_cost":          2.00,    # kJ/mol per frozen rotor
     "freeze_chelate":      0.50,    # fraction frozen in chelates
@@ -738,11 +763,13 @@ def predict_log_k(
     # ── Term 14: Repulsion forces ─────────────────────────────────────
     # Three sub-terms: CN overpacking, donor-donor anionic repulsion, steric
     dg_repulsion = 0.0
-    # (a) CN overpacking: penalty for exceeding metal's preferred CN
+    # (a) CN overpacking: penalty for exceeding metal's coordination max
     dg_repulsion += _cn_overpack_penalty(metal, n_donors)
-    # (b) Donor-donor anionic repulsion: charged donors repel in tight sphere
+    # (b) CN preference: penalty for exceeding preferred CN (Hg²⁺, Ag⁺)
+    dg_repulsion += _cn_preference_penalty(metal, n_donors)
+    # (c) Donor-donor anionic repulsion: charged donors repel in tight sphere
     dg_repulsion += _donor_donor_repulsion(active_subtypes, r_pm)
-    # (c) Steric strain: bulky donors crowding the coordination sphere
+    # (d) Steric strain: bulky donors crowding the coordination sphere
     dg_repulsion += _steric_strain(active_subtypes, metal)
 
     # ── Term 15: Entropy decomposition ────────────────────────────────
