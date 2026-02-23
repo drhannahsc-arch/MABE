@@ -18,6 +18,9 @@ from rdkit import Chem
 from rdkit.Chem import AllChem, rdFreeSASA, Descriptors
 
 from hg_dataset import HOST_DB
+from hg_hbond import compute_dg_hbond, HBOND_PARAMS
+from hg_pi import compute_dg_pi, PI_PARAMS
+from hg_conf_shape import compute_dg_conf_shape, CONF_SHAPE_PARAMS
 
 # ═══════════════════════════════════════════════════════════════════════════
 # PARAMETERS (fitted by hg_calibrate.py)
@@ -33,10 +36,11 @@ HG_PARAMS = {
     "dehydr_CD":         0.644,   # cyclodextrin multiplier
     "dehydr_other":      1.736,   # calixarene/pillararene multiplier
 
-    # Portal corrections (stub — calibrated properly in Phase 7)
-    "epsilon_hbond":    0.0,      # kJ/mol per H-bond at portal
-    "epsilon_cation":   0.0,      # kJ/mol per cation-carbonyl interaction
-    "k_electrostatic":  0.0,      # kJ/mol × guest_charge
+    # Portal corrections RETIRED — replaced by Phase 7 hg_hbond.py
+    # Kept at 0.0 for backward compat; all portal physics now in HBOND_PARAMS
+    "epsilon_hbond":    0.0,
+    "epsilon_cation":   0.0,
+    "k_electrostatic":  0.0,
 
     # Size match
     "k_size_penalty":   0.031,    # kJ/(mol·Å²), oversize penalty
@@ -220,13 +224,17 @@ def predict_hg_log_ka(entry: dict, verbose: bool = False) -> float:
     # Energy terms
     dg_hphob = dg_hydrophobic(buried, host["curvature_class"])
     dg_dehyd = dg_cavity_dehydration(buried, host_key)
-    dg_hb = dg_portal_hbond(entry.get("n_hbonds_portal", 0))
+    dg_hb_portal = dg_portal_hbond(entry.get("n_hbonds_portal", 0))
     dg_elec = dg_electrostatic_portal(
         entry["guest_charge"], host["portal_type"],
         entry.get("guest_has_cation", False))
     dg_size = dg_size_mismatch(guest_np, cavity_sasa)
+    dg_hbond = compute_dg_hbond(entry, HOST_DB, verbose=False)
+    dg_pi = compute_dg_pi(entry, HOST_DB, verbose=False)
+    dg_conf, dg_shape = compute_dg_conf_shape(entry, verbose=False)
 
-    dg_total = dg_hphob + dg_dehyd + dg_hb + dg_elec + dg_size
+    dg_total = (dg_hphob + dg_dehyd + dg_hb_portal + dg_elec
+                + dg_size + dg_hbond + dg_pi + dg_conf + dg_shape)
     log_ka = -dg_total / LN10_RT
 
     if verbose:
@@ -239,9 +247,13 @@ def predict_hg_log_ka(entry: dict, verbose: bool = False) -> float:
         print(f"  ── Energy terms (kJ/mol) ──")
         print(f"  Hydrophobic:  {dg_hphob:+8.1f}")
         print(f"  Cav.dehydr.:  {dg_dehyd:+8.1f}")
-        print(f"  Portal H-bond:{dg_hb:+8.1f}")
+        print(f"  H-bond net:   {dg_hbond:+8.1f}")
+        print(f"  π-interact.:  {dg_pi:+8.1f}")
+        print(f"  Portal H-bond:{dg_hb_portal:+8.1f}")
         print(f"  Electrostatic:{dg_elec:+8.1f}")
         print(f"  Size mismatch:{dg_size:+8.1f}")
+        print(f"  Conf.entropy: {dg_conf:+8.1f}")
+        print(f"  Shape compl.: {dg_shape:+8.1f}")
         print(f"  ─────────────────────────")
         print(f"  ΔG total:     {dg_total:+8.1f} kJ/mol")
         print(f"  log Ka:       {log_ka:+8.2f}")

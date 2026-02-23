@@ -18,43 +18,70 @@ from hg_scorer import (
     HG_PARAMS, compute_guest_sasa, estimate_buried_sasa,
     predict_hg_log_ka, evaluate_dataset, LN10_RT,
 )
+from hg_hbond import HBOND_PARAMS
+from hg_pi import PI_PARAMS
+from hg_conf_shape import CONF_SHAPE_PARAMS
 
 
 # ═══════════════════════════════════════════════════════════════════════════
 # PARAMETER SPECIFICATION
 # ═══════════════════════════════════════════════════════════════════════════
-# (name, key_in_HG_PARAMS, initial, lower, upper)
+# (name, dict_name, key, initial, lower, upper)
 
 HG_PARAM_SPEC = [
-    ("gamma_flat",       "gamma_flat",       0.022,  0.010,  0.050),
-    ("k_curvature",      "k_curvature",      1.25,   1.00,   2.50),
-    ("dg_dehydr_per_A2", "dg_dehydr_per_A2",-0.015, -0.120,  0.0),
-    ("dehydr_CB",        "dehydr_CB",         1.0,    0.5,    5.0),
-    ("dehydr_CD",        "dehydr_CD",         0.3,    0.0,    2.0),
-    ("dehydr_other",     "dehydr_other",      0.1,    0.0,    2.0),
-    ("epsilon_hbond",    "epsilon_hbond",    -2.5,  -10.0,    0.0),
-    ("epsilon_cation",   "epsilon_cation",   -5.0,  -25.0,    0.0),
-    ("k_electrostatic",  "k_electrostatic",  -3.0,  -15.0,    0.0),
-    ("k_size_penalty",   "k_size_penalty",    0.5,    0.0,    5.0),
-    ("k_undersize",      "k_undersize",       0.02,   0.0,    0.15),
+    # Phase 6: hydrophobic transfer
+    ("gamma_flat",       "HG", "gamma_flat",       0.025,  0.010,  0.045),
+    ("k_curvature",      "HG", "k_curvature",      1.15,   1.00,   2.50),
+    ("dg_dehydr_per_A2", "HG", "dg_dehydr_per_A2",-0.070, -0.150,  0.0),
+    ("dehydr_CB",        "HG", "dehydr_CB",         3.67,   0.5,    6.0),
+    ("dehydr_CD",        "HG", "dehydr_CD",         0.64,   0.0,    2.0),
+    ("dehydr_other",     "HG", "dehydr_other",      1.74,   0.0,    3.0),
+    # Phase 6: portal corrections RETIRED — replaced by Phase 7 H-bond module
+    # epsilon_hbond, epsilon_cation, k_electrostatic now handled by hg_hbond.py
+    ("k_size_penalty",   "HG", "k_size_penalty",    0.031,  0.0,    5.0),
+    ("k_undersize",      "HG", "k_undersize",       0.0,    0.0,    0.15),
+    # Phase 7: H-bond network
+    ("eps_neutral",      "HB", "eps_neutral",       -3.0, -12.0,    0.0),
+    ("eps_charge_asst",  "HB", "eps_charge_assisted",-10.0,-25.0,   -2.0),
+    ("eps_oh_pi",        "HB", "eps_oh_pi",         -1.5,  -6.0,    0.0),
+    ("water_penalty",    "HB", "water_penalty_per_hb", 3.5, 0.0,   12.0),
+    ("water_displace",   "HB", "water_displacement",  1.2,  0.5,    3.0),
+    # Phase 8: π-interactions
+    ("eps_ch_pi",        "PI", "eps_ch_pi",         -1.5,  -5.0,    0.0),
+    ("eps_pi_stack",     "PI", "eps_pi_stack",      -4.0, -12.0,    0.0),
+    ("eps_cation_pi",    "PI", "eps_cation_pi",     -5.0, -15.0,    0.0),
+    # Phase 9: conformational entropy
+    ("eps_rotor",        "CS", "eps_rotor",          2.5,   0.5,    6.0),
+    ("f_partial",        "CS", "f_partial",          0.5,   0.1,    0.9),
+    # Phase 10: shape complementarity
+    ("k_shape",          "CS", "k_shape",           -8.0, -20.0,    0.0),
+    ("PC_optimal",       "CS", "PC_optimal",         0.55,  0.35,   0.70),
+    ("sigma_PC",         "CS", "sigma_PC",           0.15,  0.05,   0.35),
 ]
 
 N_HG_PARAMS = len(HG_PARAM_SPEC)
 
 
 def apply_hg_params(x):
-    """Patch HG_PARAMS from flat vector."""
-    for i, (_, key, *_) in enumerate(HG_PARAM_SPEC):
-        HG_PARAMS[key] = x[i]
+    """Patch HG_PARAMS, HBOND_PARAMS, PI_PARAMS, and CONF_SHAPE_PARAMS."""
+    for i, (_, dict_name, key, *_) in enumerate(HG_PARAM_SPEC):
+        if dict_name == "HG":
+            HG_PARAMS[key] = x[i]
+        elif dict_name == "HB":
+            HBOND_PARAMS[key] = x[i]
+        elif dict_name == "PI":
+            PI_PARAMS[key] = x[i]
+        elif dict_name == "CS":
+            CONF_SHAPE_PARAMS[key] = x[i]
 
 
 def get_hg_x0():
-    return [p[2] for p in HG_PARAM_SPEC]
+    return [p[3] for p in HG_PARAM_SPEC]
 
 
 def get_hg_bounds():
-    lo = [p[3] for p in HG_PARAM_SPEC]
-    hi = [p[4] for p in HG_PARAM_SPEC]
+    lo = [p[4] for p in HG_PARAM_SPEC]
+    hi = [p[5] for p in HG_PARAM_SPEC]
     return lo, hi
 
 
@@ -147,7 +174,7 @@ def calibrate():
     print("\n── Fitted parameters ──")
     print(f"  {'Name':20s} {'Value':>8s} {'Low':>8s} {'High':>8s} {'AtBound':>8s}")
     print("  " + "─" * 55)
-    for i, (name, key, init, lb, ub) in enumerate(HG_PARAM_SPEC):
+    for i, (name, dict_name, key, init, lb, ub) in enumerate(HG_PARAM_SPEC):
         val = result.x[i]
         at = ""
         if abs(val - lb) < 1e-6:
@@ -156,13 +183,18 @@ def calibrate():
             at = "→HIGH"
         print(f"  {name:20s} {val:8.4f} {lb:8.4f} {ub:8.4f} {at:>8s}")
 
-    # Physical interpretation
-    gamma_flat = result.x[0]
-    k_curv = result.x[1]
-    dg_deh = result.x[2]
-    deh_CB = result.x[3]
-    deh_CD = result.x[4]
+    # Physical interpretation — find by name
+    param_vals = {HG_PARAM_SPEC[i][0]: result.x[i] for i in range(len(HG_PARAM_SPEC))}
+    gamma_flat = param_vals["gamma_flat"]
+    k_curv = param_vals["k_curvature"]
+    dg_deh = param_vals["dg_dehydr_per_A2"]
+    deh_CB = param_vals["dehydr_CB"]
+    deh_CD = param_vals["dehydr_CD"]
     gamma_eff_concave = gamma_flat * k_curv
+    eps_n = param_vals["eps_neutral"]
+    eps_ca = param_vals["eps_charge_asst"]
+    w_pen = param_vals["water_penalty"]
+    w_disp = param_vals["water_displace"]
     print(f"\n── Physical interpretation ──")
     print(f"  γ_flat:                {gamma_flat:.4f} kJ/(mol·Å²)")
     print(f"  γ_concave:             {gamma_eff_concave:.4f} kJ/(mol·Å²)")
@@ -170,16 +202,65 @@ def calibrate():
     print(f"  Dehydr. base:          {dg_deh:.4f} kJ/(mol·Å²)")
     print(f"  Total γ_eff (CB):      {gamma_eff_concave + abs(dg_deh)*deh_CB:.4f}")
     print(f"  Total γ_eff (CD):      {gamma_eff_concave + abs(dg_deh)*deh_CD:.4f}")
-    in_range = 0.015 <= gamma_flat <= 0.040
+    in_range = 0.015 <= gamma_flat <= 0.045
     print(f"  γ_flat {'✓ within' if in_range else '⚠ outside'} expected bounds")
+    print(f"\n  H-bond terms:")
+    print(f"  ε_neutral:             {eps_n:.2f} kJ/mol (lit: -2 to -5)")
+    print(f"  ε_charge_assisted:     {eps_ca:.2f} kJ/mol (lit: -8 to -15)")
+    if eps_n != 0:
+        print(f"  ratio CA/neutral:      {eps_ca/eps_n:.1f}× (lit: 3-5×)")
+    net_neutral = eps_n + w_pen * w_disp
+    net_ca = eps_ca + w_pen * w_disp
+    print(f"  Net per neutral HB:    {net_neutral:.2f} kJ/mol (after water penalty)")
+    print(f"  Net per CA HB:         {net_ca:.2f} kJ/mol (after water penalty)")
+
+    # π-interaction interpretation
+    eps_chpi = param_vals.get("eps_ch_pi", 0)
+    eps_pipi = param_vals.get("eps_pi_stack", 0)
+    eps_catpi = param_vals.get("eps_cation_pi", 0)
+    print(f"\n  π-interaction terms:")
+    print(f"  ε_CH-π:                {eps_chpi:.2f} kJ/mol (lit: -1 to -3)")
+    print(f"  ε_π-stack:             {eps_pipi:.2f} kJ/mol (lit: -2 to -8)")
+    print(f"  ε_cation-π:            {eps_catpi:.2f} kJ/mol (lit: -2 to -10)")
+
+    # Conf entropy + shape
+    eps_rot = param_vals.get("eps_rotor", 0)
+    f_part = param_vals.get("f_partial", 0)
+    k_shp = param_vals.get("k_shape", 0)
+    pc_opt = param_vals.get("PC_optimal", 0)
+    sig_pc = param_vals.get("sigma_PC", 0)
+    print(f"\n  Conformational entropy:")
+    print(f"  ε_rotor:               {eps_rot:.2f} kJ/mol (lit: 1.5–4.5)")
+    print(f"  f_partial:             {f_part:.2f} (lit: 0.3–0.7)")
+    print(f"  Cost per frozen rotor: {eps_rot * f_part:.2f} kJ/mol")
+    print(f"\n  Shape complementarity:")
+    print(f"  k_shape:               {k_shp:.2f} kJ/mol (lit: -5 to -15)")
+    print(f"  PC_optimal:            {pc_opt:.2f} (Rebek rule: 0.55)")
+    print(f"  σ_PC:                  {sig_pc:.2f}")
 
     # Export
     print(f"\n# ═══════════════════════════════════════════")
-    print(f"# FITTED HG_PARAMS — paste into hg_scorer.py")
+    print(f"# FITTED PARAMS — paste into modules")
     print(f"# ═══════════════════════════════════════════")
     print(f"HG_PARAMS = {{")
-    for i, (name, key, *_) in enumerate(HG_PARAM_SPEC):
-        print(f'    "{key}": {result.x[i]:.4f},')
+    for i, (name, dn, key, *_) in enumerate(HG_PARAM_SPEC):
+        if dn == "HG":
+            print(f'    "{key}": {result.x[i]:.4f},')
+    print(f"}}\n")
+    print(f"HBOND_PARAMS = {{")
+    for i, (name, dn, key, *_) in enumerate(HG_PARAM_SPEC):
+        if dn == "HB":
+            print(f'    "{key}": {result.x[i]:.4f},')
+    print(f"}}\n")
+    print(f"PI_PARAMS = {{")
+    for i, (name, dn, key, *_) in enumerate(HG_PARAM_SPEC):
+        if dn == "PI":
+            print(f'    "{key}": {result.x[i]:.4f},')
+    print(f"}}\n")
+    print(f"CONF_SHAPE_PARAMS = {{")
+    for i, (name, dn, key, *_) in enumerate(HG_PARAM_SPEC):
+        if dn == "CS":
+            print(f'    "{key}": {result.x[i]:.4f},')
     print(f"}}")
 
     return result.x

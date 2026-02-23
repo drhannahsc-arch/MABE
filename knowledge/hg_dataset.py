@@ -300,6 +300,76 @@ HG_DATA = [
     _hg("P5+hexyl-NH3+", "pillar5",
          "[NH3+]CCCCCC", 1, 3.5,
          "Ogoshi2012", n_hbonds_portal=2, guest_has_cation=True),
+
+    # ═════════════════════════════════════════════════════════════════
+    # PHASE 7 MATCHED PAIRS: H-bond isolation
+    # Non-H-bonding analogs of existing guests
+    # ═════════════════════════════════════════════════════════════════
+
+    # ── β-CD: H-bonding vs non-H-bonding matched guests ──
+    # nitrobenzene (no OH) vs p-nitrophenol (has OH) — same ring, same NO2
+    _hg("bCD+nitrobenzene", "beta-CD", "O=[N+]([O-])c1ccccc1", 0, 1.62,
+         "Rekharsky2007"),
+    # anisole (no OH) vs phenol (has OH) — same size aromatic
+    _hg("bCD+anisole", "beta-CD", "COc1ccccc1", 0, 1.50,
+         "Rekharsky2007"),
+    # tert-butanol vs neopentane — matched size, ±OH
+    _hg("bCD+neopentane", "beta-CD", "CC(C)(C)C", 0, 1.15,
+         "Rekharsky2007"),
+    _hg("bCD+tert-butanol", "beta-CD", "CC(C)(C)O", 0, 1.42,
+         "Rekharsky2007", n_hbonds_portal=1),
+    # cyclohexane vs cyclohexanol — classic pair
+    _hg("bCD+cyclohexane", "beta-CD", "C1CCCCC1", 0, 2.04,
+         "Rekharsky2007"),
+    # adamantane (no HB) — matched to 1-adamantanol
+    _hg("bCD+adamantane", "beta-CD", "C1C2CC3CC1CC(C2)C3", 0, 3.30,
+         "Rekharsky2007"),
+    # methyl benzoate (no COOH donor) vs benzoic acid
+    _hg("bCD+methylbenzoate", "beta-CD", "COC(=O)c1ccccc1", 0, 1.85,
+         "Rekharsky2007"),
+    # 1-naphthol (HB) vs naphthalene (no HB)
+    _hg("bCD+1-naphthol", "beta-CD", "Oc1cccc2ccccc12", 0, 2.90,
+         "Rekharsky2007", n_hbonds_portal=1),
+
+    # ── α-CD: matched pairs ──
+    _hg("aCD+nitrobenzene", "alpha-CD", "O=[N+]([O-])c1ccccc1", 0, 1.37,
+         "Rekharsky2007"),
+    _hg("aCD+anisole", "alpha-CD", "COc1ccccc1", 0, 1.30,
+         "Rekharsky2007"),
+    _hg("aCD+1-naphthol", "alpha-CD", "Oc1cccc2ccccc12", 0, 2.50,
+         "Rekharsky2007", n_hbonds_portal=1),
+    _hg("aCD+naphthalene", "alpha-CD", "c1ccc2ccccc2c1", 0, 2.01,
+         "Rekharsky2007"),
+
+    # ── γ-CD: matched pairs ──
+    _hg("gCD+nitrobenzene", "gamma-CD", "O=[N+]([O-])c1ccccc1", 0, 0.70,
+         "Rekharsky2007"),
+
+    # ── CB[7]: non-cationic guests (isolate charge-assisted HB) ──
+    # These have ONLY hydrophobic driving force — no portal HB
+    _hg("CB7+adamantane", "CB7",
+         "C1C2CC3CC1CC(C2)C3", 0, 7.3,
+         "Moghaddam2011"),
+    _hg("CB7+adamantanone", "CB7",
+         "O=C1C2CC3CC1CC(C2)C3", 0, 8.2,
+         "Moghaddam2011"),
+    _hg("CB7+cyclopentanone", "CB7",
+         "O=C1CCCC1", 0, 3.7,
+         "Moghaddam2011"),
+    _hg("CB7+cyclohexanone", "CB7",
+         "O=C1CCCCC1", 0, 5.1,
+         "Moghaddam2011"),
+    _hg("CB7+norbornane", "CB7",
+         "C1CC2CC1CC2", 0, 5.8,
+         "Moghaddam2011"),
+
+    # ── CB[7]: neutral H-bond donors (OH, NH but not NH3+) ──
+    _hg("CB7+1-adamantanol", "CB7",
+         "OC12CC3CC(CC(C3)C1)C2", 0, 9.5,
+         "Moghaddam2011", n_hbonds_portal=1),
+    _hg("CB7+cyclohexanol", "CB7",
+         "OC1CCCCC1", 0, 5.8,
+         "Moghaddam2011", n_hbonds_portal=1),
 ]
 
 
