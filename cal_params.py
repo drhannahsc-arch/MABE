@@ -53,8 +53,14 @@ PARAM_SPEC = [
     ("iw_Cd2+", "IW", "Cd2+",  -3.0, -25.0,   5.0),
     ("iw_Ag+",  "IW", "Ag+",   -3.0, -25.0,  20.0),  # widened high from 10
     ("iw_Fe3+", "IW", "Fe3+", -12.0, -40.0,   0.0),
-    ("iw_Al3+", "IW", "Al3+",  -3.0, -20.0,  12.0),  # widened high from 5
-    ("iw_Cr3+", "IW", "Cr3+", -10.0, -35.0,   5.0),
+    ("iw_Al3+", "IW", "Al3+",  -3.0, -20.0,  20.0),  # widened high
+    ("iw_Cr3+", "IW", "Cr3+", -10.0, -35.0,  15.0),  # widened high
+
+    # ── Irving-Williams: lanthanides + heavy p-block (NEW in round 3) ──
+    ("iw_La3+", "IW", "La3+",   0.0, -25.0,  15.0),
+    ("iw_Gd3+", "IW", "Gd3+",   0.0, -25.0,  15.0),
+    ("iw_In3+", "IW", "In3+",  -5.0, -35.0,  10.0),
+    ("iw_Bi3+", "IW", "Bi3+",  -5.0, -35.0,  10.0),
 
     # ── Global PARAMS dict scalars ──
     ("charge_scale",    "PARAMS", "charge_scale",      -1.00, -20.0,    0.0),
@@ -62,15 +68,15 @@ PARAM_SPEC = [
     ("chelate_ring_z1", "PARAMS", "chelate_ring_z1",   -4.25, -18.0,   -0.5),
     ("chelate_ring_d0", "PARAMS", "chelate_ring_d0",   -5.82, -18.0,   -1.0),
     ("hsab_match",      "PARAMS", "hsab_match",        -1.50, -15.0,    0.0),
-    ("hsab_mismatch",   "PARAMS", "hsab_mismatch",     10.00,   0.01,  35.0),  # widened low from 0.1
+    ("hsab_mismatch",   "PARAMS", "hsab_mismatch",     10.00,   0.001, 35.0),  # widened low
     ("desolv_base",     "PARAMS", "desolv_frac_base",   0.005,  0.0,    0.05), # widened low to 0
     ("desolv_slope",    "PARAMS", "desolv_frac_slope",  0.001,  0.0,    0.02), # widened low to 0
     ("lfse_amp",        "PARAMS", "lfse_amp",           1.00,   0.01,  12.0),  # widened low
     ("elec_zz_k",       "PARAMS", "elec_zz_k",        -2.68, -12.0,    0.0),
-    ("trans_entropy",   "PARAMS", "trans_entropy",      5.50,   0.1,   18.0),  # widened low
+    ("trans_entropy",   "PARAMS", "trans_entropy",      5.50,   0.0,   18.0),  # widened low to 0
     ("macro_preorg",    "PARAMS", "macro_preorg",      -6.27, -30.0,   25.0),  # widened from 12
     ("macro_cavity_k",  "PARAMS", "macro_cavity_k",    -5.03, -30.0,    0.0),
-    ("rotor_cost",      "PARAMS", "rotor_cost",         2.00,   0.1,   25.0),  # widened from 15
+    ("rotor_cost",      "PARAMS", "rotor_cost",         2.00,   0.0,   25.0),  # widened low to 0
     ("freeze_chelate",  "PARAMS", "freeze_chelate",     0.50,   0.001,  0.95), # widened from 0.005
     ("repul_anionic",   "PARAMS", "repul_anionic",      1.67,   0.05,   8.0),
     ("repul_steric",    "PARAMS", "repul_steric",       0.15,   0.0001, 2.0),  # widened low
