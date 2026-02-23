@@ -226,7 +226,9 @@ def run_calibration(json_path, max_entries=None, k1_only=True):
                 description="free ligand", num_binding_sites=1, self_binding=False)
 
             thermo = compute_enhanced_thermodynamics(recognition, structure, interior, problem)
-            log_k_pred = -thermo.dg_net_kj / 5.71
+            log_k_pred_raw = -thermo.dg_net_kj / 5.71
+            from core.metal_offsets import apply_offset
+            log_k_pred = apply_offset(entry["metal_formula"], log_k_pred_raw)
             log_k_exp = entry["log_K_exp"]
             residual = log_k_pred - log_k_exp
 
