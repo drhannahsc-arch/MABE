@@ -42,31 +42,31 @@ from typing import Optional
 # Per-donor subtype exchange energies (kJ/mol)
 # Negative = favorable binding contribution per donor atom
 SUBTYPE_EXCHANGE = {
-    # O-donors
-    "O_ether":          -1.0,   # Crown ethers, PEG — no charge, no pi
-    "O_hydroxyl":       -5.0,   # Alcohols, sugars — weak
-    "O_carboxylate":    -4.0,   # Acetate, EDTA arms — charged, good sigma
-    "O_phenolate":     -10.0,   # Phenol anion — aromatic + charged
-    "O_hydroxamate":   -18.0,   # CONHO⁻ — resonance-stabilized
-    "O_catecholate":   -30.0,   # Aromatic diolate — pi-donation into d-orbitals
-    "O_phosphate":      -6.0,   # PO4 donors
+    # O-donors (calibrated, 251 complexes, R²=0.87)
+    "O_ether":          4.19,   # Crown ethers — weak, entropy-dominated
+    "O_hydroxyl":       -2.0,   # Alcohols, sugars — weak
+    "O_carboxylate":    -6.36,  # Acetate, EDTA arms — charged, good sigma
+    "O_phenolate":     -17.49,  # Phenol anion — aromatic + charged
+    "O_hydroxamate":    -8.42,  # CONHO⁻ — resonance-stabilized
+    "O_catecholate":   -15.00,  # Aromatic diolate — pi-donation into d-orbitals
+    "O_phosphate":      -8.51,  # PO4 donors
     "O_sulfonate":      -2.0,   # SO3⁻ — weak donor
     # N-donors
-    "N_amine":          -6.0,   # Primary/secondary/tertiary amines
+    "N_amine":         -14.90,  # Primary/secondary/tertiary amines
     "N_imine":          -8.0,   # Schiff bases, C=N
-    "N_pyridine":       -7.0,   # Aromatic N, pi-acceptor/donor
-    "N_imidazole":      -8.0,   # Histidine-like
+    "N_pyridine":       -9.23,  # Aromatic N, pi-acceptor/donor
+    "N_imidazole":      -7.40,  # Histidine-like
     "N_nitrile":        -3.0,   # C≡N — weak sigma donor
-    "N_amide":          -4.0,   # Peptide bond N — weak
+    "N_amide":         -19.00,  # Peptide bond N
     # S-donors
-    "S_thioether":     -10.0,   # R-S-R, methionine-like
-    "S_thiosulfate":    -6.0,   # S₂O₃²⁻ terminal S
-    "S_thiolate":      -18.0,   # RS⁻, cysteine — strong covalent character
-    "S_dithiocarbamate":-15.0,  # CS₂⁻ — chelating S,S-bidentate
+    "S_thioether":      5.00,   # R-S-R — weak intrinsic, selectivity via HSAB
+    "S_thiosulfate":    -8.0,   # S₂O₃²⁻ terminal S
+    "S_thiolate":      -15.80,  # RS⁻, cysteine — strong covalent character
+    "S_dithiocarbamate": -9.30, # CS₂⁻ — chelating S,S-bidentate
     # P-donors
-    "P_phosphine":     -15.0,   # PR₃ — strong for soft metals
+    "P_phosphine":     -20.0,   # PR₃ — strong for soft metals
     # Halides
-    "Cl_chloride":      -3.0,
+    "Cl_chloride":      -0.29,
     "Br_bromide":       -6.0,
     "I_iodide":        -12.0,
 }
@@ -184,6 +184,7 @@ _register("Tl3+",  3, 0,  89, 0.65, -3970, 6, (4,6),   0.0, False, 0.08,"Thalliu
 _register("Sn2+",  2, 0,  93, 0.40, -1490, 6, (4,6),   0.0, False, 0.0, "Tin(II)")
 _register("Bi3+",  3, 0, 103, 0.52, -3480, 6, (5,8),   0.0, False, 0.0, "Bismuth(III)")
 _register("In3+",  3, 10, 80, 0.40, -3980, 6, (4,6),   0.0, False, 0.0, "Indium(III)")
+_register("Al3+",  3,  0, 54, 0.05, -4525, 6, (4,6),   0.0, False, 0.0, "Aluminium(III)")
 _register("Ga3+",  3, 10, 62, 0.30, -4515, 6, (4,6),   0.0, False, 0.0, "Gallium(III)")
 
 # Lanthanides (+3) — f-electrons, high CN
@@ -292,6 +293,8 @@ IRVING_WILLIAMS_BONUS = {
     # Trivalent: scaled by charge
     "Fe3+": -12.0, "Cr3+": -10.0, "Co3+": -22.0,
     "Al3+": -3.0,  "Ga3+": -5.0,
+    # Monovalent
+    "Ag+":  -5.0,  "Cu+": -3.0,
 }
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -385,7 +388,7 @@ def _donor_donor_repulsion(active_subtypes: list, r_pm: float) -> float:
     # Attenuated by metal radius (larger sphere = more separation)
     n_pairs = n_anionic * (n_anionic - 1) / 2.0
     r_factor = 85.0 / max(r_pm, 50.0)  # Normalized to reference ~85pm
-    return 0.8 * n_pairs * r_factor  # kJ/mol, positive = unfavorable
+    return PARAMS["repul_anionic"] * n_pairs * r_factor  # kJ/mol, positive = unfavorable
 
 
 def _steric_strain(active_subtypes: list, metal: 'MetalProperties') -> float:
@@ -408,8 +411,7 @@ def _steric_strain(active_subtypes: list, metal: 'MetalProperties') -> float:
 
     if total_cone > available:
         overcrowding = total_cone - available
-        # ~0.15 kJ/mol per degree of overcrowding
-        return 0.15 * overcrowding
+        return PARAMS["repul_steric"] * overcrowding
     return 0.0
 
 
@@ -437,13 +439,10 @@ DONOR_ROTOR_COUNT = {
 
 # Conformational entropy cost per frozen rotatable bond (kJ/mol at 298K)
 # Mammen, Shakhnovich, Whitesides 1998 consensus: ~3.4 kJ/mol
-ROTOR_ENTROPY_COST = 2.0  # kJ/mol per frozen rotor (calibrated for coordination)
+# Now read from PARAMS["rotor_cost"]
 
 # Fraction of rotors actually frozen upon chelation
-# Monodentate: ~0.3 (loose), bidentate chelate: ~0.7, macrocyclic: ~0.9
-FREEZE_FRACTION_CHELATE = 0.50
-FREEZE_FRACTION_MONODENTATE = 0.25
-FREEZE_FRACTION_MACROCYCLE = 0.10  # Already pre-frozen by macrocycle synthesis
+# Now read from PARAMS["freeze_chelate"], PARAMS["freeze_mono"], PARAMS["freeze_macro"]
 
 
 def _conformational_entropy_penalty(
@@ -462,14 +461,14 @@ def _conformational_entropy_penalty(
 
     # Determine freeze fraction based on ligand type
     if is_macrocyclic:
-        f_freeze = FREEZE_FRACTION_MACROCYCLE
+        f_freeze = PARAMS["freeze_macro"]
     elif chelate_rings > 0:
-        f_freeze = FREEZE_FRACTION_CHELATE
+        f_freeze = PARAMS["freeze_chelate"]
     else:
-        f_freeze = FREEZE_FRACTION_MONODENTATE
+        f_freeze = PARAMS["freeze_mono"]
 
     n_frozen = total_rotors * f_freeze
-    return ROTOR_ENTROPY_COST * n_frozen
+    return PARAMS["rotor_cost"] * n_frozen
 
 
 def _temperature_correction(dg_298: float, temperature_K: float) -> float:
@@ -489,6 +488,48 @@ def _temperature_correction(dg_298: float, temperature_K: float) -> float:
     f_entropy = 0.40
     dg_T = dg_298 * (f_enthalpy + f_entropy * temperature_K / 298.15)
     return dg_T
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TUNABLE PARAMETERS (patchable by calibration optimizer)
+# All optimizable scalars in one dict. Optimizer writes here directly.
+# ═══════════════════════════════════════════════════════════════════════════
+
+PARAMS = {
+    # Term 2: charge scaling
+    "charge_scale":       -1.00,    # multiplier on (z²-1)
+    # Term 3: HSAB match/mismatch
+    "hsab_match":         -1.50,    # kJ/mol, match bonus per donor
+    "hsab_mismatch":      10.00,    # kJ/mol, mismatch penalty per donor
+    # Term 4: chelate effect (kJ/mol per ring)
+    "chelate_ring_d":    -10.84,    # d>0, z≥2 metals
+    "chelate_ring_z1":    -4.25,    # z=1 metals
+    "chelate_ring_d0":    -5.82,    # d0 divalent (Ca, Mg)
+    # Term 5: desolvation cost
+    "desolv_frac_base":    0.005,   # base fraction
+    "desolv_frac_slope":   0.001,   # per-charge slope
+    # Term 6: LFSE amplifier
+    "lfse_amp":            1.00,    # delta_dq multiplier
+    # Term 7: Jahn-Teller (structural, less tunable)
+    "jt_strong":         -12.00,    # square planar (CN≤4)
+    "jt_moderate":        -6.00,    # tetragonal distortion (CN>4)
+    # Term 9: translational entropy
+    "trans_entropy":       5.50,    # kJ/mol per extra ligand molecule
+    # Term 10: macrocyclic
+    "macro_preorg":       -6.27,    # kJ/mol, entropic preorganization
+    "macro_cavity_k":     -5.03,    # kJ/mol, cavity size-match peak
+    "macro_sigma":         0.015,   # nm, Gaussian width of cavity match
+    # Term 12: electrostatic z-z
+    "elec_zz_k":          -2.68,    # kJ/mol scaling factor
+    # Term 14: repulsion
+    "repul_anionic":       1.67,    # donor-donor anionic repulsion coeff
+    "repul_steric":        0.15,    # steric overcrowding coeff (kJ/mol/degree)
+    # Term 15: entropy decomposition
+    "rotor_cost":          2.00,    # kJ/mol per frozen rotor
+    "freeze_chelate":      0.50,    # fraction frozen in chelates
+    "freeze_mono":         0.25,    # fraction frozen, monodentate
+    "freeze_macro":        0.10,    # fraction frozen, macrocyclic
+}
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -579,7 +620,7 @@ def predict_log_k(
 
     # ── Term 2: Charge-dependent electrostatic enhancement ────────────
     # z²/r scaling: higher charge and smaller radius = stronger field
-    dg_charge = -5.0 * (charge ** 2 - 1)
+    dg_charge = PARAMS["charge_scale"] * (charge ** 2 - 1)
 
     # ── Term 3: Metal-donor exchange matrix (multiplicative HSAB × size) ─
     # Replaces additive HSAB with multiplicative framework:
@@ -600,23 +641,23 @@ def predict_log_k(
 
         if delta_soft < 0.30:
             # Good match: bonus scaled by match quality and size
-            dg_hsab += -1.5 * (0.30 - delta_soft) / 0.30 * f_size
+            dg_hsab += PARAMS["hsab_match"] * (0.30 - delta_soft) / 0.30 * f_size
         else:
             # Mismatch: penalty
-            dg_hsab += 10.0 * (delta_soft - 0.30) * f_size
+            dg_hsab += PARAMS["hsab_mismatch"] * (delta_soft - 0.30) * f_size
 
     # ── Term 4: Chelate effect ───────────────────────────────────────
     if metal.d_electrons > 0 and charge >= 2:
-        chelate_per_ring = -12.0  # kJ/mol, Schwarzenbach value
+        chelate_per_ring = PARAMS["chelate_ring_d"]
     elif charge == 1:
-        chelate_per_ring = -6.0
+        chelate_per_ring = PARAMS["chelate_ring_z1"]
     else:
-        chelate_per_ring = -8.0   # d0 divalent (Ca, Mg)
+        chelate_per_ring = PARAMS["chelate_ring_d0"]
     dg_chelate = chelate_per_ring * chelate_rings
 
     # ── Term 5: Desolvation cost ─────────────────────────────────────
     # Metal-specific: fraction of per-water hydration energy × donors
-    f_exchange = 0.012 + 0.003 * charge  # 1.5% for +1, 1.8% for +2, 2.1% for +3
+    f_exchange = PARAMS["desolv_frac_base"] + PARAMS["desolv_frac_slope"] * charge
     per_water_cost = abs(metal.dg_hyd_kj) / metal.cn_aqua
     dg_desolv = f_exchange * per_water_cost * n_active  # Positive = unfavorable
 
@@ -628,16 +669,16 @@ def predict_log_k(
         avg_dq_ligand = sum(DQ_BY_DONOR.get(st, 10.0)
                             for st in active_subtypes) / max(1, n_active)
         delta_dq = avg_dq_ligand - DQ_WATER
-        dg_lfse = lfse_factor * delta_dq * 3.0  # Amplified to match real LFSE scale
+        dg_lfse = lfse_factor * delta_dq * PARAMS["lfse_amp"]  # Amplified to match real LFSE scale
         dg_lfse = max(dg_lfse, -80.0)  # Cap
 
     # ── Term 7: Jahn-Teller correction ───────────────────────────────
     dg_jt = 0.0
     if metal.jahn_teller:
         if eff_cn <= 4:
-            dg_jt = -12.0  # Strong: square planar stabilization
+            dg_jt = PARAMS["jt_strong"]
         else:
-            dg_jt = -6.0   # Moderate: elongated octahedron (tetragonal distortion)
+            dg_jt = PARAMS["jt_moderate"]
 
     # ── Term 8: Covalent BDE contribution ────────────────────────────
     dg_covalent = 0.0
@@ -649,22 +690,22 @@ def predict_log_k(
                 dg_covalent += -bde * metal.covalent_fraction
 
     # ── Term 9: Translational entropy cost ───────────────────────────
-    dg_trans = 5.5 * (n_ligand_molecules - 1) if n_ligand_molecules > 1 else 0.0
+    dg_trans = PARAMS["trans_entropy"] * (n_ligand_molecules - 1) if n_ligand_molecules > 1 else 0.0
 
     # ── Term 10: Macrocyclic/preorganization effect ────────────────
     # Two components: (a) entropic preorganization, (b) cavity size-match
     dg_macro = 0.0
     if is_macrocyclic:
         # (a) Entropic preorganization: ~5-8 kJ/mol for macrocycles
-        dg_macro = -6.0
+        dg_macro = PARAMS["macro_preorg"]
 
         # (b) Cavity size-match Gaussian (Pedersen selectivity)
         if cavity_radius_nm is not None:
             r_ion_nm = r_pm / 1000.0
-            sigma_cavity = 0.015  # nm, width of Gaussian
+            sigma_cavity = PARAMS["macro_sigma"]
             size_match = math.exp(-(r_ion_nm - cavity_radius_nm)**2
                                   / (2 * sigma_cavity**2))
-            dg_macro += -8.0 * size_match  # Up to -8 kJ/mol extra for perfect match
+            dg_macro += PARAMS["macro_cavity_k"] * size_match
 
     # ── Term 11: Chelate ring-size selectivity (Hancock rule) ────────
     # 6-membered rings destabilize large metals relative to 5-membered
@@ -682,7 +723,7 @@ def predict_log_k(
     # ── Term 12: Electrostatic z-z charge-charge attraction ──────────
     # Anionic donors are attracted to cationic metals: ΔG ∝ z_metal × z_donor / r
     dg_elec = 0.0
-    k_elec = -1.8  # kJ/mol scaling factor per unit of z_M × |z_D| / (r/100)
+    k_elec = PARAMS["elec_zz_k"]  # kJ/mol scaling factor per unit of z_M × |z_D| / (r/100)
     for st in active_subtypes:
         z_donor = DONOR_FORMAL_CHARGE.get(st, 0.0)
         if z_donor < 0:
