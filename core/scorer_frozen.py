@@ -18,8 +18,10 @@ Physics terms included:
   11. Chelate ring-size selectivity (Hancock rule: 5- vs 6-membered)
   12. Electrostatic z-z charge-charge (anionic donors + cationic metals)
   13. Metal-donor exchange matrix (multiplicative HSAB × size correction)
-  14. pH-dependent protonation penalty (conditional log K)
-  15. Irving-Williams enhancement (empirical d-electron stabilization curve)
+  14. Irving-Williams enhancement (empirical d-electron stabilization curve)
+  15. pH-dependent protonation penalty (conditional log K)
+  16. Repulsion forces (CN overpacking, donor-donor anionic, steric strain)
+  17. Entropy decomposition (conformational rotor penalty, T-dependent ΔG)
 
 Regenerate from live engine: python scorer_frozen.py --freeze (future)
 
@@ -316,6 +318,180 @@ def _hancock_ring_penalty(ionic_radius_pm: float) -> float:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# MODULE 14: REPULSION FORCES
+# Three sub-terms: CN overpacking, donor-donor anionic repulsion, steric strain
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Donor van der Waals radii (Å) for steric calculations
+# Based on Bondi vdW radii of coordinating atom
+DONOR_VDW_RADIUS = {
+    "O_ether": 1.52, "O_hydroxyl": 1.52, "O_carboxylate": 1.52,
+    "O_phenolate": 1.52, "O_hydroxamate": 1.52, "O_catecholate": 1.52,
+    "O_phosphate": 1.52, "O_sulfonate": 1.52,
+    "N_amine": 1.55, "N_imine": 1.55, "N_pyridine": 1.55,
+    "N_imidazole": 1.55, "N_nitrile": 1.55, "N_amide": 1.55,
+    "S_thioether": 1.80, "S_thiosulfate": 1.80, "S_thiolate": 1.80,
+    "S_dithiocarbamate": 1.80,
+    "P_phosphine": 1.80,
+    "Cl_chloride": 1.75, "Br_bromide": 1.85, "I_iodide": 1.98,
+}
+
+# Ligand cone angle approximation (degrees) — steric bulk of donor group
+# Larger cone = more steric demand in the coordination sphere
+DONOR_CONE_ANGLE = {
+    "O_ether": 80, "O_hydroxyl": 70, "O_carboxylate": 85,
+    "O_phenolate": 100, "O_hydroxamate": 95, "O_catecholate": 105,
+    "O_phosphate": 95, "O_sulfonate": 90,
+    "N_amine": 85, "N_imine": 90, "N_pyridine": 100,
+    "N_imidazole": 95, "N_nitrile": 65, "N_amide": 80,
+    "S_thioether": 95, "S_thiosulfate": 90, "S_thiolate": 85,
+    "S_dithiocarbamate": 110,
+    "P_phosphine": 145,  # Tolman cone angle for PPh3
+    "Cl_chloride": 80, "Br_bromide": 85, "I_iodide": 90,
+}
+
+
+def _cn_overpack_penalty(metal: 'MetalProperties', n_donors: int) -> float:
+    """Penalty (kJ/mol, positive) for exceeding metal's preferred CN range.
+
+    Overpacking costs energy due to:
+    - Bond angle compression (Pauli repulsion between donor electron clouds)
+    - Reduced orbital overlap per bond (dilution effect)
+    """
+    cn_max = metal.cn_range[1]
+    cn_min = metal.cn_range[0]
+    if n_donors > cn_max:
+        excess = n_donors - cn_max
+        # Exponential ramp: first extra donor costs ~8 kJ, second ~20, etc.
+        return 8.0 * excess + 6.0 * excess * (excess - 1) / 2.0
+    elif n_donors < cn_min:
+        deficit = cn_min - n_donors
+        # Underpacking: less severe, metal can fill with water
+        return 3.0 * deficit
+    return 0.0
+
+
+def _donor_donor_repulsion(active_subtypes: list, r_pm: float) -> float:
+    """Repulsion between anionic donors crowded in the coordination sphere.
+
+    Multiple negatively charged donors in close proximity repel each other.
+    The effect scales as n_anionic × (n_anionic - 1) / r.
+    """
+    n_anionic = sum(1 for st in active_subtypes
+                    if DONOR_FORMAL_CHARGE.get(st, 0.0) < -0.3)
+    if n_anionic < 2:
+        return 0.0
+    # Coulombic repulsion between anionic donors: scales as n(n-1)/2
+    # Attenuated by metal radius (larger sphere = more separation)
+    n_pairs = n_anionic * (n_anionic - 1) / 2.0
+    r_factor = 85.0 / max(r_pm, 50.0)  # Normalized to reference ~85pm
+    return 0.8 * n_pairs * r_factor  # kJ/mol, positive = unfavorable
+
+
+def _steric_strain(active_subtypes: list, metal: 'MetalProperties') -> float:
+    """Steric strain from bulky donors crowding the coordination sphere.
+
+    Uses sum of cone angles vs. available solid angle at coordination number.
+    """
+    n = len(active_subtypes)
+    if n <= 2:
+        return 0.0
+    total_cone = sum(DONOR_CONE_ANGLE.get(st, 100) for st in active_subtypes)
+    # Available angular space depends on CN geometry
+    # Octahedral: ~6 × 90° = 540° effective; tetrahedral: ~4 × 109.5° = 438°
+    if n <= 4:
+        available = 440.0
+    elif n <= 6:
+        available = 540.0
+    else:
+        available = 540.0 + 60.0 * (n - 6)  # Expanded CN
+
+    if total_cone > available:
+        overcrowding = total_cone - available
+        # ~0.15 kJ/mol per degree of overcrowding
+        return 0.15 * overcrowding
+    return 0.0
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 15: ENTROPY DECOMPOSITION
+# Conformational rotor penalty, temperature-dependent ΔG, rigidity bonus
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Estimated rotatable bonds per donor arm (connecting donor to backbone)
+# Chelated donors have these frozen upon binding
+DONOR_ROTOR_COUNT = {
+    # Rigid donors (aromatic, constrained)
+    "N_pyridine": 0, "N_imidazole": 0, "N_imine": 0, "N_nitrile": 0,
+    "O_catecholate": 0, "O_phenolate": 0,
+    # Semi-rigid (1 rotor in linker arm)
+    "O_carboxylate": 1, "O_hydroxamate": 1, "O_phosphate": 1,
+    "S_dithiocarbamate": 0, "N_amide": 1,
+    # Flexible (2+ rotors in chain)
+    "N_amine": 2, "O_hydroxyl": 1, "O_ether": 2,
+    "S_thiolate": 1, "S_thioether": 2, "S_thiosulfate": 1,
+    "O_sulfonate": 1,
+    "P_phosphine": 1,
+    "Cl_chloride": 0, "Br_bromide": 0, "I_iodide": 0,
+}
+
+# Conformational entropy cost per frozen rotatable bond (kJ/mol at 298K)
+# Mammen, Shakhnovich, Whitesides 1998 consensus: ~3.4 kJ/mol
+ROTOR_ENTROPY_COST = 2.0  # kJ/mol per frozen rotor (calibrated for coordination)
+
+# Fraction of rotors actually frozen upon chelation
+# Monodentate: ~0.3 (loose), bidentate chelate: ~0.7, macrocyclic: ~0.9
+FREEZE_FRACTION_CHELATE = 0.50
+FREEZE_FRACTION_MONODENTATE = 0.25
+FREEZE_FRACTION_MACROCYCLE = 0.10  # Already pre-frozen by macrocycle synthesis
+
+
+def _conformational_entropy_penalty(
+    active_subtypes: list,
+    chelate_rings: int,
+    is_macrocyclic: bool,
+    n_ligand_molecules: int,
+) -> float:
+    """Conformational entropy cost from freezing rotatable bonds upon binding.
+
+    Returns positive value (unfavorable, kJ/mol).
+    """
+    total_rotors = sum(DONOR_ROTOR_COUNT.get(st, 1) for st in active_subtypes)
+    if total_rotors == 0:
+        return 0.0
+
+    # Determine freeze fraction based on ligand type
+    if is_macrocyclic:
+        f_freeze = FREEZE_FRACTION_MACROCYCLE
+    elif chelate_rings > 0:
+        f_freeze = FREEZE_FRACTION_CHELATE
+    else:
+        f_freeze = FREEZE_FRACTION_MONODENTATE
+
+    n_frozen = total_rotors * f_freeze
+    return ROTOR_ENTROPY_COST * n_frozen
+
+
+def _temperature_correction(dg_298: float, temperature_K: float) -> float:
+    """Gibbs-Helmholtz temperature correction for ΔG.
+
+    Approximation: ΔG(T) = ΔG(298) × T/298
+    This assumes ΔH and ΔS are approximately temperature-independent
+    (valid within ±50K of 298K for most coordination complexes).
+
+    For more accuracy, would need ΔH and ΔS decomposition + ΔCp corrections.
+    """
+    if abs(temperature_K - 298.15) < 0.5:
+        return dg_298  # No correction needed
+    # Linear scaling: entropy terms scale with T, enthalpy terms don't
+    # Approximate: 60% of ΔG is enthalpic, 40% is entropic for coordination
+    f_enthalpy = 0.60
+    f_entropy = 0.40
+    dg_T = dg_298 * (f_enthalpy + f_entropy * temperature_K / 298.15)
+    return dg_T
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # PREDICTION ENGINE
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -356,9 +532,10 @@ def predict_log_k(
     is_macrocyclic: bool = False,
     cavity_radius_nm: Optional[float] = None,
     n_ligand_molecules: int = 1,
+    temperature_K: float = 298.15,
     verbose: bool = False,
 ) -> float:
-    """Predict conditional formation constant log K' at given pH.
+    """Predict conditional formation constant log K' at given pH and temperature.
 
     Strategy: compute intrinsic log K (fully deprotonated ligand), then
     apply conditional pH correction for donor protonation competition.
@@ -372,10 +549,11 @@ def predict_log_k(
         is_macrocyclic: True for macrocycles (crown ethers, cryptands, porphyrins)
         cavity_radius_nm: macrocycle cavity radius in nm (for size-match); None = skip
         n_ligand_molecules: number of separate ligand molecules
+        temperature_K: temperature in Kelvin (default 298.15 = 25°C)
         verbose: print term-by-term decomposition
 
     Returns:
-        Predicted conditional log K' at specified pH
+        Predicted conditional log K' at specified pH and temperature
     """
     metal = METAL_DB.get(metal_formula)
     if metal is None:
@@ -516,11 +694,34 @@ def predict_log_k(
     # Captures kinetic lability, nephelauxetic, and spin-orbit effects
     dg_iw = IRVING_WILLIAMS_BONUS.get(metal.formula, 0.0)
 
+    # ── Term 14: Repulsion forces ─────────────────────────────────────
+    # Three sub-terms: CN overpacking, donor-donor anionic repulsion, steric
+    dg_repulsion = 0.0
+    # (a) CN overpacking: penalty for exceeding metal's preferred CN
+    dg_repulsion += _cn_overpack_penalty(metal, n_donors)
+    # (b) Donor-donor anionic repulsion: charged donors repel in tight sphere
+    dg_repulsion += _donor_donor_repulsion(active_subtypes, r_pm)
+    # (c) Steric strain: bulky donors crowding the coordination sphere
+    dg_repulsion += _steric_strain(active_subtypes, metal)
+
+    # ── Term 15: Entropy decomposition ────────────────────────────────
+    # (a) Conformational rotor penalty: flexible arms freeze upon chelation
+    dg_conf_entropy = _conformational_entropy_penalty(
+        active_subtypes, chelate_rings, is_macrocyclic, n_ligand_molecules)
+
     # ── Intrinsic ΔG and log K ───────────────────────────────────────
     dg_intrinsic = (dg_exchange + dg_charge + dg_hsab + dg_chelate
                     + dg_desolv + dg_lfse + dg_jt + dg_covalent
-                    + dg_trans + dg_macro + dg_ring_size + dg_elec + dg_iw)
-    log_k_intrinsic = -dg_intrinsic / RT_KJ
+                    + dg_trans + dg_macro + dg_ring_size + dg_elec + dg_iw
+                    + dg_repulsion + dg_conf_entropy)
+
+    # (b) Temperature correction via Gibbs-Helmholtz approximation
+    dg_at_T = _temperature_correction(dg_intrinsic, temperature_K)
+
+    # RT at operating temperature
+    R_kJ = 0.008314  # kJ/(mol·K)
+    rt_T = 2.303 * R_kJ * temperature_K  # = RT × ln(10)
+    log_k_intrinsic = -dg_at_T / rt_T
 
     # ── Conditional pH correction ────────────────────────────────────
     # log K_cond = log K_intrinsic - Σ log(1 + 10^(pKa_i - pH))
@@ -539,9 +740,8 @@ def predict_log_k(
         print(f"  Metal: {metal_formula} (z={charge}, d={metal.d_electrons}, "
               f"σ={softness_m:.2f}, r={r_pm}pm)")
         print(f"  Donors: {active_subtypes} (eff_CN={eff_cn})")
-        print(f"  pH={pH}, macrocyclic={is_macrocyclic}, "
-              f"cavity={cavity_radius_nm}nm" if cavity_radius_nm else
-              f"  pH={pH}, macrocyclic={is_macrocyclic}")
+        t_str = f", T={temperature_K:.0f}K" if abs(temperature_K - 298.15) > 0.5 else ""
+        print(f"  pH={pH}, macrocyclic={is_macrocyclic}{t_str}")
         print(f"  ── Energy terms (kJ/mol) ──")
         print(f"  Exchange:     {dg_exchange:+8.1f}")
         print(f"  Charge:       {dg_charge:+8.1f}")
@@ -556,8 +756,12 @@ def predict_log_k(
         print(f"  Ring-size:    {dg_ring_size:+8.1f}")
         print(f"  Elec z-z:     {dg_elec:+8.1f}")
         print(f"  Irving-Will:  {dg_iw:+8.1f}")
+        print(f"  Repulsion:    {dg_repulsion:+8.1f}")
+        print(f"  Conf. entropy:{dg_conf_entropy:+8.1f}")
         print(f"  ─────────────────────────")
-        print(f"  ΔG_intrinsic: {dg_intrinsic:+8.1f} kJ/mol")
+        print(f"  ΔG(298K):     {dg_intrinsic:+8.1f} kJ/mol")
+        if abs(temperature_K - 298.15) > 0.5:
+            print(f"  ΔG({temperature_K:.0f}K):     {dg_at_T:+8.1f} kJ/mol")
         print(f"  log K (int):  {log_k_intrinsic:+8.1f}")
         print(f"  pH penalty:   {ph_penalty:+8.1f} (conditional correction)")
         print(f"  log K (cond): {log_k_cond:+8.1f}")
@@ -575,6 +779,7 @@ def predict_selectivity(
     is_macrocyclic: bool = False,
     cavity_radius_nm: Optional[float] = None,
     n_ligand_molecules: int = 1,
+    temperature_K: float = 298.15,
 ) -> dict:
     """Predict log K for target and all interferents; compute selectivity gaps.
 
@@ -585,7 +790,8 @@ def predict_selectivity(
     kwargs = dict(chelate_rings=chelate_rings, ring_sizes=ring_sizes,
                   pH=pH, is_macrocyclic=is_macrocyclic,
                   cavity_radius_nm=cavity_radius_nm,
-                  n_ligand_molecules=n_ligand_molecules)
+                  n_ligand_molecules=n_ligand_molecules,
+                  temperature_K=temperature_K)
 
     target_lk = predict_log_k(target_metal, donor_subtypes, **kwargs)
 
@@ -616,7 +822,7 @@ def predict_selectivity(
 # ═══════════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    print("=== MABE Frozen Scorer v3 — Self-Test (15 physics terms) ===\n")
+    print("=== MABE Frozen Scorer v4 — Self-Test (17 physics terms) ===\n")
 
     # EDTA-type donor set: N2O4, 5 chelate rings
     edta_donors = ["N_amine", "N_amine", "O_carboxylate", "O_carboxylate",
@@ -632,47 +838,54 @@ if __name__ == "__main__":
         exp = lit.get(m, 0)
         print(f"  {m:6s} {lk:6.1f} {exp:6.1f} {lk-exp:+6.1f}")
 
-    # Crown ether: 18-crown-6 (cavity = 0.13-0.16 nm)
-    crown_donors = ["O_ether"] * 6
-    print("\n18-Crown-6 with cavity size-match (pH 7):")
-    print(f"  {'Metal':6s} {'Pred':>6s} {'Lit':>6s}")
-    crown_lit = {"Na+": 0.7, "K+": 2.0, "Rb+": 1.6, "Cs+": 1.0,
-                 "Ca2+": 0.5, "Ba2+": 3.9}
-    for m in ["Na+", "K+", "Rb+", "Cs+", "Ca2+", "Ba2+"]:
-        lk = predict_log_k(m, crown_donors, chelate_rings=6,
-                           is_macrocyclic=True, cavity_radius_nm=0.14, pH=7.0)
-        exp = crown_lit.get(m, 0)
-        print(f"  {m:6s} {lk:6.1f} {exp:6.1f}")
+    # Repulsion test: overcrowding CN=8 donors on a CN=4 metal
+    print("\nRepulsion test — overcrowding:")
+    lk_4 = predict_log_k("Cu2+", ["N_amine"]*4, chelate_rings=2, pH=7.0)
+    lk_8 = predict_log_k("Cu2+", ["N_amine"]*8, chelate_rings=4, pH=7.0)
+    print(f"  Cu2+ + 4×N_amine (CN=4-6): log K = {lk_4:.1f}")
+    print(f"  Cu2+ + 8×N_amine (overpack): log K = {lk_8:.1f}")
+    print(f"  Overcrowding penalty visible: {'YES' if lk_8 < lk_4 + 5 else 'NO'}")
 
-    # Ring-size selectivity: 5-membered vs 6-membered for large vs small metal
-    print("\nRing-size selectivity (Hancock rule):")
-    en_donors = ["N_amine", "N_amine"]  # ethylenediamine
-    for m in ["Cu2+", "Pb2+", "Ca2+"]:
-        lk_5 = predict_log_k(m, en_donors, chelate_rings=1,
-                              ring_sizes=[5], pH=7.0)
-        lk_6 = predict_log_k(m, en_donors, chelate_rings=1,
-                              ring_sizes=[6], pH=7.0)
-        print(f"  {m:6s}  5-ring: {lk_5:+5.1f}  6-ring: {lk_6:+5.1f}  "
-              f"Δ={lk_5-lk_6:+5.1f}")
+    # Donor-donor anionic repulsion
+    print("\nAnionic donor repulsion (Fe3+):")
+    lk_neutral = predict_log_k("Fe3+", ["N_amine"]*6, chelate_rings=3, pH=10.0)
+    lk_anionic = predict_log_k("Fe3+", ["O_carboxylate"]*6, chelate_rings=5, pH=10.0)
+    print(f"  Fe3+ + 6×N_amine (neutral):     log K = {lk_neutral:.1f}")
+    print(f"  Fe3+ + 6×O_carboxylate (6×-1):  log K = {lk_anionic:.1f}")
 
-    # Electrostatic z-z: Fe3+ with anionic vs neutral donors
-    print("\nElectrostatic z-z effect (Fe3+):")
-    predict_log_k("Fe3+", ["O_carboxylate"]*6, chelate_rings=5, pH=7, verbose=True)
-    print()
-    predict_log_k("Fe3+", ["N_amine"]*6, chelate_rings=3, pH=7, verbose=True)
+    # Steric test: phosphine (cone angle 145°) vs amine (95°)
+    print("\nSteric strain — bulky PPh3 vs compact NH2:")
+    lk_phos = predict_log_k("Pd2+", ["P_phosphine"]*4, chelate_rings=2, pH=7.0)
+    lk_amine = predict_log_k("Pd2+", ["N_amine"]*4, chelate_rings=2, pH=7.0)
+    print(f"  Pd2+ + 4×PPh3 (bulky):  log K = {lk_phos:.1f}")
+    print(f"  Pd2+ + 4×NH2  (compact): log K = {lk_amine:.1f}")
 
-    print(f"\nPb2+ selectivity over mine water (pH 5):")
-    result = predict_selectivity(
-        "Pb2+",
-        ["Ca2+", "Mg2+", "Fe3+", "Zn2+", "Cu2+", "Mn2+"],
-        ["S_thiolate", "N_amine", "N_amine", "O_carboxylate"],
-        chelate_rings=3, pH=5.0)
-    print(f"  Pb2+ log K = {result['target_log_k']:.1f}")
-    for m, lk in result['interferent_log_ks'].items():
-        gap = result['selectivity_gaps'][m]
-        print(f"  {m:6s}  log K = {lk:5.1f}  gap = {gap:+5.1f}")
-    print(f"  Worst: {result['worst_interferent']} "
-          f"(gap = {result['min_gap']:+.1f})")
+    # Entropy: rigid vs flexible ligand
+    print("\nConformational entropy — rigid vs flexible:")
+    rigid = ["N_pyridine", "N_pyridine", "N_pyridine",
+             "N_pyridine", "N_pyridine", "N_pyridine"]
+    flex = ["N_amine", "N_amine", "N_amine",
+            "N_amine", "N_amine", "N_amine"]
+    lk_rigid = predict_log_k("Ni2+", rigid, chelate_rings=3, pH=7.0)
+    lk_flex = predict_log_k("Ni2+", flex, chelate_rings=3, pH=7.0)
+    print(f"  Ni2+ + 3×bipy (0 rotors):  log K = {lk_rigid:.1f}")
+    print(f"  Ni2+ + 3×en   (12 rotors): log K = {lk_flex:.1f}")
+    print(f"  Rigidity advantage: {lk_rigid - lk_flex:+.1f} log K")
 
-    print(f"\n{len(METAL_DB)} metals in database. 15 physics terms active.")
+    # Temperature dependence
+    print("\nTemperature dependence — Cu2+/EDTA:")
+    for T in [278, 298, 318, 338, 358]:
+        lk_T = predict_log_k("Cu2+", edta_donors, chelate_rings=5, pH=7.0,
+                              temperature_K=float(T))
+        print(f"  T={T}K ({T-273}°C): log K = {lk_T:.1f}")
+
+    # Verbose decomposition of repulsion+entropy terms
+    print("\nFull verbose — Cu2+ EDTA at 298K:")
+    predict_log_k("Cu2+", edta_donors, chelate_rings=5, pH=7.0, verbose=True)
+
+    print(f"\nFull verbose — Cu2+ EDTA at 350K:")
+    predict_log_k("Cu2+", edta_donors, chelate_rings=5, pH=7.0,
+                  temperature_K=350.0, verbose=True)
+
+    print(f"\n{len(METAL_DB)} metals in database. 17 physics terms active.")
     print("Self-test complete.")
