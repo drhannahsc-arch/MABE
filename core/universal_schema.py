@@ -104,6 +104,7 @@ class UniversalComplex:
     chelate_rings: int = 0
     ring_sizes: list = field(default_factory=list)         # [5,5,5]
     denticity: int = 0
+    n_ligand_molecules: int = 1             # Number of separate ligand molecules
     donor_type: str = ""                   # "hard","soft","borderline","mixed"
 
     # ── INTERACTION GEOMETRY (from co-crystal/docking or estimated) ────

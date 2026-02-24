@@ -608,6 +608,7 @@ def from_metal_ligand(entry):
         chelate_rings=entry["chelate_rings"],
         ring_sizes=list(entry["ring_sizes"]),
         is_macrocyclic=entry["macrocyclic"],
+        n_ligand_molecules=entry.get("n_lig_mol", 1),
         denticity=len(entry["donors"]),
         ph=entry["pH"],
         source=entry["source"],
@@ -634,19 +635,24 @@ def from_host_guest(hg_entry):
 
     Args:
         hg_entry: dict with keys matching hg_dataset format:
-            host, guest_smiles, log_Ka_exp, source, and optional
-            host properties.
+            host, guest_smiles, log_Ka or log_Ka_exp, source, and optional
+            host properties, n_hbonds_portal, guest_charge, guest_has_cation.
 
     Returns:
         UniversalComplex populated for host-guest scoring.
     """
+    log_ka = hg_entry.get("log_Ka_exp", hg_entry.get("log_Ka", 0.0))
     uc = UniversalComplex(
         name=hg_entry.get("name", ""),
         binding_mode="host_guest_inclusion",
-        log_Ka_exp=hg_entry.get("log_Ka_exp", 0.0),
+        log_Ka_exp=log_ka,
         guest_smiles=hg_entry.get("guest_smiles", ""),
         source=hg_entry.get("source", "manual"),
     )
+
+    # Propagate interaction annotations
+    uc.n_hbonds_formed = hg_entry.get("n_hbonds_portal", hg_entry.get("n_hbonds", 0))
+    uc.guest_charge = hg_entry.get("guest_charge", 0)
 
     # Guest properties from SMILES
     if uc.guest_smiles:
@@ -655,10 +661,13 @@ def from_host_guest(hg_entry):
             if hasattr(uc, key):
                 setattr(uc, key, val)
 
-    # Host properties
+    # Host properties — store the raw host key for scorer lookup
     host_key = hg_entry.get("host", "")
     if host_key:
         _apply_host(uc, host_key)
+        # Preserve raw host key (HOST_DB key) as host_name for scorer lookup
+        # _apply_host may have set it to full name like "α-cyclodextrin"
+        uc.host_name = host_key
 
     # Derived
     if uc.guest_volume_A3 > 0 and uc.cavity_volume_A3 > 0:
