@@ -1,0 +1,6257 @@
+[
+ {
+  "name": "CA-II+CHEMBL21",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Nc1ccc(S(N)(=O)=O)cc1",
+  "ki_nM": 300.0,
+  "log_Ka": 6.52,
+  "chembl_id": "CHEMBL21",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL6705",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Nc1ccccc1S(N)(=O)=O",
+  "ki_nM": 295.0,
+  "log_Ka": 6.53,
+  "chembl_id": "CHEMBL6705",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL419",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NCc1ccc(S(N)(=O)=O)cc1",
+  "ki_nM": 170.0,
+  "log_Ka": 6.77,
+  "chembl_id": "CHEMBL419",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL7092",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Nc1ccc(S(N)(=O)=O)cc1Cl",
+  "ki_nM": 110.0,
+  "log_Ka": 6.96,
+  "chembl_id": "CHEMBL7092",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL6853",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Nc1ccc(S(N)(=O)=O)cc1F",
+  "ki_nM": 60.0,
+  "log_Ka": 7.22,
+  "chembl_id": "CHEMBL6853",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144667",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N\\Cc2ccccn2)cc1",
+  "ki_nM": 45.0,
+  "log_Ka": 7.35,
+  "chembl_id": "CHEMBL144667",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL865",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Cc1onc(-c2ccccc2)c1-c1ccc(S(N)(=O)=O)cc1",
+  "ki_nM": 43.0,
+  "log_Ka": 7.37,
+  "chembl_id": "CHEMBL865",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL6724",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Nc1ccc(S(N)(=O)=O)cc1Br",
+  "ki_nM": 40.0,
+  "log_Ka": 7.4,
+  "chembl_id": "CHEMBL6724",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL17",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1cc(Cl)c(Cl)c(S(N)(=O)=O)c1",
+  "ki_nM": 38.0,
+  "log_Ka": 7.42,
+  "chembl_id": "CHEMBL17",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL148426",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N\\CCc2c[nH]cn2)cc1",
+  "ki_nM": 33.0,
+  "log_Ka": 7.48,
+  "chembl_id": "CHEMBL148426",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL7146",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Nc1ccc(S(=O)(=O)NCCc2ccc(S(N)(=O)=O)cc2)cc1",
+  "ki_nM": 30.0,
+  "log_Ka": 7.52,
+  "chembl_id": "CHEMBL7146",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL555588",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(C)CNCc1ccccc1S(=O)(=O)c1csc(S(N)(=O)=O)c1.Cl",
+  "ki_nM": 21.1,
+  "log_Ka": 7.68,
+  "chembl_id": "CHEMBL555588",
+  "assay_chembl_id": "CHEMBL659847",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL555385",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CNCc1cc2cc(S(N)(=O)=O)sc2s1.Cl",
+  "ki_nM": 20.9,
+  "log_Ka": 7.68,
+  "chembl_id": "CHEMBL555385",
+  "assay_chembl_id": "CHEMBL658940",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL542219",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CCN(CC)Cc1cc(C(=O)c2csc(S(N)(=O)=O)c2)ccc1O.Cl",
+  "ki_nM": 18.6,
+  "log_Ka": 7.73,
+  "chembl_id": "CHEMBL542219",
+  "assay_chembl_id": "CHEMBL659847",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL145256",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N\\c2ccc(C(=O)O)cc2)cc1",
+  "ki_nM": 16.0,
+  "log_Ka": 7.8,
+  "chembl_id": "CHEMBL145256",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL357388",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N/C(CC(=O)O)C(=O)NC(CC(=O)O)C(=O)O)cc1",
+  "ki_nM": 15.0,
+  "log_Ka": 7.82,
+  "chembl_id": "CHEMBL357388",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL555186",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(C)CNCc1cccc(C(=O)c2csc(S(N)(=O)=O)c2)c1.Cl",
+  "ki_nM": 14.5,
+  "log_Ka": 7.84,
+  "chembl_id": "CHEMBL555186",
+  "assay_chembl_id": "CHEMBL659847",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL19",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(=O)/N=c1/sc(S(N)(=O)=O)nn1C",
+  "ki_nM": 14.0,
+  "log_Ka": 7.85,
+  "chembl_id": "CHEMBL19",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144982",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(/N=C(/S)Nc1ccc(S(N)(=O)=O)cc1)C(=O)O",
+  "ki_nM": 12.0,
+  "log_Ka": 7.92,
+  "chembl_id": "CHEMBL144982",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL357475",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NCCCCC(/N=C(\\S)Nc1ccc(S(N)(=O)=O)cc1)C(=O)O",
+  "ki_nM": 12.0,
+  "log_Ka": 7.92,
+  "chembl_id": "CHEMBL357475",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144970",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N/C(Cc2c[nH]c3ccccc23)C(=O)O)cc1",
+  "ki_nM": 11.0,
+  "log_Ka": 7.96,
+  "chembl_id": "CHEMBL144970",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144322",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N\\CCCC(=O)O)cc1",
+  "ki_nM": 11.0,
+  "log_Ka": 7.96,
+  "chembl_id": "CHEMBL144322",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL356059",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N/C(CCC(=O)O)C(=O)O)cc1",
+  "ki_nM": 10.0,
+  "log_Ka": 8.0,
+  "chembl_id": "CHEMBL356059",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL3143261",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(NC(=S)N[C@@H](CC(=O)O)C(=O)N[C@@H](CC(=O)O)C(=O)N[C@@H](CC(=O)O)C(=O)N[C@@H](CC(=O)O)C(=O)O)cc1",
+  "ki_nM": 10.0,
+  "log_Ka": 8.0,
+  "chembl_id": "CHEMBL3143261",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL218490",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CCN[C@H]1C[C@H](C)S(=O)(=O)c2sc(S(N)(=O)=O)cc21",
+  "ki_nM": 9.0,
+  "log_Ka": 8.05,
+  "chembl_id": "CHEMBL218490",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL147726",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N/C(CC(=O)O)C(=O)O)cc1",
+  "ki_nM": 8.0,
+  "log_Ka": 8.1,
+  "chembl_id": "CHEMBL147726",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL18",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CCOc1ccc2nc(S(N)(=O)=O)sc2c1",
+  "ki_nM": 8.0,
+  "log_Ka": 8.1,
+  "chembl_id": "CHEMBL18",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL421060",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)OCCOc1ccc(-n2ccnc2)cc1",
+  "ki_nM": 7.0,
+  "log_Ka": 8.15,
+  "chembl_id": "CHEMBL421060",
+  "assay_chembl_id": "CHEMBL659851",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL543415",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(C)CNCc1ccc(S(=O)(=O)c2csc(S(N)(=O)=O)c2)cc1.Cl",
+  "ki_nM": 6.5,
+  "log_Ka": 8.19,
+  "chembl_id": "CHEMBL543415",
+  "assay_chembl_id": "CHEMBL659847",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144006",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NC(=O)CC(/N=C(\\S)Nc1ccc(S(N)(=O)=O)cc1)C(=O)O",
+  "ki_nM": 6.0,
+  "log_Ka": 8.22,
+  "chembl_id": "CHEMBL144006",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144383",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N/C(C(=O)O)c2ccccc2)cc1",
+  "ki_nM": 6.0,
+  "log_Ka": 8.22,
+  "chembl_id": "CHEMBL144383",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144786",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(C)CC(/N=C(\\S)Nc1ccc(S(N)(=O)=O)cc1)C(=O)NCC(=O)O",
+  "ki_nM": 5.0,
+  "log_Ka": 8.3,
+  "chembl_id": "CHEMBL144786",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL146887",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(C)C(/N=C(\\S)Nc1ccc(S(N)(=O)=O)cc1)C(=O)O",
+  "ki_nM": 5.0,
+  "log_Ka": 8.3,
+  "chembl_id": "CHEMBL146887",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144301",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N/C(Cc2c[nH]cn2)C(=O)O)cc1",
+  "ki_nM": 5.0,
+  "log_Ka": 8.3,
+  "chembl_id": "CHEMBL144301",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL538245",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(C)CNCc1cc2cc(S(N)(=O)=O)sc2s1.Cl",
+  "ki_nM": 4.4,
+  "log_Ka": 8.36,
+  "chembl_id": "CHEMBL538245",
+  "assay_chembl_id": "CHEMBL658941",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL147385",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CCC(C)C(/N=C(\\S)Nc1ccc(S(N)(=O)=O)cc1)C(=O)O",
+  "ki_nM": 4.0,
+  "log_Ka": 8.4,
+  "chembl_id": "CHEMBL147385",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL357601",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CSCCC(/N=C(\\S)Nc1ccc(S(N)(=O)=O)cc1)C(=O)O",
+  "ki_nM": 4.0,
+  "log_Ka": 8.4,
+  "chembl_id": "CHEMBL357601",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL544731",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Cl.NS(=O)(=O)c1cc2cc(C(=O)NCCN3CCSCC3)sc2s1",
+  "ki_nM": 4.02,
+  "log_Ka": 8.4,
+  "chembl_id": "CHEMBL544731",
+  "assay_chembl_id": "CHEMBL658941",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL51975",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1cc2cc(C(=O)NCC(O)CO)sc2s1",
+  "ki_nM": 3.4,
+  "log_Ka": 8.47,
+  "chembl_id": "CHEMBL51975",
+  "assay_chembl_id": "CHEMBL658941",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL545756",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Cl.NS(=O)(=O)c1cc(C(=O)c2ccc(CN3CCOCC3)cc2)cs1",
+  "ki_nM": 3.32,
+  "log_Ka": 8.48,
+  "chembl_id": "CHEMBL545756",
+  "assay_chembl_id": "CHEMBL659847",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL2370954",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(NC(=S)N2CCC[C@H]2C(=O)NCC(=O)NCC(=O)O)cc1",
+  "ki_nM": 3.0,
+  "log_Ka": 8.52,
+  "chembl_id": "CHEMBL2370954",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144352",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N/CCC(=O)NC(Cc2c[nH]cn2)C(=O)O)cc1",
+  "ki_nM": 3.0,
+  "log_Ka": 8.52,
+  "chembl_id": "CHEMBL144352",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL553832",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "COCCOCCNC(C)c1cc2cc(S(N)(=O)=O)sc2s1.Cl",
+  "ki_nM": 3.05,
+  "log_Ka": 8.52,
+  "chembl_id": "CHEMBL553832",
+  "assay_chembl_id": "CHEMBL658941",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL554042",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Cl.NS(=O)(=O)c1cc2cc(CN(CCO)CCO)sc2s1",
+  "ki_nM": 2.6,
+  "log_Ka": 8.59,
+  "chembl_id": "CHEMBL554042",
+  "assay_chembl_id": "CHEMBL658941",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL268439",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Nc1ccc(S(=O)(=O)Nc2nnc(S(N)(=O)=O)s2)cc1",
+  "ki_nM": 2.0,
+  "log_Ka": 8.7,
+  "chembl_id": "CHEMBL268439",
+  "assay_chembl_id": "CHEMBL657848",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL144946",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(N/C(S)=N/C(C(=O)O)C(O)c2ccccc2)cc1",
+  "ki_nM": 2.0,
+  "log_Ka": 8.7,
+  "chembl_id": "CHEMBL144946",
+  "assay_chembl_id": "CHEMBL657152",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL542122",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "CC(C=O)N(Cc1cc2cc(S(N)(=O)=O)sc2s1)C(C)C=O.Cl",
+  "ki_nM": 1.49,
+  "log_Ka": 8.83,
+  "chembl_id": "CHEMBL542122",
+  "assay_chembl_id": "CHEMBL658940",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL554425",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "COCCN(CCOC)Cc1cc2cc(S(N)(=O)=O)sc2s1.Cl",
+  "ki_nM": 1.34,
+  "log_Ka": 8.87,
+  "chembl_id": "CHEMBL554425",
+  "assay_chembl_id": "CHEMBL658941",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL540026",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "Cl.NS(=O)(=O)c1cc2cc(CN3CCOCC3)sc2s1",
+  "ki_nM": 1.1,
+  "log_Ka": 8.96,
+  "chembl_id": "CHEMBL540026",
+  "assay_chembl_id": "CHEMBL658941",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "CA-II+CHEMBL544738",
+  "target": "CA-II",
+  "target_chembl_id": "CHEMBL205",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH",
+  "residues": [
+   "His94",
+   "His96",
+   "His119"
+  ],
+  "smiles": "COCCN(CCOC)Cc1cc2sc(S(N)(=O)=O)cc2s1.Cl",
+  "ki_nM": 0.95,
+  "log_Ka": 9.02,
+  "chembl_id": "CHEMBL544738",
+  "assay_chembl_id": "CHEMBL658941",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL3142591",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "C[C@H](NC(=O)[C@H](Cc1ccccc1)NS(=O)(=O)c1ccc2ccccc2c1)C(=O)Nc1n[nH]c(=S)s1",
+  "ki_nM": 53000.0,
+  "log_Ka": 4.28,
+  "chembl_id": "CHEMBL3142591",
+  "assay_chembl_id": "CHEMBL712456",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL3142613",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "C[C@H](NC(=O)[C@H](Cc1ccccc1)NS(=O)(=O)c1cccc2cccnc12)C(=O)Nc1n[nH]c(=S)s1",
+  "ki_nM": 45000.0,
+  "log_Ka": 4.35,
+  "chembl_id": "CHEMBL3142613",
+  "assay_chembl_id": "CHEMBL712456",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL3142612",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "C[C@H](NC(=O)[C@H](Cc1ccccc1)NS(=O)(=O)CC12CCC(CC1=O)C2(C)C)C(=O)Nc1n[nH]c(=S)s1",
+  "ki_nM": 40000.0,
+  "log_Ka": 4.4,
+  "chembl_id": "CHEMBL3142612",
+  "assay_chembl_id": "CHEMBL712456",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL3142627",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "C[C@H](NC(=O)[C@H](Cc1ccccc1)NS(=O)(=O)c1ccc(I)cc1)C(=O)Nc1n[nH]c(=S)s1",
+  "ki_nM": 18000.0,
+  "log_Ka": 4.74,
+  "chembl_id": "CHEMBL3142627",
+  "assay_chembl_id": "CHEMBL712456",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL148169",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "Cc1cc(COc2ccc([C@]3(C)CCN([C@H](C)C(=O)NO)C3=O)cc2)c2ccccc2n1",
+  "ki_nM": 10340.0,
+  "log_Ka": 4.99,
+  "chembl_id": "CHEMBL148169",
+  "assay_chembl_id": "CHEMBL712453",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL117296",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)CNC(=O)[C@H](CCCCOCc1ccccc1)CC(=O)NO",
+  "ki_nM": 5600.0,
+  "log_Ka": 5.25,
+  "chembl_id": "CHEMBL117296",
+  "assay_chembl_id": "CHEMBL710810",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL64586",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "Cc1cc(COc2ccc(N3CC[C@H]([C@H](N)C(=O)NO)C3=O)cc2)c2ccccc2n1",
+  "ki_nM": 1964.0,
+  "log_Ka": 5.71,
+  "chembl_id": "CHEMBL64586",
+  "assay_chembl_id": "CHEMBL712454",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL59968",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "Cc1cc(COc2ccc(N3CC[C@@]([C@H](C)C(=O)NO)(N(C)C)C3=O)cc2)c2ccccc2n1",
+  "ki_nM": 1299.0,
+  "log_Ka": 5.89,
+  "chembl_id": "CHEMBL59968",
+  "assay_chembl_id": "CHEMBL712454",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL137732",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COC(=O)N1CC[C@H](C(=O)Nc2ccc(OCc3cc(C)nc4ccccc34)cc2)[C@@H](C(=O)NO)C1",
+  "ki_nM": 767.0,
+  "log_Ka": 6.12,
+  "chembl_id": "CHEMBL137732",
+  "assay_chembl_id": "CHEMBL713581",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL148118",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC(C)Cc1ccc([C@]2(C)CCN([C@H](C)C(=O)NO)C2=O)cc1",
+  "ki_nM": 586.0,
+  "log_Ka": 6.23,
+  "chembl_id": "CHEMBL148118",
+  "assay_chembl_id": "CHEMBL712453",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL100754",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "O=C(NO)C1CCS(=O)(=O)N1Cc1ccc(-c2ccccc2)cc1",
+  "ki_nM": 446.7,
+  "log_Ka": 6.35,
+  "chembl_id": "CHEMBL100754",
+  "assay_chembl_id": "CHEMBL710805",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL117720",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CCCCC[C@H](CC(=O)NO)C(=O)N[C@H](C(=O)N1CCCC1CO)C(C)C",
+  "ki_nM": 330.0,
+  "log_Ka": 6.48,
+  "chembl_id": "CHEMBL117720",
+  "assay_chembl_id": "CHEMBL710810",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL423906",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "Cc1cc(COc2ccc(NC(=O)[C@H]3CCN(S(C)(=O)=O)C[C@@H]3C(=O)NO)cc2)c2ccccc2n1",
+  "ki_nM": 306.0,
+  "log_Ka": 6.51,
+  "chembl_id": "CHEMBL423906",
+  "assay_chembl_id": "CHEMBL713581",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL303983",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "Cc1cc(COc2ccc(N3CC[C@H]([C@H](NC(=O)OC(C)(C)C)C(=O)NO)C3=O)cc2)c2ccccc2n1",
+  "ki_nM": 291.0,
+  "log_Ka": 6.54,
+  "chembl_id": "CHEMBL303983",
+  "assay_chembl_id": "CHEMBL712454",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL356975",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "C[C@H](C(=O)NO)N1CC[C@@](C)(c2ccccc2)C1=O",
+  "ki_nM": 242.0,
+  "log_Ka": 6.62,
+  "chembl_id": "CHEMBL356975",
+  "assay_chembl_id": "CHEMBL712453",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL92767",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COc1ccc(S(=O)(=O)N2C[C@H](O)[C@@H](O)[C@@H](O)[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 157.0,
+  "log_Ka": 6.8,
+  "chembl_id": "CHEMBL92767",
+  "assay_chembl_id": "CHEMBL710813",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL288843",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC#CCOc1ccc(S(=O)(=O)N2C[C@@H](O)[C@H]3OC(C)(C)O[C@@H]3[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 118.37,
+  "log_Ka": 6.93,
+  "chembl_id": "CHEMBL288843",
+  "assay_chembl_id": "CHEMBL710816",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL68812",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC(C)C[C@@H](C(=O)N[C@@H](CC(C)(C)C)C(=O)Nc1nccs1)[C@H](C)N(O)C=O",
+  "ki_nM": 98.0,
+  "log_Ka": 7.01,
+  "chembl_id": "CHEMBL68812",
+  "assay_chembl_id": "CHEMBL713577",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-9+CHEMBL90806",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COc1ccc(S(=O)(=O)N2C[C@@H](O)[C@H](O)[C@@H](O)[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 82.0,
+  "log_Ka": 7.09,
+  "chembl_id": "CHEMBL90806",
+  "assay_chembl_id": "CHEMBL710813",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL68667",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CCC(C)[C@H](NC(=O)[C@H](CC(C)C)[C@H](CC)N(O)C=O)C(=O)Nc1ccccn1",
+  "ki_nM": 73.0,
+  "log_Ka": 7.14,
+  "chembl_id": "CHEMBL68667",
+  "assay_chembl_id": "CHEMBL713577",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-9+CHEMBL419503",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CCOCCOc1ccc(S(=O)(=O)N2C[C@H](O)[C@@H](O)[C@H](O)[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 64.0,
+  "log_Ka": 7.19,
+  "chembl_id": "CHEMBL419503",
+  "assay_chembl_id": "CHEMBL710813",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL317307",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COc1ccc(S(=O)(=O)N2C[C@@H]3OC(C)(C)O[C@H]3[C@@H](OC(C)=O)[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 47.0,
+  "log_Ka": 7.33,
+  "chembl_id": "CHEMBL317307",
+  "assay_chembl_id": "CHEMBL710814",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL343216",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "C[C@H](C(=O)NO)N1CC[C@@](C)(c2ccc(OCc3cccc([N+](=O)[O-])c3)cc2)C1=O",
+  "ki_nM": 39.0,
+  "log_Ka": 7.41,
+  "chembl_id": "CHEMBL343216",
+  "assay_chembl_id": "CHEMBL712453",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL169996",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC(C)(C)OC(=O)[C@H](Cc1ccccc1)NC(=O)[C@H](CCCc1ccccc1)[C@@](C)(O)C(=O)NO",
+  "ki_nM": 34.0,
+  "log_Ka": 7.47,
+  "chembl_id": "CHEMBL169996",
+  "assay_chembl_id": "CHEMBL712452",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL66098",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC(C)C[C@@H](C(=O)N[C@H](C(N)=O)C(C)(C)C)[C@H](C)N(O)C=O",
+  "ki_nM": 33.0,
+  "log_Ka": 7.48,
+  "chembl_id": "CHEMBL66098",
+  "assay_chembl_id": "CHEMBL713577",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-9+CHEMBL69418",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC[C@H](C)[C@H](NC(=O)[C@H](CC(C)C)[C@H](C)N(O)C=O)C(=O)Nc1nccs1",
+  "ki_nM": 29.0,
+  "log_Ka": 7.54,
+  "chembl_id": "CHEMBL69418",
+  "assay_chembl_id": "CHEMBL713577",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-9+CHEMBL304295",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC[C@@H]([C@@H](CC(C)C)C(=O)N[C@H](C(=O)Nc1nccs1)C(C)(C)C)N(O)C=O",
+  "ki_nM": 28.0,
+  "log_Ka": 7.55,
+  "chembl_id": "CHEMBL304295",
+  "assay_chembl_id": "CHEMBL713577",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-9+CHEMBL76606",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COc1ccc(S(=O)(=O)N(Cc2ccccc2)c2c(C)cccc2C(=O)NO)cc1",
+  "ki_nM": 23.0,
+  "log_Ka": 7.64,
+  "chembl_id": "CHEMBL76606",
+  "assay_chembl_id": "CHEMBL712456",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL330727",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COc1ccc(S(=O)(=O)N2C[C@@H]3OC(C)(C)O[C@H]3[C@@H](O)[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 21.0,
+  "log_Ka": 7.68,
+  "chembl_id": "CHEMBL330727",
+  "assay_chembl_id": "CHEMBL710814",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL66181",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC(C)C[C@H](NC(=O)[C@H](CC(C)C)[C@H](C)N(O)C=O)C(=O)Nc1nccs1",
+  "ki_nM": 17.0,
+  "log_Ka": 7.77,
+  "chembl_id": "CHEMBL66181",
+  "assay_chembl_id": "CHEMBL713577",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-9+CHEMBL43087",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC#CCOc1ccc(S(=O)(=O)N2C[C@@H](O)[C@@H](O)[C@H](O)[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 14.24,
+  "log_Ka": 7.85,
+  "chembl_id": "CHEMBL43087",
+  "assay_chembl_id": "CHEMBL710816",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL291264",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CC#CCOc1ccc(S(=O)(=O)N2C[C@@H](O)[C@@H](O)[C@H](OC)[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 12.0,
+  "log_Ka": 7.92,
+  "chembl_id": "CHEMBL291264",
+  "assay_chembl_id": "CHEMBL710817",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL325015",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@@H](NC(=O)[C@H](CCCCOCc1ccccc1)CC(=O)NO)C(C)(C)C",
+  "ki_nM": 11.0,
+  "log_Ka": 7.96,
+  "chembl_id": "CHEMBL325015",
+  "assay_chembl_id": "CHEMBL710810",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL154706",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COc1ccc([P@](=O)(OCCF)N2Cc3ccccc3C[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 10.5,
+  "log_Ka": 7.98,
+  "chembl_id": "CHEMBL154706",
+  "assay_chembl_id": "CHEMBL712458",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL146896",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COc1ccc([C@]2(C)CCN([C@H](C)C(=O)NO)C2=O)cc1",
+  "ki_nM": 9.0,
+  "log_Ka": 8.05,
+  "chembl_id": "CHEMBL146896",
+  "assay_chembl_id": "CHEMBL712453",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL93620",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "O=C(NO)[C@H]1[C@@H](O)[C@H](O)[C@@H](O)CN1S(=O)(=O)c1ccc(OCc2ccccc2)cc1",
+  "ki_nM": 6.1,
+  "log_Ka": 8.21,
+  "chembl_id": "CHEMBL93620",
+  "assay_chembl_id": "CHEMBL710813",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL168601",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@H](CCCN)NC(=O)[C@H](CCCc1ccccc1)[C@@](C)(O)C(=O)NO",
+  "ki_nM": 5.0,
+  "log_Ka": 8.3,
+  "chembl_id": "CHEMBL168601",
+  "assay_chembl_id": "CHEMBL712452",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL62259",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CCO[P@@](=O)(c1ccc(OC)cc1)N1Cc2ccccc2C[C@@H]1C(=O)NO",
+  "ki_nM": 5.05,
+  "log_Ka": 8.3,
+  "chembl_id": "CHEMBL62259",
+  "assay_chembl_id": "CHEMBL712458",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL406939",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "COc1ccc([P@](=O)(OCCC(F)(F)F)N2Cc3ccccc3C[C@@H]2C(=O)NO)cc1",
+  "ki_nM": 4.46,
+  "log_Ka": 8.35,
+  "chembl_id": "CHEMBL406939",
+  "assay_chembl_id": "CHEMBL712458",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL419301",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CCCCCc1ccc(OCCCC[C@H](CC(=O)NO)C(=O)N[C@H](C(=O)NC)C(C)(C)C)cc1",
+  "ki_nM": 3.8,
+  "log_Ka": 8.42,
+  "chembl_id": "CHEMBL419301",
+  "assay_chembl_id": "CHEMBL710810",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL87229",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@H](Cc1ccccc1)NC(=O)[C@H](CCCCOCc1ccccc1)CC(=O)NO",
+  "ki_nM": 3.3,
+  "log_Ka": 8.48,
+  "chembl_id": "CHEMBL87229",
+  "assay_chembl_id": "CHEMBL710810",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL48258",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@@H]1CCCCNC(=O)CO[C@H](C(=O)NO)[C@@H](CC(C)C)C(=O)N1",
+  "ki_nM": 2.6,
+  "log_Ka": 8.59,
+  "chembl_id": "CHEMBL48258",
+  "assay_chembl_id": "CHEMBL718975",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL265216",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@H](CCCNC(=O)OC(C)(C)C)NC(=O)[C@H](CCCc1ccccc1)[C@@](C)(O)C(=O)NO",
+  "ki_nM": 2.0,
+  "log_Ka": 8.7,
+  "chembl_id": "CHEMBL265216",
+  "assay_chembl_id": "CHEMBL712452",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL16520",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@@H](NC(=O)[C@@H](CC(=O)NO)CC(C)C)C(C)(C)C",
+  "ki_nM": 2.0,
+  "log_Ka": 8.7,
+  "chembl_id": "CHEMBL16520",
+  "assay_chembl_id": "CHEMBL718974",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL24347",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@@H]1CCCCN(S(=O)(=O)c2ccc(N)cc2)CCC[C@H](C(=O)NO)[C@@H](CC(C)C)C(=O)N1",
+  "ki_nM": 1.6,
+  "log_Ka": 8.8,
+  "chembl_id": "CHEMBL24347",
+  "assay_chembl_id": "CHEMBL710594",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL116318",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@H](Cc1ccccc1)NC(=O)[C@H](CCCCCCc1ccccc1)CC(=O)NO",
+  "ki_nM": 1.3,
+  "log_Ka": 8.89,
+  "chembl_id": "CHEMBL116318",
+  "assay_chembl_id": "CHEMBL710810",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL167233",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "C[C@](O)(C(=O)NO)[C@@H](CCCc1ccccc1)C(=O)N[C@@H](CCCCN)C(=O)NCCc1ccccc1",
+  "ki_nM": 1.0,
+  "log_Ka": 9.0,
+  "chembl_id": "CHEMBL167233",
+  "assay_chembl_id": "CHEMBL712452",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL327578",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "O=C(NO)[C@H]1[C@@H](O)[C@H](O)[C@@H](O)CN1S(=O)(=O)c1ccc(OC2CCCCC2)cc1",
+  "ki_nM": 0.93,
+  "log_Ka": 9.03,
+  "chembl_id": "CHEMBL327578",
+  "assay_chembl_id": "CHEMBL710813",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL19611",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@H](Cc1c[nH]c2ccccc12)NC(=O)[C@@H](CC(=O)NO)CC(C)C",
+  "ki_nM": 0.69,
+  "log_Ka": 9.16,
+  "chembl_id": "CHEMBL19611",
+  "assay_chembl_id": "CHEMBL710810",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-9+CHEMBL417537",
+  "target": "MMP-9",
+  "target_chembl_id": "CHEMBL321",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His226",
+   "His230",
+   "His236"
+  ],
+  "smiles": "CNC(=O)[C@@H](Cc1ccc(OC)cc1)NC(=O)[C@H](CC(C)C)[C@H](C)C(=O)NO",
+  "ki_nM": 0.13,
+  "log_Ka": 9.89,
+  "chembl_id": "CHEMBL417537",
+  "assay_chembl_id": "CHEMBL718975",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8914",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2cccc3ccccc23)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 6900.0,
+  "log_Ka": 5.16,
+  "chembl_id": "CHEMBL8914",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL9105",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2cccc(C(F)(F)F)c2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 3600.0,
+  "log_Ka": 5.44,
+  "chembl_id": "CHEMBL9105",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8539",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1cccc(-c2ccccc2)c1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 2400.0,
+  "log_Ka": 5.62,
+  "chembl_id": "CHEMBL8539",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL268883",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(C2CCCCCC2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 1900.0,
+  "log_Ka": 5.72,
+  "chembl_id": "CHEMBL268883",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8917",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2cc(Cl)cc(Cl)c2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 1600.0,
+  "log_Ka": 5.8,
+  "chembl_id": "CHEMBL8917",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL267452",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2c(C)cccc2C)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 1300.0,
+  "log_Ka": 5.89,
+  "chembl_id": "CHEMBL267452",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL423686",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CC[C@@H](N[C@@H](CCc1ccccc1)C(=O)N[C@@H](CC(C)C)C(=O)Nc1ccccc1)C(=O)O",
+  "ki_nM": 1100.0,
+  "log_Ka": 5.96,
+  "chembl_id": "CHEMBL423686",
+  "assay_chembl_id": "CHEMBL710550",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL64262",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "Cc1cc(COc2ccc(N3CC[C@H]([C@H](NC(=O)N4CCOCC4)C(=O)NO)C3=O)cc2)c2ccccc2n1",
+  "ki_nM": 805.0,
+  "log_Ka": 6.09,
+  "chembl_id": "CHEMBL64262",
+  "assay_chembl_id": "CHEMBL715002",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL306779",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "O=C(N[C@@H](CC1CCCCC1)C(=O)NCCN1CCOCC1)[C@H](CCCc1ccccc1)CP(=O)(O)O",
+  "ki_nM": 812.0,
+  "log_Ka": 6.09,
+  "chembl_id": "CHEMBL306779",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "phosphonate",
+  "mbg_donors": [
+   "O_carboxylate",
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL325007",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CC(C)C[C@H](NC(=O)[C@H](CCc1ccccc1)N[C@H](CCNC(=O)CCCc1ccccc1)C(=O)O)C(=O)Nc1ccccc1",
+  "ki_nM": 770.0,
+  "log_Ka": 6.11,
+  "chembl_id": "CHEMBL325007",
+  "assay_chembl_id": "CHEMBL710550",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8282",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(C(=O)O)cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 580.0,
+  "log_Ka": 6.24,
+  "chembl_id": "CHEMBL8282",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL60373",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "COC(=O)N[C@H](C(=O)NO)[C@H]1CCN(c2ccc(OCc3cc(C)nc4ccccc34)cc2)C1=O",
+  "ki_nM": 482.0,
+  "log_Ka": 6.32,
+  "chembl_id": "CHEMBL60373",
+  "assay_chembl_id": "CHEMBL715002",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL302455",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "Cc1cc(COc2ccc(N3CC[C@H]([C@H](NC(=O)c4ccccc4)C(=O)NO)C3=O)cc2)c2ccccc2n1",
+  "ki_nM": 435.0,
+  "log_Ka": 6.36,
+  "chembl_id": "CHEMBL302455",
+  "assay_chembl_id": "CHEMBL715002",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8745",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(CCc2ccccc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 380.0,
+  "log_Ka": 6.42,
+  "chembl_id": "CHEMBL8745",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL303983",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "Cc1cc(COc2ccc(N3CC[C@H]([C@H](NC(=O)OC(C)(C)C)C(=O)NO)C3=O)cc2)c2ccccc2n1",
+  "ki_nM": 324.0,
+  "log_Ka": 6.49,
+  "chembl_id": "CHEMBL303983",
+  "assay_chembl_id": "CHEMBL715002",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8580",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(OCc2ccccc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 210.0,
+  "log_Ka": 6.68,
+  "chembl_id": "CHEMBL8580",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8494",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CC(C)C[C@H](NC(=O)[C@H](CCc1ccccc1)N[C@H](C)C(=O)O)C(=O)Nc1ccccc1",
+  "ki_nM": 200.0,
+  "log_Ka": 6.7,
+  "chembl_id": "CHEMBL8494",
+  "assay_chembl_id": "CHEMBL710550",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL265342",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(F)cc2)cc1)C(=O)N[C@H](C(=O)Nc1ccccc1)C(C)(C)C)C(=O)O",
+  "ki_nM": 150.0,
+  "log_Ka": 6.82,
+  "chembl_id": "CHEMBL265342",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL326795",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CC(C)C[C@H](NC(=O)[C@H](CCc1ccccc1)N[C@H](CCCCCNC(=O)c1ccccc1)C(=O)O)C(=O)Nc1ccccc1",
+  "ki_nM": 120.0,
+  "log_Ka": 6.92,
+  "chembl_id": "CHEMBL326795",
+  "assay_chembl_id": "CHEMBL710550",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL263717",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(Cl)cc2Cl)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 100.0,
+  "log_Ka": 7.0,
+  "chembl_id": "CHEMBL263717",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL295798",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CNC(=O)[C@H](Cc1ccccc1)NC(=O)[C@H](CC(C)C)N[C@H](CCN1C(=O)c2cc3ccccc3cc2C1=O)C(=O)O",
+  "ki_nM": 91.0,
+  "log_Ka": 7.04,
+  "chembl_id": "CHEMBL295798",
+  "assay_chembl_id": "CHEMBL710549",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL276373",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(-c3ccccc3)cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 84.0,
+  "log_Ka": 7.08,
+  "chembl_id": "CHEMBL276373",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL331364",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CC(C)C[C@H](NC(=O)[C@H](CCc1ccccc1)N[C@H](CCCCNC(=O)Cc1ccccc1)C(=O)O)C(=O)Nc1ccccc1",
+  "ki_nM": 70.0,
+  "log_Ka": 7.15,
+  "chembl_id": "CHEMBL331364",
+  "assay_chembl_id": "CHEMBL710550",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL113322",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CC(C)C[C@H](NC(=O)[C@H](CCc1ccccc1)N[C@H](CCCNC(=O)Cc1ccccc1)C(=O)O)C(=O)Nc1ccccc1",
+  "ki_nM": 60.0,
+  "log_Ka": 7.22,
+  "chembl_id": "CHEMBL113322",
+  "assay_chembl_id": "CHEMBL710550",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL266764",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2cc3ccccc3[nH]2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 49.0,
+  "log_Ka": 7.31,
+  "chembl_id": "CHEMBL266764",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8634",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(CCC)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 47.0,
+  "log_Ka": 7.33,
+  "chembl_id": "CHEMBL8634",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL553109",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(C(F)(F)F)cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 39.0,
+  "log_Ka": 7.41,
+  "chembl_id": "CHEMBL553109",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8930",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(C(=O)NC)cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 34.0,
+  "log_Ka": 7.47,
+  "chembl_id": "CHEMBL8930",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL266133",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc([S+](C)[O-])cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 30.0,
+  "log_Ka": 7.52,
+  "chembl_id": "CHEMBL266133",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL267533",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(F)cc2)cc1)C(=O)N[C@H](C(=O)Nc1ccncc1)C(C)(C)C)C(=O)O",
+  "ki_nM": 25.0,
+  "log_Ka": 7.6,
+  "chembl_id": "CHEMBL267533",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL266579",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1cccc(-c2ccsc2)c1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 21.0,
+  "log_Ka": 7.68,
+  "chembl_id": "CHEMBL266579",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8761",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(S(C)(=O)=O)cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 19.0,
+  "log_Ka": 7.72,
+  "chembl_id": "CHEMBL8761",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL8753",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(Br)cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 17.0,
+  "log_Ka": 7.77,
+  "chembl_id": "CHEMBL8753",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL269334",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(C=O)cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 16.0,
+  "log_Ka": 7.8,
+  "chembl_id": "CHEMBL269334",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL269613",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CCCC[C@@H](C[C@@H](CCc1ccc(-c2ccc(SC)cc2)cc1)C(=O)N[C@H](C(=O)NC)C(C)(C)C)C(=O)O",
+  "ki_nM": 13.0,
+  "log_Ka": 7.89,
+  "chembl_id": "CHEMBL269613",
+  "assay_chembl_id": "CHEMBL718930",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL77461",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "O=C(O)C[C@@H](CCCc1ccccc1)C(=O)N[C@@H](CC1CCCCC1)C(=O)NCCc1ccccc1",
+  "ki_nM": 10.0,
+  "log_Ka": 8.0,
+  "chembl_id": "CHEMBL77461",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL78047",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "COC(=O)CCNC(=O)[C@H](CC1CCCCC1)NC(=O)[C@H](CCCc1ccccc1)CC(=O)O",
+  "ki_nM": 6.0,
+  "log_Ka": 8.22,
+  "chembl_id": "CHEMBL78047",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL77956",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "NC(=O)CCCNC(=O)[C@H](CC1CCCCC1)NC(=O)[C@H](CCCc1ccccc1)CC(=O)O",
+  "ki_nM": 3.06,
+  "log_Ka": 8.51,
+  "chembl_id": "CHEMBL77956",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL77808",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "O=C(C[C@@H](CCc1ccccc1)C(=O)N[C@@H](CC1CCCCC1)C(=O)NCCc1ccccc1)NO",
+  "ki_nM": 2.24,
+  "log_Ka": 8.65,
+  "chembl_id": "CHEMBL77808",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL420376",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(CCNC(=O)[C@H](CC2CCCCC2)NC(=O)[C@H](CCCc2ccc(Cl)cc2)CC(=O)O)cc1",
+  "ki_nM": 1.03,
+  "log_Ka": 8.99,
+  "chembl_id": "CHEMBL420376",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL78335",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "Cc1ccc(CCC[C@H](CC(=O)O)C(=O)N[C@@H](CC2CCCCC2)C(=O)NCCc2ccc(S(N)(=O)=O)cc2)cc1",
+  "ki_nM": 0.9,
+  "log_Ka": 9.05,
+  "chembl_id": "CHEMBL78335",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL77754",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "CC(C)C[C@H](CC(=O)NO)C(=O)N[C@@H](CC1CCCCC1)C(=O)NCCc1ccccc1",
+  "ki_nM": 0.33,
+  "log_Ka": 9.48,
+  "chembl_id": "CHEMBL77754",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL73803",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "O=C(C[C@@H](CCCCc1ccccc1)C(=O)N[C@@H](CC1CCCCC1)C(=O)NCCc1ccccc1)NO",
+  "ki_nM": 0.254,
+  "log_Ka": 9.6,
+  "chembl_id": "CHEMBL73803",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL312076",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "Cc1ccc(CCC[C@H](CC(=O)NO)C(=O)N[C@@H](CC2CCCCC2)C(=O)NCCc2ccccc2)cc1",
+  "ki_nM": 0.08,
+  "log_Ka": 10.1,
+  "chembl_id": "CHEMBL312076",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL308511",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "O=C(C[C@@H](CCCc1ccc(F)cc1)C(=O)N[C@@H](CC1CCCCC1)C(=O)NCCc1ccccc1)NO",
+  "ki_nM": 0.06,
+  "log_Ka": 10.22,
+  "chembl_id": "CHEMBL308511",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL311397",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "O=C(C[C@@H](CCCc1ccc(Cl)cc1)C(=O)N[C@@H](CC1CCCCC1)C(=O)NCCc1ccccc1)NO",
+  "ki_nM": 0.03,
+  "log_Ka": 10.52,
+  "chembl_id": "CHEMBL311397",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL422058",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "NS(=O)(=O)c1ccc(CCNC(=O)CCNC(=O)[C@H](CC2CCCCC2)NC(=O)[C@H](CCCc2ccc(Cl)cc2)CC(=O)NO)cc1",
+  "ki_nM": 0.03,
+  "log_Ka": 10.52,
+  "chembl_id": "CHEMBL422058",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL308533",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "COC(=O)CCNC(=O)CCNC(=O)[C@H](CC1CCCCC1)NC(=O)[C@H](CCCc1ccc(Cl)cc1)CC(=O)NO",
+  "ki_nM": 0.01,
+  "log_Ka": 11.0,
+  "chembl_id": "CHEMBL308533",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL264859",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "O=C(C[C@@H](CCCc1ccc(Cl)cc1)C(=O)N[C@@H](CC1CCCCC1)C(=O)NCCC(=O)NCCNS(=O)(=O)N1CCOCC1)NO",
+  "ki_nM": 0.01,
+  "log_Ka": 11.0,
+  "chembl_id": "CHEMBL264859",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "MMP-13+CHEMBL306033",
+  "target": "MMP-13",
+  "target_chembl_id": "CHEMBL333",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His222",
+   "His226",
+   "His232"
+  ],
+  "smiles": "Cc1ccc(CCC[C@H](CC(=O)NO)C(=O)N[C@@H](CC2CCCCC2)C(=O)NCCC(=O)NCCN2CCOCC2)cc1",
+  "ki_nM": 0.01,
+  "log_Ka": 11.0,
+  "chembl_id": "CHEMBL306033",
+  "assay_chembl_id": "CHEMBL718926",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1934896",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "Cc1ccc(NC(=O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(=O)NO)cc1C",
+  "ki_nM": 20000.0,
+  "log_Ka": 4.7,
+  "chembl_id": "CHEMBL1934896",
+  "assay_chembl_id": "CHEMBL4007217",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL3352823",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CC(C)[C@H]1NC(=O)C[C@@H](C/C=C\\CCC(=O)O)NC(=O)[C@@H](Cc2ccc(O)cc2)NC(=O)[C@@H](C)NC1=O",
+  "ki_nM": 6000.0,
+  "log_Ka": 5.22,
+  "chembl_id": "CHEMBL3352823",
+  "assay_chembl_id": "CHEMBL3382541",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL113537",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCCC(=O)C(F)(F)F)Nc1ccccc1",
+  "ki_nM": 4500.0,
+  "log_Ka": 5.35,
+  "chembl_id": "CHEMBL113537",
+  "assay_chembl_id": "CHEMBL3802967",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "Thermolysin+CHEMBL3352994",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CC(C)[C@H]1NC(=O)C[C@@H](CCCCCC(=O)O)NC(=O)[C@@H](Cc2ccc(O)cc2)NC(=O)[C@@H](C)NC1=O",
+  "ki_nM": 3000.0,
+  "log_Ka": 5.52,
+  "chembl_id": "CHEMBL3352994",
+  "assay_chembl_id": "CHEMBL3382541",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1213539",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(O)CCCCCCC(=O)Nc1ccc([C@H]2O[C@@H](CSc3nc(-c4ccccc4)c(-c4ccccc4)o3)C[C@@H](c3ccc(CO)cc3)O2)cc1",
+  "ki_nM": 2200.0,
+  "log_Ka": 5.66,
+  "chembl_id": "CHEMBL1213539",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL257972",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CC(C)[C@H]1NC(=O)[C@@H](C)[C@@H](C/C=C\\CCC(=O)O)NC(=O)[C@@H](Cc2ccc(O)cc2)NC(=O)[C@@H](C)NC1=O",
+  "ki_nM": 2000.0,
+  "log_Ka": 5.7,
+  "chembl_id": "CHEMBL257972",
+  "assay_chembl_id": "CHEMBL2423470",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL3352995",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CC(C)[C@H]1NC(=O)C[C@@H](CCCCCC(=O)O)NC(=O)[C@@H](Cc2c[nH]c3ccccc23)NC(=O)[C@@H](C)NC1=O",
+  "ki_nM": 1900.0,
+  "log_Ka": 5.72,
+  "chembl_id": "CHEMBL3352995",
+  "assay_chembl_id": "CHEMBL3382541",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL2408237",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=c1c(O)ccccc1-c1ccccc1",
+  "ki_nM": 527.0,
+  "log_Ka": 6.28,
+  "chembl_id": "CHEMBL2408237",
+  "assay_chembl_id": "CHEMBL2410188",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "Thermolysin+CHEMBL343448",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "C/C=C1\\NC(=O)[C@H]2CSSCC/C=C/[C@H](CC(=O)N[C@H](C(C)C)C(=O)N2)OC(=O)[C@H](C(C)C)NC1=O",
+  "ki_nM": 300.1,
+  "log_Ka": 6.52,
+  "chembl_id": "CHEMBL343448",
+  "assay_chembl_id": "CHEMBL929249",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "Thermolysin+CHEMBL1830424",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CCCCCCc1nc2cc(/C=C/C(=O)NO)ccc2n1CCN(C)C",
+  "ki_nM": 300.0,
+  "log_Ka": 6.52,
+  "chembl_id": "CHEMBL1830424",
+  "assay_chembl_id": "CHEMBL1832525",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL3215861",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CCCCc1nc2cc(/C=C/C(=O)NO)ccc2n1CCN(CC)CC.Cl.Cl",
+  "ki_nM": 247.0,
+  "log_Ka": 6.61,
+  "chembl_id": "CHEMBL3215861",
+  "assay_chembl_id": "CHEMBL1832525",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1851943",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CCCCc1nc2cc(/C=C/C(=O)NO)ccc2n1CCN(CC)CC",
+  "ki_nM": 247.0,
+  "log_Ka": 6.61,
+  "chembl_id": "CHEMBL1851943",
+  "assay_chembl_id": "CHEMBL3598920",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1830396",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CCCCc1nc2cc(/C=C/C(=O)NO)ccc2n1CCNC(C)C",
+  "ki_nM": 225.0,
+  "log_Ka": 6.65,
+  "chembl_id": "CHEMBL1830396",
+  "assay_chembl_id": "CHEMBL1832525",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL55895",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCc1ccccc1)NO",
+  "ki_nM": 150.0,
+  "log_Ka": 6.82,
+  "chembl_id": "CHEMBL55895",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL356769",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCCC(=O)Nc1ccc([C@H]2O[C@@H](CSc3nc(-c4ccccc4)c(-c4ccccc4)o3)C[C@@H](c3ccc(CO)cc3)O2)cc1)NO",
+  "ki_nM": 142.0,
+  "log_Ka": 6.85,
+  "chembl_id": "CHEMBL356769",
+  "assay_chembl_id": "CHEMBL972361",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL314389",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(/C=C/C#Cc1ccc(NS(=O)(=O)c2ccccc2)cc1)NO",
+  "ki_nM": 135.9,
+  "log_Ka": 6.87,
+  "chembl_id": "CHEMBL314389",
+  "assay_chembl_id": "CHEMBL3598920",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4244764",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CC(Nc1c(NCCCCCC(=O)NO)c(=O)c1=O)C12CC3CC(CC(C3)C1)C2",
+  "ki_nM": 130.0,
+  "log_Ka": 6.89,
+  "chembl_id": "CHEMBL4244764",
+  "assay_chembl_id": "CHEMBL4236292",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL430060",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CCC(=O)CCCCC[C@@H]1NC(=O)[C@H]2CCCCN2C(=O)[C@H]([C@@H](C)CC)NC(=O)[C@H](Cc2cn(OC)c3ccccc23)NC1=O",
+  "ki_nM": 123.4,
+  "log_Ka": 6.91,
+  "chembl_id": "CHEMBL430060",
+  "assay_chembl_id": "CHEMBL929249",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "Thermolysin+CHEMBL479611",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CCSC(=S)SCC(=O)c1cccc(NC(=O)c2ccccc2)c1",
+  "ki_nM": 110.0,
+  "log_Ka": 6.96,
+  "chembl_id": "CHEMBL479611",
+  "assay_chembl_id": "CHEMBL949577",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "Thermolysin+CHEMBL1830397",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN(C)CC(C)(C)Cn1c(CC(C)(C)C)nc2cc(/C=C/C(=O)NO)ccc21",
+  "ki_nM": 94.0,
+  "log_Ka": 7.03,
+  "chembl_id": "CHEMBL1830397",
+  "assay_chembl_id": "CHEMBL1832525",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1213457",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(/C=C/c1ccc(C(=O)N/N=C/c2ccc(O)c(O)c2O)cc1)NO",
+  "ki_nM": 32.0,
+  "log_Ka": 7.49,
+  "chembl_id": "CHEMBL1213457",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1213458",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "Cn1c(/C=C/C(=O)NO)ccc1C(=O)Cc1ccccc1",
+  "ki_nM": 30.0,
+  "log_Ka": 7.52,
+  "chembl_id": "CHEMBL1213458",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL469187",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCCC(=O)Nc1ccc([C@H]2O[C@@H](CSc3ccncc3)C[C@@H](c3ccccc3)O2)cc1)NO",
+  "ki_nM": 28.0,
+  "log_Ka": 7.55,
+  "chembl_id": "CHEMBL469187",
+  "assay_chembl_id": "CHEMBL972361",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL489332",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(/C=C/c1ccc2c(c1)nc(CCc1ccccc1)n2CCN1CCCCC1)NO",
+  "ki_nM": 27.0,
+  "log_Ka": 7.57,
+  "chembl_id": "CHEMBL489332",
+  "assay_chembl_id": "CHEMBL1832525",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4237803",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "COc1ccc(Nc2c(NCCCCCC(=O)NO)c(=O)c2=O)cc1",
+  "ki_nM": 23.0,
+  "log_Ka": 7.64,
+  "chembl_id": "CHEMBL4237803",
+  "assay_chembl_id": "CHEMBL4236292",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL491316",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(/C=C/c1ccc2c(c1)nc(CCc1ccccc1)n2CCN1CCCC1)NO",
+  "ki_nM": 20.6,
+  "log_Ka": 7.69,
+  "chembl_id": "CHEMBL491316",
+  "assay_chembl_id": "CHEMBL1015999",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL2105763",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "Cn1cc(CNCC2CCN(c3ncc(C(=O)NO)cn3)CC2)c2ccccc21",
+  "ki_nM": 16.9,
+  "log_Ka": 7.77,
+  "chembl_id": "CHEMBL2105763",
+  "assay_chembl_id": "CHEMBL3598920",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL320497",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCCC(=O)NO)NO",
+  "ki_nM": 14.5,
+  "log_Ka": 7.84,
+  "chembl_id": "CHEMBL320497",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4084164",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(/C=C/c1ccc(Cn2c3c(c4ccccc42)CCN2C(=O)CCCC32)cc1)NO",
+  "ki_nM": 14.13,
+  "log_Ka": 7.85,
+  "chembl_id": "CHEMBL4084164",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1083086",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCNC(=O)NC(=O)c1ccc(Br)cc1)NO",
+  "ki_nM": 8.0,
+  "log_Ka": 8.1,
+  "chembl_id": "CHEMBL1083086",
+  "assay_chembl_id": "CHEMBL1119899",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1083439",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCNC(=O)NC(=O)c1ccccc1)NO",
+  "ki_nM": 7.0,
+  "log_Ka": 8.15,
+  "chembl_id": "CHEMBL1083439",
+  "assay_chembl_id": "CHEMBL1119899",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4081647",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(NO)c1ccc(Cn2c3c(c4ccccc42)C2CCN(C3)C2)cc1.O=C(O)C(F)(F)F",
+  "ki_nM": 6.51,
+  "log_Ka": 8.19,
+  "chembl_id": "CHEMBL4081647",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL353581",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCCC(=O)Nc1cccnc1)NO",
+  "ki_nM": 4.8,
+  "log_Ka": 8.32,
+  "chembl_id": "CHEMBL353581",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1213492",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CCN(CC)Cc1ccc2cc(COC(=O)Nc3ccc(C(=O)NO)cc3)ccc2c1",
+  "ki_nM": 4.2,
+  "log_Ka": 8.38,
+  "chembl_id": "CHEMBL1213492",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL1830536",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CC/C=C\\CCc1nc2cc(/C=C/C(=O)NO)ccc2n1CCNCC",
+  "ki_nM": 4.0,
+  "log_Ka": 8.4,
+  "chembl_id": "CHEMBL1830536",
+  "assay_chembl_id": "CHEMBL1832525",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL2018302",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1CCc2c(c3ccccc3n2Cc2ccc(C(=O)NO)cc2)C1",
+  "ki_nM": 3.3,
+  "log_Ka": 8.48,
+  "chembl_id": "CHEMBL2018302",
+  "assay_chembl_id": "CHEMBL3598920",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4073813",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1C(=O)C2c3c(n(Cc4ccc(C(=O)NO)cc4)c4ccccc34)CCN2C1=O",
+  "ki_nM": 1.86,
+  "log_Ka": 8.73,
+  "chembl_id": "CHEMBL4073813",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4100615",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1C(=O)C2CN(Cc3c2c2ccc4ccccc4c2n3Cc2ccc(C(=O)NO)cc2)C1=O",
+  "ki_nM": 1.78,
+  "log_Ka": 8.75,
+  "chembl_id": "CHEMBL4100615",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL408513",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(/C=C/c1cccc(S(=O)(=O)Nc2ccccc2)c1)NO",
+  "ki_nM": 1.6,
+  "log_Ka": 8.8,
+  "chembl_id": "CHEMBL408513",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL483254",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "Cc1[nH]c2ccccc2c1CCNCc1ccc(/C=C/C(=O)NO)cc1",
+  "ki_nM": 1.5,
+  "log_Ka": 8.82,
+  "chembl_id": "CHEMBL483254",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL98",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCCC(=O)Nc1ccccc1)NO",
+  "ki_nM": 1.0,
+  "log_Ka": 9.0,
+  "chembl_id": "CHEMBL98",
+  "assay_chembl_id": "CHEMBL929249",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4087616",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1C(=O)C2CN(Cc3c2c2ccccc2n3Cc2ccc(C(=O)NO)cc2)C1=O",
+  "ki_nM": 0.7,
+  "log_Ka": 9.15,
+  "chembl_id": "CHEMBL4087616",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4092880",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1C(=O)[C@@H]2CN(Cc3c2c2ccccc2n3Cc2ccc(C(=O)NO)cc2)C1=O",
+  "ki_nM": 0.7,
+  "log_Ka": 9.15,
+  "chembl_id": "CHEMBL4092880",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4072045",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1C(=O)C2CN(Cc3c2c2cc(OCCN4CCOCC4)ccc2n3Cc2ccc(C(=O)NO)cc2)C1=O.Cl",
+  "ki_nM": 0.48,
+  "log_Ka": 9.32,
+  "chembl_id": "CHEMBL4072045",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4065283",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1C(=O)C2CN(Cc3c2c2ccccc2n3Cc2ccc(C(=O)NO)cc2)C1=S",
+  "ki_nM": 0.45,
+  "log_Ka": 9.35,
+  "chembl_id": "CHEMBL4065283",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4092802",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1C(=O)C2CN(Cc3c2c2cc(O)ccc2n3Cc2ccc(C(=O)NO)cc2)C1=O",
+  "ki_nM": 0.42,
+  "log_Ka": 9.38,
+  "chembl_id": "CHEMBL4092802",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL96051",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "O=C(CCCCCN1C(=O)c2cccc3cccc(c23)C1=O)NO",
+  "ki_nM": 0.25,
+  "log_Ka": 9.6,
+  "chembl_id": "CHEMBL96051",
+  "assay_chembl_id": "CHEMBL1216987",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4074800",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CN1CN2Cc3c(c4ccccc4n3Cc3ccc(C(=O)NO)cc3)C(C2)C1=O",
+  "ki_nM": 0.23,
+  "log_Ka": 9.64,
+  "chembl_id": "CHEMBL4074800",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL4100534",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "COc1ccc2c(c1)c1c(n2Cc2ccc(C(=O)NO)cc2)CN2CC1C(=O)N(C)C2=O",
+  "ki_nM": 0.15,
+  "log_Ka": 9.82,
+  "chembl_id": "CHEMBL4100534",
+  "assay_chembl_id": "CHEMBL4048827",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "Thermolysin+CHEMBL99",
+  "target": "Thermolysin",
+  "target_chembl_id": "CHEMBL1865",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His142",
+   "His146",
+   "Glu166"
+  ],
+  "smiles": "CC(/C=C/C(=O)NO)=C\\[C@@H](C)C(=O)c1ccc(N(C)C)cc1",
+  "ki_nM": 0.13,
+  "log_Ka": 9.89,
+  "chembl_id": "CHEMBL99",
+  "assay_chembl_id": "CHEMBL929249",
+  "mbg": "hydroxamate",
+  "mbg_donors": [
+   "O_hydroxamate",
+   "O_hydroxamate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL167666",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CS(=O)(=O)NCC(=O)C(CC(=O)O)NC(=O)OCc1ccccc1",
+  "ki_nM": 735000.0,
+  "log_Ka": 3.13,
+  "chembl_id": "CHEMBL167666",
+  "assay_chembl_id": "CHEMBL659320",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL167544",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C(O)CC(NC(=O)OCc1ccccc1)C(=O)CNS(=O)(=O)CC1CCc2ccccc21",
+  "ki_nM": 65000.0,
+  "log_Ka": 4.19,
+  "chembl_id": "CHEMBL167544",
+  "assay_chembl_id": "CHEMBL659320",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL88381",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)CCCCc1ccccc1)C(=O)N[C@@H](C)C(=O)NC(CC(=O)O)C(=O)C(F)(F)CCCc1ccccc1",
+  "ki_nM": 42000.0,
+  "log_Ka": 4.38,
+  "chembl_id": "CHEMBL88381",
+  "assay_chembl_id": "CHEMBL873287",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL165763",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C(O)CC(NC(=O)OCc1ccccc1)C(=O)CNS(=O)(=O)CCCc1ccccc1",
+  "ki_nM": 34500.0,
+  "log_Ka": 4.46,
+  "chembl_id": "CHEMBL165763",
+  "assay_chembl_id": "CHEMBL659320",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL321112",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C[C@@H](NS(=O)(=O)c1ccccc1Oc1ccccc1)C(=O)O",
+  "ki_nM": 24000.0,
+  "log_Ka": 4.62,
+  "chembl_id": "CHEMBL321112",
+  "assay_chembl_id": "CHEMBL659319",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL1907830",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C1Nc2ccc(S(=O)(=O)N3CCC[C@H]3CNc3ccccc3)cc2C1=O",
+  "ki_nM": 21000.0,
+  "log_Ka": 4.68,
+  "chembl_id": "CHEMBL1907830",
+  "assay_chembl_id": "CHEMBL659503",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL62993",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C1Nc2ccc(S(=O)(=O)N3CCC[C@H]3COc3ccccc3)cc2C1=O",
+  "ki_nM": 17000.0,
+  "log_Ka": 4.77,
+  "chembl_id": "CHEMBL62993",
+  "assay_chembl_id": "CHEMBL659503",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL116228",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)OCc1ccccc1)C(=O)N[C@@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)c1cocn1",
+  "ki_nM": 14000.0,
+  "log_Ka": 4.85,
+  "chembl_id": "CHEMBL116228",
+  "assay_chembl_id": "CHEMBL659501",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL293622",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CN1C(=O)C(=O)c2cc([N+](=O)[O-])ccc21",
+  "ki_nM": 12000.0,
+  "log_Ka": 4.92,
+  "chembl_id": "CHEMBL293622",
+  "assay_chembl_id": "CHEMBL659503",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "ACE+CHEMBL313999",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(=O)N[C@@H](Cc1ccc(O)cc1)C(=O)N[C@H](C(=O)N[C@@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)c1ccccc1)C(C)C",
+  "ki_nM": 10000.0,
+  "log_Ka": 5.0,
+  "chembl_id": "CHEMBL313999",
+  "assay_chembl_id": "CHEMBL696530",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL305545",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C1Nc2ccc(S(=O)(=O)N3CCCC3)cc2C1=O",
+  "ki_nM": 9000.0,
+  "log_Ka": 5.05,
+  "chembl_id": "CHEMBL305545",
+  "assay_chembl_id": "CHEMBL659503",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL112464",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)OCc1ccccc1)C(=O)N[C@@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)c1nc(-c2ccccc2)c[nH]1",
+  "ki_nM": 6300.0,
+  "log_Ka": 5.2,
+  "chembl_id": "CHEMBL112464",
+  "assay_chembl_id": "CHEMBL659501",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL96069",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C[C@@H](NS(=O)(=O)c1ccccc1Oc1ccc(-c2ccc(C(=O)O)cc2)cc1)C(=O)O",
+  "ki_nM": 4200.0,
+  "log_Ka": 5.38,
+  "chembl_id": "CHEMBL96069",
+  "assay_chembl_id": "CHEMBL659319",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL90840",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)CCc1ccccc1)C(=O)N[C@@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)Cc1ccccc1",
+  "ki_nM": 3100.0,
+  "log_Ka": 5.51,
+  "chembl_id": "CHEMBL90840",
+  "assay_chembl_id": "CHEMBL696530",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL77345",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(=O)N[C@@H](Cc1ccc(O)cc1)C(=O)N[C@H](C(=O)N[C@H](C=O)CC(=O)O)C(C)C",
+  "ki_nM": 2400.0,
+  "log_Ka": 5.62,
+  "chembl_id": "CHEMBL77345",
+  "assay_chembl_id": "CHEMBL701425",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL75643",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(=O)N[C@H](C(=O)N[C@@H](C)C(=O)N[C@H](C=O)CC(=O)O)C(C)C",
+  "ki_nM": 1700.0,
+  "log_Ka": 5.77,
+  "chembl_id": "CHEMBL75643",
+  "assay_chembl_id": "CHEMBL701425",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL95094",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C[C@@H](NS(=O)(=O)c1ccccc1-c1ccccc1)C(=O)O",
+  "ki_nM": 1600.0,
+  "log_Ka": 5.8,
+  "chembl_id": "CHEMBL95094",
+  "assay_chembl_id": "CHEMBL659319",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL96907",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "Cc1cccc(Oc2ccccc2S(=O)(=O)N[C@H](C=O)C(=O)O)c1C",
+  "ki_nM": 1000.0,
+  "log_Ka": 6.0,
+  "chembl_id": "CHEMBL96907",
+  "assay_chembl_id": "CHEMBL659319",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL95014",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C[C@@H](NS(=O)(=O)c1ccccc1Oc1ccc(C2CCCC2)cc1)C(=O)O",
+  "ki_nM": 880.0,
+  "log_Ka": 6.06,
+  "chembl_id": "CHEMBL95014",
+  "assay_chembl_id": "CHEMBL659319",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL319776",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)c1ccc(Oc2ccccc2S(=O)(=O)N[C@H](C=O)C(=O)O)cc1",
+  "ki_nM": 620.0,
+  "log_Ka": 6.21,
+  "chembl_id": "CHEMBL319776",
+  "assay_chembl_id": "CHEMBL659319",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL94912",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C)c1ccc(Oc2ccccc2S(=O)(=O)N[C@H](C=O)C(=O)O)cc1",
+  "ki_nM": 490.0,
+  "log_Ka": 6.31,
+  "chembl_id": "CHEMBL94912",
+  "assay_chembl_id": "CHEMBL659319",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL94866",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(CC)c1ccc(Oc2ccccc2S(=O)(=O)N[C@H](C=O)C(=O)O)cc1",
+  "ki_nM": 440.0,
+  "log_Ka": 6.36,
+  "chembl_id": "CHEMBL94866",
+  "assay_chembl_id": "CHEMBL659319",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL173528",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)NC(CC(=O)O)C(=O)CN1CCNCC1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 410.0,
+  "log_Ka": 6.39,
+  "chembl_id": "CHEMBL173528",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL172549",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)NC(CC(=O)O)C(=O)Cn1ccc(=O)cc1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 395.0,
+  "log_Ka": 6.4,
+  "chembl_id": "CHEMBL172549",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL113012",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)OCc1ccccc1)C(=O)N[C@@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)c1ncc(-c2ccccc2Cl)o1",
+  "ki_nM": 260.0,
+  "log_Ka": 6.59,
+  "chembl_id": "CHEMBL113012",
+  "assay_chembl_id": "CHEMBL659501",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL115620",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)OCc1ccccc1)C(=O)N[C@@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)c1ncc(-c2ccccc2)o1",
+  "ki_nM": 240.0,
+  "log_Ka": 6.62,
+  "chembl_id": "CHEMBL115620",
+  "assay_chembl_id": "CHEMBL659501",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL167612",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)OCc1ccccc1)C(=O)N[C@@H](C)C(=O)NC(CC(=O)O)C(=O)CCCCCc1ccccc1",
+  "ki_nM": 134.0,
+  "log_Ka": 6.87,
+  "chembl_id": "CHEMBL167612",
+  "assay_chembl_id": "CHEMBL659320",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL174395",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)NC(CC(=O)O)C(=O)CNC(C)=O)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 117.0,
+  "log_Ka": 6.93,
+  "chembl_id": "CHEMBL174395",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL90884",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)CCc1ccccc1)C(=O)N[C@@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)CCCc1ccccc1",
+  "ki_nM": 100.0,
+  "log_Ka": 7.0,
+  "chembl_id": "CHEMBL90884",
+  "assay_chembl_id": "CHEMBL696530",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL172921",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCCC(=O)NCC(=O)C(CC(=O)O)NC(=O)C(CC)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 81.0,
+  "log_Ka": 7.09,
+  "chembl_id": "CHEMBL172921",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL171846",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)NC(CC(=O)O)C(=O)CN1CCN(C)CC1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 62.5,
+  "log_Ka": 7.2,
+  "chembl_id": "CHEMBL171846",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL172040",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)N[C@@H](CC(=O)O)C(=O)CN(C)Cc1ccccc1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 58.0,
+  "log_Ka": 7.24,
+  "chembl_id": "CHEMBL172040",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL172905",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)NC(CC(=O)O)C(=O)CN1CCOCC1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 45.0,
+  "log_Ka": 7.35,
+  "chembl_id": "CHEMBL172905",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL311315",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(=O)N[C@@H](Cc1ccccc1)C(=O)N[C@H](C(=O)N[C@@H](C)C(=O)N[C@H](C=O)CC(=O)O)C(C)C",
+  "ki_nM": 42.0,
+  "log_Ka": 7.38,
+  "chembl_id": "CHEMBL311315",
+  "assay_chembl_id": "CHEMBL701425",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL366506",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCCCCC(=O)NCC(=O)C(CC(=O)O)NC(=O)C(CC)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 34.3,
+  "log_Ka": 7.46,
+  "chembl_id": "CHEMBL366506",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL367715",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)N[C@@H](CC(=O)O)C(=O)CN[C@H](Cc1ccccc1)C(N)=O)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 25.0,
+  "log_Ka": 7.6,
+  "chembl_id": "CHEMBL367715",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL165535",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "C[C@H](NC(=O)[C@H](CCC(=O)O)NC(=O)OCc1ccccc1)C(=O)NC(CC(=O)O)C(=O)CNS(=O)(=O)CCc1ccccc1",
+  "ki_nM": 23.9,
+  "log_Ka": 7.62,
+  "chembl_id": "CHEMBL165535",
+  "assay_chembl_id": "CHEMBL659320",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL91002",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(=O)N[C@@H](Cc1ccc(O)cc1)C(=O)N[C@H](C(=O)N[C@@H](C)C(=O)N[C@@H](CC(=O)O)C(=O)CCCCCc1ccccc1)C(C)C",
+  "ki_nM": 18.5,
+  "log_Ka": 7.73,
+  "chembl_id": "CHEMBL91002",
+  "assay_chembl_id": "CHEMBL696530",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL111938",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(=O)N[C@@H](Cc1ccc(O)cc1)C(=O)N[C@H](C(=O)N[C@@H](C)C(=O)NC(CC(=O)O)C(=O)CCCCCc1ccccc1)C(C)C",
+  "ki_nM": 14.0,
+  "log_Ka": 7.85,
+  "chembl_id": "CHEMBL111938",
+  "assay_chembl_id": "CHEMBL659320",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL172196",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)NC(CC(=O)O)C(=O)CN1CCSCC1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 11.25,
+  "log_Ka": 7.95,
+  "chembl_id": "CHEMBL172196",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL76199",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(=O)N[C@@H](Cc1cc(I)c(O)c(I)c1)C(=O)N[C@H](C(=O)N[C@@H](C)C(=O)N[C@H](C=O)CC(=O)O)C(C)C",
+  "ki_nM": 7.5,
+  "log_Ka": 8.12,
+  "chembl_id": "CHEMBL76199",
+  "assay_chembl_id": "CHEMBL701425",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL37630",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(=O)N[C@@H](Cc1ccc(O)cc1)C(=O)N[C@H](C(=O)N[C@@H](C)C(=O)N[C@H](C=O)CC(=O)O)C(C)C",
+  "ki_nM": 6.0,
+  "log_Ka": 8.22,
+  "chembl_id": "CHEMBL37630",
+  "assay_chembl_id": "CHEMBL701425",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL415893",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C[C@H](CC(=O)O)NC(=O)[C@@H]1CCCN2C(=O)CC[C@H](NC(=O)c3ccccc3)C(=O)N12",
+  "ki_nM": 5.0,
+  "log_Ka": 8.3,
+  "chembl_id": "CHEMBL415893",
+  "assay_chembl_id": "CHEMBL696527",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL177364",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)NC(CC(=O)O)C(=O)CN1CCCCC1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 4.0,
+  "log_Ka": 8.4,
+  "chembl_id": "CHEMBL177364",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL166521",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CC(C)[C@H](NC(=O)OCc1ccccc1)C(=O)N[C@@H](C)C(=O)NC(CC(=O)O)C(=O)CNS(=O)(=O)CCc1ccccc1",
+  "ki_nM": 4.0,
+  "log_Ka": 8.4,
+  "chembl_id": "CHEMBL166521",
+  "assay_chembl_id": "CHEMBL659320",
+  "mbg": "sulfonamide",
+  "mbg_donors": [
+   "N_amide"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL369634",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)N[C@@H](CC(=O)O)C(=O)CNCc1ccccc1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 3.05,
+  "log_Ka": 8.52,
+  "chembl_id": "CHEMBL369634",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL176512",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCCCN(CC)CC(=O)[C@H](CC(=O)O)NC(=O)C(CC)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 2.3,
+  "log_Ka": 8.64,
+  "chembl_id": "CHEMBL176512",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL368313",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCC(C(=O)N[C@@H](CC(=O)O)C(=O)CNCCCc1ccccc1)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 1.15,
+  "log_Ka": 8.94,
+  "chembl_id": "CHEMBL368313",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL293979",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "O=C[C@H](CC(=O)O)NC(=O)[C@@H]1CCCN2C(=O)CC[C@H](NC(=O)c3ccc(OCC(=O)O)cc3)C(=O)N12",
+  "ki_nM": 1.0,
+  "log_Ka": 9.0,
+  "chembl_id": "CHEMBL293979",
+  "assay_chembl_id": "CHEMBL696527",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "ACE+CHEMBL366456",
+  "target": "ACE",
+  "target_chembl_id": "CHEMBL4801",
+  "metal": "Zn2+",
+  "coord_motif": "His2Glu-Zn-OH2",
+  "residues": [
+   "His383",
+   "His387",
+   "Glu411"
+  ],
+  "smiles": "CCCCNCC(=O)[C@H](CC(=O)O)NC(=O)C(CC)n1cccc(NC(=O)c2ccc3ccccc3c2)c1=O",
+  "ki_nM": 0.76,
+  "log_Ka": 9.12,
+  "chembl_id": "CHEMBL366456",
+  "assay_chembl_id": "CHEMBL696526",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-7+CHEMBL139",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "O=C(O)Cc1ccccc1Nc1c(Cl)cccc1Cl",
+  "ki_nM": 1640000.0,
+  "log_Ka": 2.79,
+  "chembl_id": "CHEMBL139",
+  "assay_chembl_id": "CHEMBL1743462",
+  "mbg": "carboxylate",
+  "mbg_donors": [
+   "O_carboxylate"
+  ]
+ },
+ {
+  "name": "MMP-7+CHEMBL149808",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CNCC#Cc1cccnc1",
+  "ki_nM": 251000.0,
+  "log_Ka": 3.6,
+  "chembl_id": "CHEMBL149808",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL360998",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CN(C)Cc1ccc(-c2cccnc2)o1",
+  "ki_nM": 147000.0,
+  "log_Ka": 3.83,
+  "chembl_id": "CHEMBL360998",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL361969",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CN(C)Cc1ccc(-c2cccnc2)s1",
+  "ki_nM": 110000.0,
+  "log_Ka": 3.96,
+  "chembl_id": "CHEMBL361969",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL85139",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "O=c1c2ccccc2nc2n1CCc1c-2[nH]c2ccccc12",
+  "ki_nM": 107700.0,
+  "log_Ka": 3.97,
+  "chembl_id": "CHEMBL85139",
+  "assay_chembl_id": "CHEMBL1743433",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL368883",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "Cc1nccn1-c1cccnc1",
+  "ki_nM": 76000.0,
+  "log_Ka": 4.12,
+  "chembl_id": "CHEMBL368883",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL178516",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "c1cncc(-c2c[nH]cn2)c1",
+  "ki_nM": 70000.0,
+  "log_Ka": 4.15,
+  "chembl_id": "CHEMBL178516",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL513494",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "C/C(=C\\COc1c2ccoc2cc2oc(=O)ccc12)CCC(O)C(C)(C)O",
+  "ki_nM": 59000.0,
+  "log_Ka": 4.23,
+  "chembl_id": "CHEMBL513494",
+  "assay_chembl_id": "CHEMBL1743422",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL9509",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COc1cc(C2Oc3cc([C@H]4Oc5cc(O)cc(O)c5C(=O)[C@@H]4O)ccc3OC2CO)ccc1O",
+  "ki_nM": 32000.0,
+  "log_Ka": 4.49,
+  "chembl_id": "CHEMBL9509",
+  "assay_chembl_id": "CHEMBL1743435",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL361153",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "c1cncc(-c2ccsc2)c1",
+  "ki_nM": 28000.0,
+  "log_Ka": 4.55,
+  "chembl_id": "CHEMBL361153",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL837",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CCc1c2c(nc3ccc(O)cc13)-c1cc3c(c(=O)n1C2)COC(=O)[C@]3(O)CC",
+  "ki_nM": 26000.0,
+  "log_Ka": 4.59,
+  "chembl_id": "CHEMBL837",
+  "assay_chembl_id": "CHEMBL1743430",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL178090",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "NCc1ccc(-c2cccnc2)o1",
+  "ki_nM": 23600.0,
+  "log_Ka": 4.63,
+  "chembl_id": "CHEMBL178090",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL517449",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC1(C)O[C@H]2CC(=O)OC[C@]23[C@H]2CC[C@@]4(C)[C@H](c5ccoc5)OC(=O)[C@H]5O[C@]54[C@]2(C)C(=O)C[C@@H]13",
+  "ki_nM": 23200.0,
+  "log_Ka": 4.63,
+  "chembl_id": "CHEMBL517449",
+  "assay_chembl_id": "CHEMBL1743433",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1743358",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC(O)CCC(=O)c1ccoc1",
+  "ki_nM": 20000.0,
+  "log_Ka": 4.7,
+  "chembl_id": "CHEMBL1743358",
+  "assay_chembl_id": "CHEMBL1743436",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL165",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "Oc1ccc(/C=C/c2cc(O)cc(O)c2)cc1",
+  "ki_nM": 20000.0,
+  "log_Ka": 4.7,
+  "chembl_id": "CHEMBL165",
+  "assay_chembl_id": "CHEMBL1743460",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL691",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "C#C[C@]1(O)CC[C@H]2[C@@H]3CCc4cc(O)ccc4[C@H]3CC[C@@]21C",
+  "ki_nM": 18000.0,
+  "log_Ka": 4.74,
+  "chembl_id": "CHEMBL691",
+  "assay_chembl_id": "CHEMBL1743453",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL360541",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "NCC#Cc1cccnc1",
+  "ki_nM": 15200.0,
+  "log_Ka": 4.82,
+  "chembl_id": "CHEMBL360541",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL465295",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC(=O)O[C@H]1[C@H]2c3cc4c(cc3CN3CCC(=C[C@@H]1OC(C)=O)[C@H]23)OCO4",
+  "ki_nM": 11000.0,
+  "log_Ka": 4.96,
+  "chembl_id": "CHEMBL465295",
+  "assay_chembl_id": "CHEMBL1029448",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL81",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "O=C(c1ccc(OCCN2CCCCC2)cc1)c1c(-c2ccc(O)cc2)sc2cc(O)ccc12",
+  "ki_nM": 9900.0,
+  "log_Ka": 5.0,
+  "chembl_id": "CHEMBL81",
+  "assay_chembl_id": "CHEMBL1743465",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1078442",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC(C)=CCC/C(C)=C/COc1c2ccoc2cc2oc(=O)ccc12",
+  "ki_nM": 7700.0,
+  "log_Ka": 5.11,
+  "chembl_id": "CHEMBL1078442",
+  "assay_chembl_id": "CHEMBL1743467",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL251077",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC(=O)O[C@H]1[C@H]2c3cc4c(cc3CN3CCC(=C[C@@H]1O)[C@H]23)OCO4",
+  "ki_nM": 7600.0,
+  "log_Ka": 5.12,
+  "chembl_id": "CHEMBL251077",
+  "assay_chembl_id": "CHEMBL1029448",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL214990",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CSCc1ccc(-c2cccnc2)o1",
+  "ki_nM": 7400.0,
+  "log_Ka": 5.13,
+  "chembl_id": "CHEMBL214990",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1741",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC[C@H]1OC(=O)[C@H](C)[C@@H](O[C@H]2C[C@@](C)(OC)[C@@H](O)[C@H](C)O2)[C@H](C)[C@@H](O[C@@H]2O[C@H](C)C[C@H](N(C)C)[C@H]2O)[C@](C)(OC)C[C@@H](C)C(=O)[C@H](C)[C@@H](O)[C@]1(C)O",
+  "ki_nM": 5490.0,
+  "log_Ka": 5.26,
+  "chembl_id": "CHEMBL1741",
+  "assay_chembl_id": "CHEMBL1743430",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1276308",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC#C[C@]1(O)CC[C@H]2[C@@H]3CCC4=CC(=O)CCC4=C3[C@@H](c3ccc(N(C)C)cc3)C[C@@]21C",
+  "ki_nM": 4700.0,
+  "log_Ka": 5.33,
+  "chembl_id": "CHEMBL1276308",
+  "assay_chembl_id": "CHEMBL1743454",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1222884",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COCCCc1ccc(Cl)c(CN(C(=O)[C@@H](CN)Cc2ccc(OCCOc3c(Cl)cc(C)cc3Cl)cc2)C2CC2)c1",
+  "ki_nM": 3200.0,
+  "log_Ka": 5.49,
+  "chembl_id": "CHEMBL1222884",
+  "assay_chembl_id": "CHEMBL1228445",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL179669",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "Cc1ccsc1-c1cccnc1",
+  "ki_nM": 3000.0,
+  "log_Ka": 5.52,
+  "chembl_id": "CHEMBL179669",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL23",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COc1ccc([C@@H]2Sc3ccccc3N(CCN(C)C)C(=O)[C@@H]2OC(C)=O)cc1",
+  "ki_nM": 2200.0,
+  "log_Ka": 5.66,
+  "chembl_id": "CHEMBL23",
+  "assay_chembl_id": "CHEMBL1743442",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1298",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COc1ccc(CCNCCCC(C#N)(c2ccc(OC)c(OC)c2)C(C)C)cc1OC",
+  "ki_nM": 2110.0,
+  "log_Ka": 5.68,
+  "chembl_id": "CHEMBL1298",
+  "assay_chembl_id": "CHEMBL1743469",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL577811",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COCO[C@@H]([C@@H]1OC(C)(C)O[C@H]1CO)[C@@H](CNC(=O)c1ccccc1)c1ccc2c(c1)OCO2",
+  "ki_nM": 1550.0,
+  "log_Ka": 5.81,
+  "chembl_id": "CHEMBL577811",
+  "assay_chembl_id": "CHEMBL1059329",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL386124",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC(=O)SCc1ccc(-c2cccnc2)o1",
+  "ki_nM": 1500.0,
+  "log_Ka": 5.82,
+  "chembl_id": "CHEMBL386124",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL215174",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "c1cncc(-c2ccc(C3SCCS3)o2)c1",
+  "ki_nM": 1100.0,
+  "log_Ka": 5.96,
+  "chembl_id": "CHEMBL215174",
+  "assay_chembl_id": "CHEMBL910618",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL573149",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COCO[C@@H]([C@@H]1OC(C)(C)O[C@H]1COC(C)=O)[C@@H](CNC(=O)c1ccccc1)c1ccc2c(c1)OCO2",
+  "ki_nM": 1010.0,
+  "log_Ka": 6.0,
+  "chembl_id": "CHEMBL573149",
+  "assay_chembl_id": "CHEMBL1059329",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL583954",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COCO[C@@H]([C@@H]1OC(C)(C)O[C@H]1CO[Si](c1ccccc1)(c1ccccc1)C(C)(C)C)[C@@H](CNC(=O)c1ccccc1)c1ccc2c(c1)OCO2",
+  "ki_nM": 580.0,
+  "log_Ka": 6.24,
+  "chembl_id": "CHEMBL583954",
+  "assay_chembl_id": "CHEMBL1059329",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL404875",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COc1cc2c(c(OC)c1OC)-c1c(cc3c(c1OC)OCO3)C[C@H](C)[C@](C)(O)[C@H]2OC(=O)c1ccccc1",
+  "ki_nM": 399.0,
+  "log_Ka": 6.4,
+  "chembl_id": "CHEMBL404875",
+  "assay_chembl_id": "CHEMBL1743437",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL583953",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COCO[C@@H]([C@@H]1OC(C)(C)O[C@H]1CO[Si](C)(C)C(C)(C)C)[C@@H](CNC(=O)OC(C)(C)C)c1ccc2c(c1)OCO2",
+  "ki_nM": 320.0,
+  "log_Ka": 6.49,
+  "chembl_id": "CHEMBL583953",
+  "assay_chembl_id": "CHEMBL1059329",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1743356",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "C=C(C)C(CC/C(C)=C/COc1c2ccoc2cc2oc(=O)ccc12)OC(C)(C)C(O)CC/C(C)=C/COc1c2ccoc2cc2oc(=O)ccc12",
+  "ki_nM": 310.0,
+  "log_Ka": 6.51,
+  "chembl_id": "CHEMBL1743356",
+  "assay_chembl_id": "CHEMBL1743445",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1743364",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "C=C(C)N1c2ccccc2SC1c1cc(OC)ccc1OCCCN(C)CCOc1ccc2c(c1)OCO2",
+  "ki_nM": 250.0,
+  "log_Ka": 6.6,
+  "chembl_id": "CHEMBL1743364",
+  "assay_chembl_id": "CHEMBL1743456",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1089300",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COCO[C@H]([C@@H]1OC(C)(C)O[C@H]1CO[Si](C)(C)C(C)(C)C)[C@H](CNC(=O)OC(C)(C)C)c1ccc2c(c1)OCO2",
+  "ki_nM": 240.0,
+  "log_Ka": 6.62,
+  "chembl_id": "CHEMBL1089300",
+  "assay_chembl_id": "CHEMBL1111568",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL564408",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC(=O)O[C@H]1[C@H]2c3cc4c(cc3CN3CCC(=C[C@@H]1O[Si](C)(C)C(C)(C)C)[C@H]23)OCO4",
+  "ki_nM": 210.0,
+  "log_Ka": 6.68,
+  "chembl_id": "CHEMBL564408",
+  "assay_chembl_id": "CHEMBL1029448",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL83",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC/C(=C(\\c1ccccc1)c1ccc(OCCN(C)C)cc1)c1ccccc1",
+  "ki_nM": 200.0,
+  "log_Ka": 6.7,
+  "chembl_id": "CHEMBL83",
+  "assay_chembl_id": "CHEMBL1743461",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL574914",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC1(C)O[C@@H]([C@H](O)[C@@H](CNC(=O)c2ccccc2)c2ccc3c(c2)OCO3)[C@H](CO[Si](C)(C)C(C)(C)C)O1",
+  "ki_nM": 170.0,
+  "log_Ka": 6.77,
+  "chembl_id": "CHEMBL574914",
+  "assay_chembl_id": "CHEMBL1059329",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL486597",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "OC[C@H](Cc1ccc2c(c1)OCO2)[C@H](CO)Cc1ccc2c(c1)OCO2",
+  "ki_nM": 142.0,
+  "log_Ka": 6.85,
+  "chembl_id": "CHEMBL486597",
+  "assay_chembl_id": "CHEMBL1743432",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL163",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC(C)c1nc(CN(C)C(=O)N[C@H](C(=O)N[C@@H](Cc2ccccc2)C[C@H](O)[C@H](Cc2ccccc2)NC(=O)OCc2cncs2)C(C)C)cs1",
+  "ki_nM": 100.0,
+  "log_Ka": 7.0,
+  "chembl_id": "CHEMBL163",
+  "assay_chembl_id": "CHEMBL1743427",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL479701",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COc1cc(C[C@H]2C(O)OC[C@@H]2Cc2ccc3c(c2)OCO3)cc(OC)c1OC",
+  "ki_nM": 82.0,
+  "log_Ka": 7.09,
+  "chembl_id": "CHEMBL479701",
+  "assay_chembl_id": "CHEMBL1743432",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL1089957",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COCO[C@H]([C@@H]1OC(C)(C)O[C@H]1COS(=O)(=O)c1ccc(C)cc1)[C@H](CNC(=O)c1ccccc1)c1ccc2c(c1)OCO2",
+  "ki_nM": 70.0,
+  "log_Ka": 7.15,
+  "chembl_id": "CHEMBL1089957",
+  "assay_chembl_id": "CHEMBL1111568",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL470508",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COC(=O)N[C@H](C(=O)N[C@H](Cc1ccc(-c2ccccn2)cc1)C[C@H](O)[C@H](Cc1ccccc1)NC(=O)[C@@H](N1CCN(Cc2cccc(C(C)(C)O)n2)C1=O)C(C)(C)C)C(C)(C)C",
+  "ki_nM": 66.0,
+  "log_Ka": 7.18,
+  "chembl_id": "CHEMBL470508",
+  "assay_chembl_id": "CHEMBL981939",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL305220",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "Nc1ccc(SC[C@H]2CO[C@@](CCc3ccc(Cl)cc3)(Cn3ccnc3)O2)cc1",
+  "ki_nM": 33.0,
+  "log_Ka": 7.48,
+  "chembl_id": "CHEMBL305220",
+  "assay_chembl_id": "CHEMBL844072",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL573430",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "COCO[C@@H]([C@@H]1OC(C)(C)O[C@H]1CO[Si](C)(C)C(C)(C)C)[C@@H](CNC(=O)c1ccccc1)c1ccc2c(c1)OCO2",
+  "ki_nM": 30.0,
+  "log_Ka": 7.52,
+  "chembl_id": "CHEMBL573430",
+  "assay_chembl_id": "CHEMBL1059329",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL70611",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "Nc1ccc(SC[C@@H]2CO[C@](CCc3ccc(Cl)cc3)(Cn3ccnc3)O2)cc1",
+  "ki_nM": 28.0,
+  "log_Ka": 7.55,
+  "chembl_id": "CHEMBL70611",
+  "assay_chembl_id": "CHEMBL760889",
+  "mbg": "unknown",
+  "mbg_donors": []
+ },
+ {
+  "name": "MMP-7+CHEMBL157101",
+  "target": "MMP-7",
+  "target_chembl_id": "CHEMBL340",
+  "metal": "Zn2+",
+  "coord_motif": "His3-Zn-OH2",
+  "residues": [
+   "His218",
+   "His222",
+   "His228"
+  ],
+  "smiles": "CC(=O)N1CCN(c2ccc(OCC3COC(Cn4ccnc4)(c4ccc(Cl)cc4Cl)O3)cc2)CC1",
+  "ki_nM": 24.0,
+  "log_Ka": 7.62,
+  "chembl_id": "CHEMBL157101",
+  "assay_chembl_id": "CHEMBL1029448",
+  "mbg": "unknown",
+  "mbg_donors": []
+ }
+]

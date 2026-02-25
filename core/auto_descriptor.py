@@ -705,3 +705,76 @@ def _apply_host(uc, host_key):
     uc.n_hbond_acceptors_host = hp.n_hbond_acceptors
     uc.n_aromatic_walls = hp.n_aromatic_walls
     uc.host_charge = hp.host_charge
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase 14a: Metalloprotein entry point
+# ═══════════════════════════════════════════════════════════════════════════
+
+def from_metalloprotein(entry):
+    """Wrap a metalloprotein_dataset entry into a UniversalComplex.
+
+    The ligand's metal-binding group (MBG) donors are combined with the
+    protein's coordinating residue donors.  Chelate ring count is derived
+    from MBG denticity (bidentate MBGs form 1 chelate ring with metal).
+
+    Args:
+        entry: dict from metalloprotein_dataset with keys:
+            name, target, metal, smiles, ki_nM, log_Ka_exp,
+            mbg, mbg_donors, protein_donors, coord_motif, chembl_id
+    """
+    mbg_donors = list(entry.get("mbg_donors", []))
+    protein_donors = list(entry.get("protein_donors", []))
+    all_donors = mbg_donors + protein_donors
+
+    # Chelate rings: bidentate MBGs (hydroxamate, phosphonate) form 1 ring
+    n_chelate = 0
+    ring_sizes = []
+    if len(mbg_donors) >= 2:
+        n_chelate = 1
+        ring_sizes = [5]  # most bidentate MBGs form 5-membered ring with metal
+
+    uc = UniversalComplex(
+        name=entry["name"],
+        binding_mode="metalloprotein",
+        log_Ka_exp=entry["log_Ka_exp"],
+        metal_formula=entry["metal"],
+        donor_subtypes=all_donors,
+        donor_atoms=[_subtype_to_element(s) for s in all_donors],
+        chelate_rings=n_chelate,
+        ring_sizes=ring_sizes,
+        is_macrocyclic=False,
+        denticity=len(all_donors),
+        ph=7.4,
+        source="ChEMBL",
+        host_name=entry.get("target", ""),
+        host_type="metalloprotein",
+    )
+
+    if entry.get("smiles"):
+        uc.guest_smiles = entry["smiles"]
+
+    m_props = METAL_PROPERTIES.get(entry["metal"], None)
+    if m_props:
+        uc.metal_charge = m_props[0]
+        uc.metal_d_electrons = m_props[1]
+
+    uc.donor_type = classify_donor_type(uc.donor_subtypes) if uc.donor_subtypes else "none"
+
+    return uc
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase 14b: Macrocycle-metal entry point (convenience wrapper)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def from_macrocycle_metal(entry):
+    """Wrap a macrocycle_metal_dataset entry into a UniversalComplex.
+
+    Same format as cal_dataset, delegates to from_metal_ligand.
+    Adds macrocycle_class metadata.
+    """
+    uc = from_metal_ligand(entry)
+    if entry.get("macrocycle_class"):
+        uc.source = f"{entry.get('source', '')}:{entry['macrocycle_class']}"
+    return uc
