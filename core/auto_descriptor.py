@@ -762,19 +762,3 @@ def from_metalloprotein(entry):
     uc.donor_type = classify_donor_type(uc.donor_subtypes) if uc.donor_subtypes else "none"
 
     return uc
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# Phase 14b: Macrocycle-metal entry point (convenience wrapper)
-# ═══════════════════════════════════════════════════════════════════════════
-
-def from_macrocycle_metal(entry):
-    """Wrap a macrocycle_metal_dataset entry into a UniversalComplex.
-
-    Same format as cal_dataset, delegates to from_metal_ligand.
-    Adds macrocycle_class metadata.
-    """
-    uc = from_metal_ligand(entry)
-    if entry.get("macrocycle_class"):
-        uc.source = f"{entry.get('source', '')}:{entry['macrocycle_class']}"
-    return uc
