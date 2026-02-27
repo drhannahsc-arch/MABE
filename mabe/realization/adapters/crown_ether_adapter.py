@@ -199,6 +199,13 @@ class CrownEtherAdapter(RealizationAdapter):
                 f"O-donors suboptimal"
             )
 
+        # ── Selectivity from known logK ──
+        selectivity_factor = 1.0
+        if predicted_logK > 2:
+            # Rough: selectivity = 10^(logK_target - logK_nearest_competitor)
+            # Most crown ethers have ~2 logK unit selectivity over next ion
+            selectivity_factor = 10 ** min(predicted_logK * 0.3, 4.0)
+
         return RealizationScore(
             material_system="crown_ether",
             adapter_id="CrownEtherAdapter",
@@ -211,6 +218,8 @@ class CrownEtherAdapter(RealizationAdapter):
                 0.9 if spec.solvent in (Solvent.AQUEOUS, Solvent.MIXED) else 0.7
             ),
             reusability_score=0.5,
+            selectivity_factor=selectivity_factor,
+            physics_class="covalent_cavity",
             composite_score=0.0,
             confidence=0.80,
             advantages=advantages,

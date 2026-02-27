@@ -254,12 +254,22 @@ class RealizationScore:
     deviation_from_ideal: DeviationReport
     physics_fidelity: float               # 0.0–1.0, derived from deviation
 
-    # ── Implementation axes (SECONDARY) ──
+    # ── Implementation axes (SECONDARY — precision binders) ──
     synthetic_accessibility: float = 0.0
     cost_score: float = 0.0
     scalability: float = 0.0
     operating_condition_compatibility: float = 0.0
     reusability_score: float = 0.0
+
+    # ── Bulk sorbent axes (populated by Class D adapters) ──
+    capacity_mmol_per_g: float = 0.0       # qmax from isotherm
+    selectivity_factor: float = 0.0        # α = Kd_target / Kd_competitor
+    throughput_L_per_h_per_kg: float = 0.0 # column flow at breakthrough
+    regenerability_cycles: int = 0         # sorption/desorption cycles
+    cost_per_kg_processed: float = 0.0     # $/kg of target removed
+
+    # ── Physics class tag ──
+    physics_class: str = ""                # "covalent_cavity", "bulk_sorbent", etc.
 
     # ── Composite ──
     composite_score: float = 0.0
