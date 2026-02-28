@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from itertools import combinations_with_replacement
 from typing import Optional
 
-from scorer_frozen import METAL_DB, DONOR_SOFTNESS, DONOR_PKA, SUBTYPE_EXCHANGE
+from core.scorer_frozen import METAL_DB, DONOR_SOFTNESS, DONOR_PKA, SUBTYPE_EXCHANGE
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -494,3 +494,13 @@ if __name__ == "__main__":
               f"arch='{ds.archetype}'")
 
     print("\nSelf-test complete.")
+    # ═══════════════════════════════════════════════════════════════════════════
+# BACKWARD COMPATIBILITY SHIM (F0 — remove after generative_integration refactor)
+# ═══════════════════════════════════════════════════════════════════════════
+def enumerate_donor_arrangements(coord_env, pH=7.0, max_candidates=4):
+    """Deprecated: shim mapping old API to enumerate_donor_sets.
+
+    coord_env is expected to have .metal_formula (or .formula).
+    """
+    metal = getattr(coord_env, 'metal_formula', None) or getattr(coord_env, 'formula', '??')
+    return enumerate_donor_sets(metal, pH=pH, max_candidates=max_candidates)

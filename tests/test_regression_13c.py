@@ -22,6 +22,9 @@ sys.path.insert(0, _root)
 for _sub in ('knowledge', 'core'):
     sys.path.insert(0, os.path.join(_root, _sub))
 
+import pytest
+pytest.importorskip("rdkit")
+
 from core.unified_scorer_v2 import predict, PredictionResult
 from core.auto_descriptor import from_metal_ligand, from_host_guest, from_smiles, METAL_PROPERTIES
 from core.universal_schema import UniversalComplex

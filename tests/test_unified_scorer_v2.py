@@ -14,6 +14,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'core'))
 
 import math
+import pytest
+pytest.importorskip("rdkit")
+
+# Existing scorers (ground truth)
 
 # Existing scorers (ground truth)
 from core.scorer_frozen import predict_log_k as metal_predict

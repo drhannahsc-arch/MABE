@@ -40,13 +40,13 @@ from hg_scorer import (
     dg_cavity_dehydration as _hg_dg_cavity_dehydration,
     dg_size_mismatch as _hg_dg_size_mismatch,
 )
-from hg_hbond import compute_dg_hbond as _hg_compute_dg_hbond, HBOND_PARAMS
-from hg_pi import compute_dg_pi as _hg_compute_dg_pi, PI_PARAMS
-from hg_conf_shape import (
+from knowledge.hg_hbond import compute_dg_hbond as _hg_compute_dg_hbond, HBOND_PARAMS
+from knowledge.hg_pi import compute_dg_pi as _hg_compute_dg_pi, PI_PARAMS
+from knowledge.hg_conf_shape import (
     compute_dg_conf_shape as _hg_compute_dg_conf_shape,
     CONF_SHAPE_PARAMS, HOST_CAVITY_VOLUME,
 )
-from hg_dataset import HOST_DB as _HG_HOST_DB
+from knowledge.hg_dataset import HOST_DB as _HG_HOST_DB
 
 from cross_modal_predictor import (
     dg_ion_dipole as _cm_dg_ion_dipole,
@@ -56,7 +56,7 @@ from cross_modal_predictor import (
     dg_shape_complementarity as _cm_dg_shape_complementarity,
     CM_PARAMS,
 )
-from cross_modal_dataset import CB_PORTAL_INFO
+from knowledge.cross_modal_dataset import CB_PORTAL_INFO
 
 
 # ═══════════════════════════════════════════════════════════════════════════

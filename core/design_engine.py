@@ -22,10 +22,10 @@ from dataclasses import dataclass, field
 from typing import Optional
 import time
 
-from scorer_frozen import (
+from core.scorer_frozen import (
     predict_log_k, predict_selectivity, METAL_DB, MetalProperties
 )
-from donor_enumerator import (
+from core.donor_enumerator import (
     enumerate_donor_sets, DonorSet, ARCHETYPES
 )
 

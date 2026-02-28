@@ -21,6 +21,9 @@ sys.path.insert(0, _root)
 for _sub in ('knowledge', 'core'):
     sys.path.insert(0, os.path.join(_root, _sub))
 
+import pytest
+pytest.importorskip("rdkit")
+
 from core.auto_descriptor import from_metalloprotein, from_metal_ligand
 from core.unified_scorer_v2 import predict
 from knowledge.metalloprotein_dataset import METALLOPROTEIN_DATA, TARGET_REGISTRY

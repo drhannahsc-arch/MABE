@@ -8,6 +8,9 @@ Zero tolerance on EDTA donor count.
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import pytest
+pytest.importorskip("rdkit")
+
 from rdkit import Chem
 from collections import Counter
 from core.auto_descriptor import (
