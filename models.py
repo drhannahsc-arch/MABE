@@ -327,6 +327,101 @@ class NetworkInteractionSpec(InteractionSpec):
 
 
 # ─────────────────────────────────────────────
+# Surface Interaction Paradigm
+# ─────────────────────────────────────────────
+
+class SurfaceMechanism(str, Enum):
+    """Primary mechanism of the surface interaction."""
+    PHYSISORPTION = "physisorption"           # van der Waals, pore filling
+    CHEMISORPTION = "chemisorption"           # Covalent/ionic bond to surface site
+    SURFACE_COMPLEXATION = "surface_complexation"  # Metal-oxide coordination
+    ELECTROSTATIC = "electrostatic"           # Coulombic attraction to charged surface
+    ION_EXCHANGE_SURFACE = "ion_exchange_surface"  # Exchange at surface sites
+
+
+class IsothermModel(str, Enum):
+    """Which isotherm model governs the equilibrium."""
+    LANGMUIR = "langmuir"           # Monolayer, homogeneous
+    FREUNDLICH = "freundlich"       # Multilayer, heterogeneous
+    BET = "bet"                     # Multilayer gas-phase
+    DUBININ_RADUSHKEVICH = "dr"     # Micropore filling
+
+
+class BaseMaterial(str, Enum):
+    """Surface material class."""
+    ACTIVATED_CARBON = "activated_carbon"
+    BIOCHAR = "biochar"
+    LIGNIN = "lignin"
+    CLAY = "clay"
+    ZEOLITE_SURFACE = "zeolite_surface"      # Surface mode (not pocket mode)
+    CELLULOSE = "cellulose"
+    GRAPHENE_OXIDE = "graphene_oxide"
+    METAL_OXIDE = "metal_oxide"              # Fe2O3, Al2O3, MnO2, etc.
+
+
+@dataclass
+class SurfaceInteractionSpec(InteractionSpec):
+    """
+    Interaction via distributed sites on a material surface.
+
+    Applies to: activated carbon, biochar, lignin sorbents, clay minerals,
+    functionalized cellulose, graphene oxide, metal oxide adsorbents.
+
+    The physics is adsorption isotherms (Langmuir/Freundlich) +
+    surface complexation + pore diffusion. There is no defined cavity —
+    binding occurs at distributed functional group sites on a surface.
+    """
+
+    # ── Target species ──
+    target_species: str = ""                  # "Pb2+", "phenol", "PFOS", etc.
+    target_charge: int = 0
+    target_mw_g_mol: float = 0.0              # molecular weight
+    target_hydrophobicity: float = 0.0        # log P (for organics)
+
+    # ── Competing species (matrix) ──
+    competing_species: list[str] = field(default_factory=list)
+    competing_concentrations_mM: list[float] = field(default_factory=list)
+
+    # ── Surface mechanism ──
+    mechanism: SurfaceMechanism = SurfaceMechanism.CHEMISORPTION
+    isotherm_model: IsothermModel = IsothermModel.LANGMUIR
+
+    # ── Material constraints ──
+    base_material: Optional[BaseMaterial] = None  # None = auto-select
+    min_surface_area_m2_g: float = 0.0            # BET requirement
+    target_pore_size_A: float = 0.0               # for size-selective adsorption
+
+    # ── Performance requirements ──
+    target_capacity_mg_g: float = 0.0             # qmax requirement
+    target_removal_efficiency: float = 0.0        # 0.0-1.0 at given C₀
+    initial_concentration_mg_L: float = 0.0       # C₀ for design
+    target_contact_time_min: float = 0.0          # kinetics requirement
+
+    # ── Functional group requirements ──
+    required_functional_groups: list[str] = field(default_factory=list)
+    # e.g., ["carboxyl", "phenol", "amine"] — surface chemistry needed
+
+    # ── Selectivity constraints ──
+    must_exclude: list[ExclusionSpec] = field(default_factory=list)
+
+    # ── Operating conditions ──
+    pH_range: tuple[float, float] = (2.0, 12.0)
+    temperature_range_K: tuple[float, float] = (273.15, 353.15)
+    solvent: Solvent = Solvent.AQUEOUS
+    ionic_strength_M: float = 0.1
+
+    # ── Application context ──
+    target_application: ApplicationContext = ApplicationContext.REMEDIATION
+    required_scale: ScaleClass = ScaleClass.MOL
+    cost_ceiling_per_unit: Optional[float] = None
+    reusability_required: bool = False
+
+    @property
+    def spec_type(self) -> str:
+        return InteractionParadigm.SURFACE.value
+
+
+# ─────────────────────────────────────────────
 # Layer 3 Phase 1 Output: The Ideal Pocket
 # ─────────────────────────────────────────────
 
