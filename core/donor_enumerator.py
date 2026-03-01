@@ -497,10 +497,10 @@ if __name__ == "__main__":
     # ═══════════════════════════════════════════════════════════════════════════
 # BACKWARD COMPATIBILITY SHIM (F0 — remove after generative_integration refactor)
 # ═══════════════════════════════════════════════════════════════════════════
-def enumerate_donor_arrangements(coord_env, pH=7.0, max_candidates=4):
+def enumerate_donor_arrangements(coord_env, working_ph=7.0, max_candidates=4, **kwargs):
     """Deprecated: shim mapping old API to enumerate_donor_sets.
 
-    coord_env is expected to have .metal_formula (or .formula).
+    coord_env is expected to have .target_formula.
     """
-    metal = getattr(coord_env, 'metal_formula', None) or getattr(coord_env, 'formula', '??')
-    return enumerate_donor_sets(metal, pH=pH, max_candidates=max_candidates)
+    metal = getattr(coord_env, 'target_formula', '??')
+    return enumerate_donor_sets(metal, pH=working_ph, max_candidates=max_candidates)
