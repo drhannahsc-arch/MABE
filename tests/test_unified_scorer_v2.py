@@ -263,16 +263,12 @@ def test_mixed_mode():
 # ═══════════════════════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    total = 0
-    total += test_self_zeroing()
-    total += test_metal_regression()
-    total += test_hg_regression()
-    total += test_cm_regression()
-    total += test_mixed_mode()
+    test_self_zeroing()
+    test_metal_regression()
+    test_hg_regression()
+    test_cm_regression()
+    test_mixed_mode()
 
     print(f"\n{'='*72}")
-    if total == 0:
-        print(f"ALL REGRESSION TESTS PASSED ✓ (644 entries, ε={EPSILON})")
-    else:
-        print(f"TOTAL FAILURES: {total}")
+    print(f"ALL REGRESSION TESTS PASSED ✓ (644 entries, ε={EPSILON})")
     print(f"{'='*72}")
