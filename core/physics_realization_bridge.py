@@ -118,21 +118,27 @@ class DesignResult:
 
 # Default donor subtypes by material system and donor atom.
 # These are the canonical donor subtypes each material presents.
+# Expanded for non-carbon-bias full-periodic-table coverage.
 _MATERIAL_DONOR_DEFAULTS = {
     "planar_coordination_ring": {
         "N": "N_imine",
         "O": "O_phenolate",
         "S": "S_thioether",
+        "Se": "Se_selenoether",
+        "P": "P_phosphine",
     },
     "cyclic_encapsulant": {
         "N": "N_amine",
         "O": "O_carbonyl",
         "S": "S_thioether",
+        "Se": "Se_selenoether",
     },
     "periodic_lattice_node": {
         "N": "N_aromatic",
         "O": "O_carboxylate",
         "S": "S_thiolate",
+        "Se": "Se_selenolate",
+        "P": "P_phosphonate",
     },
     "folded_polypeptide": {
         "N": "N_amide",
@@ -143,6 +149,8 @@ _MATERIAL_DONOR_DEFAULTS = {
         "N": "N_aromatic",
         "O": "O_carboxylate",
         "S": "S_thioether",
+        "Se": "Se_selenoether",
+        "P": "P_phosphine",
     },
     # Crown ether variants — O_carbonyl captures preorganized lone-pair
     # donor strength better than O_ether (calibrated on simple ethers)
@@ -150,11 +158,14 @@ _MATERIAL_DONOR_DEFAULTS = {
         "N": "N_amine",
         "O": "O_carbonyl",
         "S": "S_thioether",
+        "Se": "Se_selenoether",  # Selenacrown ethers — soft metal selectivity
     },
     "cryptand": {
         "N": "N_amine",
         "O": "O_carbonyl",
         "S": "S_thioether",
+        "Se": "Se_selenoether",
+        "P": "P_phosphine",
     },
     # Other adapter types
     "porphyrin": {
@@ -172,6 +183,60 @@ _MATERIAL_DONOR_DEFAULTS = {
         "O": "O_phenolate",
         "S": "S_thiolate",
     },
+    # ── Non-carbon-bias material systems ──────────────────────────────────
+    # Chalcogenide frameworks: MOFs / cages built from Se/Te linkers
+    # Relevant for Hg2+, Ag+, Au+, Pd2+ remediation / precious metal recovery
+    "chalcogenide_mof": {
+        "S": "S_thiolate",
+        "Se": "Se_selenolate",
+        "Te": "Te_tellurolate",
+        "N": "N_aromatic",
+        "O": "O_carboxylate",
+    },
+    # Phosphine-functionalized surfaces / resins (gold/platinum capture)
+    "phosphine_resin": {
+        "P": "P_phosphine",
+        "S": "S_thioether",
+        "N": "N_amine",
+        "O": "O_hydroxyl",
+    },
+    # Arsenic/antimony coordination cages (rare; mainly Sb2S3-type materials)
+    "pnictogen_cage": {
+        "As": "As_arsine",
+        "Sb": "Sb_stibine",
+        "S": "S_thiolate",
+        "Se": "Se_selenolate",
+    },
+    # Fluoride-selective hosts (Al3+, Th4+, Zr4+ chemistry)
+    "fluoride_host": {
+        "F": "F_fluoride",
+        "O": "O_carboxylate",
+        "N": "N_amine",
+    },
+    # Carbonyl / cyanide-presenting frameworks (Fe/Ni/Ru capture)
+    "carbonyl_framework": {
+        "C": "C_carbonyl",
+        "N": "N_aromatic",
+        "O": "O_carboxylate",
+    },
+    "cyanide_bridged_framework": {
+        "C": "C_cyanide",
+        "N": "N_imine",
+        "Fe": "C_cyanide",  # Prussian blue type: C-end to Fe2+
+    },
+    # Zeolite / inorganic oxide surfaces (Al3+, Si4+ framework, O donors only)
+    "zeolite_framework": {
+        "O": "O_oxo",
+        "N": "N_amine",
+        "F": "F_fluoride",
+    },
+    # Silica / oxide surface (surface silanol groups)
+    "silica_surface": {
+        "O": "O_hydroxyl",
+        "N": "N_amine",
+        "S": "S_thiolate",
+        "P": "P_phosphonate",
+    },
 }
 
 
@@ -179,14 +244,22 @@ def _resolve_donor_subtypes(
     donor_atoms: list,
     material_system: str,
 ) -> list:
-    """Map raw donor atoms (N, O, S) to calibrated subtypes for a material."""
+    """Map raw donor atoms (N, O, S, Se, Te, P, As, F, C...) to calibrated subtypes."""
     defaults = _MATERIAL_DONOR_DEFAULTS.get(material_system, {})
     fallback = {
         "N": "N_amine",
         "O": "O_carboxylate",
         "S": "S_thioether",
         "Se": "Se_selenoether",
+        "Te": "Te_telluroether",
         "P": "P_phosphine",
+        "As": "As_arsine",
+        "Sb": "Sb_stibine",
+        "F": "F_fluoride",
+        "C": "C_cyanide",
+        "Cl": "Cl_chloride",
+        "Br": "Br_bromide",
+        "I": "I_iodide",
     }
     subtypes = []
     for atom in donor_atoms:

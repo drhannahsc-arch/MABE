@@ -69,12 +69,45 @@ SUBTYPE_EXCHANGE = {
     "Cl_chloride":      -0.29,
     "Br_bromide":       -6.0,
     "I_iodide":        -12.0,
+    # ── Non-carbon-bias expansion (noncarbonbias_donors.py, physics-first) ──
+    # Chalcogenides: Ibers & Holm 1980 (Science 209:223); NIST SRD 46
+    "Se_selenolate":   -22.0,   # Δlog K(Se vs S) ≈ +1.5 for soft metals
+    "Se_selenoether":  -12.0,
+    "Se_selenourea":   -15.0,
+    "Te_tellurolate":  -25.0,   # Marcus 1997 polarizability scaling
+    "Te_telluroether": -16.0,
+    # Pnictogens: Pearson 1988 (Inorg. Chem. 27:734)
+    "As_arsine":       -17.0,   # η(AsR₃)=5.2 eV vs η(PR₃)=5.9 eV
+    "As_arsenite":      -4.5,   # O-coordination mode
+    "Sb_stibine":      -15.0,
+    "P_phosphonate":   -15.0,
+    "P_phosphite":     -16.0,
+    # Fluoride: NIST SRD 46 Al3+/F⁻ log K=6.1; back-solved ΔG_exch
+    "F_fluoride":       -7.5,
+    # Carbyl donors: Cotton & Wilkinson; NIST SRD 46 CN⁻ log β₆(Fe2+)=35.4
+    "C_carbonyl":      -18.0,
+    "C_cyanide":       -15.0,
+    # Additional N donors
+    "N_oxime":          -7.0,   # NIST SRD 46 dimethylglyoxime/Ni2+
+    "N_hydrazine":      -5.0,
+    "N_nitroso":        -6.0,
+    "N_thioamide":      -7.5,
+    "N_aromatic":       -6.5,
+    # Additional S donors
+    "S_sulfoxide":      -8.0,   # NIST SRD 46 DMSO-S/Pd2+
+    "S_thioamide":     -10.0,   # Thiourea/Hg2+ back-solve
+    # Additional O donors
+    "O_carbonyl":       -2.5,
+    "O_phosphonate":    -3.5,   # Martell & Smith vol 4
+    "O_oxo":            -2.5,
 }
 
 # Fallback per-element exchange (when subtype unknown)
 ELEMENT_EXCHANGE = {
     "O": -4.0, "N": -6.0, "S": -18.0, "P": -15.0,
     "Cl": -3.0, "Br": -6.0, "I": -12.0,
+    "Se": -22.0, "Te": -25.0, "As": -17.0, "Sb": -15.0,
+    "F": -7.5, "C": -15.0,
 }
 
 # Donor softness values (0 = hard, 1 = soft)
@@ -88,6 +121,18 @@ DONOR_SOFTNESS = {
     "S_dithiocarbamate": 0.75,
     "P_phosphine": 0.80,
     "Cl_chloride": 0.25, "Br_bromide": 0.45, "I_iodide": 0.75,
+    # Non-carbon-bias expansion (Pearson 1988 η scale → 0–1)
+    "Se_selenolate": 0.90, "Se_selenoether": 0.68, "Se_selenourea": 0.75,
+    "Te_tellurolate": 0.95, "Te_telluroether": 0.80,
+    "As_arsine": 0.82, "As_arsenite": 0.15,
+    "Sb_stibine": 0.78,
+    "P_phosphonate": 0.70, "P_phosphite": 0.72,
+    "F_fluoride": 0.02,
+    "C_carbonyl": 0.85, "C_cyanide": 0.72,
+    "N_oxime": 0.30, "N_hydrazine": 0.22, "N_nitroso": 0.50,
+    "N_thioamide": 0.42, "N_aromatic": 0.33, "N_amide": 0.25,
+    "S_sulfoxide": 0.52, "S_thioamide": 0.58,
+    "O_carbonyl": 0.12, "O_phosphonate": 0.08, "O_oxo": 0.07,
 }
 
 # Donor pKa values for pH-dependent protonation
@@ -103,6 +148,31 @@ DONOR_PKA = {
     "S_thioether": 99.0, "S_thiosulfate": 1.5,
     "N_nitrile": -1.0, "P_phosphine": 99.0,
     "Cl_chloride": -7.0, "Br_bromide": -9.0, "I_iodide": -10.0,
+    # Non-carbon-bias additions
+    "Se_selenolate": 5.9,   # R-SeH pKa; slightly lower than thiol (8.3)
+    "Se_selenoether": 99.0,
+    "Se_selenourea": 99.0,
+    "Te_tellurolate": 3.5,   # R-TeH pKa; very acidic
+    "Te_telluroether": 99.0,
+    "As_arsine": 99.0,
+    "As_arsenite": 9.2,      # H₃AsO₃ pKa1
+    "Sb_stibine": 99.0,
+    "P_phosphonate": 2.1,    # H₂RPO₃ pKa1
+    "P_phosphite": 1.1,
+    "F_fluoride": 3.2,       # HF pKa (relevant at low pH)
+    "C_carbonyl": 99.0,
+    "C_cyanide": 9.2,        # HCN pKa
+    "N_oxime": 11.5,
+    "N_hydrazine": 8.1,      # R-NH-NH₂ pKaH
+    "N_nitroso": 99.0,
+    "N_thioamide": 99.0,
+    "N_aromatic": 4.5,
+    "N_amide": 99.0,
+    "S_sulfoxide": 99.0,
+    "S_thioamide": 99.0,
+    "O_carbonyl": 99.0,
+    "O_phosphonate": 2.1,
+    "O_oxo": 99.0,
 }
 
 
@@ -207,6 +277,27 @@ _register("Th4+",  4, 0,  94, 0.15, -5815, 8, (8,10),  0.0, False, 0.0, "Thorium
 # Oxoanions that form complexes
 _register("VO2+",  2, 1,  59, 0.30, -2080, 5, (4,6),   0.4, False, 0.0, "Vanadyl(IV)")
 
+# ── Non-carbon-bias expansion: 4d/5d transition metals ────────────────────
+# Sources: Shannon 1976 ionic radii; Marcus 1997 hydration free energies;
+# Pearson 1988 HSAB softness; Huheey 1983 "Inorganic Chemistry" Table 9-4.
+# LFSE values from Lever 1984 "Inorganic Electronic Spectroscopy" Table 5.4.
+_register("Ru2+",  2, 6,  68, 0.50, -1960, 6, (4,6),   0.4, False, 0.0, "Ruthenium(II)")
+_register("Ru3+",  3, 5,  68, 0.35, -4100, 6, (6,6),   0.0, False, 0.0, "Ruthenium(III)")
+_register("Os2+",  2, 6,  69, 0.55, -1990, 6, (4,6),   0.4, False, 0.0, "Osmium(II)")
+_register("Rh3+",  3, 6,  67, 0.40, -4220, 6, (6,6),   2.4, False, 0.0, "Rhodium(III)")
+_register("Ir3+",  3, 6,  68, 0.45, -4230, 6, (6,6),   2.4, False, 0.0, "Iridium(III)")
+_register("Mo3+",  3, 3,  69, 0.35, -4130, 6, (4,6),   0.8, False, 0.0, "Molybdenum(III)")
+_register("W4+",   4, 2,  66, 0.40, -5440, 6, (4,6),   0.8, False, 0.0, "Tungsten(IV)")
+_register("Re3+",  3, 4,  63, 0.45, -4300, 6, (4,6),   0.6, False, 0.0, "Rhenium(III)")
+_register("Tc2+",  2, 5,  78, 0.45, -1900, 6, (4,6),   0.0, False, 0.0, "Technetium(II)")
+# Post-transition / main group
+_register("Ge2+",  2, 10, 73, 0.45, -1255, 6, (4,6),   0.0, False, 0.0, "Germanium(II)")
+# High-valent hard metals (critical for F_fluoride / O_oxo chemistry)
+_register("Zr4+",  4, 0,  72, 0.12, -6330, 8, (6,8),   0.0, False, 0.0, "Zirconium(IV)")
+_register("Hf4+",  4, 0,  71, 0.12, -6400, 8, (6,8),   0.0, False, 0.0, "Hafnium(IV)")
+_register("Ti4+",  4, 0,  61, 0.10, -6940, 6, (4,6),   0.0, False, 0.0, "Titanium(IV)")
+_register("Be2+",  2, 0,  27, 0.08, -2480, 4, (4,4),   0.0, False, 0.0, "Beryllium(II)")
+
 # ═══════════════════════════════════════════════════════════════════════════
 # LFSE LOOKUP TABLE
 # Octahedral LFSE in units of Dq for high-spin configurations
@@ -239,6 +330,18 @@ DQ_BY_DONOR = {
     "S_dithiocarbamate": 9.8,
     "P_phosphine": 16.0,
     "Cl_chloride": 7.9, "Br_bromide": 7.5, "I_iodide": 7.0,
+    # Non-carbon-bias: spectrochemical order follows σ/π properties
+    "Se_selenolate": 8.5, "Se_selenoether": 8.0, "Se_selenourea": 8.2,
+    "Te_tellurolate": 7.8, "Te_telluroether": 7.5,
+    "As_arsine": 14.5, "As_arsenite": 9.0, "Sb_stibine": 13.0,
+    "P_phosphonate": 14.0, "P_phosphite": 14.5,
+    "F_fluoride": 9.5,
+    "C_carbonyl": 22.0,   # Strong-field; top spectrochemical series
+    "C_cyanide": 20.0,
+    "N_oxime": 13.0, "N_hydrazine": 11.0, "N_nitroso": 12.0,
+    "N_thioamide": 11.5, "N_aromatic": 13.5, "N_amide": 11.0,
+    "S_sulfoxide": 8.8, "S_thioamide": 9.2,
+    "O_carbonyl": 9.5, "O_phosphonate": 10.0, "O_oxo": 9.0,
 }
 
 DQ_WATER = 10.0  # kJ/mol reference for aqua complex
@@ -255,8 +358,26 @@ COVALENT_BDE = {
     ("Cu+", "S"): 190, ("Cu2+", "S"): 120, ("Pb2+", "S"): 168,
     ("Cd2+", "S"): 180, ("Hg2+", "N"): 80, ("Ag+", "N"): 70,
     ("Au+", "C"): 200, ("Hg2+", "C"): 122,
+    # Non-carbon-bias: chalcogenide BDEs (Ibers & Holm 1980; Marcus 1997)
+    # M-Se ≈ M-S + 15–30 kJ/mol for soft metals
+    ("Hg2+", "Se"): 245, ("Ag+", "Se"): 232, ("Au+", "Se"): 280,
+    ("Pt2+", "Se"): 255, ("Pd2+", "Se"): 230, ("Pb2+", "Se"): 185,
+    ("Cd2+", "Se"): 200, ("Cu+", "Se"): 215,
+    # M-Te: further enhanced for ultrasoft metals
+    ("Hg2+", "Te"): 265, ("Ag+", "Te"): 248, ("Au+", "Te"): 298,
+    ("Pd2+", "Te"): 245, ("Pt2+", "Te"): 262,
+    # M-As (Pearson 1988)
+    ("Pt2+", "As"): 185, ("Pd2+", "As"): 165, ("Au+", "As"): 185,
+    ("Rh3+", "As"): 155, ("Ir3+", "As"): 165,
+    # M-C (CO/CN back-bonding; Cotton & Wilkinson)
+    ("Ni2+", "C"): 140, ("Fe2+", "C"): 160, ("Cr3+", "C"): 130,
+    ("Ru2+", "C"): 175, ("Os2+", "C"): 185,
+    ("Mo3+", "C"): 150, ("W4+", "C"): 160,
+    ("Rh3+", "C"): 165, ("Ir3+", "C"): 175,
+    # M-F (hard-metal fluoride bonds; NIST SRD 46 back-solved)
+    ("Al3+", "F"): 670, ("Ti4+", "F"): 590, ("Zr4+", "F"): 620,
+    ("Hf4+", "F"): 630, ("Be2+", "F"): 632,
 }
-
 
 # ═══════════════════════════════════════════════════════════════════════════
 # MODULE 11: DONOR CHARGE TABLE (for electrostatic z-z term)
@@ -269,12 +390,26 @@ DONOR_FORMAL_CHARGE = {
     "O_catecholate": -1.0, "O_phosphate": -1.0, "O_sulfonate": -1.0,
     "S_thiolate": -1.0, "S_thiosulfate": -1.0, "S_dithiocarbamate": -0.5,
     "Cl_chloride": -1.0, "Br_bromide": -1.0, "I_iodide": -1.0,
+    # Non-carbon-bias anionic donors
+    "Se_selenolate": -1.0, "Te_tellurolate": -1.0,
+    "F_fluoride": -1.0,
+    "C_cyanide": -1.0,
+    "O_phosphonate": -2.0, "As_arsenite": -2.0,
     # Neutral donors
     "O_ether": 0.0, "O_hydroxyl": 0.0,
     "N_amine": 0.0, "N_imine": 0.0, "N_pyridine": 0.0,
     "N_imidazole": 0.0, "N_nitrile": 0.0, "N_amide": 0.0,
     "S_thioether": 0.0,
     "P_phosphine": 0.0,
+    "Se_selenoether": 0.0, "Se_selenourea": 0.0,
+    "Te_telluroether": 0.0,
+    "As_arsine": 0.0, "Sb_stibine": 0.0,
+    "P_phosphonate": -1.0, "P_phosphite": 0.0,
+    "C_carbonyl": 0.0,
+    "N_oxime": 0.0, "N_hydrazine": 0.0, "N_nitroso": 0.0,
+    "N_thioamide": 0.0, "N_aromatic": 0.0,
+    "S_sulfoxide": 0.0, "S_thioamide": 0.0,
+    "O_carbonyl": 0.0, "O_oxo": 0.0,
 }
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -295,6 +430,17 @@ IRVING_WILLIAMS_BONUS = {
     "Al3+": -3.0,  "Ga3+": -5.0,
     # Monovalent
     "Ag+":  -5.0,  "Cu+": -3.0,
+    # Non-carbon-bias: 4d and 5d transition metals
+    # Values derived from Irving-Williams principle extended to 4d/5d by
+    # scaled d-electron count and effective nuclear charge (Pearson 1988)
+    "Ru2+": -10.0, "Ru3+": -14.0,
+    "Os2+": -11.0,
+    "Rh3+": -18.0, "Ir3+": -20.0,
+    "Mo3+":  -8.0, "W4+":  -6.0,
+    "Ge2+":  -3.0,
+    "Zr4+":  -2.0, "Hf4+": -2.0,
+    "Re3+":  -9.0, "Tc2+": -7.0,
+    "Pd2+": -16.0, "Pt2+": -18.0,  # Already in METAL_DB; ensure IW coverage
 }
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -337,6 +483,17 @@ DONOR_VDW_RADIUS = {
     "S_dithiocarbamate": 1.80,
     "P_phosphine": 1.80,
     "Cl_chloride": 1.75, "Br_bromide": 1.85, "I_iodide": 1.98,
+    # Non-carbon-bias (Bondi vdW / Shannon ionic radii)
+    "Se_selenolate": 1.90, "Se_selenoether": 1.90, "Se_selenourea": 1.90,
+    "Te_tellurolate": 2.06, "Te_telluroether": 2.06,
+    "As_arsine": 1.85, "As_arsenite": 1.80, "Sb_stibine": 2.06,
+    "P_phosphonate": 1.80, "P_phosphite": 1.80,
+    "F_fluoride": 1.47,
+    "C_carbonyl": 1.70, "C_cyanide": 1.70,
+    "N_oxime": 1.55, "N_hydrazine": 1.55, "N_nitroso": 1.55,
+    "N_thioamide": 1.55, "N_aromatic": 1.55,
+    "S_sulfoxide": 1.80, "S_thioamide": 1.80,
+    "O_carbonyl": 1.52, "O_phosphonate": 1.52, "O_oxo": 1.52,
 }
 
 # Ligand cone angle approximation (degrees) — steric bulk of donor group
@@ -349,8 +506,21 @@ DONOR_CONE_ANGLE = {
     "N_imidazole": 95, "N_nitrile": 65, "N_amide": 80,
     "S_thioether": 95, "S_thiosulfate": 90, "S_thiolate": 85,
     "S_dithiocarbamate": 110,
-    "P_phosphine": 145,  # Tolman cone angle for PPh3
+    "P_phosphine": 145,  # Tolman cone angle for PPh₃
     "Cl_chloride": 80, "Br_bromide": 85, "I_iodide": 90,
+    # Non-carbon-bias
+    "Se_selenolate": 88, "Se_selenoether": 100, "Se_selenourea": 115,
+    "Te_tellurolate": 92, "Te_telluroether": 108,
+    "As_arsine": 150,   # Slightly larger than P_phosphine (longer As-C bonds)
+    "As_arsenite": 95, "Sb_stibine": 160,
+    "P_phosphonate": 130, "P_phosphite": 128,
+    "F_fluoride": 60,
+    "C_carbonyl": 75,   # CO is compact
+    "C_cyanide": 70,
+    "N_oxime": 90, "N_hydrazine": 85, "N_nitroso": 88,
+    "N_thioamide": 95, "N_aromatic": 100,
+    "S_sulfoxide": 100, "S_thioamide": 100,
+    "O_carbonyl": 80, "O_phosphonate": 90, "O_oxo": 70,
 }
 
 
