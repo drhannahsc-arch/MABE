@@ -39,6 +39,7 @@ CH_PI_EPS = {
     "Trp": EPS_CH_PI_TRP,
     "Tyr": EPS_CH_PI_TYR,
     "Phe": EPS_CH_PI_PHE,
+    "anthracene": EPS_CH_PI_TYR,  # Synthetic TEM platform ≈ phenyl polarizability
     "none": 0.0,
 }
 
