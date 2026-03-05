@@ -1,0 +1,271 @@
+From 6fdb31a828291ac4b5811bc973ce8c6cf6ed10ee Mon Sep 17 00:00:00 2001
+From: Dr Hannah Sanford-Crane <hannah@maadscientist.com>
+Date: Thu, 5 Mar 2026 21:18:42 +0000
+Subject: [PATCH 4/4] NHAc recognition motif: bidentate arm in inverse design
+ engine
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+parameters_v23.py:
+  EPS_NHAC_MONO      = -4.5 kJ/mol  (single H-bond to NHAc C=O)
+  EPS_NHAC_BIDENTATE = -9.5 kJ/mol  (NH donor + C=O acceptor engaged)
+  NHAC_EPS dict: 'none'|'mono'|'bidentate'
+  Source: Chervenak & Toone 1994 JACS 116:10533; WGA PDB 2UVO geometry
+  STATUS: PROVISIONAL v2.4 — threshold analysis confirms EPS < -6.1
+  kJ/mol required for GlcNAc selectivity at C2 vs Glc
+
+inverse_design.py:
+  PocketConfig gains nhac_arm: str field ('none'|'mono'|'bidentate')
+  _score_pocket_sugar: NHAc arm logic
+    - C2 + K_NAC sugar → apply NHAC_EPS bonus
+    - C2 + OH sugar → arm does not engage (bonus=0); standard HB possible
+    - C2 arm position excluded from generic n_HB count
+  Enumeration: nhac_arm looped as new dimension when C2 in pocket
+
+Results (bidentate arm, contacts [C2,C4], 1 HB, 3×Trp):
+  GlcNAc: gap=-7.30 vs Man, -3.40 vs Glc/Gal  [grade A]
+  GalNAc: gap=-7.30 vs Man, -3.40 vs Glc/Gal  [grade A]
+          GalNAc/GlcNAc degenerate (C4 axial: additional handle needed)
+
+Physics note: mono arm (-4.5) insufficient alone; bidentate (-9.5)
+  required to overcome K_NAC burial penalty (+8.5 kJ/mol) at C2.
+---
+ glycan/inverse_design.py | 139 +++++++++++++++++++++++++--------------
+ glycan/parameters_v23.py |  17 +++++
+ 2 files changed, 108 insertions(+), 48 deletions(-)
+
+diff --git a/glycan/inverse_design.py b/glycan/inverse_design.py
+index 151dbef..1b35be3 100644
+--- a/glycan/inverse_design.py
++++ b/glycan/inverse_design.py
+@@ -33,7 +33,7 @@ from dataclasses import dataclass
+ from itertools import combinations
+ from typing import Optional
+ 
+-from glycan.parameters_v23 import EPS_HB_EFF, CH_PI_EPS, K_DESOLV, EPS_LINKER_NET
++from glycan.parameters_v23 import EPS_HB_EFF, CH_PI_EPS, K_DESOLV, EPS_LINKER_NET, NHAC_EPS
+ 
+ 
+ # ══════════════════════════════════════════════════════════════════════════
+@@ -123,6 +123,7 @@ class PocketConfig:
+     n_HB: int
+     n_CHP: int
+     res_type: str
++    nhac_arm: str = "none"          # "none" | "mono" | "bidentate"
+     n_linker: int = 0
+     archetype: Optional[str] = None
+     archetype_ref: Optional[str] = None
+@@ -135,6 +136,9 @@ class PocketConfig:
+             f"  H-bonds:   {self.n_HB}",
+             f"  CH-π:      {self.n_CHP} × {self.res_type}",
+         ]
++        if self.nhac_arm != "none":
++            lines.append(f"  NHAc arm:  {self.nhac_arm} "
++                         f"(ε={NHAC_EPS[self.nhac_arm]:+.1f} kJ/mol, PROVISIONAL v2.4)")
+         if self.archetype:
+             lines.append(f"  Archetype: {self.archetype}")
+         if self.archetype_ref:
+@@ -160,27 +164,53 @@ class InverseDesignResult:
+ # ══════════════════════════════════════════════════════════════════════════
+ 
+ def _score_pocket_sugar(pocket: PocketConfig, sugar: str) -> Optional[float]:
++    """Score a pocket against a specific sugar.
++
++    NHAc arm logic:
++      - nhac_arm != 'none' means the pocket has a C2-specific amide-recognition motif
++      - If sugar C2 == K_NAC → arm engages: apply NHAC_EPS bonus
++      - If sugar C2 == other OH type → arm does NOT engage (geometry mismatch);
++        no bonus added; n_HB at C2 is still possible via generic HB
++      - If pocket contacts C2 AND nhac_arm != 'none': n_HB count excludes C2
++        (the arm is the contact at C2, not a generic HB)
++    """
+     pos_map = SUGAR_POSITIONS.get(sugar)
+     if pos_map is None:
+         return None
+ 
++    nhac_arm_active = pocket.nhac_arm != "none"
++    # NHAc arm only makes sense if C2 is in contacted positions
++    nhac_at_c2 = nhac_arm_active and "C2" in pocket.contacted_positions
++
+     desolv = 0.0
+-    n_contactable = 0
++    n_contactable_for_HB = 0
++
+     for pos in pocket.contacted_positions:
+         oh_type = pos_map.get(pos)
+         if oh_type is None:
+-            return None          # Sugar missing this carbon
++            return None   # Sugar missing this carbon
+         desolv += K_DESOLV.get(oh_type, 0.0)
+-        n_contactable += 1
++        # C2 with NHAc arm: the arm handles C2 contact, generic HB not counted here
++        if not (pos == "C2" and nhac_at_c2):
++            n_contactable_for_HB += 1
+ 
+-    if pocket.n_HB > n_contactable:
++    if pocket.n_HB > n_contactable_for_HB:
+         return None
+     if pocket.n_CHP > _max_chp(sugar):
+         return None
+ 
++    # NHAc arm contribution
++    nhac_bonus = 0.0
++    if nhac_at_c2:
++        c2_type = pos_map.get("C2")
++        if c2_type == "K_NAC":
++            nhac_bonus = NHAC_EPS[pocket.nhac_arm]
++        # else: arm present but sugar has OH at C2 → arm doesn't engage (bonus = 0)
++
+     return (pocket.n_HB * EPS_HB_EFF
+             + desolv
+             + pocket.n_CHP * CH_PI_EPS.get(pocket.res_type, 0.0)
++            + nhac_bonus
+             + pocket.n_linker * EPS_LINKER_NET)
+ 
+ 
+@@ -219,6 +249,7 @@ def design_glycan_pocket(
+     results = []
+     seen = set()
+     n_enumerated = 0
++    nhac_arm_options = ["none", "mono", "bidentate"]
+ 
+     for n_pos in range(min_n_contacts, len(target_positions) + 1):
+         for pos_combo in combinations(target_positions, n_pos):
+@@ -227,51 +258,63 @@ def design_glycan_pocket(
+                     if n_CHP > 0 and res_type == "none":
+                         continue
+                     for n_HB in range(0, n_pos + 1):
+-                        sig = (pos_combo, n_HB, n_CHP, res_type)
+-                        if sig in seen:
+-                            continue
+-                        seen.add(sig)
+-                        n_enumerated += 1
+-                        if n_enumerated > max_enumerate:
+-                            break
+-
+-                        arch = _suggest_archetype(res_type, n_CHP, n_HB)
+-                        pocket = PocketConfig(
+-                            contacted_positions=pos_combo,
+-                            n_HB=n_HB, n_CHP=n_CHP, res_type=res_type,
+-                            archetype=arch["name"] if arch else None,
+-                            archetype_ref=arch["ref"] if arch else None,
+-                            archetype_notes=arch["notes"] if arch else None,
+-                        )
+-
+-                        target_dG = _score_pocket_sugar(pocket, target)
+-                        if target_dG is None:
+-                            continue
+-
+-                        intf_dG = {}
+-                        for intf in interferents:
+-                            dg = _score_pocket_sugar(pocket, intf)
+-                            intf_dG[intf] = dg if dg is not None else 99.0
+-
+-                        gaps = {intf: target_dG - dg for intf, dg in intf_dG.items()}
+-                        min_gap = min(gaps.values())
+-                        worst = min(gaps, key=lambda k: gaps[k])
+-                        grade = _grade(min_gap)
+-
+-                        if require_grade:
+-                            grade_order = ["A", "B", "C", "D", "F"]
+-                            if grade_order.index(grade) > grade_order.index(require_grade):
++                        # NHAc arm options: only enumerate if C2 is contacted
++                        nhac_options = (nhac_arm_options
++                                        if "C2" in pos_combo else ["none"])
++                        for nhac_arm in nhac_options:
++                            # If nhac_arm active, C2 is handled by arm → max HB reduced by 1
++                            max_hb_here = (n_pos - 1
++                                           if (nhac_arm != "none" and "C2" in pos_combo)
++                                           else n_pos)
++                            if n_HB > max_hb_here:
++                                continue
++
++                            sig = (pos_combo, n_HB, n_CHP, res_type, nhac_arm)
++                            if sig in seen:
++                                continue
++                            seen.add(sig)
++                            n_enumerated += 1
++                            if n_enumerated > max_enumerate:
++                                break
++
++                            arch = _suggest_archetype(res_type, n_CHP, n_HB)
++                            pocket = PocketConfig(
++                                contacted_positions=pos_combo,
++                                n_HB=n_HB, n_CHP=n_CHP, res_type=res_type,
++                                nhac_arm=nhac_arm,
++                                archetype=arch["name"] if arch else None,
++                                archetype_ref=arch["ref"] if arch else None,
++                                archetype_notes=arch["notes"] if arch else None,
++                            )
++
++                            target_dG = _score_pocket_sugar(pocket, target)
++                            if target_dG is None:
+                                 continue
+ 
+-                        results.append(InverseDesignResult(
+-                            target=target, pocket=pocket,
+-                            dG_physics_target=round(target_dG, 3),
+-                            interferent_dG={k: round(v, 3) for k, v in intf_dG.items() if v < 90},
+-                            selectivity_gaps={k: round(v, 3) for k, v in gaps.items()},
+-                            min_gap=round(min_gap, 3),
+-                            worst_interferent=worst,
+-                            selectivity_grade=grade,
+-                        ))
++                            intf_dG = {}
++                            for intf in interferents:
++                                dg = _score_pocket_sugar(pocket, intf)
++                                intf_dG[intf] = dg if dg is not None else 99.0
++
++                            gaps = {intf: target_dG - dg for intf, dg in intf_dG.items()}
++                            min_gap = min(gaps.values())
++                            worst = min(gaps, key=lambda k: gaps[k])
++                            grade = _grade(min_gap)
++
++                            if require_grade:
++                                grade_order = ["A", "B", "C", "D", "F"]
++                                if grade_order.index(grade) > grade_order.index(require_grade):
++                                    continue
++
++                            results.append(InverseDesignResult(
++                                target=target, pocket=pocket,
++                                dG_physics_target=round(target_dG, 3),
++                                interferent_dG={k: round(v, 3) for k, v in intf_dG.items() if v < 90},
++                                selectivity_gaps={k: round(v, 3) for k, v in gaps.items()},
++                                min_gap=round(min_gap, 3),
++                                worst_interferent=worst,
++                                selectivity_grade=grade,
++                            ))
+ 
+     results.sort(key=lambda r: (r.min_gap, r.dG_physics_target))
+     for i, r in enumerate(results):
+diff --git a/glycan/parameters_v23.py b/glycan/parameters_v23.py
+index 24966b6..7d3d161 100644
+--- a/glycan/parameters_v23.py
++++ b/glycan/parameters_v23.py
+@@ -34,6 +34,23 @@ K_DESOLV_AX   = +6.3   # kJ/mol  axial OH [PROVISIONAL v2.2 — needs Schwarz-co
+ # Estimate pending direct measurement
+ K_DESOLV_NAC  = +8.5   # kJ/mol  N-acetyl burial [ESTIMATE v2.2]
+ 
++# NHAc-specific recognition energies
++# Source: Chervenak & Toone 1994 JACS 116:10533 — WGA NHAc thermodynamics
++#   dH(GlcNAc-WGA) - dH(Glc-WGA) ≈ -8 to -10 kJ/mol; attributed to NHAc arm engagement
++#   WGA PDB 2UVO: Tyr73 OH → NHAc C=O + backbone NH → NHAc C=O (2 H-bonds to NHAc)
++#   Single carbonyl contact only (mono): -4.5 kJ/mol
++#   Bidentate (NH donor + C=O acceptor simultaneously engaged): -9.5 kJ/mol
++# STATUS: PROVISIONAL v2.4 — pending direct calorimetric deconvolution
++# THRESHOLD: need EPS_NHAC < -6.1 kJ/mol for GlcNAc selectivity at C2 vs Glc
++EPS_NHAC_MONO       = -4.5   # kJ/mol  single H-bond to NHAc C=O [PROVISIONAL v2.4]
++EPS_NHAC_BIDENTATE  = -9.5   # kJ/mol  bidentate arm (NH + C=O) [PROVISIONAL v2.4]
++
++NHAC_EPS = {
++    "none":       0.0,
++    "mono":       EPS_NHAC_MONO,
++    "bidentate":  EPS_NHAC_BIDENTATE,
++}
++
+ # Residue-type CH-pi dispatch
+ CH_PI_EPS = {
+     "Trp": EPS_CH_PI_TRP,
+-- 
+2.43.0
