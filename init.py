@@ -1,44 +1,40 @@
 """
-MABE Realization Engine — Layer 3 + Layer 4
+MABE Data Adapters
+==================
+Programmatic access to curated experimental databases for MABE calibration and validation.
 
-Physics first. Compute the ideal interaction specification. Then measure deviation.
+Connected sources:
+  - SAMPL6/7/9 host-guest ITC data (104 complexes)
+  - RefractiveIndex.INFO optical constants (4,164 datasets, 272 materials)
+  - ChEMBL binding data API
+  - NIST WebBook thermochemistry
 
-Layer 2 Output:   InteractionSpec (polymorphic: pocket, network, surface, bulk, field, composite)
-Layer 3 Phase 1:  InteractionSpec → IdealPocketSpec (pocket paradigm)
-Layer 3 Phase 2:  IdealSpec × MaterialRegistry → RankedRealizations
-Layer 4:          RankedRealizations → FabricationSpec (per adapter)
+Blocked (need domain allowlist update):
+  - NIST SRD 46 SQLite (99,000 metal-ligand stability constants)
+  - Materials Project API (150,000 inorganic materials)
+  - BindingDB host-guest section
+  - COD crystal structures
 """
 
-from mabe.realization.models import (
-    # ── Polymorphic base + paradigm enum ──
-    InteractionSpec,
-    InteractionParadigm,
-    DiscretePocketSpec,
-    # ── Backward-compat alias ──
-    InteractionGeometrySpec,
-    # ── Downstream types ──
-    IdealPocketSpec,
-    DeviationReport,
-    RealizationScore,
-    RankedRealizations,
-    FabricationSpec,
+from .sampl_adapter import (
+    load_all_sampl,
+    sampl_summary,
+    to_mabe_format,
+    HostGuestMeasurement,
 )
-from mabe.realization.engine.ideal_pocket import compute_ideal_pocket
-from mabe.realization.engine.ranker import rank_realizations
 
-__all__ = [
-    # New
-    "InteractionSpec",
-    "InteractionParadigm",
-    "DiscretePocketSpec",
-    # Backward compat
-    "InteractionGeometrySpec",
-    # Existing
-    "IdealPocketSpec",
-    "DeviationReport",
-    "RealizationScore",
-    "RankedRealizations",
-    "FabricationSpec",
-    "compute_ideal_pocket",
-    "rank_realizations",
-]
+from .refractive_index_adapter import (
+    RefractiveIndexDB,
+    parse_nk_yaml,
+    OpticalData,
+    STRUCTURAL_COLOR_MATERIALS,
+)
+
+from .nist_chembl_adapter import (
+    fetch_nist_gas_phase_thermo,
+    fetch_nist_ion_energetics,
+    chembl_search_molecule,
+    chembl_get_activities,
+    chembl_get_molecule_info,
+    MABE_SPECIES,
+)
