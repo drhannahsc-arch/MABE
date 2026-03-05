@@ -135,6 +135,20 @@ METAL_ALIASES = {
     "bismuth": "Bi3+", "bi": "Bi3+", "bi3+": "Bi3+",
     "thallium": "Tl+", "tl": "Tl+", "tl+": "Tl+",
     "indium": "In3+", "in": "In3+", "in3+": "In3+",
+    # Phase 1 new metals
+    "ruthenium": "Ru2+", "ru": "Ru2+", "ru2+": "Ru2+",
+    "ruthenium(iii)": "Ru3+", "ru3+": "Ru3+",
+    "osmium": "Os2+", "os": "Os2+", "os2+": "Os2+",
+    "rhodium": "Rh3+", "rh": "Rh3+", "rh3+": "Rh3+",
+    "iridium": "Ir3+", "ir": "Ir3+", "ir3+": "Ir3+",
+    "molybdenum": "Mo3+", "mo": "Mo3+", "mo3+": "Mo3+",
+    "tungsten": "W4+", "w": "W4+", "w4+": "W4+",
+    "rhenium": "Re3+", "re": "Re3+", "re3+": "Re3+",
+    "germanium": "Ge2+", "ge": "Ge2+", "ge2+": "Ge2+",
+    "zirconium": "Zr4+", "zr": "Zr4+", "zr4+": "Zr4+",
+    "hafnium": "Hf4+", "hf": "Hf4+", "hf4+": "Hf4+",
+    "titanium(iv)": "Ti4+", "ti4+": "Ti4+",
+    "beryllium": "Be2+", "be": "Be2+", "be2+": "Be2+",
 }
 
 
@@ -166,6 +180,22 @@ MATRIX_PRESETS = {
     "blood": ["Ca2+", "Mg2+", "Na+", "K+", "Fe2+", "Zn2+", "Cu2+"],
     "industrial": ["Ca2+", "Mg2+", "Fe3+", "Cu2+", "Zn2+", "Ni2+",
                    "Cr3+", "Cd2+"],
+    # ── Non-carbon-bias matrix presets ────────────────────────────────────
+    # Precious metals recovery: common co-contaminants in leach liquors
+    # Source: Johnson Matthey; typical hydrometallurgical circuits
+    "precious_metals_leach": ["Cu2+", "Ni2+", "Fe3+", "Co2+", "Zn2+", "Pd2+"],
+    "gold_cyanide": ["Cu2+", "Ag+", "Fe3+", "Ni2+", "Zn2+"],
+    # E-waste leachate: typical dissolved metals from PCB dissolution
+    "e_waste": ["Cu2+", "Sn2+", "Pb2+", "Ni2+", "Zn2+", "Fe3+", "Al3+"],
+    # Nuclear waste / radioactive liquid waste treatment
+    "nuclear_waste": ["UO2_2+", "Th4+", "Fe3+", "Na+", "Ca2+", "Mg2+",
+                      "Cs+", "Ba2+"],
+    # Chlor-alkali brine: Hg contamination in caustic process streams
+    "chloralkali_brine": ["Na+", "Ca2+", "Mg2+", "K+", "Sr2+"],
+    # Hydrometallurgy for Pd/Pt: HCl-based leach
+    "pgm_leach": ["Fe3+", "Cu2+", "Ni2+", "Co2+", "Rh3+"],
+    # Rare earth recovery (e.g. NdFeB magnet recycling)
+    "rare_earth": ["Fe3+", "Ca2+", "Mg2+", "Al3+", "Nd3+", "Gd3+"],
 }
 
 
@@ -231,6 +261,7 @@ def design_binder(
     max_enumerate: int = 500,
     min_target_log_k: float = -999.0,
     allowed_subtypes: Optional[list[str]] = None,
+    design_mode: str = "auto",
 ) -> DesignResult:
     """Design selective binders for a target metal.
 
@@ -242,11 +273,13 @@ def design_binder(
         top_n: Number of top candidates to return
         max_enumerate: Maximum candidates to enumerate
         min_target_log_k: Minimum target log K to include
-        allowed_subtypes: Restrict donor subtypes
+        allowed_subtypes: Restrict donor subtypes (None = HSAB-guided auto)
+        design_mode: "auto"|"soft"|"hard"|"cross_modal"
 
     Returns:
         DesignResult with ranked candidates
     """
+    from core.donor_enumerator import SOFT_METAL_SUBTYPES, HARD_METAL_SUBTYPES
     t0 = time.time()
     notes = []
 
@@ -271,13 +304,36 @@ def design_binder(
     notes.append(f"pH: {pH}")
     notes.append(f"Interferents: {', '.join(intf_formulas) or 'none'}")
 
+    # ── Resolve design_mode → subtype override ───────────────────────
+    effective_subtypes = allowed_subtypes  # None = HSAB-guided in enumerator
+    include_combinatorial = True
+    include_archetypes = True
+
+    if design_mode == "soft":
+        effective_subtypes = SOFT_METAL_SUBTYPES
+        notes.append("design_mode=soft: forced soft donor pool (Se/Te/P/As/C)")
+    elif design_mode == "hard":
+        effective_subtypes = HARD_METAL_SUBTYPES
+        notes.append("design_mode=hard: forced hard donor pool (O/F/N-hard)")
+    elif design_mode == "cross_modal":
+        # Only archetypes that are macrocyclic; no combinatorial
+        include_combinatorial = False
+        notes.append("design_mode=cross_modal: macrocyclic archetypes only")
+    else:
+        notes.append(f"design_mode=auto: HSAB-guided donor pool for {target_formula}")
+
     # ── Enumerate donor sets ─────────────────────────────────────────
     candidates = enumerate_donor_sets(
         target_formula, pH=pH,
         max_candidates=max_enumerate,
-        allowed_subtypes=allowed_subtypes,
+        allowed_subtypes=effective_subtypes,
+        include_combinatorial=include_combinatorial,
+        include_archetypes=include_archetypes,
     )
     n_enumerated = len(candidates)
+    if design_mode == "cross_modal":
+        candidates = [c for c in candidates if c.is_macrocyclic]
+        n_enumerated = len(candidates)
     notes.append(f"Enumerated: {n_enumerated} candidate donor sets")
 
     # ── Score all candidates ─────────────────────────────────────────

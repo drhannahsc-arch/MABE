@@ -84,6 +84,28 @@ MAX_DONOR_COUNT = {
     "Cl_chloride": 4,
     "Br_bromide": 4,
     "I_iodide": 4,
+    # Non-carbon-bias additions
+    "Se_selenolate": 4,    # Analogous to S_thiolate
+    "Se_selenoether": 6,   # Selenacrown analogues
+    "Se_selenourea": 4,
+    "Te_tellurolate": 4,
+    "Te_telluroether": 6,
+    "As_arsine": 4,
+    "As_arsenite": 3,      # Tridentate as As(O)₃ donor
+    "Sb_stibine": 2,       # Rare; mainly bidentate
+    "P_phosphonate": 4,
+    "P_phosphite": 4,
+    "F_fluoride": 6,       # Fluoride bridges in high-valent complexes
+    "C_cyanide": 6,        # Hexacyanometallate
+    "C_carbonyl": 6,       # Hexacarbonyl
+    "N_oxime": 4,
+    "N_hydrazine": 4,
+    "N_aromatic": 6,
+    "N_thioamide": 4,
+    "S_sulfoxide": 4,
+    "S_thioamide": 4,
+    "O_carbonyl": 8,
+    "O_phosphonate": 4,
 }
 
 # Donor subtypes grouped by chemical compatibility
@@ -119,6 +141,33 @@ COMPATIBLE_GROUPS = [
     {"N_pyridine", "O_carboxylate"},
     # Imidazole + carboxylate (histidine type)
     {"N_imidazole", "O_carboxylate"},
+    # ── Non-carbon-bias groups ────────────────────────────────────────────
+    # Selenolate + amine (Se/N mixed bidentate for soft metals)
+    {"Se_selenolate", "N_amine"},
+    # Selenolate + imine (Schiff-base Se/N)
+    {"Se_selenolate", "N_imine"},
+    # Pure selenolate (metallothionein Se analogue)
+    {"Se_selenolate"},
+    # Selenoether crown (crown ether with Se replacing O)
+    {"Se_selenoether"},
+    # Mixed thiolate + selenolate (gradient chalcogenide chelator)
+    {"S_thiolate", "Se_selenolate"},
+    # Phosphine + selenolate (transition metal P/Se bidentate)
+    {"P_phosphine", "Se_selenolate"},
+    # Phosphine + thiolate (soft metal P/S bidentate)
+    {"P_phosphine", "S_thiolate"},
+    # Phosphine + amine (mixed P/N)
+    {"P_phosphine", "N_amine"},
+    # Arsine + phosphine (mixed pnictogen)
+    {"As_arsine", "P_phosphine"},
+    # Cyanide (hexacyanometallate-type donors)
+    {"C_cyanide"},
+    # Fluoride-selective hard donors
+    {"F_fluoride", "O_carboxylate"},
+    {"F_fluoride"},
+    # Oxime + amine (dimethylglyoxime-type)
+    {"N_oxime", "N_amine"},
+    {"N_oxime"},
 ]
 
 # Chelate ring rules: which donor pairs can form 5-membered chelate rings
@@ -143,6 +192,31 @@ CHELATE_PAIRS = {
     ("S_thioether", "N_amine"),         # Met-type
     ("O_ether", "O_ether"),             # Crown ether
     ("P_phosphine", "P_phosphine"),     # Bisphosphine
+    # ── Non-carbon-bias chelate pairs ────────────────────────────────────
+    # Se-containing chelate pairs
+    ("Se_selenolate", "N_amine"),        # Selenocysteine-type 5-ring
+    ("Se_selenolate", "N_imine"),        # Se/N Schiff-base chelate
+    ("Se_selenolate", "Se_selenolate"),  # Diselenolate bidentate
+    ("Se_selenoether", "Se_selenoether"),# Selenacrown ether
+    ("S_thiolate", "Se_selenolate"),     # Mixed S/Se bidentate
+    ("Se_selenolate", "O_carboxylate"),  # Se-carboxylate 5-ring
+    # P-containing chelate pairs
+    ("P_phosphine", "N_amine"),          # Aminophosphine 5-ring
+    ("P_phosphine", "S_thiolate"),       # Phosphino-thiolate
+    ("P_phosphine", "Se_selenolate"),    # Phosphino-selenolate
+    ("P_phosphine", "O_carboxylate"),    # Phosphinocarboxylate
+    ("P_phosphite", "P_phosphite"),      # Bisphosphite
+    ("As_arsine", "As_arsine"),          # Bis(arsine)
+    ("As_arsine", "P_phosphine"),        # As/P mixed bidentate
+    ("As_arsine", "N_amine"),            # Arsino-amine
+    # C-donor pairs
+    ("C_cyanide", "N_amine"),            # Cyanide + amine (ambidentate)
+    # Oxime chelate pairs
+    ("N_oxime", "N_oxime"),              # Bis-oxime (DMG-type)
+    ("N_oxime", "N_amine"),              # Oxime-amine
+    # Te (rare; only for extreme soft metals)
+    ("Te_tellurolate", "Te_tellurolate"),
+    ("Te_tellurolate", "N_amine"),
 }
 
 
@@ -261,6 +335,83 @@ ARCHETYPES = [
     DonorSet(["O_carboxylate","O_hydroxamate","N_amine"],
              chelate_rings=2, denticity=3, ring_sizes=[5,5], n_ligand_molecules=1,
              archetype="Mixed hard chelator (NHO₂)"),
+    # ── Non-carbon-bias archetypes ────────────────────────────────────────
+    # Selenolate: Se/N bidentate (selenocysteine analogue)
+    DonorSet(["Se_selenolate","N_amine"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Selenocysteine-type (SeN)"),
+    DonorSet(["Se_selenolate","Se_selenolate"],
+             chelate_rings=0, denticity=2, n_ligand_molecules=2,
+             archetype="Bis(selenolate) — soft metal capture"),
+    DonorSet(["Se_selenolate","Se_selenolate","Se_selenolate","Se_selenolate"],
+             chelate_rings=0, denticity=4, n_ligand_molecules=4,
+             archetype="Tetra(selenolate) — Hg2+/Au+/Pd2+"),
+    DonorSet(["Se_selenolate","N_amine","Se_selenolate","N_amine"],
+             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
+             archetype="Bis(selenocysteine)-type (Se₂N₂)"),
+    # Selenoether crowns (analogous to thiacrowns; Ibers & Holm 1980)
+    DonorSet(["Se_selenoether"]*4,
+             chelate_rings=4, denticity=4, is_macrocyclic=True,
+             cavity_radius_nm=0.065, ring_sizes=[5,5,5,5], n_ligand_molecules=1,
+             archetype="Selenacrown-12 ([12]aneS₄ Se-analogue)"),
+    DonorSet(["Se_selenoether"]*6,
+             chelate_rings=6, denticity=6, is_macrocyclic=True,
+             cavity_radius_nm=0.145, ring_sizes=[5]*6, n_ligand_molecules=1,
+             archetype="Selenacrown-18 (large selenacrown)"),
+    # Mixed thiacrown: S + Se for graded soft selectivity
+    DonorSet(["S_thioether","Se_selenoether","S_thioether","Se_selenoether"],
+             chelate_rings=4, denticity=4, is_macrocyclic=True,
+             cavity_radius_nm=0.075, ring_sizes=[5]*4, n_ligand_molecules=1,
+             archetype="Mixed [12]aneS₂Se₂ thia-selenacrown"),
+    # Phosphine binders: key for precious metals (Au, Pt, Pd, Rh)
+    DonorSet(["P_phosphine","P_phosphine","P_phosphine","P_phosphine"],
+             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
+             archetype="Bis(bisphosphine) — Pd2+/Pt2+/Rh3+"),
+    DonorSet(["P_phosphine","S_thiolate"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Phosphino-thiolate (P/S bidentate)"),
+    DonorSet(["P_phosphine","Se_selenolate"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Phosphino-selenolate (P/Se bidentate)"),
+    # Arsine binders
+    DonorSet(["As_arsine","As_arsine"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Bis(arsine) (DIARS-type)"),
+    DonorSet(["As_arsine","As_arsine","As_arsine","As_arsine"],
+             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
+             archetype="Tetra(arsine) — Pd2+/Pt2+"),
+    # Cyanide complexes
+    DonorSet(["C_cyanide","C_cyanide","C_cyanide","C_cyanide",
+              "C_cyanide","C_cyanide"],
+             chelate_rings=0, denticity=6, n_ligand_molecules=6,
+             archetype="Hexacyanometallate [M(CN)₆]⁴⁻ — Fe2+/Fe3+"),
+    DonorSet(["C_cyanide","C_cyanide","C_cyanide","C_cyanide"],
+             chelate_rings=0, denticity=4, n_ligand_molecules=4,
+             archetype="Tetracyanometallate [M(CN)₄]²⁻ — Ni2+/Pd2+"),
+    # Oxime: DMG-type (dimethylglyoxime — classic Ni2+ chelator)
+    DonorSet(["N_oxime","N_oxime"],
+             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
+             archetype="Dimethylglyoxime-type (N₂ bis-oxime)"),
+    DonorSet(["N_oxime","N_oxime","N_oxime","N_oxime"],
+             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
+             archetype="Bis(dimethylglyoximate) — Ni2+/Co2+"),
+    # Fluoride-selective hard chelators (Al3+, Zr4+, Th4+)
+    DonorSet(["F_fluoride","F_fluoride","F_fluoride","F_fluoride"],
+             chelate_rings=0, denticity=4, n_ligand_molecules=4,
+             archetype="Tetrafluoride coordination — Al3+/Zr4+"),
+    DonorSet(["F_fluoride","O_carboxylate","F_fluoride","O_carboxylate"],
+             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
+             archetype="Fluorocarboxylate chelate — hard metal selective"),
+    # Thioether crowns (already in ARCHETYPES via crown ethers; Se versions above)
+    # Adding S-crowns explicitly for completeness
+    DonorSet(["S_thioether"]*4,
+             chelate_rings=4, denticity=4, is_macrocyclic=True,
+             cavity_radius_nm=0.065, ring_sizes=[5,5,5,5], n_ligand_molecules=1,
+             archetype="[12]aneS₄ thiacrown"),
+    DonorSet(["S_thioether"]*6,
+             chelate_rings=6, denticity=6, is_macrocyclic=True,
+             cavity_radius_nm=0.145, ring_sizes=[5]*6, n_ligand_molecules=1,
+             archetype="[18]aneS₆ large thiacrown"),
 ]
 
 
@@ -343,6 +494,74 @@ CORE_SUBTYPES = [
     "P_phosphine",
 ]
 
+# ── HSAB-stratified donor pools ──────────────────────────────────────────
+# Selected by HSAB softness for targeted enumeration.
+# Soft pool: used when target metal has hsab_softness > 0.60
+# Hard pool: used when target metal has hsab_softness < 0.25
+# Borderline pool: 0.25–0.60 (augments CORE_SUBTYPES)
+# Sources: noncarbonbias_donors.py; Pearson 1988; NIST SRD 46
+
+SOFT_METAL_SUBTYPES = [
+    # Strong soft donors — chalcogenides and pnictogens
+    "S_thiolate", "S_dithiocarbamate", "S_thioether", "S_sulfoxide",
+    "Se_selenolate", "Se_selenoether",
+    "Te_tellurolate",                        # Extreme soft: Hg, Au only
+    "P_phosphine", "P_phosphite",
+    "As_arsine",
+    "I_iodide", "Br_bromide",
+    "C_cyanide",                             # C-end: Fe2+, Au+, Pd2+
+    "N_imine", "N_aromatic",                 # Moderate soft N donors
+]
+
+HARD_METAL_SUBTYPES = [
+    # Strong hard donors — oxyanions, fluoride, hard N
+    "O_carboxylate", "O_phenolate", "O_hydroxamate", "O_catecholate",
+    "O_phosphonate", "O_hydroxyl",
+    "F_fluoride",                            # Al3+, Th4+, Zr4+, Be2+
+    "N_amine", "N_imidazole",
+]
+
+BORDERLINE_SUBTYPES = [
+    # N/S/P that work across the borderline zone (Fe2+/3+, Co2+, Ni2+, Cu2+)
+    "N_amine", "N_imine", "N_pyridine", "N_imidazole",
+    "S_thiolate", "S_dithiocarbamate",
+    "O_carboxylate", "O_phenolate",
+    "P_phosphine",
+]
+
+# Donor subtype → element (first token before "_")
+def _donor_element(subtype: str) -> str:
+    return subtype.split("_")[0] if "_" in subtype else subtype
+
+
+def _get_subtypes_for_metal(
+    metal_formula: str,
+    allowed_subtypes=None,
+    ph: float = 7.0,
+) -> list:
+    """Return HSAB-appropriate donor subtypes for a metal.
+
+    If allowed_subtypes given, use those (filtered by pH).
+    Otherwise pick from HSAB-stratified pools.
+    """
+    from core.scorer_frozen import METAL_DB
+    metal = METAL_DB.get(metal_formula)
+    if metal is None:
+        return CORE_SUBTYPES
+
+    softness = metal.hsab_softness
+
+    if allowed_subtypes:
+        pool = allowed_subtypes
+    elif softness > 0.60:
+        pool = list(set(SOFT_METAL_SUBTYPES + CORE_SUBTYPES))
+    elif softness < 0.25:
+        pool = list(set(HARD_METAL_SUBTYPES + CORE_SUBTYPES))
+    else:
+        pool = list(set(BORDERLINE_SUBTYPES + CORE_SUBTYPES))
+
+    return pool
+
 
 def _ph_available(subtype: str, pH: float) -> bool:
     """Is this donor subtype significantly available at the given pH?"""
@@ -384,7 +603,7 @@ def enumerate_donor_sets(
     candidates = {}  # signature → DonorSet (dedup)
 
     # Filter subtypes by pH availability
-    subtypes = allowed_subtypes or CORE_SUBTYPES
+    subtypes = _get_subtypes_for_metal(metal_formula, allowed_subtypes, pH)
     available = [s for s in subtypes if _ph_available(s, pH)]
     if not available:
         return []
