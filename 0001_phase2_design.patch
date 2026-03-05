@@ -1,0 +1,756 @@
+From 4b70ad7e1ea6d02d1586d5e6de026d168f5ac267 Mon Sep 17 00:00:00 2001
+From: Dr Hannah Sanford-Crane <hannah@maadscientist.com>
+Date: Thu, 5 Mar 2026 20:31:02 +0000
+Subject: [PATCH] =?UTF-8?q?Phase=202=20=E2=80=94=20design=20engine=20expan?=
+ =?UTF-8?q?sion=20(full=20periodic=20table=20+=20design=5Fmode)?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+donor_enumerator.py:
+- Add SOFT_METAL_SUBTYPES, HARD_METAL_SUBTYPES, BORDERLINE_SUBTYPES pools
+  stratified by Pearson HSAB softness.
+- Add _get_subtypes_for_metal(): HSAB-guided pool selection (soft>0.60
+  gets Se/Te/P/As/C-cyanide; hard<0.25 gets O/F/N-hard; auto otherwise).
+- Wire HSAB pool into enumerate_donor_sets() — replaces flat CORE_SUBTYPES.
+- Expand MAX_DONOR_COUNT: Se, Te, As, Sb, F, C, N_oxime, S_sulfoxide, etc.
+- Expand CHELATE_PAIRS: Se/N, Se/Se, P/S, P/Se, P/N, As/As, As/P, oxime.
+- Expand COMPATIBLE_GROUPS: selenolate, selenoether, P/Se, P/S, cyanide, F.
+- Add 17 new ARCHETYPES:
+    selenocysteine-type (SeN), bis/tetra selenolate, bis(SeN2),
+    selenacrown-12/18, mixed [12]aneS2Se2, bis/tetra bisphosphine,
+    phosphino-thiolate, phosphino-selenolate, bis/tetra arsine,
+    hexacyanometallate, tetracyanometallate, DMG-type bis-oxime,
+    tetrafluoride, fluorocarboxylate chelate, [12]aneS4, [18]aneS6.
+
+design_engine.py:
+- Add design_mode parameter: 'auto'|'soft'|'hard'|'cross_modal'.
+    auto        — HSAB-guided (default, inferred in enumerator).
+    soft        — Force SOFT_METAL_SUBTYPES (Se/Te/P/As/C donors).
+    hard        — Force HARD_METAL_SUBTYPES (O/F/hard-N donors).
+    cross_modal — Macrocyclic archetypes only (filters non-macrocyclic).
+- Expand METAL_ALIASES: Ru, Os, Rh, Ir, Mo, W, Re, Ge, Zr, Hf, Ti4+, Be.
+- Expand MATRIX_PRESETS: precious_metals_leach, gold_cyanide, e_waste,
+  nuclear_waste, chloralkali_brine, pgm_leach, rare_earth.
+
+Tests: 44 new in test_design_engine_expansion.py; 561 total pass, 0 fail.
+---
+ core/design_engine.py                 |  60 ++++-
+ core/donor_enumerator.py              | 221 ++++++++++++++++-
+ tests/test_design_engine_expansion.py | 329 ++++++++++++++++++++++++++
+ 3 files changed, 607 insertions(+), 3 deletions(-)
+ create mode 100644 tests/test_design_engine_expansion.py
+
+diff --git a/core/design_engine.py b/core/design_engine.py
+index 6e81c83..4f3138a 100644
+--- a/core/design_engine.py
++++ b/core/design_engine.py
+@@ -135,6 +135,20 @@ METAL_ALIASES = {
+     "bismuth": "Bi3+", "bi": "Bi3+", "bi3+": "Bi3+",
+     "thallium": "Tl+", "tl": "Tl+", "tl+": "Tl+",
+     "indium": "In3+", "in": "In3+", "in3+": "In3+",
++    # Phase 1 new metals
++    "ruthenium": "Ru2+", "ru": "Ru2+", "ru2+": "Ru2+",
++    "ruthenium(iii)": "Ru3+", "ru3+": "Ru3+",
++    "osmium": "Os2+", "os": "Os2+", "os2+": "Os2+",
++    "rhodium": "Rh3+", "rh": "Rh3+", "rh3+": "Rh3+",
++    "iridium": "Ir3+", "ir": "Ir3+", "ir3+": "Ir3+",
++    "molybdenum": "Mo3+", "mo": "Mo3+", "mo3+": "Mo3+",
++    "tungsten": "W4+", "w": "W4+", "w4+": "W4+",
++    "rhenium": "Re3+", "re": "Re3+", "re3+": "Re3+",
++    "germanium": "Ge2+", "ge": "Ge2+", "ge2+": "Ge2+",
++    "zirconium": "Zr4+", "zr": "Zr4+", "zr4+": "Zr4+",
++    "hafnium": "Hf4+", "hf": "Hf4+", "hf4+": "Hf4+",
++    "titanium(iv)": "Ti4+", "ti4+": "Ti4+",
++    "beryllium": "Be2+", "be": "Be2+", "be2+": "Be2+",
+ }
+ 
+ 
+@@ -166,6 +180,22 @@ MATRIX_PRESETS = {
+     "blood": ["Ca2+", "Mg2+", "Na+", "K+", "Fe2+", "Zn2+", "Cu2+"],
+     "industrial": ["Ca2+", "Mg2+", "Fe3+", "Cu2+", "Zn2+", "Ni2+",
+                    "Cr3+", "Cd2+"],
++    # ── Non-carbon-bias matrix presets ────────────────────────────────────
++    # Precious metals recovery: common co-contaminants in leach liquors
++    # Source: Johnson Matthey; typical hydrometallurgical circuits
++    "precious_metals_leach": ["Cu2+", "Ni2+", "Fe3+", "Co2+", "Zn2+", "Pd2+"],
++    "gold_cyanide": ["Cu2+", "Ag+", "Fe3+", "Ni2+", "Zn2+"],
++    # E-waste leachate: typical dissolved metals from PCB dissolution
++    "e_waste": ["Cu2+", "Sn2+", "Pb2+", "Ni2+", "Zn2+", "Fe3+", "Al3+"],
++    # Nuclear waste / radioactive liquid waste treatment
++    "nuclear_waste": ["UO2_2+", "Th4+", "Fe3+", "Na+", "Ca2+", "Mg2+",
++                      "Cs+", "Ba2+"],
++    # Chlor-alkali brine: Hg contamination in caustic process streams
++    "chloralkali_brine": ["Na+", "Ca2+", "Mg2+", "K+", "Sr2+"],
++    # Hydrometallurgy for Pd/Pt: HCl-based leach
++    "pgm_leach": ["Fe3+", "Cu2+", "Ni2+", "Co2+", "Rh3+"],
++    # Rare earth recovery (e.g. NdFeB magnet recycling)
++    "rare_earth": ["Fe3+", "Ca2+", "Mg2+", "Al3+", "Nd3+", "Gd3+"],
+ }
+ 
+ 
+@@ -231,6 +261,7 @@ def design_binder(
+     max_enumerate: int = 500,
+     min_target_log_k: float = -999.0,
+     allowed_subtypes: Optional[list[str]] = None,
++    design_mode: str = "auto",
+ ) -> DesignResult:
+     """Design selective binders for a target metal.
+ 
+@@ -242,11 +273,13 @@ def design_binder(
+         top_n: Number of top candidates to return
+         max_enumerate: Maximum candidates to enumerate
+         min_target_log_k: Minimum target log K to include
+-        allowed_subtypes: Restrict donor subtypes
++        allowed_subtypes: Restrict donor subtypes (None = HSAB-guided auto)
++        design_mode: "auto"|"soft"|"hard"|"cross_modal"
+ 
+     Returns:
+         DesignResult with ranked candidates
+     """
++    from core.donor_enumerator import SOFT_METAL_SUBTYPES, HARD_METAL_SUBTYPES
+     t0 = time.time()
+     notes = []
+ 
+@@ -271,13 +304,36 @@ def design_binder(
+     notes.append(f"pH: {pH}")
+     notes.append(f"Interferents: {', '.join(intf_formulas) or 'none'}")
+ 
++    # ── Resolve design_mode → subtype override ───────────────────────
++    effective_subtypes = allowed_subtypes  # None = HSAB-guided in enumerator
++    include_combinatorial = True
++    include_archetypes = True
++
++    if design_mode == "soft":
++        effective_subtypes = SOFT_METAL_SUBTYPES
++        notes.append("design_mode=soft: forced soft donor pool (Se/Te/P/As/C)")
++    elif design_mode == "hard":
++        effective_subtypes = HARD_METAL_SUBTYPES
++        notes.append("design_mode=hard: forced hard donor pool (O/F/N-hard)")
++    elif design_mode == "cross_modal":
++        # Only archetypes that are macrocyclic; no combinatorial
++        include_combinatorial = False
++        notes.append("design_mode=cross_modal: macrocyclic archetypes only")
++    else:
++        notes.append(f"design_mode=auto: HSAB-guided donor pool for {target_formula}")
++
+     # ── Enumerate donor sets ─────────────────────────────────────────
+     candidates = enumerate_donor_sets(
+         target_formula, pH=pH,
+         max_candidates=max_enumerate,
+-        allowed_subtypes=allowed_subtypes,
++        allowed_subtypes=effective_subtypes,
++        include_combinatorial=include_combinatorial,
++        include_archetypes=include_archetypes,
+     )
+     n_enumerated = len(candidates)
++    if design_mode == "cross_modal":
++        candidates = [c for c in candidates if c.is_macrocyclic]
++        n_enumerated = len(candidates)
+     notes.append(f"Enumerated: {n_enumerated} candidate donor sets")
+ 
+     # ── Score all candidates ─────────────────────────────────────────
+diff --git a/core/donor_enumerator.py b/core/donor_enumerator.py
+index 458ddd8..d64a664 100644
+--- a/core/donor_enumerator.py
++++ b/core/donor_enumerator.py
+@@ -84,6 +84,28 @@ MAX_DONOR_COUNT = {
+     "Cl_chloride": 4,
+     "Br_bromide": 4,
+     "I_iodide": 4,
++    # Non-carbon-bias additions
++    "Se_selenolate": 4,    # Analogous to S_thiolate
++    "Se_selenoether": 6,   # Selenacrown analogues
++    "Se_selenourea": 4,
++    "Te_tellurolate": 4,
++    "Te_telluroether": 6,
++    "As_arsine": 4,
++    "As_arsenite": 3,      # Tridentate as As(O)₃ donor
++    "Sb_stibine": 2,       # Rare; mainly bidentate
++    "P_phosphonate": 4,
++    "P_phosphite": 4,
++    "F_fluoride": 6,       # Fluoride bridges in high-valent complexes
++    "C_cyanide": 6,        # Hexacyanometallate
++    "C_carbonyl": 6,       # Hexacarbonyl
++    "N_oxime": 4,
++    "N_hydrazine": 4,
++    "N_aromatic": 6,
++    "N_thioamide": 4,
++    "S_sulfoxide": 4,
++    "S_thioamide": 4,
++    "O_carbonyl": 8,
++    "O_phosphonate": 4,
+ }
+ 
+ # Donor subtypes grouped by chemical compatibility
+@@ -119,6 +141,33 @@ COMPATIBLE_GROUPS = [
+     {"N_pyridine", "O_carboxylate"},
+     # Imidazole + carboxylate (histidine type)
+     {"N_imidazole", "O_carboxylate"},
++    # ── Non-carbon-bias groups ────────────────────────────────────────────
++    # Selenolate + amine (Se/N mixed bidentate for soft metals)
++    {"Se_selenolate", "N_amine"},
++    # Selenolate + imine (Schiff-base Se/N)
++    {"Se_selenolate", "N_imine"},
++    # Pure selenolate (metallothionein Se analogue)
++    {"Se_selenolate"},
++    # Selenoether crown (crown ether with Se replacing O)
++    {"Se_selenoether"},
++    # Mixed thiolate + selenolate (gradient chalcogenide chelator)
++    {"S_thiolate", "Se_selenolate"},
++    # Phosphine + selenolate (transition metal P/Se bidentate)
++    {"P_phosphine", "Se_selenolate"},
++    # Phosphine + thiolate (soft metal P/S bidentate)
++    {"P_phosphine", "S_thiolate"},
++    # Phosphine + amine (mixed P/N)
++    {"P_phosphine", "N_amine"},
++    # Arsine + phosphine (mixed pnictogen)
++    {"As_arsine", "P_phosphine"},
++    # Cyanide (hexacyanometallate-type donors)
++    {"C_cyanide"},
++    # Fluoride-selective hard donors
++    {"F_fluoride", "O_carboxylate"},
++    {"F_fluoride"},
++    # Oxime + amine (dimethylglyoxime-type)
++    {"N_oxime", "N_amine"},
++    {"N_oxime"},
+ ]
+ 
+ # Chelate ring rules: which donor pairs can form 5-membered chelate rings
+@@ -143,6 +192,31 @@ CHELATE_PAIRS = {
+     ("S_thioether", "N_amine"),         # Met-type
+     ("O_ether", "O_ether"),             # Crown ether
+     ("P_phosphine", "P_phosphine"),     # Bisphosphine
++    # ── Non-carbon-bias chelate pairs ────────────────────────────────────
++    # Se-containing chelate pairs
++    ("Se_selenolate", "N_amine"),        # Selenocysteine-type 5-ring
++    ("Se_selenolate", "N_imine"),        # Se/N Schiff-base chelate
++    ("Se_selenolate", "Se_selenolate"),  # Diselenolate bidentate
++    ("Se_selenoether", "Se_selenoether"),# Selenacrown ether
++    ("S_thiolate", "Se_selenolate"),     # Mixed S/Se bidentate
++    ("Se_selenolate", "O_carboxylate"),  # Se-carboxylate 5-ring
++    # P-containing chelate pairs
++    ("P_phosphine", "N_amine"),          # Aminophosphine 5-ring
++    ("P_phosphine", "S_thiolate"),       # Phosphino-thiolate
++    ("P_phosphine", "Se_selenolate"),    # Phosphino-selenolate
++    ("P_phosphine", "O_carboxylate"),    # Phosphinocarboxylate
++    ("P_phosphite", "P_phosphite"),      # Bisphosphite
++    ("As_arsine", "As_arsine"),          # Bis(arsine)
++    ("As_arsine", "P_phosphine"),        # As/P mixed bidentate
++    ("As_arsine", "N_amine"),            # Arsino-amine
++    # C-donor pairs
++    ("C_cyanide", "N_amine"),            # Cyanide + amine (ambidentate)
++    # Oxime chelate pairs
++    ("N_oxime", "N_oxime"),              # Bis-oxime (DMG-type)
++    ("N_oxime", "N_amine"),              # Oxime-amine
++    # Te (rare; only for extreme soft metals)
++    ("Te_tellurolate", "Te_tellurolate"),
++    ("Te_tellurolate", "N_amine"),
+ }
+ 
+ 
+@@ -261,6 +335,83 @@ ARCHETYPES = [
+     DonorSet(["O_carboxylate","O_hydroxamate","N_amine"],
+              chelate_rings=2, denticity=3, ring_sizes=[5,5], n_ligand_molecules=1,
+              archetype="Mixed hard chelator (NHO₂)"),
++    # ── Non-carbon-bias archetypes ────────────────────────────────────────
++    # Selenolate: Se/N bidentate (selenocysteine analogue)
++    DonorSet(["Se_selenolate","N_amine"],
++             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
++             archetype="Selenocysteine-type (SeN)"),
++    DonorSet(["Se_selenolate","Se_selenolate"],
++             chelate_rings=0, denticity=2, n_ligand_molecules=2,
++             archetype="Bis(selenolate) — soft metal capture"),
++    DonorSet(["Se_selenolate","Se_selenolate","Se_selenolate","Se_selenolate"],
++             chelate_rings=0, denticity=4, n_ligand_molecules=4,
++             archetype="Tetra(selenolate) — Hg2+/Au+/Pd2+"),
++    DonorSet(["Se_selenolate","N_amine","Se_selenolate","N_amine"],
++             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
++             archetype="Bis(selenocysteine)-type (Se₂N₂)"),
++    # Selenoether crowns (analogous to thiacrowns; Ibers & Holm 1980)
++    DonorSet(["Se_selenoether"]*4,
++             chelate_rings=4, denticity=4, is_macrocyclic=True,
++             cavity_radius_nm=0.065, ring_sizes=[5,5,5,5], n_ligand_molecules=1,
++             archetype="Selenacrown-12 ([12]aneS₄ Se-analogue)"),
++    DonorSet(["Se_selenoether"]*6,
++             chelate_rings=6, denticity=6, is_macrocyclic=True,
++             cavity_radius_nm=0.145, ring_sizes=[5]*6, n_ligand_molecules=1,
++             archetype="Selenacrown-18 (large selenacrown)"),
++    # Mixed thiacrown: S + Se for graded soft selectivity
++    DonorSet(["S_thioether","Se_selenoether","S_thioether","Se_selenoether"],
++             chelate_rings=4, denticity=4, is_macrocyclic=True,
++             cavity_radius_nm=0.075, ring_sizes=[5]*4, n_ligand_molecules=1,
++             archetype="Mixed [12]aneS₂Se₂ thia-selenacrown"),
++    # Phosphine binders: key for precious metals (Au, Pt, Pd, Rh)
++    DonorSet(["P_phosphine","P_phosphine","P_phosphine","P_phosphine"],
++             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
++             archetype="Bis(bisphosphine) — Pd2+/Pt2+/Rh3+"),
++    DonorSet(["P_phosphine","S_thiolate"],
++             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
++             archetype="Phosphino-thiolate (P/S bidentate)"),
++    DonorSet(["P_phosphine","Se_selenolate"],
++             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
++             archetype="Phosphino-selenolate (P/Se bidentate)"),
++    # Arsine binders
++    DonorSet(["As_arsine","As_arsine"],
++             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
++             archetype="Bis(arsine) (DIARS-type)"),
++    DonorSet(["As_arsine","As_arsine","As_arsine","As_arsine"],
++             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
++             archetype="Tetra(arsine) — Pd2+/Pt2+"),
++    # Cyanide complexes
++    DonorSet(["C_cyanide","C_cyanide","C_cyanide","C_cyanide",
++              "C_cyanide","C_cyanide"],
++             chelate_rings=0, denticity=6, n_ligand_molecules=6,
++             archetype="Hexacyanometallate [M(CN)₆]⁴⁻ — Fe2+/Fe3+"),
++    DonorSet(["C_cyanide","C_cyanide","C_cyanide","C_cyanide"],
++             chelate_rings=0, denticity=4, n_ligand_molecules=4,
++             archetype="Tetracyanometallate [M(CN)₄]²⁻ — Ni2+/Pd2+"),
++    # Oxime: DMG-type (dimethylglyoxime — classic Ni2+ chelator)
++    DonorSet(["N_oxime","N_oxime"],
++             chelate_rings=1, denticity=2, ring_sizes=[5], n_ligand_molecules=1,
++             archetype="Dimethylglyoxime-type (N₂ bis-oxime)"),
++    DonorSet(["N_oxime","N_oxime","N_oxime","N_oxime"],
++             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
++             archetype="Bis(dimethylglyoximate) — Ni2+/Co2+"),
++    # Fluoride-selective hard chelators (Al3+, Zr4+, Th4+)
++    DonorSet(["F_fluoride","F_fluoride","F_fluoride","F_fluoride"],
++             chelate_rings=0, denticity=4, n_ligand_molecules=4,
++             archetype="Tetrafluoride coordination — Al3+/Zr4+"),
++    DonorSet(["F_fluoride","O_carboxylate","F_fluoride","O_carboxylate"],
++             chelate_rings=2, denticity=4, ring_sizes=[5,5], n_ligand_molecules=2,
++             archetype="Fluorocarboxylate chelate — hard metal selective"),
++    # Thioether crowns (already in ARCHETYPES via crown ethers; Se versions above)
++    # Adding S-crowns explicitly for completeness
++    DonorSet(["S_thioether"]*4,
++             chelate_rings=4, denticity=4, is_macrocyclic=True,
++             cavity_radius_nm=0.065, ring_sizes=[5,5,5,5], n_ligand_molecules=1,
++             archetype="[12]aneS₄ thiacrown"),
++    DonorSet(["S_thioether"]*6,
++             chelate_rings=6, denticity=6, is_macrocyclic=True,
++             cavity_radius_nm=0.145, ring_sizes=[5]*6, n_ligand_molecules=1,
++             archetype="[18]aneS₆ large thiacrown"),
+ ]
+ 
+ 
+@@ -343,6 +494,74 @@ CORE_SUBTYPES = [
+     "P_phosphine",
+ ]
+ 
++# ── HSAB-stratified donor pools ──────────────────────────────────────────
++# Selected by HSAB softness for targeted enumeration.
++# Soft pool: used when target metal has hsab_softness > 0.60
++# Hard pool: used when target metal has hsab_softness < 0.25
++# Borderline pool: 0.25–0.60 (augments CORE_SUBTYPES)
++# Sources: noncarbonbias_donors.py; Pearson 1988; NIST SRD 46
++
++SOFT_METAL_SUBTYPES = [
++    # Strong soft donors — chalcogenides and pnictogens
++    "S_thiolate", "S_dithiocarbamate", "S_thioether", "S_sulfoxide",
++    "Se_selenolate", "Se_selenoether",
++    "Te_tellurolate",                        # Extreme soft: Hg, Au only
++    "P_phosphine", "P_phosphite",
++    "As_arsine",
++    "I_iodide", "Br_bromide",
++    "C_cyanide",                             # C-end: Fe2+, Au+, Pd2+
++    "N_imine", "N_aromatic",                 # Moderate soft N donors
++]
++
++HARD_METAL_SUBTYPES = [
++    # Strong hard donors — oxyanions, fluoride, hard N
++    "O_carboxylate", "O_phenolate", "O_hydroxamate", "O_catecholate",
++    "O_phosphonate", "O_hydroxyl",
++    "F_fluoride",                            # Al3+, Th4+, Zr4+, Be2+
++    "N_amine", "N_imidazole",
++]
++
++BORDERLINE_SUBTYPES = [
++    # N/S/P that work across the borderline zone (Fe2+/3+, Co2+, Ni2+, Cu2+)
++    "N_amine", "N_imine", "N_pyridine", "N_imidazole",
++    "S_thiolate", "S_dithiocarbamate",
++    "O_carboxylate", "O_phenolate",
++    "P_phosphine",
++]
++
++# Donor subtype → element (first token before "_")
++def _donor_element(subtype: str) -> str:
++    return subtype.split("_")[0] if "_" in subtype else subtype
++
++
++def _get_subtypes_for_metal(
++    metal_formula: str,
++    allowed_subtypes=None,
++    ph: float = 7.0,
++) -> list:
++    """Return HSAB-appropriate donor subtypes for a metal.
++
++    If allowed_subtypes given, use those (filtered by pH).
++    Otherwise pick from HSAB-stratified pools.
++    """
++    from core.scorer_frozen import METAL_DB
++    metal = METAL_DB.get(metal_formula)
++    if metal is None:
++        return CORE_SUBTYPES
++
++    softness = metal.hsab_softness
++
++    if allowed_subtypes:
++        pool = allowed_subtypes
++    elif softness > 0.60:
++        pool = list(set(SOFT_METAL_SUBTYPES + CORE_SUBTYPES))
++    elif softness < 0.25:
++        pool = list(set(HARD_METAL_SUBTYPES + CORE_SUBTYPES))
++    else:
++        pool = list(set(BORDERLINE_SUBTYPES + CORE_SUBTYPES))
++
++    return pool
++
+ 
+ def _ph_available(subtype: str, pH: float) -> bool:
+     """Is this donor subtype significantly available at the given pH?"""
+@@ -384,7 +603,7 @@ def enumerate_donor_sets(
+     candidates = {}  # signature → DonorSet (dedup)
+ 
+     # Filter subtypes by pH availability
+-    subtypes = allowed_subtypes or CORE_SUBTYPES
++    subtypes = _get_subtypes_for_metal(metal_formula, allowed_subtypes, pH)
+     available = [s for s in subtypes if _ph_available(s, pH)]
+     if not available:
+         return []
+diff --git a/tests/test_design_engine_expansion.py b/tests/test_design_engine_expansion.py
+new file mode 100644
+index 0000000..35f691d
+--- /dev/null
++++ b/tests/test_design_engine_expansion.py
+@@ -0,0 +1,329 @@
++"""
++tests/test_design_engine_expansion.py
++
++Tests for Phase 2 design engine expansion:
++1. donor_enumerator.py — HSAB pools, new archetypes, CHELATE_PAIRS
++2. design_engine.py — new METAL_ALIASES, MATRIX_PRESETS, design_mode
++"""
++import pytest
++import sys, os
++sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
++
++
++# ──────────────────────────────────────────────────────────────────────────
++# 1. Donor enumerator expansion
++# ──────────────────────────────────────────────────────────────────────────
++
++class TestHSABPools:
++
++    def test_soft_pool_contains_selenolate(self):
++        from core.donor_enumerator import SOFT_METAL_SUBTYPES
++        assert "Se_selenolate" in SOFT_METAL_SUBTYPES
++
++    def test_soft_pool_contains_phosphine(self):
++        from core.donor_enumerator import SOFT_METAL_SUBTYPES
++        assert "P_phosphine" in SOFT_METAL_SUBTYPES
++
++    def test_hard_pool_contains_fluoride(self):
++        from core.donor_enumerator import HARD_METAL_SUBTYPES
++        assert "F_fluoride" in HARD_METAL_SUBTYPES
++
++    def test_hard_pool_contains_carboxylate(self):
++        from core.donor_enumerator import HARD_METAL_SUBTYPES
++        assert "O_carboxylate" in HARD_METAL_SUBTYPES
++
++    def test_soft_pool_excludes_fluoride(self):
++        from core.donor_enumerator import SOFT_METAL_SUBTYPES
++        assert "F_fluoride" not in SOFT_METAL_SUBTYPES
++
++    def test_hard_pool_excludes_selenolate(self):
++        from core.donor_enumerator import HARD_METAL_SUBTYPES
++        assert "Se_selenolate" not in HARD_METAL_SUBTYPES
++
++    def test_get_subtypes_soft_metal(self):
++        """Hg2+ (softness=0.85) should get soft pool."""
++        from core.donor_enumerator import _get_subtypes_for_metal, SOFT_METAL_SUBTYPES
++        pool = _get_subtypes_for_metal("Hg2+")
++        assert "Se_selenolate" in pool
++        assert "P_phosphine" in pool
++
++    def test_get_subtypes_hard_metal(self):
++        """Al3+ (softness=0.05) should get hard pool."""
++        from core.donor_enumerator import _get_subtypes_for_metal, HARD_METAL_SUBTYPES
++        pool = _get_subtypes_for_metal("Al3+")
++        assert "F_fluoride" in pool
++        assert "O_carboxylate" in pool
++
++    def test_allowed_subtypes_override(self):
++        """allowed_subtypes should bypass HSAB inference."""
++        from core.donor_enumerator import _get_subtypes_for_metal
++        custom = ["N_amine", "O_carboxylate"]
++        pool = _get_subtypes_for_metal("Hg2+", allowed_subtypes=custom)
++        assert pool == custom
++
++
++class TestNewArchetypes:
++
++    def _get_archetypes_by_name(self, substring):
++        from core.donor_enumerator import ARCHETYPES
++        return [a for a in ARCHETYPES if substring.lower() in a.archetype.lower()]
++
++    def test_selenocysteine_archetype_present(self):
++        hits = self._get_archetypes_by_name("selenocysteine")
++        assert len(hits) >= 1, "Selenocysteine-type archetype missing"
++        hit = hits[0]
++        assert "Se_selenolate" in hit.donor_subtypes
++        assert "N_amine" in hit.donor_subtypes
++
++    def test_bis_selenolate_archetype_present(self):
++        hits = self._get_archetypes_by_name("bis(selenolate)")
++        assert len(hits) >= 1
++
++    def test_selenacrown_archetype_present(self):
++        hits = self._get_archetypes_by_name("selenacrown")
++        assert len(hits) >= 1
++        hit = hits[0]
++        assert hit.is_macrocyclic
++
++    def test_phosphine_binder_archetype_present(self):
++        hits = self._get_archetypes_by_name("bisphosphine")
++        assert len(hits) >= 1
++
++    def test_hexacyanometallate_archetype_present(self):
++        hits = self._get_archetypes_by_name("hexacyano")
++        assert len(hits) >= 1
++        hit = hits[0]
++        assert all(s == "C_cyanide" for s in hit.donor_subtypes)
++
++    def test_oxime_archetype_present(self):
++        hits = self._get_archetypes_by_name("dimethylglyoxime")
++        assert len(hits) >= 1
++
++    def test_fluoride_archetype_present(self):
++        hits = self._get_archetypes_by_name("fluoride")
++        assert len(hits) >= 1
++
++    def test_thiacrown_archetype_present(self):
++        hits = self._get_archetypes_by_name("[12]anes")
++        assert len(hits) >= 1
++
++
++class TestNewChelatePairs:
++
++    def test_se_n_chelate_pair(self):
++        from core.donor_enumerator import CHELATE_PAIRS
++        assert ("Se_selenolate", "N_amine") in CHELATE_PAIRS
++
++    def test_p_s_chelate_pair(self):
++        from core.donor_enumerator import CHELATE_PAIRS
++        assert ("P_phosphine", "S_thiolate") in CHELATE_PAIRS
++
++    def test_p_se_chelate_pair(self):
++        from core.donor_enumerator import CHELATE_PAIRS
++        assert ("P_phosphine", "Se_selenolate") in CHELATE_PAIRS
++
++    def test_as_as_chelate_pair(self):
++        from core.donor_enumerator import CHELATE_PAIRS
++        assert ("As_arsine", "As_arsine") in CHELATE_PAIRS
++
++    def test_oxime_oxime_chelate_pair(self):
++        from core.donor_enumerator import CHELATE_PAIRS
++        assert ("N_oxime", "N_oxime") in CHELATE_PAIRS
++
++
++class TestEnumeratorHSABIntegration:
++
++    def test_hg_enumeration_includes_selenolate(self):
++        """Hg2+ enumeration should include Se_selenolate in at least one candidate."""
++        from core.donor_enumerator import enumerate_donor_sets
++        candidates = enumerate_donor_sets("Hg2+", pH=7.0, max_candidates=100)
++        has_se = any(
++            "Se_selenolate" in ds.donor_subtypes for ds in candidates
++        )
++        assert has_se, "Hg2+ enumeration should include selenolate candidates"
++
++    def test_al_enumeration_includes_fluoride(self):
++        """Al3+ enumeration should include F_fluoride in at least one candidate."""
++        from core.donor_enumerator import enumerate_donor_sets
++        candidates = enumerate_donor_sets("Al3+", pH=7.0, max_candidates=100)
++        has_f = any(
++            "F_fluoride" in ds.donor_subtypes for ds in candidates
++        )
++        assert has_f, "Al3+ enumeration should include fluoride candidates"
++
++    def test_pd_enumeration_includes_phosphine(self):
++        """Pd2+ (softness=0.75) enumeration should include phosphine."""
++        from core.donor_enumerator import enumerate_donor_sets
++        candidates = enumerate_donor_sets("Pd2+", pH=7.0, max_candidates=100)
++        has_p = any(
++            "P_phosphine" in ds.donor_subtypes for ds in candidates
++        )
++        assert has_p, "Pd2+ enumeration should include phosphine candidates"
++
++    def test_enumeration_no_crash_new_metals(self):
++        """New metals should enumerate without exceptions."""
++        from core.donor_enumerator import enumerate_donor_sets
++        for metal in ["Ru2+", "Rh3+", "Zr4+", "Be2+"]:
++            candidates = enumerate_donor_sets(metal, pH=7.0, max_candidates=50)
++            assert len(candidates) > 0, f"No candidates for {metal}"
++
++
++# ──────────────────────────────────────────────────────────────────────────
++# 2. Design engine expansion
++# ──────────────────────────────────────────────────────────────────────────
++
++class TestMetalAliasesExpanded:
++
++    def test_ruthenium_alias(self):
++        from core.design_engine import resolve_metal
++        assert resolve_metal("ruthenium") == "Ru2+"
++
++    def test_rhodium_alias(self):
++        from core.design_engine import resolve_metal
++        assert resolve_metal("rhodium") == "Rh3+"
++
++    def test_zirconium_alias(self):
++        from core.design_engine import resolve_metal
++        assert resolve_metal("zirconium") == "Zr4+"
++
++    def test_beryllium_alias(self):
++        from core.design_engine import resolve_metal
++        assert resolve_metal("beryllium") == "Be2+"
++
++    def test_iridium_alias(self):
++        from core.design_engine import resolve_metal
++        assert resolve_metal("iridium") == "Ir3+"
++
++    def test_tungsten_alias(self):
++        from core.design_engine import resolve_metal
++        assert resolve_metal("tungsten") == "W4+"
++
++
++class TestMatrixPresetsExpanded:
++
++    def test_precious_metals_leach_preset(self):
++        from core.design_engine import MATRIX_PRESETS
++        assert "precious_metals_leach" in MATRIX_PRESETS
++        assert "Cu2+" in MATRIX_PRESETS["precious_metals_leach"]
++
++    def test_e_waste_preset(self):
++        from core.design_engine import MATRIX_PRESETS
++        assert "e_waste" in MATRIX_PRESETS
++        assert "Pb2+" in MATRIX_PRESETS["e_waste"]
++
++    def test_nuclear_waste_preset(self):
++        from core.design_engine import MATRIX_PRESETS
++        assert "nuclear_waste" in MATRIX_PRESETS
++        assert "UO2_2+" in MATRIX_PRESETS["nuclear_waste"]
++
++    def test_rare_earth_preset(self):
++        from core.design_engine import MATRIX_PRESETS
++        assert "rare_earth" in MATRIX_PRESETS
++
++    def test_parse_matrix_with_new_preset(self):
++        from core.design_engine import parse_matrix
++        pH, metals = parse_matrix("e_waste pH 3")
++        assert abs(pH - 3.0) < 0.01
++        assert "Pb2+" in metals
++        assert "Cu2+" in metals
++
++
++class TestDesignMode:
++
++    def test_soft_mode_hg(self):
++        """design_mode='soft' for Hg2+ should enumerate Se donors."""
++        from core.design_engine import design_binder
++        result = design_binder(
++            "Hg2+",
++            interferents=["Ca2+", "Mg2+"],
++            pH=7.0,
++            top_n=5,
++            max_enumerate=80,
++            design_mode="soft",
++        )
++        assert result.n_enumerated > 0
++        # At least one note should mention soft mode
++        assert any("soft" in n.lower() for n in result.notes)
++
++    def test_hard_mode_al(self):
++        """design_mode='hard' for Al3+ should enumerate F/O donors."""
++        from core.design_engine import design_binder
++        result = design_binder(
++            "Al3+",
++            interferents=["Ca2+", "Mg2+"],
++            pH=5.0,
++            top_n=5,
++            max_enumerate=80,
++            design_mode="hard",
++        )
++        assert result.n_enumerated > 0
++        assert any("hard" in n.lower() for n in result.notes)
++
++    def test_cross_modal_mode(self):
++        """design_mode='cross_modal' should only return macrocyclic candidates."""
++        from core.design_engine import design_binder
++        result = design_binder(
++            "Ba2+",
++            interferents=["Ca2+", "Na+", "K+"],
++            pH=7.0,
++            top_n=5,
++            max_enumerate=50,
++            design_mode="cross_modal",
++        )
++        # All candidates must be macrocyclic archetypes
++        for c in result.candidates:
++            assert c.donor_set.is_macrocyclic, (
++                f"cross_modal mode returned non-macrocyclic: {c.donor_set}"
++            )
++
++    def test_auto_mode_default(self):
++        """design_mode='auto' should complete without error for any metal."""
++        from core.design_engine import design_binder
++        result = design_binder(
++            "Pb2+",
++            matrix="mine_water pH 5",
++            top_n=5,
++            max_enumerate=100,
++            design_mode="auto",
++        )
++        assert result.n_scored > 0
++
++    def test_precious_metals_leach_design(self):
++        """Full design run using new precious_metals_leach matrix."""
++        from core.design_engine import design_binder
++        result = design_binder(
++            "Au+",
++            matrix="precious_metals_leach pH 2",
++            top_n=5,
++            max_enumerate=100,
++            design_mode="soft",
++        )
++        assert result.n_enumerated > 0
++        assert result.target_metal == "Au+"
++
++    def test_new_metal_design_run(self):
++        """Rh3+ design should complete and return sensible results."""
++        from core.design_engine import design_binder
++        result = design_binder(
++            "Rh3+",
++            interferents=["Fe3+", "Co2+", "Ni2+"],
++            pH=5.0,
++            top_n=5,
++            max_enumerate=80,
++        )
++        assert result.n_enumerated > 0
++        assert not any("failed" in n.lower() and "exception" in n.lower()
++                       for n in result.notes)
++
++    def test_result_grades_valid(self):
++        """All grade values in result must be A/B/C/D/F."""
++        from core.design_engine import design_binder
++        result = design_binder(
++            "Cu2+",
++            interferents=["Ca2+", "Mg2+", "Zn2+"],
++            pH=7.0, top_n=10, max_enumerate=100,
++        )
++        for c in result.candidates:
++            assert c.selectivity_grade in ("A", "B", "C", "D", "F"), (
++                f"Invalid grade: {c.selectivity_grade}"
++            )
+-- 
+2.43.0
