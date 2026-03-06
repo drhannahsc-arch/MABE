@@ -98,3 +98,79 @@ def test_multi_ligand():
     r3 = rank_binders("Fe3+", smiles, n_ligand_molecules=3, pH=14)
     # Fe(acac)3 should be much stronger than Fe(acac)
     assert r3.candidates[0].log_Ka_pred > r1.candidates[0].log_Ka_pred
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# UNIFIED DISCOVERY TESTS
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.design_engine_v2 import discover_binders, discover_guests
+
+
+def test_discover_binders_metal():
+    """discover_binders returns mixed library + generated candidates."""
+    r = discover_binders("Cu2+", top_n=10,
+                          max_generate=30, max_score_generated=5)
+    assert r.n_scored > 0
+    assert "discover" in r.mode
+    sources = set(c.source for c in r.candidates)
+    # Should have at least library hits
+    assert "library" in sources
+
+
+def test_discover_binders_has_both_sources():
+    """With generation on, both library and generated should appear."""
+    r = discover_binders("Cu2+", generate=True, top_n=50,
+                          max_generate=50, max_score_generated=10)
+    sources = set(c.source for c in r.candidates)
+    assert "library" in sources
+    assert "generated" in sources
+
+
+def test_discover_binders_no_generate():
+    """With generate=False, only library candidates returned."""
+    r = discover_binders("Cu2+", generate=False, top_n=10)
+    sources = set(c.source for c in r.candidates)
+    assert sources == {"library"}
+
+
+def test_discover_binders_selectivity():
+    """discover_binders with interferents does selectivity screening."""
+    r = discover_binders("Pb2+", interferents=["Ca2+"], pH=5.0,
+                          top_n=10, max_generate=30, max_score_generated=5)
+    assert "selectivity" in r.mode
+    for c in r.candidates:
+        assert c.grade in ("A", "B", "C", "D", "F")
+        assert "Ca2+" in c.interferent_scores or c.source == "generated"
+
+
+def test_discover_binders_ranked():
+    """Candidates are ranked by position."""
+    r = discover_binders("Cu2+", top_n=10,
+                          max_generate=30, max_score_generated=5)
+    ranks = [c.rank for c in r.candidates]
+    assert ranks == list(range(1, len(ranks) + 1))
+
+
+def test_discover_binders_no_duplicates():
+    """No duplicate SMILES in output."""
+    r = discover_binders("Cu2+", top_n=50,
+                          max_generate=100, max_score_generated=20)
+    smiles = [c.smiles for c in r.candidates]
+    assert len(smiles) == len(set(smiles))
+
+
+def test_discover_guests():
+    """discover_guests returns mixed results for beta-CD."""
+    r = discover_guests("beta-CD", top_n=10,
+                         max_generate=30, max_score_generated=5)
+    assert r.n_scored > 0
+    assert "host_guest" in r.mode
+
+
+def test_discover_guests_has_sources():
+    """discover_guests tags candidates with source."""
+    r = discover_guests("beta-CD", top_n=30,
+                         max_generate=50, max_score_generated=10)
+    sources = set(c.source for c in r.candidates)
+    assert len(sources) >= 1  # at least library or generated

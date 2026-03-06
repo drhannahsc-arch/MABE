@@ -46,6 +46,7 @@ class ScoredCandidate:
     worst_interferent: str = ""
     grade: str = ""
     rank: int = 0
+    source: str = ""                     # "library", "generated", or ""
 
     @property
     def donors(self):
@@ -386,6 +387,240 @@ def print_ranking(result, verbose=False):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# UNIFIED DISCOVERY: LIBRARY SCREEN + DE NOVO GENERATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+def discover_binders(target_metal, interferents=None, pH=7.4,
+                     top_n=20, library_categories=None,
+                     generate=True, max_generate=200, max_score_generated=50,
+                     sa_penalty_weight=0.3, hsab_filter=True):
+    """Screen existing library AND generate novel candidates in one call.
+
+    Combines screen_ligand_library() + de_novo_generator in a single
+    ranked output. Library hits and generated molecules are scored on
+    the same scale and merged.
+
+    Args:
+        target_metal: e.g. "Pb2+", "Cu2+", "Fe3+"
+        interferents: optional list of competing metals for selectivity
+        pH: working pH
+        top_n: how many final candidates to return
+        library_categories: filter library by category (None = all)
+        generate: if True, also run de novo generation
+        max_generate: max molecules to enumerate in generator
+        max_score_generated: max generated molecules to score
+        sa_penalty_weight: SA penalty weight for generated candidates
+        hsab_filter: apply HSAB pre-filter to generator
+
+    Returns:
+        RankingResult with mixed library + generated candidates,
+        each tagged with source="library" or source="generated"
+    """
+    t0 = time.time()
+    all_candidates = []
+    all_errors = []
+    n_library = 0
+    n_generated = 0
+
+    # ── Phase 1: Library screen ──────────────────────────────────────
+    try:
+        if interferents:
+            lib_result = screen_ligand_library(
+                target_metal, interferents=interferents,
+                pH=pH, categories=library_categories, top_n=9999)
+        else:
+            lib_result = screen_ligand_library(
+                target_metal, pH=pH,
+                categories=library_categories, top_n=9999)
+
+        for c in lib_result.candidates:
+            c.source = "library"
+        all_candidates.extend(lib_result.candidates)
+        all_errors.extend(lib_result.errors)
+        n_library = lib_result.n_scored
+    except Exception as e:
+        all_errors.append(("library_screen", str(e)))
+
+    # ── Phase 2: De novo generation ──────────────────────────────────
+    if generate:
+        try:
+            from core.de_novo_generator import (
+                generate_candidates as _gen_metal,
+                generate_and_screen as _gen_screen,
+            )
+
+            if interferents:
+                gen_result = _gen_screen(
+                    target_metal, interferents, pH=pH,
+                    max_candidates=max_generate,
+                    max_scored=max_score_generated,
+                    sa_penalty_weight=sa_penalty_weight,
+                    hsab_filter=hsab_filter)
+            else:
+                gen_result = _gen_metal(
+                    target_metal, pH=pH,
+                    max_candidates=max_generate,
+                    max_scored=max_score_generated,
+                    sa_penalty_weight=sa_penalty_weight,
+                    hsab_filter=hsab_filter)
+
+            for c in gen_result.candidates:
+                c.source = "generated"
+            all_candidates.extend(gen_result.candidates)
+            all_errors.extend(gen_result.errors)
+            n_generated = gen_result.n_scored
+        except Exception as e:
+            all_errors.append(("de_novo_generation", str(e)))
+
+    # ── Phase 3: Deduplicate by canonical SMILES ─────────────────────
+    seen = set()
+    unique = []
+    for c in all_candidates:
+        key = c.smiles
+        if key in seen:
+            continue
+        seen.add(key)
+        unique.append(c)
+
+    # ── Phase 4: Unified ranking ─────────────────────────────────────
+    mode = "selectivity" if interferents else "metal"
+    if mode == "selectivity":
+        unique.sort(key=lambda c: c.min_gap, reverse=True)
+    else:
+        unique.sort(key=lambda c: c.log_Ka_pred, reverse=True)
+
+    unique = unique[:top_n]
+    for i, c in enumerate(unique):
+        c.rank = i + 1
+        if interferents and not c.grade:
+            c.grade = _grade(c.min_gap)
+
+    return RankingResult(
+        target=target_metal,
+        mode=f"discover_{mode}",
+        interferents=list(interferents) if interferents else [],
+        candidates=unique,
+        n_input=n_library + n_generated,
+        n_scored=len(unique),
+        n_failed=len(all_errors),
+        elapsed_s=time.time() - t0,
+        errors=all_errors,
+    )
+
+
+def discover_guests(host_key, top_n=20, generate=True,
+                    max_generate=200, max_score_generated=50,
+                    sa_penalty_weight=0.3):
+    """Screen existing library AND generate novel guests for a host.
+
+    Args:
+        host_key: HOST_REGISTRY key, e.g. "beta-CD", "CB7"
+        top_n: how many final candidates to return
+        generate: if True, also run de novo generation
+        max_generate, max_score_generated, sa_penalty_weight: generator params
+
+    Returns:
+        RankingResult with mixed library + generated guests
+    """
+    t0 = time.time()
+    all_candidates = []
+    all_errors = []
+    n_library = 0
+    n_generated = 0
+
+    # ── Phase 1: Library screen ──────────────────────────────────────
+    try:
+        from knowledge.ligand_library import LIGAND_DB
+        smiles_list = [lig.smiles for lig in LIGAND_DB]
+        names_list = [lig.name for lig in LIGAND_DB]
+        lib_result = rank_hosts(host_key, smiles_list, names=names_list)
+        for c in lib_result.candidates:
+            c.source = "library"
+        all_candidates.extend(lib_result.candidates)
+        all_errors.extend(lib_result.errors)
+        n_library = lib_result.n_scored
+    except Exception as e:
+        all_errors.append(("library_screen", str(e)))
+
+    # ── Phase 2: De novo generation ──────────────────────────────────
+    if generate:
+        try:
+            from core.de_novo_generator import generate_for_host as _gen_host
+            gen_result = _gen_host(
+                host_key, max_candidates=max_generate,
+                max_scored=max_score_generated,
+                sa_penalty_weight=sa_penalty_weight)
+            for c in gen_result.candidates:
+                c.source = "generated"
+            all_candidates.extend(gen_result.candidates)
+            all_errors.extend(gen_result.errors)
+            n_generated = gen_result.n_scored
+        except Exception as e:
+            all_errors.append(("de_novo_generation", str(e)))
+
+    # ── Phase 3: Deduplicate + rank ──────────────────────────────────
+    seen = set()
+    unique = []
+    for c in all_candidates:
+        if c.smiles in seen:
+            continue
+        seen.add(c.smiles)
+        unique.append(c)
+
+    unique.sort(key=lambda c: c.log_Ka_pred, reverse=True)
+    unique = unique[:top_n]
+    for i, c in enumerate(unique):
+        c.rank = i + 1
+
+    return RankingResult(
+        target=host_key,
+        mode="discover_host_guest",
+        candidates=unique,
+        n_input=n_library + n_generated,
+        n_scored=len(unique),
+        n_failed=len(all_errors),
+        elapsed_s=time.time() - t0,
+        errors=all_errors,
+    )
+
+
+def print_discovery(result, top_n=20, verbose=False):
+    """Pretty-print a discovery result showing source tags."""
+    print()
+    print(f"  MABE Discovery — {result.mode}")
+    print(f"  Target: {result.target}")
+    if result.interferents:
+        print(f"  Interferents: {', '.join(result.interferents)}")
+    print(f"  Scored: {result.n_scored} ({result.n_failed} failed) "
+          f"in {result.elapsed_s:.1f}s")
+    print()
+
+    if not result.candidates:
+        print("  No candidates found.")
+        return
+
+    shown = result.candidates[:top_n]
+
+    if "selectivity" in result.mode:
+        print(f"  {'#':>3s}  {'Src':5s}  {'Grade':5s}  {'logKa':>6s}  "
+              f"{'MinGap':>7s}  Name")
+        print(f"  {'─'*65}")
+        for c in shown:
+            src = c.source[:3].upper() if c.source else "???"
+            print(f"  {c.rank:3d}  {src:5s}  {c.grade:^5s}  "
+                  f"{c.log_Ka_pred:+6.1f}  {c.min_gap:+7.1f}  "
+                  f"{c.name[:35]}")
+    else:
+        print(f"  {'#':>3s}  {'Src':5s}  {'logKa':>7s}  Name")
+        print(f"  {'─'*55}")
+        for c in shown:
+            src = c.source[:3].upper() if c.source else "???"
+            print(f"  {c.rank:3d}  {src:5s}  {c.log_Ka_pred:+7.2f}  "
+                  f"{c.name[:40]}")
+    print()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # SELF-TEST
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -432,3 +667,21 @@ if __name__ == "__main__":
     r4 = screen_ligand_library("Pb2+", interferents=["Ca2+", "Mg2+"],
                                 pH=5.0, top_n=10)
     print_ranking(r4)
+
+    # Test 5: Unified discovery — metal
+    print("Discovery: Cu2+ (library + generated)...")
+    r5 = discover_binders("Cu2+", max_generate=50, max_score_generated=10,
+                           top_n=10)
+    print_discovery(r5)
+
+    # Test 6: Unified discovery — selectivity
+    print("Discovery: Pb2+ selectivity over Ca2+/Mg2+ (library + generated)...")
+    r6 = discover_binders("Pb2+", interferents=["Ca2+", "Mg2+"], pH=5.0,
+                           max_generate=50, max_score_generated=10, top_n=10)
+    print_discovery(r6)
+
+    # Test 7: Unified discovery — host-guest
+    print("Discovery: beta-CD guests (library + generated)...")
+    r7 = discover_guests("beta-CD", max_generate=50, max_score_generated=10,
+                          top_n=10)
+    print_discovery(r7)
