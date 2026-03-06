@@ -644,7 +644,7 @@ LIGAND_DB = [
 
     Ligand("HEDP", "OC(P(=O)(O)O)P(=O)(O)O",
            "2809-21-4",
-           ["O_carboxylate","O_carboxylate","O_hydroxyl"],
+           ["O_phosphate","O_phosphate","O_hydroxyl"],
            3, 1, [5],
            category="phosphonate",
            notes="Scale inhibitor, Ca chelation in cooling water",
@@ -673,7 +673,7 @@ LIGAND_DB = [
 
     Ligand("Nitrilotrismethylenephosphonic acid", "O=P(O)(O)CN(CP(=O)(O)O)CP(=O)(O)O",
            "6419-19-8",
-           ["N_amine","O_carboxylate","O_carboxylate","O_carboxylate"],
+           ["N_amine","O_phosphate","O_phosphate","O_phosphate"],
            4, 3, [5,5,5],
            category="phosphonate",
            notes="Scale inhibitor, oil field chelator",
@@ -681,8 +681,8 @@ LIGAND_DB = [
 
     Ligand("EDTMP", "O=P(O)(O)CN(CCN(CP(=O)(O)O)CP(=O)(O)O)CP(=O)(O)O",
            "1429-50-1",
-           ["N_amine","N_amine","O_carboxylate","O_carboxylate",
-            "O_carboxylate","O_carboxylate"],
+           ["N_amine","N_amine","O_phosphate","O_phosphate",
+            "O_phosphate","O_phosphate"],
            6, 5, [5]*5,
            category="phosphonate",
            notes="Nuclear med bone agent, phosphonate analogue of EDTA",
@@ -727,7 +727,7 @@ LIGAND_DB = [
 
     Ligand("Thenoyltrifluoroacetone", "OC(=CC(=O)c1cccs1)C(F)(F)F",
            "326-91-0",
-           ["O_hydroxyl","O_hydroxyl"],
+           ["O_phenolate","O_phenolate"],
            2, 1, [6],
            category="beta_diketone",
            notes="Lanthanide/actinide extraction, β-diketone",
@@ -735,7 +735,7 @@ LIGAND_DB = [
 
     Ligand("Acetylacetone", "CC(=O)CC(C)=O",
            "123-54-6",
-           ["O_hydroxyl","O_hydroxyl"],
+           ["O_phenolate","O_phenolate"],
            2, 1, [6],
            category="beta_diketone",
            notes="Ubiquitous β-diketone, enolizes to chelate metals",

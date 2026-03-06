@@ -100,14 +100,25 @@ class PredictionResult:
 
 # Map host keys to hg_dataset HOST_DB keys
 _HOST_KEY_MAP = {
+    # Cyclodextrins
     "α-cyclodextrin": "alpha-CD", "alpha-CD": "alpha-CD",
     "β-cyclodextrin": "beta-CD",  "beta-CD": "beta-CD",
     "γ-cyclodextrin": "gamma-CD", "gamma-CD": "gamma-CD",
-    "CB[6]": "CB6", "CB6": "CB6",
-    "CB[7]": "CB7", "CB7": "CB7",
-    "CB[8]": "CB8", "CB8": "CB8",
+    # Cucurbiturils (HOST_REGISTRY full names + bracket variants)
+    "cucurbit[5]uril": "CB5", "CB5": "CB5", "CB[5]": "CB5",
+    "cucurbit[6]uril": "CB6", "CB6": "CB6", "CB[6]": "CB6",
+    "cucurbit[7]uril": "CB7", "CB7": "CB7", "CB[7]": "CB7",
+    "cucurbit[8]uril": "CB8", "CB8": "CB8", "CB[8]": "CB8",
+    # Calixarenes
     "p-sulfonatocalix[4]arene": "calix4-SO3", "calix4-SO3": "calix4-SO3",
+    "sulfonato-calix4arene": "calix4-SO3",
+    # Pillararenes
     "pillar[5]arene": "pillar5", "pillar5": "pillar5",
+    "pillar5arene": "pillar5",
+    # Crown ethers / cryptands (no HOST_DB entries yet — mapped for future)
+    "12-crown-4": "12-crown-4", "15-crown-5": "15-crown-5",
+    "18-crown-6": "18-crown-6", "[2.2.2]cryptand": "cryptand-222",
+    "cryptand-222": "cryptand-222",
 }
 
 
@@ -187,6 +198,9 @@ def predict(uc, verbose=False):
 
     # ── HOST-GUEST INCLUSION (self-zeros if no cavity/guest) ─────────
     _compute_hg_terms(uc, result)
+
+    # ── PROTEIN-LIGAND non-covalent (self-zeros if not metalloprotein) ─
+    _compute_protein_ligand_terms(uc, result)
 
     # ── CROSS-MODAL metal@host (self-zeros if no metal+cavity) ───────
     _compute_cm_terms(uc, result)
@@ -308,6 +322,51 @@ def _compute_hg_terms(uc, result):
         result.dg_shape = dg_shape
     except Exception:
         pass
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PROTEIN-LIGAND NON-COVALENT TERMS — Phase 14a
+# Uses HG-calibrated parameters applied to protein pocket geometry.
+# Zero new fitted parameters — blind prediction from synthetic host physics.
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _compute_protein_ligand_terms(uc, result):
+    """Non-covalent terms for metalloprotein-ligand binding.
+
+    Fires only for binding_mode == 'metalloprotein'.
+    Uses calibrated HG parameters (gamma_flat, eps_neutral, eps_rotor,
+    k_shape) applied to protein pocket geometry from PROTEIN_POCKET_REGISTRY.
+
+    Self-zeros if binding_mode != metalloprotein or guest properties absent.
+    """
+    if uc.binding_mode != "metalloprotein":
+        return
+    if not uc.guest_smiles or uc.guest_sasa_nonpolar_A2 <= 0:
+        return
+
+    # 1. Hydrophobic burial: γ_flat × buried_SASA
+    #    Protein pockets are concave (flat-like curvature for transfer model)
+    if uc.sasa_buried_A2 > 0:
+        result.dg_hydrophobic = -HG_PARAMS["gamma_flat"] * uc.sasa_buried_A2
+
+    # 2. H-bond network: eps_neutral per H-bond
+    #    (no charge-assisted or water penalty — simplified for PL)
+    if uc.n_hbonds_formed > 0:
+        result.dg_hbond = HBOND_PARAMS["eps_neutral"] * uc.n_hbonds_formed
+
+    # 3. Conformational entropy: penalty for freezing rotatable bonds
+    if uc.guest_rotatable_bonds > 0:
+        result.dg_conf_entropy = (CONF_SHAPE_PARAMS["eps_rotor"]
+                                  * uc.guest_rotatable_bonds
+                                  * CONF_SHAPE_PARAMS["f_partial"])
+
+    # 4. Shape complementarity: Gaussian penalty on packing coefficient
+    if uc.packing_coefficient > 0 and uc.cavity_volume_A3 > 0:
+        pc_opt = CONF_SHAPE_PARAMS["PC_optimal"]
+        sigma = CONF_SHAPE_PARAMS["sigma_PC"]
+        pc = uc.packing_coefficient
+        result.dg_shape = (CONF_SHAPE_PARAMS["k_shape"]
+                           * math.exp(-((pc - pc_opt) ** 2) / (2 * sigma ** 2)))
 
 
 # ═══════════════════════════════════════════════════════════════════════════
