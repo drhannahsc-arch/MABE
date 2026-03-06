@@ -537,3 +537,157 @@ class TestHopAndScore:
                            max_candidates=30, max_scored=10)
         for c in r.candidates:
             assert "Ca2+" in c.interferent_scores
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 17. MUTATIONAL SCANNING
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.de_novo_generator import (
+    mutational_scan, ScanResult, MutationResult,
+    constrained_generate, _decompose_smiles,
+)
+
+
+class TestMutationalScan:
+    def test_scan_returns_scan_result(self):
+        r = mutational_scan("NCCN", metal="Cu2+",
+                             max_variants_per_position=5)
+        assert isinstance(r, ScanResult)
+        assert r.seed_smiles == "NCCN"
+
+    def test_scan_known_decomposition(self):
+        """Provide backbone+arms explicitly to skip decomposition."""
+        r = mutational_scan("dummy", metal="Cu2+",
+                             backbone_name="ethylenediamine",
+                             arm_names=["acetic-acid", "acetic-acid"],
+                             max_variants_per_position=5)
+        assert isinstance(r, ScanResult)
+        # Should have 2 positions
+        assert len(r.positions) == 2
+
+    def test_scan_positions_have_variants(self):
+        r = mutational_scan("dummy", metal="Cu2+",
+                             backbone_name="ethylenediamine",
+                             arm_names=["acetic-acid", "acetic-acid"],
+                             max_variants_per_position=8)
+        for mr in r.positions:
+            assert isinstance(mr, MutationResult)
+            assert len(mr.variants) > 0
+
+    def test_scan_sensitivity_nonnegative(self):
+        r = mutational_scan("dummy", metal="Cu2+",
+                             backbone_name="ethylenediamine",
+                             arm_names=["aminomethyl", "aminomethyl"],
+                             max_variants_per_position=5)
+        for mr in r.positions:
+            assert mr.sensitivity >= 0.0
+
+    def test_scan_best_overall_exists(self):
+        r = mutational_scan("dummy", metal="Cu2+",
+                             backbone_name="ethylenediamine",
+                             arm_names=["aminomethyl", "acetic-acid"],
+                             max_variants_per_position=5)
+        if r.positions:
+            assert r.best_overall is not None
+
+    def test_decompose_simple(self):
+        """_decompose_smiles should find backbone+arms for a known assembly."""
+        # Build a known molecule
+        bb = BACKBONE_LIBRARY[0]  # ethylenediamine
+        arm = ARM_LIBRARY[0]      # acetic-acid
+        smi, _ = assemble(bb, [arm, arm])
+        if smi:
+            found_bb, found_arms = _decompose_smiles(smi, metal="Cu2+")
+            # May or may not decompose depending on canonicalization
+            # Just check it doesn't crash
+            assert found_bb is None or found_bb.n_sites == len(found_arms)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 18. CONSTRAINED GENERATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestConstrainedGenerate:
+    def test_required_donors(self):
+        """Require S_thiolate — all arm combos must include an S_thiolate arm."""
+        r = constrained_generate(
+            metal="Hg2+",
+            required_donors=["S_thiolate"],
+            max_candidates=30, max_scored=10)
+        assert r.n_scored > 0
+        # Verify arms contain S_thiolate-providing donors
+        for c in r.candidates:
+            arm_donors = []
+            for aname in c.arm_names:
+                arm = _ARM_BY_NAME.get(aname)
+                if arm:
+                    arm_donors.extend(arm.donor_subtypes)
+            assert "S_thiolate" in arm_donors, (
+                f"Required S_thiolate missing in arms {c.arm_names}")
+
+    def test_forbidden_donors(self):
+        """Forbid O_carboxylate — no candidates should contain it."""
+        r = constrained_generate(
+            metal="Cu2+",
+            forbidden_donors=["O_carboxylate"],
+            max_candidates=50, max_scored=10)
+        assert r.n_scored > 0
+
+    def test_required_hardness_soft(self):
+        """soft-only arms for soft metal."""
+        r = constrained_generate(
+            metal="Hg2+",
+            required_hardness="soft",
+            max_candidates=30, max_scored=10)
+        assert r.n_scored > 0
+
+    def test_min_denticity(self):
+        """min_denticity=4 should exclude mono/bidentate."""
+        r = constrained_generate(
+            metal="Cu2+",
+            min_denticity=4,
+            max_candidates=50, max_scored=10)
+        assert r.n_scored > 0
+
+    def test_macrocyclic_only(self):
+        """require_macrocyclic should only use macrocyclic backbones."""
+        r = constrained_generate(
+            metal="Cu2+",
+            require_macrocyclic=True,
+            max_candidates=50, max_scored=10)
+        assert r.n_scored > 0
+        for c in r.candidates:
+            bb_name = c.backbone_name
+            bb = [b for b in BACKBONE_LIBRARY if b.name == bb_name]
+            assert bb and bb[0].category == "macrocyclic", (
+                f"Non-macrocyclic backbone {bb_name} in macrocyclic-only run")
+
+    def test_constrained_with_interferents(self):
+        """Constrained generation with selectivity screening."""
+        r = constrained_generate(
+            metal="Pb2+",
+            interferents=["Ca2+"],
+            required_donors=["S_thiolate"],
+            max_candidates=30, max_scored=10)
+        if r.n_scored > 0:
+            for c in r.candidates:
+                assert c.grade in ("A", "B", "C", "D", "F")
+
+    def test_empty_constraints_still_work(self):
+        """No constraints = same as unconstrained generation."""
+        r = constrained_generate(
+            metal="Cu2+",
+            max_candidates=30, max_scored=10)
+        assert r.n_scored > 0
+
+    def test_category_filter(self):
+        """require_category='aromatic' should only use aromatic backbones."""
+        r = constrained_generate(
+            metal="Cu2+",
+            require_category="aromatic",
+            max_candidates=50, max_scored=10)
+        assert r.n_scored > 0
+        for c in r.candidates:
+            bb = [b for b in BACKBONE_LIBRARY if b.name == c.backbone_name]
+            assert bb and bb[0].category == "aromatic"

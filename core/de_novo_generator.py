@@ -1392,6 +1392,431 @@ def print_generation(result, top_n=20, verbose=False):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# MUTATIONAL SCANNING
+# ═══════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class MutationResult:
+    """Result of mutating one arm position."""
+    position: int                  # Which arm index was varied
+    original_arm: str              # Name of original arm at this position
+    variants: list = field(default_factory=list)   # list[GeneratedCandidate]
+    best_variant: object = None    # Best-scoring variant at this position
+    sensitivity: float = 0.0       # max log Ka delta from original
+
+
+@dataclass
+class ScanResult:
+    """Full mutational scan output."""
+    seed_smiles: str
+    seed_score: float              # log Ka of original
+    target: str
+    positions: list = field(default_factory=list)  # list[MutationResult]
+    most_sensitive_position: int = -1
+    max_sensitivity: float = 0.0
+    best_overall: object = None    # Best candidate across all positions
+    elapsed_s: float = 0.0
+
+
+def mutational_scan(smiles, metal=None, host=None, pH=7.4,
+                    backbone_name=None, arm_names=None,
+                    interferents=None, sa_penalty_weight=0.3,
+                    max_variants_per_position=15):
+    """Systematically vary one arm at a time, keeping all others fixed.
+
+    If backbone_name + arm_names are not provided, attempts to find the
+    closest matching backbone+arm decomposition by scoring all combos
+    against the input SMILES. If that fails, uses a brute-force approach:
+    enumerate 2-site backbones with all arm pairs, find the one that
+    produces the input SMILES.
+
+    Args:
+        smiles: seed molecule SMILES
+        metal: target metal for scoring
+        host: target host for scoring
+        pH: working pH
+        backbone_name: known backbone (skip decomposition)
+        arm_names: known arm list (skip decomposition)
+        interferents: for selectivity scoring
+        sa_penalty_weight: SA penalty weight
+        max_variants_per_position: max arms to try per position
+
+    Returns:
+        ScanResult with per-position sensitivity analysis
+    """
+    t0 = time.time()
+
+    # Score the seed
+    try:
+        seed_sc = score_one(smiles, metal=metal, host=host, pH=pH,
+                            name="seed")
+        seed_score = seed_sc.log_Ka_pred
+    except Exception:
+        seed_score = 0.0
+
+    # Resolve backbone + arms
+    bb = None
+    arms_resolved = None
+
+    if backbone_name and arm_names:
+        # User provided decomposition
+        bb_matches = [b for b in BACKBONE_LIBRARY if b.name == backbone_name]
+        if bb_matches:
+            bb = bb_matches[0]
+            arms_resolved = [_ARM_BY_NAME.get(n) for n in arm_names]
+            if None in arms_resolved:
+                arms_resolved = None
+
+    if bb is None or arms_resolved is None:
+        # Try to find the backbone+arm combo that reproduces this SMILES
+        bb, arms_resolved = _decompose_smiles(smiles, metal)
+
+    if bb is None or arms_resolved is None:
+        # Can't decompose — return empty scan
+        return ScanResult(
+            seed_smiles=smiles, seed_score=seed_score,
+            target=metal or host or "unknown",
+            elapsed_s=time.time() - t0,
+        )
+
+    # Filter compatible arms
+    if metal:
+        compat_arms = [a for a in ARM_LIBRARY
+                       if hsab_compatible(metal, a) and a.name != "H-cap"]
+    else:
+        compat_arms = [a for a in ARM_LIBRARY if a.name != "H-cap"]
+
+    positions = []
+    all_variants = []
+
+    for pos_idx in range(bb.n_sites):
+        original_arm = arms_resolved[pos_idx]
+        pos_variants = []
+
+        # Try each compatible arm at this position, keep others fixed
+        for alt_arm in compat_arms[:max_variants_per_position]:
+            if alt_arm.name == original_arm.name:
+                continue
+
+            test_arms = list(arms_resolved)
+            test_arms[pos_idx] = alt_arm
+            out_smi, mol = assemble(bb, test_arms)
+            if out_smi is None:
+                continue
+            if not passes_filter(out_smi, mol):
+                continue
+
+            try:
+                sc = score_one(out_smi, metal=metal, host=host, pH=pH,
+                               name=f"pos{pos_idx}:{alt_arm.name}")
+                sa = sa_score(mol)
+                gc = GeneratedCandidate(
+                    smiles=out_smi,
+                    name=f"{bb.name}[pos{pos_idx}→{alt_arm.name}]",
+                    log_Ka_pred=sc.log_Ka_pred,
+                    dg_total_kj=sc.dg_total_kj,
+                    prediction=sc.prediction,
+                    backbone_name=bb.name,
+                    arm_names=[a.name for a in test_arms],
+                    sa_score_val=sa,
+                    composite_score=sc.log_Ka_pred - sa_penalty_weight * sa,
+                )
+
+                if interferents and metal:
+                    for intf in interferents:
+                        try:
+                            intf_sc = score_one(out_smi, metal=intf, pH=pH)
+                            gc.interferent_scores[intf] = intf_sc.log_Ka_pred
+                            gc.selectivity_gaps[intf] = (gc.log_Ka_pred
+                                                          - intf_sc.log_Ka_pred)
+                        except Exception:
+                            pass
+                    if gc.selectivity_gaps:
+                        gc.worst_interferent = min(gc.selectivity_gaps,
+                                                   key=gc.selectivity_gaps.get)
+                        gc.min_gap = gc.selectivity_gaps[gc.worst_interferent]
+                        gc.grade = _grade(gc.min_gap)
+
+                pos_variants.append(gc)
+            except Exception:
+                continue
+
+        pos_variants.sort(key=lambda c: c.log_Ka_pred, reverse=True)
+        best = pos_variants[0] if pos_variants else None
+        sensitivity = abs(best.log_Ka_pred - seed_score) if best else 0.0
+
+        mr = MutationResult(
+            position=pos_idx,
+            original_arm=original_arm.name,
+            variants=pos_variants,
+            best_variant=best,
+            sensitivity=sensitivity,
+        )
+        positions.append(mr)
+        all_variants.extend(pos_variants)
+
+    # Find most sensitive position
+    most_sens_idx = -1
+    max_sens = 0.0
+    for mr in positions:
+        if mr.sensitivity > max_sens:
+            max_sens = mr.sensitivity
+            most_sens_idx = mr.position
+
+    # Find best overall
+    all_variants.sort(key=lambda c: c.log_Ka_pred, reverse=True)
+    best_overall = all_variants[0] if all_variants else None
+
+    return ScanResult(
+        seed_smiles=smiles,
+        seed_score=seed_score,
+        target=metal or host or "unknown",
+        positions=positions,
+        most_sensitive_position=most_sens_idx,
+        max_sensitivity=max_sens,
+        best_overall=best_overall,
+        elapsed_s=time.time() - t0,
+    )
+
+
+def _decompose_smiles(smiles, metal=None):
+    """Try to find backbone + arm combo that produces this SMILES.
+
+    Brute force: try all backbone × arm combos, check if output matches.
+    Returns (backbone, [arm, ...]) or (None, None).
+    """
+    try:
+        mol = Chem.MolFromSmiles(smiles)
+        if mol is None:
+            return None, None
+        target_canonical = Chem.MolToSmiles(mol)
+    except Exception:
+        return None, None
+
+    arms_no_cap = [a for a in ARM_LIBRARY if a.name != "H-cap"]
+
+    for bb in BACKBONE_LIBRARY:
+        if bb.n_sites > 2:
+            continue  # skip 3-site for decomposition speed
+        from itertools import product as cartesian_product
+        for arm_tuple in cartesian_product(arms_no_cap, repeat=bb.n_sites):
+            out_smi, _ = assemble(bb, list(arm_tuple))
+            if out_smi == target_canonical:
+                return bb, list(arm_tuple)
+
+    return None, None
+
+
+def print_scan(scan):
+    """Pretty-print a mutational scan result."""
+    print()
+    print(f"  MABE Mutational Scan")
+    print(f"  Seed: {scan.seed_smiles[:50]}  (logKa = {scan.seed_score:+.2f})")
+    print(f"  Target: {scan.target}")
+    print(f"  Time: {scan.elapsed_s:.1f}s")
+    print()
+
+    if not scan.positions:
+        print("  Could not decompose seed molecule.")
+        return
+
+    for mr in scan.positions:
+        print(f"  Position {mr.position}: {mr.original_arm}")
+        print(f"    Sensitivity: {mr.sensitivity:.2f} logKa units")
+        print(f"    Variants tested: {len(mr.variants)}")
+        if mr.best_variant:
+            b = mr.best_variant
+            delta = b.log_Ka_pred - scan.seed_score
+            print(f"    Best: {b.arm_names[mr.position]:20s} "
+                  f"logKa={b.log_Ka_pred:+.2f} (Δ={delta:+.2f})")
+        print()
+
+    if scan.best_overall:
+        b = scan.best_overall
+        print(f"  ── Best overall: logKa={b.log_Ka_pred:+.2f} ──")
+        print(f"  {b.smiles[:60]}")
+    print()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CONSTRAINED GENERATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+def constrained_generate(metal=None, host=None, pH=7.4,
+                         required_donors=None, forbidden_donors=None,
+                         required_hardness=None,
+                         min_denticity=None, max_denticity=None,
+                         require_macrocyclic=False,
+                         require_category=None,
+                         max_candidates=200, max_scored=50,
+                         interferents=None, sa_penalty_weight=0.3,
+                         hsab_filter=True):
+    """Generate candidates with explicit donor/scaffold constraints.
+
+    Args:
+        metal: target metal for scoring
+        host: target host for scoring
+        pH: working pH
+        required_donors: list of donor subtypes that MUST be present
+            e.g. ["S_thiolate", "N_amine"]
+        forbidden_donors: list of donor subtypes that must NOT appear
+            e.g. ["O_carboxylate"]
+        required_hardness: if set, only arms of this hardness
+            e.g. "soft" for Hg2+ soft-donor-only design
+        min_denticity: minimum total donor count
+        max_denticity: maximum total donor count
+        require_macrocyclic: only use macrocyclic backbones
+        require_category: backbone category filter, e.g. "aromatic"
+        max_candidates, max_scored: limits
+        interferents: for selectivity screening
+        sa_penalty_weight: SA penalty
+        hsab_filter: apply HSAB pre-filter
+
+    Returns:
+        GenerationResult with constrained candidates
+    """
+    t0 = time.time()
+
+    # Filter backbones
+    bbs = list(BACKBONE_LIBRARY)
+    if require_macrocyclic:
+        bbs = [b for b in bbs if b.category == "macrocyclic"]
+    if require_category:
+        bbs = [b for b in bbs if b.category == require_category]
+
+    # Filter arms
+    arms = [a for a in ARM_LIBRARY if a.name != "H-cap"]
+    if required_hardness:
+        arms = [a for a in arms if a.hardness == required_hardness]
+    if forbidden_donors:
+        forbidden_set = set(forbidden_donors)
+        arms = [a for a in arms
+                if not any(d in forbidden_set for d in a.donor_subtypes)]
+    if metal and hsab_filter:
+        arms = [a for a in arms if hsab_compatible(metal, a)]
+
+    if not arms:
+        return GenerationResult(
+            target=metal or host or "unknown",
+            mode="constrained",
+            elapsed_s=time.time() - t0,
+        )
+
+    # Enumerate with constraints
+    pfilter = PropertyFilter()
+    if host and not metal:
+        pfilter.require_donors = False
+
+    from itertools import product as cartesian_product
+
+    seen = set()
+    raw = []
+
+    for bb in bbs:
+        for arm_tuple in cartesian_product(arms, repeat=bb.n_sites):
+            if len(raw) >= max_candidates:
+                break
+
+            # Check donor constraints
+            all_donors = []
+            for arm in arm_tuple:
+                all_donors.extend(arm.donor_subtypes)
+
+            # Required donors check
+            if required_donors:
+                donor_set = set(all_donors)
+                if not all(d in donor_set for d in required_donors):
+                    continue
+
+            # Denticity bounds
+            total_dent = len(all_donors)
+            if min_denticity and total_dent < min_denticity:
+                continue
+            if max_denticity and total_dent > max_denticity:
+                continue
+
+            out_smi, mol = assemble(bb, list(arm_tuple))
+            if out_smi is None:
+                continue
+            if out_smi in seen:
+                continue
+            seen.add(out_smi)
+            if not passes_filter(out_smi, mol, pfilter):
+                continue
+
+            sa = sa_score(mol)
+            arm_names = [a.name for a in arm_tuple]
+            raw.append((out_smi, bb.name, arm_names, sa))
+
+        if len(raw) >= max_candidates:
+            break
+
+    # Score
+    raw.sort(key=lambda x: x[3])
+    to_score = raw[:max_scored]
+
+    known = _known_smiles_set()
+    candidates = []
+    errors = []
+
+    for smi, bb_name, arm_names, sa in to_score:
+        try:
+            sc = score_one(smi, metal=metal, host=host, pH=pH, name=smi[:40])
+            gc = GeneratedCandidate(
+                smiles=smi,
+                name=f"{bb_name}+{'|'.join(arm_names)}",
+                log_Ka_pred=sc.log_Ka_pred,
+                dg_total_kj=sc.dg_total_kj,
+                prediction=sc.prediction,
+                backbone_name=bb_name,
+                arm_names=arm_names,
+                sa_score_val=sa,
+                novel=smi not in known,
+            )
+
+            if interferents and metal:
+                for intf in interferents:
+                    try:
+                        intf_sc = score_one(smi, metal=intf, pH=pH)
+                        gc.interferent_scores[intf] = intf_sc.log_Ka_pred
+                        gc.selectivity_gaps[intf] = (gc.log_Ka_pred
+                                                      - intf_sc.log_Ka_pred)
+                    except Exception:
+                        gc.interferent_scores[intf] = 0.0
+                        gc.selectivity_gaps[intf] = gc.log_Ka_pred
+                if gc.selectivity_gaps:
+                    gc.worst_interferent = min(gc.selectivity_gaps,
+                                               key=gc.selectivity_gaps.get)
+                    gc.min_gap = gc.selectivity_gaps[gc.worst_interferent]
+                gc.grade = _grade(gc.min_gap)
+                gc.composite_score = gc.min_gap - sa_penalty_weight * sa
+            else:
+                gc.composite_score = gc.log_Ka_pred - sa_penalty_weight * sa
+
+            candidates.append(gc)
+        except Exception as e:
+            errors.append((smi, str(e)))
+
+    candidates.sort(key=lambda c: c.composite_score, reverse=True)
+    for i, c in enumerate(candidates):
+        c.rank = i + 1
+
+    return GenerationResult(
+        target=metal or host or "unknown",
+        mode="constrained",
+        interferents=list(interferents) if interferents else [],
+        candidates=candidates,
+        n_enumerated=len(raw),
+        n_valid=len(raw),
+        n_unique=len(raw),
+        n_scored=len(candidates),
+        n_failed=len(errors),
+        elapsed_s=time.time() - t0,
+        errors=errors,
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # SELF-TEST
 # ═══════════════════════════════════════════════════════════════════════════
 
