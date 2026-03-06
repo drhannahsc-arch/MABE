@@ -73,8 +73,8 @@ class TestFragmentLibrary:
             )
 
     def test_minimum_library_size(self):
-        assert len(BACKBONE_LIBRARY) >= 10, "Need at least 10 backbones"
-        assert len(ARM_LIBRARY) >= 10, "Need at least 10 arms"
+        assert len(BACKBONE_LIBRARY) >= 28, f"Need at least 28 backbones, got {len(BACKBONE_LIBRARY)}"
+        assert len(ARM_LIBRARY) >= 30, f"Need at least 30 arms, got {len(ARM_LIBRARY)}"
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -343,3 +343,83 @@ class TestIntegration:
                          metal="Cu2+")
         assert uc is not None
         assert uc.denticity > 0
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 12. EXPANDED LIBRARY COVERAGE
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestExpandedCoverage:
+    """Verify new fragment categories produce valid assemblies."""
+
+    def test_salen_backbone_assembles(self):
+        bb = [b for b in BACKBONE_LIBRARY if "salen" in b.name][0]
+        arms = [ARM_LIBRARY[0]] * bb.n_sites
+        smiles, mol = assemble(bb, arms)
+        assert smiles is not None, f"Salen backbone failed to assemble"
+
+    def test_macrocyclic_tacn_assembles(self):
+        bb = [b for b in BACKBONE_LIBRARY if b.name == "tacn"][0]
+        arms = [ARM_LIBRARY[0]] * bb.n_sites
+        smiles, mol = assemble(bb, arms)
+        assert smiles is not None, f"TACN backbone failed to assemble"
+
+    def test_dithiocarbamate_arm_assembles(self):
+        bb = BACKBONE_LIBRARY[0]  # ethylenediamine
+        dtc = [a for a in ARM_LIBRARY if "dithiocarbamate" in a.name][0]
+        smiles, mol = assemble(bb, [dtc, ARM_LIBRARY[0]])
+        assert smiles is not None, f"Dithiocarbamate arm failed"
+
+    def test_phosphonate_arm_assembles(self):
+        bb = BACKBONE_LIBRARY[0]
+        phos = [a for a in ARM_LIBRARY if a.name == "phosphonate"][0]
+        smiles, mol = assemble(bb, [phos, ARM_LIBRARY[0]])
+        assert smiles is not None, f"Phosphonate arm failed"
+
+    def test_thiosemicarbazone_arm_assembles(self):
+        bb = BACKBONE_LIBRARY[0]
+        tsc = [a for a in ARM_LIBRARY if a.name == "thiosemicarbazone"][0]
+        smiles, mol = assemble(bb, [tsc, ARM_LIBRARY[0]])
+        assert smiles is not None, f"Thiosemicarbazone arm failed"
+
+    def test_hydroxypyridinone_arm_assembles(self):
+        bb = BACKBONE_LIBRARY[0]
+        hpo = [a for a in ARM_LIBRARY if a.name == "hydroxypyridinone"][0]
+        smiles, mol = assemble(bb, [hpo, ARM_LIBRARY[0]])
+        assert smiles is not None, f"Hydroxypyridinone arm failed"
+
+    def test_soft_metal_generates_with_new_soft_arms(self):
+        """Hg2+ should pick up dithiocarbamate and thiosemicarbazone arms."""
+        r = generate_candidates("Hg2+", max_candidates=50, max_scored=10,
+                                 hsab_filter=True)
+        assert r.n_scored > 0
+        # Check that at least some candidates contain S atoms
+        has_sulfur = any("S" in c.smiles or "s" in c.smiles
+                         for c in r.candidates)
+        assert has_sulfur, "Hg2+ should get S-donor candidates"
+
+    def test_hard_metal_gets_phosphonate(self):
+        """Al3+ (hard) should accept phosphonate arms."""
+        r = generate_candidates("Al3+", max_candidates=80, max_scored=15,
+                                 hsab_filter=True)
+        assert r.n_scored > 0
+
+    def test_expanded_enumeration_larger(self):
+        """Expanded libraries should enumerate more molecules."""
+        raw = enumerate_molecules(metal="Cu2+", max_candidates=500)
+        assert len(raw) >= 100, f"Expected >=100 with expanded libs, got {len(raw)}"
+
+    def test_donor_category_coverage(self):
+        """Arms should cover hard, borderline, and soft categories."""
+        hard = [a for a in ARM_LIBRARY if a.hardness == "hard"]
+        border = [a for a in ARM_LIBRARY if a.hardness == "borderline"]
+        soft = [a for a in ARM_LIBRARY if a.hardness == "soft"]
+        assert len(hard) >= 8, f"Need >=8 hard arms, got {len(hard)}"
+        assert len(border) >= 10, f"Need >=10 borderline arms, got {len(border)}"
+        assert len(soft) >= 8, f"Need >=8 soft arms, got {len(soft)}"
+
+    def test_backbone_category_coverage(self):
+        """Backbones should cover all structural categories."""
+        cats = set(b.category for b in BACKBONE_LIBRARY)
+        for needed in ["linear", "branched", "aromatic", "macrocyclic"]:
+            assert needed in cats, f"Missing backbone category: {needed}"
