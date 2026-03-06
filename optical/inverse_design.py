@@ -423,6 +423,313 @@ def print_design(result):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# APPLICATION-LEVEL INVERSE DESIGN
+# ═══════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class ApplicationDesign:
+    """Output of application-level inverse design."""
+    # Particle parameters
+    diameter_nm: float = 0.0
+    sphere_material: str = "SiO2"
+    packing_fraction: float = 0.55
+    absorber_fraction: float = 0.0
+    absorber_material: str = "carbon"
+
+    # Application parameters
+    scenario: str = ""            # "glass_film", "textile_dipcoat", etc.
+    substrate: str = ""
+    n_layers: int = 10
+    coverage_fraction: float = 1.0
+    viewing: str = "lambertian"
+
+    # Optional linker
+    anchor: str = ""
+    spacer: str = ""
+    click: str = ""
+    shell_thickness_nm: float = 0.0
+
+    # Predicted observed color
+    peak_nm: float = 0.0
+    cie_x: float = 0.0
+    cie_y: float = 0.0
+    Lab: tuple = (0.0, 0.0, 0.0)
+    sRGB: tuple = (0, 0, 0)
+    brightness: float = 0.0
+    delta_E: float = 0.0
+
+    # Transmission (glass only)
+    cie_x_T: float = 0.0
+    cie_y_T: float = 0.0
+    sRGB_T: tuple = (0, 0, 0)
+
+
+# Scenario-specific defaults
+_SCENARIO_DEFAULTS = {
+    "glass_film": {
+        "geometry": "bulk_film",
+        "n_layers": 10,
+        "coverage": 1.0,
+        "viewing": "specular",
+        "substrate": "carbon",
+        "phi_bounds": (0.45, 0.64),
+        "abs_bounds": (0.0, 0.08),
+        "transmission": True,
+    },
+    "textile_dipcoat": {
+        "geometry": "thin_film",
+        "n_layers": 3,
+        "coverage": 0.7,
+        "viewing": "lambertian",
+        "substrate": "black_polyester",
+        "phi_bounds": (0.40, 0.60),
+        "abs_bounds": (0.0, 0.05),
+        "transmission": False,
+    },
+    "beads_on_glass": {
+        "geometry": "monolayer",
+        "n_layers": 1,
+        "coverage": 0.6,
+        "viewing": "specular",
+        "substrate": "carbon",
+        "phi_bounds": (0.50, 0.60),
+        "abs_bounds": (0.0, 0.0),
+        "transmission": True,
+    },
+    "beads_on_textile": {
+        "geometry": "sparse",
+        "n_layers": 1,
+        "coverage": 0.3,
+        "viewing": "lambertian",
+        "substrate": "black_polyester",
+        "phi_bounds": (0.50, 0.60),
+        "abs_bounds": (0.0, 0.0),
+        "transmission": False,
+    },
+}
+
+
+def _application_objective(params, target_x, target_y, scenario_cfg,
+                           sphere_material, substrate, lam):
+    """Objective: chromaticity distance through full application stack."""
+    diameter, phi, abs_frac = params
+
+    try:
+        from optical.application_optics import (
+            CoatingSpec, predict_application,
+        )
+
+        spec = CoatingSpec(
+            geometry=scenario_cfg["geometry"],
+            n_layers=scenario_cfg["n_layers"],
+            coverage_fraction=scenario_cfg["coverage"],
+            core_diameter_nm=float(diameter),
+            core_material=sphere_material,
+            n_medium=1.0,
+            packing_fraction=float(phi),
+            absorber_fraction=float(abs_frac),
+            absorber_material="carbon",
+        )
+
+        result = predict_application(
+            spec, substrate=substrate,
+            viewing=scenario_cfg["viewing"],
+            include_transmission=False,
+            wavelengths_nm=lam,
+        )
+
+        x, y = result.cie_xy
+        # Chromaticity distance (scaled to ~Lab range)
+        dx = (x - target_x) * 100
+        dy = (y - target_y) * 100
+        return float(np.sqrt(dx**2 + dy**2))
+
+    except Exception as e:
+        return 999.0
+
+
+def inverse_design_application(
+    target_x: float,
+    target_y: float,
+    scenario: str = "textile_dipcoat",
+    substrate: str = None,
+    sphere_material: str = "SiO2",
+    diameter_bounds: tuple = (100, 400),
+    n_layers: int = None,
+    coverage: float = None,
+    max_iter: int = 150,
+    tol: float = 1.0,
+    seed: int = 42,
+) -> DesignResult:
+    """Inverse design optimizing through the full application stack.
+
+    The optimizer sees what the observer sees: coating geometry →
+    substrate coupling → viewing angle integration → CIE color.
+
+    Args:
+        target_x, target_y:  Target CIE chromaticity
+        scenario:            "glass_film", "textile_dipcoat",
+                             "beads_on_glass", "beads_on_textile"
+        substrate:           Override substrate (default: scenario-dependent)
+        sphere_material:     Particle material
+        diameter_bounds:     (min_nm, max_nm)
+        n_layers:            Override layer count
+        coverage:            Override coverage fraction
+        max_iter:            Optimizer iterations
+        tol:                 ΔE tolerance
+        seed:                Random seed
+
+    Returns:
+        DesignResult with ApplicationDesign
+    """
+    import time
+    t0 = time.time()
+
+    if scenario not in _SCENARIO_DEFAULTS:
+        raise ValueError(f"Unknown scenario: {scenario}. "
+                         f"Options: {list(_SCENARIO_DEFAULTS)}")
+
+    cfg = dict(_SCENARIO_DEFAULTS[scenario])
+    if substrate is not None:
+        cfg["substrate"] = substrate
+    else:
+        substrate = cfg["substrate"]
+    if n_layers is not None:
+        cfg["n_layers"] = n_layers
+    if coverage is not None:
+        cfg["coverage"] = coverage
+
+    bounds = [diameter_bounds, cfg["phi_bounds"], cfg["abs_bounds"]]
+    n_evals = [0]
+
+    def _obj(params):
+        n_evals[0] += 1
+        return _application_objective(params, target_x, target_y, cfg,
+                                       sphere_material, substrate, _LAM)
+
+    result = differential_evolution(
+        _obj, bounds,
+        maxiter=max_iter,
+        tol=tol / 100,
+        seed=seed,
+        polish=True,
+        init='sobol',
+    )
+
+    diameter, phi, abs_frac = result.x
+    best_dE = result.fun
+
+    # Compute full application result at optimum
+    from optical.application_optics import (
+        CoatingSpec, predict_application,
+    )
+
+    spec = CoatingSpec(
+        geometry=cfg["geometry"],
+        n_layers=cfg["n_layers"],
+        coverage_fraction=cfg["coverage"],
+        core_diameter_nm=diameter,
+        core_material=sphere_material,
+        n_medium=1.0,
+        packing_fraction=phi,
+        absorber_fraction=abs_frac,
+        absorber_material="carbon",
+    )
+
+    app_result = predict_application(
+        spec, substrate=substrate,
+        viewing=cfg["viewing"],
+        include_transmission=cfg.get("transmission", False),
+        wavelengths_nm=_LAM,
+    )
+
+    design = ApplicationDesign(
+        diameter_nm=round(diameter, 1),
+        sphere_material=sphere_material,
+        packing_fraction=round(phi, 3),
+        absorber_fraction=round(abs_frac, 4),
+        scenario=scenario,
+        substrate=substrate,
+        n_layers=cfg["n_layers"],
+        coverage_fraction=cfg["coverage"],
+        viewing=cfg["viewing"],
+        peak_nm=app_result.peak_nm,
+        cie_x=app_result.cie_xy[0],
+        cie_y=app_result.cie_xy[1],
+        Lab=app_result.Lab,
+        sRGB=app_result.sRGB,
+        brightness=app_result.brightness,
+        delta_E=round(best_dE, 2),
+    )
+
+    if cfg.get("transmission", False) and len(app_result.T_observed) > 0:
+        design.cie_x_T = app_result.cie_xy_T[0]
+        design.cie_y_T = app_result.cie_xy_T[1]
+        design.sRGB_T = app_result.sRGB_T
+
+    converged = best_dE < tol * 5
+    notes = ""
+    if best_dE > 15:
+        notes = f"WARNING: Large ΔE={best_dE:.1f} — target may be unreachable for {scenario}"
+    elif best_dE > 5:
+        notes = f"Moderate ΔE={best_dE:.1f} — approximate match"
+
+    # Scenario-specific advice
+    if scenario == "beads_on_textile" and best_dE > 10:
+        notes += ". Sparse beads have very low R — consider textile_dipcoat for stronger color."
+    if scenario == "textile_dipcoat" and abs_frac < 0.001:
+        notes += ". Consider adding absorber (carbon black) to improve saturation."
+
+    return DesignResult(
+        target_xy=(target_x, target_y),
+        target_Lab=(0, 0, 0),
+        design=design,
+        converged=converged,
+        delta_E=round(best_dE, 2),
+        n_evaluations=n_evals[0],
+        elapsed_s=round(time.time() - t0, 2),
+        notes=notes,
+    )
+
+
+def print_application_design(result):
+    """Pretty-print an application-level design result."""
+    print()
+    d = result.design
+    print(f"  MABE Application-Level Inverse Design")
+    print(f"  Target: CIE xy = ({result.target_xy[0]:.3f}, {result.target_xy[1]:.3f})")
+    print(f"  Scenario: {d.scenario}")
+    print(f"  Converged: {result.converged}  ΔE = {result.delta_E:.1f}")
+    print(f"  Evaluations: {result.n_evaluations}  Time: {result.elapsed_s:.1f}s")
+    if result.notes:
+        print(f"  {result.notes}")
+    print()
+    print(f"  ── Particle Spec ──")
+    print(f"  Diameter:          {d.diameter_nm:.0f} nm")
+    print(f"  Material:          {d.sphere_material}")
+    print(f"  Packing fraction:  {d.packing_fraction:.3f}")
+    print(f"  Absorber:          {d.absorber_fraction:.4f} ({d.absorber_material})")
+    print()
+    print(f"  ── Application Spec ──")
+    print(f"  Geometry:          {d.scenario}")
+    print(f"  Substrate:         {d.substrate}")
+    print(f"  Layers:            {d.n_layers}")
+    print(f"  Coverage:          {d.coverage_fraction:.0%}")
+    print(f"  Viewing:           {d.viewing}")
+    print()
+    print(f"  ── Observed Color ──")
+    print(f"  Peak wavelength:   {d.peak_nm:.0f} nm")
+    print(f"  CIE xy:            ({d.cie_x:.4f}, {d.cie_y:.4f})")
+    print(f"  Lab:               {d.Lab}")
+    print(f"  sRGB:              {d.sRGB}")
+    print(f"  Brightness (Y):    {d.brightness:.1f}")
+    if d.cie_x_T > 0:
+        print(f"  Transmitted CIE:   ({d.cie_x_T:.4f}, {d.cie_y_T:.4f})")
+        print(f"  Transmitted sRGB:  {d.sRGB_T}")
+    print()
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # SELF-TEST
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -450,3 +757,26 @@ if __name__ == "__main__":
     print("--- Test 4: Design green Bragg mirror ---")
     r4 = inverse_design_multilayer(550, max_iter=30)
     print_design(r4)
+
+    # Test 5: APPLICATION — blue on black polyester textile
+    print("--- Test 5: Blue on black polyester textile ---")
+    r5 = inverse_design_application(0.15, 0.10,
+                                     scenario="textile_dipcoat",
+                                     substrate="black_polyester",
+                                     max_iter=50)
+    print_application_design(r5)
+
+    # Test 6: APPLICATION — green on glass
+    print("--- Test 6: Green on glass film ---")
+    r6 = inverse_design_application(0.27, 0.40,
+                                     scenario="glass_film",
+                                     max_iter=50)
+    print_application_design(r6)
+
+    # Test 7: APPLICATION — blue on denim
+    print("--- Test 7: Blue on denim textile ---")
+    r7 = inverse_design_application(0.15, 0.15,
+                                     scenario="textile_dipcoat",
+                                     substrate="denim",
+                                     max_iter=50)
+    print_application_design(r7)

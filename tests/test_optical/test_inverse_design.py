@@ -110,3 +110,75 @@ class TestIntegration:
         x, y, _ = XYZ_to_xyY(X, Y, Z)
         assert 0 < x < 1
         assert 0 < y < 1
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# APPLICATION-LEVEL INVERSE DESIGN
+# ═══════════════════════════════════════════════════════════════════════════
+
+from optical.inverse_design import (
+    inverse_design_application, ApplicationDesign,
+)
+
+
+class TestApplicationInverse:
+    def test_textile_returns_application_design(self):
+        r = inverse_design_application(0.20, 0.20,
+                                        scenario="textile_dipcoat",
+                                        max_iter=20)
+        assert isinstance(r.design, ApplicationDesign)
+        assert r.design.scenario == "textile_dipcoat"
+
+    def test_glass_film_converges_better(self):
+        """Glass film (bulk, specular) should converge better than textile."""
+        r = inverse_design_application(0.27, 0.40,
+                                        scenario="glass_film",
+                                        max_iter=30)
+        assert r.delta_E < 20  # should get reasonably close
+
+    def test_glass_film_has_transmission(self):
+        r = inverse_design_application(0.27, 0.40,
+                                        scenario="glass_film",
+                                        max_iter=20)
+        assert r.design.cie_x_T > 0 or r.design.cie_y_T > 0
+
+    def test_textile_scenario_defaults(self):
+        r = inverse_design_application(0.20, 0.20,
+                                        scenario="textile_dipcoat",
+                                        max_iter=10)
+        assert r.design.n_layers == 3
+        assert r.design.viewing == "lambertian"
+        assert r.design.substrate == "black_polyester"
+
+    def test_custom_substrate_override(self):
+        r = inverse_design_application(0.20, 0.20,
+                                        scenario="textile_dipcoat",
+                                        substrate="denim",
+                                        max_iter=10)
+        assert r.design.substrate == "denim"
+
+    def test_beads_on_glass_scenario(self):
+        r = inverse_design_application(0.20, 0.20,
+                                        scenario="beads_on_glass",
+                                        max_iter=10)
+        assert r.design.scenario == "beads_on_glass"
+        assert r.design.n_layers == 1
+
+    def test_beads_on_textile_scenario(self):
+        r = inverse_design_application(0.20, 0.20,
+                                        scenario="beads_on_textile",
+                                        max_iter=10)
+        assert r.design.scenario == "beads_on_textile"
+        assert r.design.coverage_fraction < 0.5
+
+    def test_unknown_scenario_raises(self):
+        with pytest.raises(ValueError):
+            inverse_design_application(0.20, 0.20, scenario="nonexistent")
+
+    def test_design_has_particle_spec(self):
+        r = inverse_design_application(0.20, 0.20,
+                                        scenario="textile_dipcoat",
+                                        max_iter=10)
+        assert r.design.diameter_nm > 50
+        assert r.design.packing_fraction > 0
+        assert r.design.sphere_material == "SiO2"
