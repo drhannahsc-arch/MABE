@@ -606,8 +606,44 @@ def from_smiles(smiles, metal=None, host=None, pH=7.4, n_ligand_molecules=1):
     uc.chelate_rings = n_rings
     uc.ring_sizes = ring_sizes
     uc.is_macrocyclic = is_macro
-    if is_macro and cavity_nm > 0 and uc.cavity_radius_nm == 0:
-        uc.cavity_radius_nm = cavity_nm
+    if is_macro:
+        if cavity_nm > 0 and uc.cavity_radius_nm == 0:
+            uc.cavity_radius_nm = cavity_nm
+        # Calibration convention: when ALL donors are inside the macrocyclic ring
+        # (crown ethers, cyclam, cyclen), chelate_rings = 0 because the macrocyclic
+        # terms absorb chelate stabilization. When pendant arms add donors outside
+        # the ring (DOTA, NOTA), those chelate rings ARE counted.
+        ring_info = mol.GetRingInfo()
+        macro_atoms = set()
+        for ring in ring_info.AtomRings():
+            if len(ring) >= 9:
+                macro_atoms.update(ring)
+        donor_indices = {d[0] for d in donors}
+        pendant_donors = donor_indices - macro_atoms
+        if not pendant_donors:
+            # All donors in ring → zero chelate rings (crown/cyclam convention)
+            uc.chelate_rings = 0
+            uc.ring_sizes = []
+
+    # ── Macrocyclic O_ether → O_carbonyl remapping ──
+    # Preorganized C-O-C donors in macrocyclic rings have lone pairs
+    # constrained toward cavity, making them better donors than open-chain ethers.
+    # Maps to O_carbonyl exchange energy (documented in project notes).
+    if is_macro:
+        macro_atoms = set()
+        ring_info = mol.GetRingInfo()
+        for ring in ring_info.AtomRings():
+            if len(ring) >= 9:
+                macro_atoms.update(ring)
+        if macro_atoms:
+            subtypes = [
+                "O_carbonyl" if (s == "O_ether" and idx in macro_atoms) else s
+                for idx, s in donors
+            ]
+            donor_atoms = [_subtype_to_element(s) for s in subtypes]
+            uc.donor_subtypes = subtypes
+            uc.donor_atoms = donor_atoms
+            uc.donor_type = classify_donor_type(subtypes)
 
     # ── Multi-ligand replication (e.g. Fe(acac)₃) ──
     uc.n_ligand_molecules = n_ligand_molecules

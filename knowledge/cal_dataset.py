@@ -74,9 +74,9 @@ _cyclam = ["N_amine"]*4
 _cyclen = ["N_amine"]*4
 _dota = ["N_amine"]*4 + ["O_carboxylate"]*4
 _nota = ["N_amine"]*3 + ["O_carboxylate"]*3
-_18c6 = ["O_ether"]*6
-_15c5 = ["O_ether"]*5
-_12c4 = ["O_ether"]*4
+_18c6 = ["O_carbonyl"]*6   # crown ether O: preorganized dipolar, maps to O_carbonyl not O_ether
+_15c5 = ["O_carbonyl"]*5
+_12c4 = ["O_carbonyl"]*4
 
 
 CAL_DATA = [
