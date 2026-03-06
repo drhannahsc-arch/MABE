@@ -727,7 +727,7 @@ LIGAND_DB = [
 
     Ligand("Thenoyltrifluoroacetone", "OC(=CC(=O)c1cccs1)C(F)(F)F",
            "326-91-0",
-           ["O_phenolate","O_phenolate"],
+           ["O_enolate","O_enolate"],
            2, 1, [6],
            category="beta_diketone",
            notes="Lanthanide/actinide extraction, β-diketone",
@@ -735,7 +735,7 @@ LIGAND_DB = [
 
     Ligand("Acetylacetone", "CC(=O)CC(C)=O",
            "123-54-6",
-           ["O_phenolate","O_phenolate"],
+           ["O_enolate","O_enolate"],
            2, 1, [6],
            category="beta_diketone",
            notes="Ubiquitous β-diketone, enolizes to chelate metals",

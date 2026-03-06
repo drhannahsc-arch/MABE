@@ -48,6 +48,7 @@ SUBTYPE_EXCHANGE = {
     "O_carboxylate":    -6.36,  # Acetate, EDTA arms — charged, good sigma
     "O_phenolate":     -17.49,  # Phenol anion — aromatic + charged
     "O_hydroxamate":    -8.42,  # CONHO⁻ — resonance-stabilized
+    "O_enolate":        -3.50,  # β-diketonate O — calibrated against 7 M(acac) log K values
     "O_catecholate":   -15.00,  # Aromatic diolate — pi-donation into d-orbitals
     "O_phosphate":      -8.51,  # PO4 donors
     "O_sulfonate":      -2.0,   # SO3⁻ — weak donor
@@ -113,7 +114,7 @@ ELEMENT_EXCHANGE = {
 # Donor softness values (0 = hard, 1 = soft)
 DONOR_SOFTNESS = {
     "O_ether": 0.05, "O_hydroxyl": 0.10, "O_carboxylate": 0.15,
-    "O_phenolate": 0.20, "O_hydroxamate": 0.15, "O_catecholate": 0.20,
+    "O_phenolate": 0.20, "O_hydroxamate": 0.15, "O_enolate": 0.17, "O_catecholate": 0.20,
     "O_phosphate": 0.10, "O_sulfonate": 0.05,
     "N_amine": 0.35, "N_imine": 0.40, "N_pyridine": 0.45,
     "N_imidazole": 0.40, "N_nitrile": 0.30, "N_amide": 0.25,
@@ -139,7 +140,7 @@ DONOR_SOFTNESS = {
 # Below this pKa, donor is protonated and cannot coordinate
 DONOR_PKA = {
     "O_carboxylate": 4.5, "O_phenolate": 10.0, "O_hydroxamate": 9.0,
-    "O_catecholate": 9.2, "O_hydroxyl": 14.0, "O_phosphate": 7.2,
+    "O_enolate": 8.9, "O_catecholate": 9.2, "O_hydroxyl": 14.0, "O_phosphate": 7.2,
     "N_amine": 10.5, "N_imine": 6.5, "N_pyridine": 5.3,
     "N_imidazole": 7.0, "N_amide": 15.0,
     "S_thiolate": 8.3, "S_dithiocarbamate": 3.0,
@@ -322,7 +323,7 @@ LFSE_OCT_HIGH_SPIN = {
 # Real ratios from spectroscopic 10Dq measurements
 DQ_BY_DONOR = {
     "O_ether": 8.5, "O_hydroxyl": 9.0, "O_carboxylate": 10.7,
-    "O_phenolate": 11.0, "O_hydroxamate": 11.5, "O_catecholate": 12.0,
+    "O_phenolate": 11.0, "O_hydroxamate": 11.5, "O_enolate": 11.2, "O_catecholate": 12.0,
     "O_phosphate": 10.2, "O_sulfonate": 8.8,
     "N_amine": 12.6, "N_imine": 14.0, "N_pyridine": 13.5,
     "N_imidazole": 12.8, "N_nitrile": 11.5, "N_amide": 11.0,
@@ -387,7 +388,7 @@ COVALENT_BDE = {
 DONOR_FORMAL_CHARGE = {
     # Anionic donors (negative charge)
     "O_carboxylate": -1.0, "O_phenolate": -1.0, "O_hydroxamate": -1.0,
-    "O_catecholate": -1.0, "O_phosphate": -1.0, "O_sulfonate": -1.0,
+    "O_enolate": -1.0, "O_catecholate": -1.0, "O_phosphate": -1.0, "O_sulfonate": -1.0,
     "S_thiolate": -1.0, "S_thiosulfate": -1.0, "S_dithiocarbamate": -0.5,
     "Cl_chloride": -1.0, "Br_bromide": -1.0, "I_iodide": -1.0,
     # Non-carbon-bias anionic donors
@@ -475,7 +476,7 @@ def _hancock_ring_penalty(ionic_radius_pm: float) -> float:
 # Based on Bondi vdW radii of coordinating atom
 DONOR_VDW_RADIUS = {
     "O_ether": 1.52, "O_hydroxyl": 1.52, "O_carboxylate": 1.52,
-    "O_phenolate": 1.52, "O_hydroxamate": 1.52, "O_catecholate": 1.52,
+    "O_phenolate": 1.52, "O_hydroxamate": 1.52, "O_enolate": 1.52, "O_catecholate": 1.52,
     "O_phosphate": 1.52, "O_sulfonate": 1.52,
     "N_amine": 1.55, "N_imine": 1.55, "N_pyridine": 1.55,
     "N_imidazole": 1.55, "N_nitrile": 1.55, "N_amide": 1.55,
@@ -500,7 +501,7 @@ DONOR_VDW_RADIUS = {
 # Larger cone = more steric demand in the coordination sphere
 DONOR_CONE_ANGLE = {
     "O_ether": 80, "O_hydroxyl": 70, "O_carboxylate": 85,
-    "O_phenolate": 100, "O_hydroxamate": 95, "O_catecholate": 105,
+    "O_phenolate": 100, "O_hydroxamate": 95, "O_enolate": 90, "O_catecholate": 105,
     "O_phosphate": 95, "O_sulfonate": 90,
     "N_amine": 85, "N_imine": 90, "N_pyridine": 100,
     "N_imidazole": 95, "N_nitrile": 65, "N_amide": 80,
@@ -620,7 +621,7 @@ DONOR_ROTOR_COUNT = {
     "N_pyridine": 0, "N_imidazole": 0, "N_imine": 0, "N_nitrile": 0,
     "O_catecholate": 0, "O_phenolate": 0,
     # Semi-rigid (1 rotor in linker arm)
-    "O_carboxylate": 1, "O_hydroxamate": 1, "O_phosphate": 1,
+    "O_carboxylate": 1, "O_hydroxamate": 1, "O_enolate": 1, "O_phosphate": 1,
     "S_dithiocarbamate": 0, "N_amide": 1,
     # Flexible (2+ rotors in chain)
     "N_amine": 2, "O_hydroxyl": 1, "O_ether": 2,

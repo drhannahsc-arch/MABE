@@ -325,17 +325,38 @@ def _compute_hg_terms(uc, result):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# PROTEIN-LIGAND NON-COVALENT TERMS — Phase 14a
-# Uses HG-calibrated parameters applied to protein pocket geometry.
-# Zero new fitted parameters — blind prediction from synthetic host physics.
+# PROTEIN-LIGAND NON-COVALENT TERMS — Phase 14a + PL Calibration
+# 5 physics descriptors + per-target offsets, fitted against 300 ChEMBL entries.
+# 11 params total, 300 data = 27:1 ratio. Metal scorer untouched.
 # ═══════════════════════════════════════════════════════════════════════════
+
+PL_PARAMS = {
+    "a_sasa":  -0.05825,   # kJ/mol per Å² buried SASA (2.3× HG γ_flat)
+    "b_logP":   0.2011,    # log Ka per logP unit (lipophilic efficiency)
+    "c_rot":   -0.1362,    # log Ka per rotatable bond (size proxy)
+    "d_hb":     0.2453,    # log Ka per H-bond count (heuristic correction)
+    "e_mw":     0.5277,    # log Ka per 100 Da (molecular size)
+}
+
+# Per-target offsets absorb systematic difference between metal scorer
+# absolute prediction and protein-context binding. For novel targets
+# without a calibrated offset, the model falls back to offset=0.
+PL_TARGET_OFFSETS = {
+    "ACE":         +3.360,
+    "CA-II":       +0.441,
+    "MMP-13":      +1.662,
+    "MMP-7":       -0.092,
+    "MMP-9":       +1.699,
+    "Thermolysin": +0.947,
+}
+
 
 def _compute_protein_ligand_terms(uc, result):
     """Non-covalent terms for metalloprotein-ligand binding.
 
     Fires only for binding_mode == 'metalloprotein'.
-    Uses calibrated HG parameters (gamma_flat, eps_neutral, eps_rotor,
-    k_shape) applied to protein pocket geometry from PROTEIN_POCKET_REGISTRY.
+    Uses 5 calibrated PL descriptors + per-target offset.
+    Metal coordination term is computed separately by _compute_metal.
 
     Self-zeros if binding_mode != metalloprotein or guest properties absent.
     """
@@ -344,29 +365,26 @@ def _compute_protein_ligand_terms(uc, result):
     if not uc.guest_smiles or uc.guest_sasa_nonpolar_A2 <= 0:
         return
 
-    # 1. Hydrophobic burial: γ_flat × buried_SASA
-    #    Protein pockets are concave (flat-like curvature for transfer model)
+    p = PL_PARAMS
+
+    # 1. Hydrophobic burial: SASA-based
     if uc.sasa_buried_A2 > 0:
-        result.dg_hydrophobic = -HG_PARAMS["gamma_flat"] * uc.sasa_buried_A2
+        result.dg_hydrophobic = p["a_sasa"] * uc.sasa_buried_A2
 
-    # 2. H-bond network: eps_neutral per H-bond
-    #    (no charge-assisted or water penalty — simplified for PL)
-    if uc.n_hbonds_formed > 0:
-        result.dg_hbond = HBOND_PARAMS["eps_neutral"] * uc.n_hbonds_formed
+    # 2–5. logP, rotors, H-bonds, MW → converted to kJ/mol
+    dg_descriptors = (
+        p["b_logP"] * uc.guest_logP * LN10_RT
+        + p["c_rot"] * uc.guest_rotatable_bonds * LN10_RT
+        + p["d_hb"] * uc.n_hbonds_formed * LN10_RT
+        + p["e_mw"] * uc.guest_mw * 0.01
+    )
+    # Pack descriptor terms into conf_entropy (reuse existing result field)
+    result.dg_conf_entropy = dg_descriptors
 
-    # 3. Conformational entropy: penalty for freezing rotatable bonds
-    if uc.guest_rotatable_bonds > 0:
-        result.dg_conf_entropy = (CONF_SHAPE_PARAMS["eps_rotor"]
-                                  * uc.guest_rotatable_bonds
-                                  * CONF_SHAPE_PARAMS["f_partial"])
-
-    # 4. Shape complementarity: Gaussian penalty on packing coefficient
-    if uc.packing_coefficient > 0 and uc.cavity_volume_A3 > 0:
-        pc_opt = CONF_SHAPE_PARAMS["PC_optimal"]
-        sigma = CONF_SHAPE_PARAMS["sigma_PC"]
-        pc = uc.packing_coefficient
-        result.dg_shape = (CONF_SHAPE_PARAMS["k_shape"]
-                           * math.exp(-((pc - pc_opt) ** 2) / (2 * sigma ** 2)))
+    # Per-target offset (falls back to 0 for unknown targets)
+    target = uc.host_name
+    offset = PL_TARGET_OFFSETS.get(target, 0.0)
+    result.dg_shape = offset * LN10_RT
 
 
 # ═══════════════════════════════════════════════════════════════════════════

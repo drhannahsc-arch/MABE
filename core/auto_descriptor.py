@@ -120,9 +120,8 @@ def _extract_beta_diketone(mol, match, claimed):
     o2 = match[4]
     results = []
     if o1 not in claimed and o2 not in claimed:
-        # Enolate O is anionic on conjugated system — closest to O_phenolate
-        results.append((o1, "O_phenolate"))
-        results.append((o2, "O_phenolate"))
+        results.append((o1, "O_enolate"))
+        results.append((o2, "O_enolate"))
     return results
 
 
@@ -532,7 +531,7 @@ def detect_chelate_rings(mol, donors):
 
 _SOFT_SUBTYPES = {"S_thiolate", "S_thioether", "S_dithiocarbamate",
                   "P_phosphine", "I_iodide", "S_thiosulfate"}
-_HARD_SUBTYPES = {"O_carboxylate", "O_phenolate", "O_hydroxamate",
+_HARD_SUBTYPES = {"O_carboxylate", "O_phenolate", "O_hydroxamate", "O_enolate",
                   "O_catecholate", "O_phosphate", "O_sulfonate",
                   "O_ether", "O_hydroxyl", "Cl_chloride", "N_amide"}
 _BORDERLINE_SUBTYPES = {"N_amine", "N_pyridine", "N_imine",
