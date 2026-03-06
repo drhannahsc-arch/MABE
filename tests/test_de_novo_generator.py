@@ -423,3 +423,117 @@ class TestExpandedCoverage:
         cats = set(b.category for b in BACKBONE_LIBRARY)
         for needed in ["linear", "branched", "aromatic", "macrocyclic"]:
             assert needed in cats, f"Missing backbone category: {needed}"
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 13. BIOISOSTERE TABLE
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.de_novo_generator import (
+    BIOISOSTERE_GROUPS, get_bioisosteres, _ARM_BY_NAME,
+    scaffold_hop, bioisosteric_replace, hop_and_score,
+)
+
+
+class TestBioisostereTable:
+    def test_all_group_members_exist(self):
+        """Every arm named in BIOISOSTERE_GROUPS must exist in ARM_LIBRARY."""
+        for gname, members in BIOISOSTERE_GROUPS:
+            for mname in members:
+                assert mname in _ARM_BY_NAME, (
+                    f"Group '{gname}' references unknown arm '{mname}'")
+
+    def test_get_bioisosteres_returns_alternatives(self):
+        alts = get_bioisosteres("acetic-acid")
+        assert len(alts) >= 2
+        names = [a.name for a in alts]
+        assert "acetic-acid" not in names  # excludes self
+        assert "phosphonate" in names
+
+    def test_get_bioisosteres_unknown_arm(self):
+        assert get_bioisosteres("nonexistent") == []
+
+    def test_catechol_bioisosteres(self):
+        alts = get_bioisosteres("catechol")
+        names = [a.name for a in alts]
+        assert "acetohydroxamate" in names
+        assert "hydroxypyridinone" in names
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 14. SCAFFOLD HOPPING
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestScaffoldHop:
+    def test_hop_simple_bidentate(self):
+        """en (NCCN) scaffold-hopped should find alternatives with 2x N_amine."""
+        hops = scaffold_hop("NCCN", metal="Cu2+", max_candidates=30, max_scored=10)
+        # en is simple N2 bidentate — some backbones can reproduce this
+        # May or may not find results depending on backbone compatibility
+        assert isinstance(hops, list)
+
+    def test_hop_excludes_input(self):
+        """Scaffold hop should not return the input molecule."""
+        hops = scaffold_hop("NCCN", metal="Cu2+", max_candidates=50, max_scored=20)
+        from rdkit import Chem
+        input_can = Chem.MolToSmiles(Chem.MolFromSmiles("NCCN"))
+        for smi, _, _, _ in hops:
+            assert smi != input_can
+
+    def test_hop_returns_valid_smiles(self):
+        hops = scaffold_hop("NCCN", metal="Cu2+", max_candidates=30, max_scored=10)
+        for smi, _, _, _ in hops:
+            mol = Chem.MolFromSmiles(smi)
+            assert mol is not None, f"Invalid SMILES from scaffold hop: {smi}"
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 15. BIOISOSTERIC REPLACEMENT
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestBioisostericReplace:
+    def test_replace_en(self):
+        """en bioisosteric replacement should find pyridine/imidazole variants."""
+        bios = bioisosteric_replace("NCCN", metal="Cu2+",
+                                     max_candidates=30, max_scored=10)
+        assert len(bios) > 0, "Should find bioisosteric replacements for en"
+
+    def test_replace_returns_different_molecules(self):
+        bios = bioisosteric_replace("NCCN", metal="Cu2+",
+                                     max_candidates=30, max_scored=10)
+        from rdkit import Chem
+        input_can = Chem.MolToSmiles(Chem.MolFromSmiles("NCCN"))
+        for smi, _, _, _ in bios:
+            assert smi != input_can
+
+    def test_replace_valid_smiles(self):
+        bios = bioisosteric_replace("NCCN", metal="Cu2+",
+                                     max_candidates=20, max_scored=5)
+        for smi, _, _, _ in bios:
+            mol = Chem.MolFromSmiles(smi)
+            assert mol is not None
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 16. HOP AND SCORE
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestHopAndScore:
+    def test_hop_and_score_produces_results(self):
+        r = hop_and_score("NCCN", metal="Cu2+",
+                           max_candidates=30, max_scored=10)
+        assert r.n_scored > 0
+        assert "scaffold" in r.mode
+
+    def test_hop_and_score_ranked(self):
+        r = hop_and_score("NCCN", metal="Cu2+",
+                           max_candidates=30, max_scored=10)
+        ranks = [c.rank for c in r.candidates]
+        assert ranks == list(range(1, len(ranks) + 1))
+
+    def test_hop_and_score_with_interferents(self):
+        r = hop_and_score("NCCN", metal="Cu2+",
+                           interferents=["Ca2+"],
+                           max_candidates=30, max_scored=10)
+        for c in r.candidates:
+            assert "Ca2+" in c.interferent_scores

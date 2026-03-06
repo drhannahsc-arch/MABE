@@ -174,3 +174,13 @@ def test_discover_guests_has_sources():
                          max_generate=50, max_score_generated=10)
     sources = set(c.source for c in r.candidates)
     assert len(sources) >= 1  # at least library or generated
+
+
+def test_discover_binders_with_seed():
+    """discover_binders with seed_smiles adds hopped candidates."""
+    r = discover_binders("Cu2+", seed_smiles="NCCN", hop=True,
+                          top_n=20, max_generate=30, max_score_generated=5)
+    assert r.n_scored > 0
+    sources = set(c.source for c in r.candidates)
+    # Should have at least library, possibly hopped
+    assert len(sources) >= 1

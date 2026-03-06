@@ -337,6 +337,444 @@ ARM_LIBRARY = [
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# BIOISOSTERE TABLE
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Arms grouped by equivalent donor function. Arms within a group can
+# substitute for each other — same primary coordination mode, different
+# scaffold chemistry. Grouped by primary donor signature.
+#
+# Each group: (group_name, [arm_name, ...])
+# ═══════════════════════════════════════════════════════════════════════════
+
+BIOISOSTERE_GROUPS = [
+    # ── Monodentate O-acid (hard, single O_carboxylate/phosphate/sulfonate) ──
+    ("mono_O_acid", [
+        "acetic-acid", "propionic-acid", "phosphonate", "sulfonate",
+    ]),
+
+    # ── Bidentate O,O chelate (hard, catechol/hydroxamate equivalents) ──
+    ("bident_OO_chelate", [
+        "catechol", "acetohydroxamate", "hydroxypyridinone",
+        "bisphosphonate", "squaramide",
+    ]),
+
+    # ── Monodentate N aromatic (borderline, pyridine/imidazole type) ──
+    ("mono_N_aromatic", [
+        "2-pyridyl", "2-pyridylmethyl", "imidazolylmethyl",
+        "benzimidazolyl",
+    ]),
+
+    # ── Monodentate N amine (borderline, aliphatic amine) ──
+    ("mono_N_amine", [
+        "aminomethyl", "aminoethyl",
+    ]),
+
+    # ── Bidentate N,O (borderline, mixed imine/phenolate) ──
+    ("bident_NO_mixed", [
+        "salicylaldimine", "8-hydroxyquinolinyl", "oxime-simple",
+        "hydrazide", "picolylamine",
+    ]),
+
+    # ── Monodentate S (soft, thiol/thioether) ──
+    ("mono_S", [
+        "thiol-methyl", "thiol-ethyl", "thioether-methyl",
+    ]),
+
+    # ── Bidentate S,S (soft, dithio chelate) ──
+    ("bident_SS_chelate", [
+        "dithiocarbamate-NMe", "dithiocarbamate-NH",
+    ]),
+
+    # ── Bidentate N,S (soft/borderline, thiosemicarbazone type) ──
+    ("bident_NS_mixed", [
+        "thiosemicarbazone", "thiourea", "aminothiadiazole",
+    ]),
+
+    # ── Monodentate O hydroxyl/phenol ──
+    ("mono_O_hydroxyl", [
+        "ethanol", "phenol",
+    ]),
+
+    # ── Weak/special ──
+    ("mono_N_weak", [
+        "nitrile", "carbamoylmethyl",
+    ]),
+]
+
+# Build lookup: arm_name → group_name
+_ARM_TO_GROUP = {}
+_GROUP_TO_ARMS = {}
+for _gname, _members in BIOISOSTERE_GROUPS:
+    _GROUP_TO_ARMS[_gname] = _members
+    for _mname in _members:
+        _ARM_TO_GROUP[_mname] = _gname
+
+# Build lookup: arm_name → Arm object
+_ARM_BY_NAME = {a.name: a for a in ARM_LIBRARY}
+
+
+def get_bioisosteres(arm_name):
+    """Return list of Arm objects that are bioisosteric replacements.
+
+    Excludes the input arm itself.
+    """
+    group = _ARM_TO_GROUP.get(arm_name)
+    if not group:
+        return []
+    return [_ARM_BY_NAME[n] for n in _GROUP_TO_ARMS[group]
+            if n != arm_name and n in _ARM_BY_NAME]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# DONOR SIGNATURE EXTRACTION
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _donor_signature(smiles, metal=None):
+    """Extract sorted donor subtype tuple from a SMILES via auto_descriptor.
+
+    Returns (tuple_of_sorted_subtypes, denticity) or (None, 0) on failure.
+    """
+    try:
+        from core.auto_descriptor import from_smiles
+        uc = from_smiles(smiles, metal=metal)
+        if uc and uc.donor_subtypes:
+            sig = tuple(sorted(uc.donor_subtypes))
+            return sig, uc.denticity
+    except Exception:
+        pass
+    return None, 0
+
+
+def _arm_donor_signature(arms):
+    """Get combined sorted donor subtype tuple from a list of Arm objects."""
+    all_donors = []
+    for arm in arms:
+        all_donors.extend(arm.donor_subtypes)
+    return tuple(sorted(all_donors))
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# SCAFFOLD HOPPING
+# ═══════════════════════════════════════════════════════════════════════════
+
+def scaffold_hop(smiles, metal=None, host=None, pH=7.4,
+                 max_candidates=100, max_scored=30):
+    """Keep the donor set, swap the backbone.
+
+    Takes a known molecule, extracts its donor signature, then finds
+    backbone + arm combinations that reproduce the same donor set on
+    a different scaffold.
+
+    Args:
+        smiles: input molecule SMILES
+        metal: target metal for scoring (optional)
+        host: target host for scoring (optional)
+        pH: working pH
+        max_candidates: max to enumerate
+        max_scored: max to score
+
+    Returns:
+        list of (smiles, backbone_name, arm_names, sa_score) tuples
+    """
+    target_sig, target_dent = _donor_signature(smiles, metal=metal)
+    if target_sig is None:
+        return []
+
+    # Find all backbone + arm combos that match the donor signature
+    from itertools import product as cartesian_product
+
+    results = []
+    seen = set()
+    input_canonical = None
+    try:
+        mol = Chem.MolFromSmiles(smiles)
+        if mol:
+            input_canonical = Chem.MolToSmiles(mol)
+    except Exception:
+        pass
+
+    # Filter arms by HSAB if metal specified
+    if metal:
+        compatible_arms = [a for a in ARM_LIBRARY
+                           if hsab_compatible(metal, a) and a.name != "H-cap"]
+    else:
+        compatible_arms = [a for a in ARM_LIBRARY if a.name != "H-cap"]
+
+    for bb in BACKBONE_LIBRARY:
+        arm_combos = cartesian_product(compatible_arms, repeat=bb.n_sites)
+        for arm_tuple in arm_combos:
+            if len(results) >= max_candidates:
+                break
+
+            # Check if this arm combo reproduces the target donor signature
+            combo_sig = _arm_donor_signature(list(arm_tuple))
+            if combo_sig != target_sig:
+                continue
+
+            out_smi, mol = assemble(bb, list(arm_tuple))
+            if out_smi is None:
+                continue
+
+            # Skip if it's the same molecule
+            if out_smi == input_canonical:
+                continue
+
+            if out_smi in seen:
+                continue
+            seen.add(out_smi)
+
+            if not passes_filter(out_smi, mol):
+                continue
+
+            sa = sa_score(mol)
+            arm_names = [a.name for a in arm_tuple]
+            results.append((out_smi, bb.name, arm_names, sa))
+
+        if len(results) >= max_candidates:
+            break
+
+    return results[:max_scored]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# BIOISOSTERIC REPLACEMENT
+# ═══════════════════════════════════════════════════════════════════════════
+
+def bioisosteric_replace(smiles, metal=None, host=None, pH=7.4,
+                         max_candidates=100, max_scored=30):
+    """Keep the backbone concept, swap arms with bioisosteric equivalents.
+
+    Strategy: try to decompose the input molecule into a known backbone
+    + arms pattern. For each arm position, substitute bioisosteric
+    alternatives and re-assemble. Score all variants.
+
+    Since exact decomposition of arbitrary SMILES into backbone+arms is
+    hard, we use a simpler approach: extract the donor signature, then
+    for each backbone, find arm combos where at least one arm differs
+    from the "closest match" combo but stays within the same bioisostere
+    group.
+
+    Args:
+        smiles: input molecule SMILES
+        metal, host, pH: for scoring
+        max_candidates, max_scored: limits
+
+    Returns:
+        list of (smiles, backbone_name, arm_names, sa_score) tuples
+    """
+    target_sig, target_dent = _donor_signature(smiles, metal=metal)
+    if target_sig is None:
+        return []
+
+    from itertools import product as cartesian_product
+
+    # For each donor subtype in the signature, find which bioisostere
+    # group(s) contain arms providing that subtype
+    def _arms_for_subtype(subtype):
+        """Find arms whose donor_subtypes include this subtype."""
+        matches = []
+        for arm in ARM_LIBRARY:
+            if arm.name == "H-cap":
+                continue
+            if subtype in arm.donor_subtypes:
+                matches.append(arm)
+        return matches
+
+    # Build per-position arm options: for each donor in the target sig,
+    # find arms that provide it AND their bioisosteric alternatives
+    target_donors = list(target_sig)
+
+    # Group consecutive identical donors (e.g., 4x O_carboxylate for EDTA)
+    # and find arm combos that cover them
+    results = []
+    seen = set()
+    input_canonical = None
+    try:
+        mol = Chem.MolFromSmiles(smiles)
+        if mol:
+            input_canonical = Chem.MolToSmiles(mol)
+    except Exception:
+        pass
+
+    # Strategy: enumerate backbone × arm combos where the arm combo's
+    # donor signature has the same LENGTH as target and each donor is
+    # from the same bioisostere group as the corresponding target donor
+    def _donor_group(subtype):
+        """Map a donor subtype to its bioisostere group."""
+        for arm in ARM_LIBRARY:
+            if subtype in arm.donor_subtypes:
+                grp = _ARM_TO_GROUP.get(arm.name)
+                if grp:
+                    return grp
+        return subtype  # fallback: use subtype as its own group
+
+    target_groups = tuple(sorted(_donor_group(d) for d in target_donors))
+
+    if metal:
+        compatible_arms = [a for a in ARM_LIBRARY
+                           if hsab_compatible(metal, a) and a.name != "H-cap"]
+    else:
+        compatible_arms = [a for a in ARM_LIBRARY if a.name != "H-cap"]
+
+    for bb in BACKBONE_LIBRARY:
+        arm_combos = cartesian_product(compatible_arms, repeat=bb.n_sites)
+        for arm_tuple in arm_combos:
+            if len(results) >= max_candidates:
+                break
+
+            # Check: same number of total donors
+            combo_donors = []
+            for arm in arm_tuple:
+                combo_donors.extend(arm.donor_subtypes)
+            if len(combo_donors) != len(target_donors):
+                continue
+
+            # Check: each donor maps to same bioisostere group
+            combo_groups = tuple(sorted(_donor_group(d) for d in combo_donors))
+            if combo_groups != target_groups:
+                continue
+
+            # Must differ from exact target signature (that's scaffold_hop)
+            combo_sig = tuple(sorted(combo_donors))
+            if combo_sig == target_sig:
+                continue
+
+            out_smi, mol = assemble(bb, list(arm_tuple))
+            if out_smi is None or out_smi == input_canonical:
+                continue
+
+            if out_smi in seen:
+                continue
+            seen.add(out_smi)
+
+            if not passes_filter(out_smi, mol):
+                continue
+
+            sa = sa_score(mol)
+            arm_names = [a.name for a in arm_tuple]
+            results.append((out_smi, bb.name, arm_names, sa))
+
+        if len(results) >= max_candidates:
+            break
+
+    return results[:max_scored]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# SCORE SCAFFOLD HOPS / BIOISOSTERIC REPLACEMENTS
+# ═══════════════════════════════════════════════════════════════════════════
+
+def hop_and_score(smiles, metal=None, host=None, pH=7.4,
+                  mode="both", max_candidates=100, max_scored=20,
+                  interferents=None, sa_penalty_weight=0.3):
+    """Scaffold-hop and/or bioisosteric-replace, then score all variants.
+
+    Args:
+        smiles: seed molecule SMILES
+        metal: target metal (optional)
+        host: target host (optional)
+        pH: working pH
+        mode: "hop", "bioisostere", or "both"
+        max_candidates: max to enumerate per strategy
+        max_scored: max to score total
+        interferents: optional list for selectivity screening
+        sa_penalty_weight: SA penalty in composite
+
+    Returns:
+        GenerationResult with scored variants
+    """
+    t0 = time.time()
+    raw = []
+
+    if mode in ("hop", "both"):
+        hops = scaffold_hop(smiles, metal=metal, host=host, pH=pH,
+                            max_candidates=max_candidates,
+                            max_scored=max_candidates)
+        raw.extend(hops)
+
+    if mode in ("bioisostere", "both"):
+        bios = bioisosteric_replace(smiles, metal=metal, host=host, pH=pH,
+                                     max_candidates=max_candidates,
+                                     max_scored=max_candidates)
+        raw.extend(bios)
+
+    # Dedup
+    seen = set()
+    unique = []
+    for item in raw:
+        if item[0] not in seen:
+            seen.add(item[0])
+            unique.append(item)
+
+    # Sort by SA, take top N for scoring
+    unique.sort(key=lambda x: x[3])
+    to_score = unique[:max_scored]
+
+    known = _known_smiles_set()
+    candidates = []
+    errors = []
+
+    for smi, bb_name, arm_names, sa in to_score:
+        try:
+            sc = score_one(smi, metal=metal, host=host, pH=pH, name=smi[:40])
+            gc = GeneratedCandidate(
+                smiles=smi,
+                name=f"{bb_name}+{'|'.join(arm_names)}",
+                log_Ka_pred=sc.log_Ka_pred,
+                dg_total_kj=sc.dg_total_kj,
+                prediction=sc.prediction,
+                backbone_name=bb_name,
+                arm_names=arm_names,
+                sa_score_val=sa,
+                novel=smi not in known,
+            )
+
+            # Selectivity if requested
+            if interferents and metal:
+                for intf in interferents:
+                    try:
+                        intf_sc = score_one(smi, metal=intf, pH=pH)
+                        gc.interferent_scores[intf] = intf_sc.log_Ka_pred
+                        gc.selectivity_gaps[intf] = (gc.log_Ka_pred
+                                                      - intf_sc.log_Ka_pred)
+                    except Exception:
+                        gc.interferent_scores[intf] = 0.0
+                        gc.selectivity_gaps[intf] = gc.log_Ka_pred
+
+                if gc.selectivity_gaps:
+                    gc.worst_interferent = min(gc.selectivity_gaps,
+                                               key=gc.selectivity_gaps.get)
+                    gc.min_gap = gc.selectivity_gaps[gc.worst_interferent]
+                gc.grade = _grade(gc.min_gap)
+                gc.composite_score = gc.min_gap - sa_penalty_weight * sa
+            else:
+                gc.composite_score = gc.log_Ka_pred - sa_penalty_weight * sa
+
+            candidates.append(gc)
+        except Exception as e:
+            errors.append((smi, str(e)))
+
+    candidates.sort(key=lambda c: c.composite_score, reverse=True)
+    for i, c in enumerate(candidates):
+        c.rank = i + 1
+
+    return GenerationResult(
+        target=metal or host or "unknown",
+        mode=f"scaffold_{mode}",
+        interferents=list(interferents) if interferents else [],
+        candidates=candidates,
+        n_enumerated=len(raw),
+        n_valid=len(unique),
+        n_unique=len(unique),
+        n_scored=len(candidates),
+        n_failed=len(errors),
+        elapsed_s=time.time() - t0,
+        errors=errors,
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # ASSEMBLY ENGINE
 # ═══════════════════════════════════════════════════════════════════════════
 

@@ -393,12 +393,12 @@ def print_ranking(result, verbose=False):
 def discover_binders(target_metal, interferents=None, pH=7.4,
                      top_n=20, library_categories=None,
                      generate=True, max_generate=200, max_score_generated=50,
+                     seed_smiles=None, hop=True,
                      sa_penalty_weight=0.3, hsab_filter=True):
     """Screen existing library AND generate novel candidates in one call.
 
-    Combines screen_ligand_library() + de_novo_generator in a single
-    ranked output. Library hits and generated molecules are scored on
-    the same scale and merged.
+    Combines screen_ligand_library() + de_novo_generator + scaffold
+    hopping/bioisosteric replacement in a single ranked output.
 
     Args:
         target_metal: e.g. "Pb2+", "Cu2+", "Fe3+"
@@ -409,12 +409,14 @@ def discover_binders(target_metal, interferents=None, pH=7.4,
         generate: if True, also run de novo generation
         max_generate: max molecules to enumerate in generator
         max_score_generated: max generated molecules to score
+        seed_smiles: optional SMILES to scaffold-hop / bioisostere from
+        hop: if True and seed_smiles provided, run scaffold hop + bioisostere
         sa_penalty_weight: SA penalty weight for generated candidates
         hsab_filter: apply HSAB pre-filter to generator
 
     Returns:
-        RankingResult with mixed library + generated candidates,
-        each tagged with source="library" or source="generated"
+        RankingResult with mixed library + generated + hopped candidates,
+        each tagged with source="library", "generated", or "hopped"
     """
     t0 = time.time()
     all_candidates = []
@@ -471,6 +473,23 @@ def discover_binders(target_metal, interferents=None, pH=7.4,
             n_generated = gen_result.n_scored
         except Exception as e:
             all_errors.append(("de_novo_generation", str(e)))
+
+    # ── Phase 2b: Scaffold hopping / bioisosteric replacement ──────
+    if seed_smiles and hop:
+        try:
+            from core.de_novo_generator import hop_and_score
+            hop_result = hop_and_score(
+                seed_smiles, metal=target_metal, pH=pH,
+                mode="both", max_candidates=max_generate // 2,
+                max_scored=max_score_generated // 2,
+                interferents=interferents,
+                sa_penalty_weight=sa_penalty_weight)
+            for c in hop_result.candidates:
+                c.source = "hopped"
+            all_candidates.extend(hop_result.candidates)
+            all_errors.extend(hop_result.errors)
+        except Exception as e:
+            all_errors.append(("scaffold_hop", str(e)))
 
     # ── Phase 3: Deduplicate by canonical SMILES ─────────────────────
     seen = set()
