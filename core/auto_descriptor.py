@@ -1016,3 +1016,74 @@ def from_metalloprotein(entry):
         uc.n_hbonds_formed = n_hb_donor_match + n_hb_acceptor_match
 
     return uc
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase 18: General protein-ligand (non-metal targets)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def from_protein_ligand(smiles, target_name, log_Ka_exp=0.0, name=None):
+    """Create UniversalComplex for non-metal protein-ligand scoring.
+
+    Populates 2D molecular descriptors (logP, MW, rotatable bonds, HBD, HBA,
+    TPSA, aromatic rings, fsp3) for general PL scoring. No metal coordination.
+
+    Args:
+        smiles: SMILES string of ligand
+        target_name: protein target, e.g. "COX-2", "HIV-1 protease"
+        log_Ka_exp: optional experimental value (for validation)
+        name: optional label
+
+    Returns:
+        UniversalComplex with binding_mode='protein_ligand_general'
+    """
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        raise ValueError(f"Invalid SMILES: {smiles}")
+
+    uc = UniversalComplex(
+        name=name or f"{target_name}+{smiles[:30]}",
+        binding_mode="protein_ligand_general",
+        log_Ka_exp=log_Ka_exp,
+        guest_smiles=smiles,
+        host_name=target_name,
+        host_type="protein",
+        source="user",
+    )
+
+    # 2D descriptors — fast, no conformer needed
+    uc.guest_logP = round(Descriptors.MolLogP(mol), 2)
+    uc.guest_mw = round(Descriptors.MolWt(mol), 1)
+    uc.guest_rotatable_bonds = rdMolDescriptors.CalcNumRotatableBonds(mol)
+    uc.guest_n_hbond_donors = Lipinski.NumHDonors(mol)
+    uc.guest_n_hbond_acceptors = Lipinski.NumHAcceptors(mol)
+    uc.guest_tpsa = round(Descriptors.TPSA(mol), 1)
+    uc.guest_n_aromatic_rings = rdMolDescriptors.CalcNumAromaticRings(mol)
+    uc.guest_fsp3 = round(Descriptors.FractionCSP3(mol), 3)
+    uc.guest_charge = Chem.GetFormalCharge(mol)
+
+    # Gasteiger charge statistics (positional SAR resolution)
+    import numpy as _np
+    AllChem.ComputeGasteigerCharges(mol)
+    charges = []
+    for a in mol.GetAtoms():
+        c = a.GetDoubleProp('_GasteigerCharge')
+        if not _np.isnan(c):
+            charges.append(c)
+    if charges:
+        uc.guest_q_mean = round(float(_np.mean(charges)), 5)
+        uc.guest_q_std = round(float(_np.std(charges)), 5)
+        uc.guest_q_min = round(float(_np.min(charges)), 5)
+        uc.guest_q_max = round(float(_np.max(charges)), 5)
+
+    # Topological shape descriptors
+    uc.guest_chi1 = round(Descriptors.Chi1(mol), 4)
+    uc.guest_chi2n = round(Descriptors.Chi2n(mol), 4)
+    uc.guest_bertz = round(Descriptors.BertzCT(mol), 2)
+    uc.guest_hk_alpha = round(Descriptors.HallKierAlpha(mol), 4)
+    uc.guest_kappa2 = round(Descriptors.Kappa2(mol), 4)
+    uc.guest_kappa3 = round(Descriptors.Kappa3(mol), 4)
+    uc.guest_n_aliphatic_rings = Descriptors.NumAliphaticRings(mol)
+    uc.guest_n_saturated_rings = Descriptors.NumSaturatedRings(mol)
+
+    return uc

@@ -92,6 +92,22 @@ class UniversalComplex:
     guest_n_hbond_donors: int = 0
     guest_n_hbond_acceptors: int = 0
     guest_n_aromatic_rings: int = 0
+    guest_tpsa: float = 0.0           # topological polar surface area (Å²)
+    guest_fsp3: float = 0.0           # fraction sp3 carbons
+    # Gasteiger charge statistics (for positional SAR)
+    guest_q_mean: float = 0.0         # mean partial charge
+    guest_q_std: float = 0.0          # std of partial charges
+    guest_q_min: float = 0.0          # most negative charge
+    guest_q_max: float = 0.0          # most positive charge
+    # Topological shape descriptors
+    guest_chi1: float = 0.0           # Randic connectivity index
+    guest_chi2n: float = 0.0          # 2nd order connectivity
+    guest_bertz: float = 0.0          # BertzCT complexity
+    guest_hk_alpha: float = 0.0       # Hall-Kier alpha
+    guest_kappa2: float = 0.0         # Kappa shape index 2
+    guest_kappa3: float = 0.0         # Kappa shape index 3
+    guest_n_aliphatic_rings: int = 0  # aliphatic ring count
+    guest_n_saturated_rings: int = 0  # saturated ring count
     guest_logP: float = 0.0
     guest_mw: float = 0.0
 

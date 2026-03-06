@@ -82,6 +82,12 @@ def compute_guest_properties(smiles):
     # Aromatic rings
     props["guest_n_aromatic_rings"] = rdMolDescriptors.CalcNumAromaticRings(mol)
 
+    # TPSA (topological polar surface area)
+    props["guest_tpsa"] = round(Descriptors.TPSA(mol), 1)
+
+    # Fraction sp3 carbons
+    props["guest_fsp3"] = round(Descriptors.FractionCSP3(mol), 3)
+
     # LogP (Wildman-Crippen)
     props["guest_logP"] = round(Descriptors.MolLogP(mol), 2)
 

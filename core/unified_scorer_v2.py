@@ -202,6 +202,9 @@ def predict(uc, verbose=False):
     # ── PROTEIN-LIGAND non-covalent (self-zeros if not metalloprotein) ─
     _compute_protein_ligand_terms(uc, result)
 
+    # ── GENERAL PROTEIN-LIGAND (non-metal targets) ────────────────────
+    _compute_general_pl_terms(uc, result)
+
     # ── CROSS-MODAL metal@host (self-zeros if no metal+cavity) ───────
     _compute_cm_terms(uc, result)
 
@@ -385,6 +388,186 @@ def _compute_protein_ligand_terms(uc, result):
     target = uc.host_name
     offset = PL_TARGET_OFFSETS.get(target, 0.0)
     result.dg_shape = offset * LN10_RT
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# GENERAL PROTEIN-LIGAND (non-metal targets) — Phase 18
+# 8 2D descriptors + per-target offsets, fitted against 2000 ChEMBL entries
+# across 5 non-metal targets (DHFR, HIV protease, COX-2, trypsin, thrombin).
+# No metal term. Binding driven entirely by non-covalent physics.
+# ═══════════════════════════════════════════════════════════════════════════
+
+GENERAL_PL_PARAMS = {
+    "a_logP":      +0.1928,    # legacy fallback — used only for unknown targets
+    "b_mw":        +0.1988,
+    "c_rot":       -0.0140,
+    "d_hbd":       -0.0987,
+    "e_hba":       +0.1028,
+    "f_tpsa":      +0.1022,
+    "g_arom":      -0.0345,
+    "h_fsp3":      +0.5548,
+}
+
+GENERAL_PL_TARGET_OFFSETS = {
+    "COX-2":                        +4.239,
+    "Dihydrofolate reductase":      +4.436,
+    "HIV-1 protease":               +5.523,
+    "Thrombin":                     +4.660,
+    "Trypsin":                      +5.284,
+}
+
+# ── Per-target Ridge models (20 features each) ──
+# Calibrated on ChEMBL data (400-800 entries per target, 5-fold CV).
+# Features: 8 whole-molecule + 4 Gasteiger charge stats + 8 topological indices.
+# Average within-target Pearson r = 0.548 (vs 0.345 for 8-feature global model).
+PER_TARGET_PL_MODELS = {
+    "COX-2": {
+        "intercept": 5.4032,
+        "coefficients": {
+            "logP": 0.223883, "mw": -0.102092, "rot": 0.071854,
+            "hbd": 0.065111, "hba": 0.256415, "tpsa": -1.157652,
+            "arom": 0.025584, "fsp3": 1.251802,
+            "q_mean": -0.352824, "q_std": 0.541457,
+            "q_min": -1.560208, "q_max": -3.900301,
+            "chi1": -0.684645, "chi2n": 0.188214,
+            "bertz": 0.433266, "hk_alpha": -0.160272,
+            "kappa2": -0.114779, "kappa3": 0.522968,
+            "aliph_rings": 0.845295, "sat_rings": -0.036815,
+        },
+    },
+    "Dihydrofolate reductase": {
+        "intercept": 6.6077,
+        "coefficients": {
+            "logP": 0.15907, "mw": -0.592046, "rot": 0.042493,
+            "hbd": 0.125532, "hba": 0.002836, "tpsa": 0.311327,
+            "arom": 0.143698, "fsp3": 0.084559,
+            "q_mean": -0.1935, "q_std": 0.336999,
+            "q_min": -0.402494, "q_max": 0.89356,
+            "chi1": -0.043946, "chi2n": -0.263065,
+            "bertz": 0.211869, "hk_alpha": 0.40603,
+            "kappa2": 0.115548, "kappa3": 0.107576,
+            "aliph_rings": 0.367138, "sat_rings": 0.093623,
+        },
+    },
+    "HIV-1 protease": {
+        "intercept": 6.4152,
+        "coefficients": {
+            "logP": 0.075736, "mw": -0.531338, "rot": -0.014523,
+            "hbd": 0.062451, "hba": 0.12781, "tpsa": -0.201139,
+            "arom": -0.347659, "fsp3": 0.185748,
+            "q_mean": -0.182852, "q_std": -0.920776,
+            "q_min": 0.793644, "q_max": 0.910586,
+            "chi1": 0.494475, "chi2n": -0.158262,
+            "bertz": 0.061937, "hk_alpha": 0.081766,
+            "kappa2": -0.065421, "kappa3": -0.303736,
+            "aliph_rings": -0.23828, "sat_rings": -0.00139,
+        },
+    },
+    "Trypsin": {
+        "intercept": 3.6302,
+        "coefficients": {
+            "logP": 0.131537, "mw": 0.186642, "rot": 0.134934,
+            "hbd": 0.042008, "hba": 0.253747, "tpsa": -0.093819,
+            "arom": -0.822433, "fsp3": -1.285639,
+            "q_mean": 0.572056, "q_std": 3.688903,
+            "q_min": -4.030153, "q_max": 4.313006,
+            "chi1": -0.43908, "chi2n": 0.523403,
+            "bertz": 0.245497, "hk_alpha": -0.128856,
+            "kappa2": 0.00444, "kappa3": -0.30535,
+            "aliph_rings": -0.610561, "sat_rings": 0.065483,
+        },
+    },
+    "Thrombin": {
+        "intercept": 6.7873,
+        "coefficients": {
+            "logP": -0.000913, "mw": -0.609443, "rot": 0.281582,
+            "hbd": -0.303052, "hba": -0.383938, "tpsa": 1.75087,
+            "arom": 0.207892, "fsp3": 0.446049,
+            "q_mean": -0.491461, "q_std": -1.874569,
+            "q_min": -0.075337, "q_max": 0.516235,
+            "chi1": 0.281265, "chi2n": -0.053339,
+            "bertz": 0.270676, "hk_alpha": 0.94006,
+            "kappa2": -0.39282, "kappa3": 0.141772,
+            "aliph_rings": 0.225482, "sat_rings": -0.045803,
+        },
+    },
+}
+
+
+def _compute_general_pl_terms(uc, result):
+    """Non-covalent scoring for non-metal protein targets.
+
+    Fires only for binding_mode == 'protein_ligand_general'.
+    Uses per-target Ridge model (20 descriptors) if available,
+    falls back to global 8-descriptor model for unknown targets.
+    """
+    if uc.binding_mode != "protein_ligand_general":
+        return
+    if not uc.guest_smiles:
+        return
+
+    target = uc.host_name
+    model = PER_TARGET_PL_MODELS.get(target)
+
+    if model:
+        # Per-target model: 20 descriptors
+        c = model["coefficients"]
+        log_ka_pred = model["intercept"]
+        log_ka_pred += c["logP"] * uc.guest_logP
+        log_ka_pred += c["mw"] * uc.guest_mw / 100.0
+        log_ka_pred += c["rot"] * uc.guest_rotatable_bonds
+        log_ka_pred += c["hbd"] * uc.guest_n_hbond_donors
+        log_ka_pred += c["hba"] * uc.guest_n_hbond_acceptors
+        log_ka_pred += c["tpsa"] * getattr(uc, 'guest_tpsa', 0.0) / 100.0
+        log_ka_pred += c["arom"] * getattr(uc, 'guest_n_aromatic_rings', 0)
+        log_ka_pred += c["fsp3"] * getattr(uc, 'guest_fsp3', 0.0)
+        # Gasteiger charge statistics
+        log_ka_pred += c["q_mean"] * getattr(uc, 'guest_q_mean', 0.0)
+        log_ka_pred += c["q_std"] * getattr(uc, 'guest_q_std', 0.0)
+        log_ka_pred += c["q_min"] * getattr(uc, 'guest_q_min', 0.0)
+        log_ka_pred += c["q_max"] * getattr(uc, 'guest_q_max', 0.0)
+        # Topological shape descriptors
+        log_ka_pred += c["chi1"] * getattr(uc, 'guest_chi1', 0.0)
+        log_ka_pred += c["chi2n"] * getattr(uc, 'guest_chi2n', 0.0)
+        log_ka_pred += c["bertz"] * getattr(uc, 'guest_bertz', 0.0) / 100.0
+        log_ka_pred += c["hk_alpha"] * getattr(uc, 'guest_hk_alpha', 0.0)
+        log_ka_pred += c["kappa2"] * getattr(uc, 'guest_kappa2', 0.0)
+        log_ka_pred += c["kappa3"] * getattr(uc, 'guest_kappa3', 0.0)
+        log_ka_pred += c["aliph_rings"] * getattr(uc, 'guest_n_aliphatic_rings', 0)
+        log_ka_pred += c["sat_rings"] * getattr(uc, 'guest_n_saturated_rings', 0)
+    else:
+        # Fallback: global 8-descriptor model for unknown targets
+        p = GENERAL_PL_PARAMS
+        offset = GENERAL_PL_TARGET_OFFSETS.get(target, 4.5)
+        log_ka_pred = (
+            p["a_logP"] * uc.guest_logP
+            + p["b_mw"] * uc.guest_mw / 100.0
+            + p["c_rot"] * uc.guest_rotatable_bonds
+            + p["d_hbd"] * uc.guest_n_hbond_donors
+            + p["e_hba"] * uc.guest_n_hbond_acceptors
+            + p["f_tpsa"] * getattr(uc, 'guest_tpsa', 0.0) / 100.0
+            + p["g_arom"] * getattr(uc, 'guest_n_aromatic_rings', 0)
+            + p["h_fsp3"] * getattr(uc, 'guest_fsp3', 0.0)
+            + offset
+        )
+
+    # Convert to dG and decompose into result fields
+    dg_total = -log_ka_pred * LN10_RT
+
+    # Decompose into interpretable buckets
+    result.dg_hydrophobic = -(
+        (model["coefficients"]["logP"] if model else GENERAL_PL_PARAMS["a_logP"])
+        * uc.guest_logP) * LN10_RT
+    result.dg_hbond = -(
+        ((model["coefficients"]["hbd"] * uc.guest_n_hbond_donors
+          + model["coefficients"]["hba"] * uc.guest_n_hbond_acceptors)
+         if model else
+         (GENERAL_PL_PARAMS["d_hbd"] * uc.guest_n_hbond_donors
+          + GENERAL_PL_PARAMS["e_hba"] * uc.guest_n_hbond_acceptors))
+    ) * LN10_RT
+    result.dg_conf_entropy = dg_total - result.dg_hydrophobic - result.dg_hbond
+    # Use dg_metal slot for the total (since no metal term fires)
+    result.dg_metal = 0.0
 
 
 # ═══════════════════════════════════════════════════════════════════════════
