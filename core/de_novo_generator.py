@@ -1817,6 +1817,68 @@ def constrained_generate(metal=None, host=None, pH=7.4,
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# 3D-SCORED GENERATION
+# ═══════════════════════════════════════════════════════════════════════════
+
+def generate_and_score_3d(target_metal, donor_subtypes=None,
+                          geometry="auto", pH=7.4,
+                          max_candidates=100, max_scored=20,
+                          n_conformers=20, interferents=None,
+                          sa_penalty_weight=0.3, hsab_filter=True,
+                          weight_2d=0.5, weight_3d=0.5):
+    """Generate candidates AND rank by 3D binding geometry quality.
+
+    Combines: enumerate → 2D score → 3D conformer assessment → blended ranking.
+
+    Args:
+        target_metal:    e.g. "Cu2+"
+        donor_subtypes:  expected donors for ideal pocket (e.g. ["N_amine"]*4).
+                         If None, auto-inferred per candidate.
+        geometry:        coordination geometry for ideal pocket
+        pH:              working pH
+        max_candidates:  max molecules to enumerate
+        max_scored:      max to carry through scoring
+        n_conformers:    conformers per molecule for 3D
+        interferents:    competitor metals for selectivity
+        sa_penalty_weight: SA penalty weight
+        hsab_filter:     apply HSAB pre-filter
+        weight_2d:       weight for 2D log Ka in composite
+        weight_3d:       weight for 3D fidelity in composite
+
+    Returns:
+        GenerationResult with candidates sorted by composite_3d
+    """
+    # Phase 1: Standard 2D generation
+    if interferents:
+        result = generate_and_screen(
+            target_metal, interferents, pH=pH,
+            max_candidates=max_candidates, max_scored=max_scored,
+            sa_penalty_weight=sa_penalty_weight, hsab_filter=hsab_filter)
+    else:
+        result = generate_candidates(
+            target_metal, pH=pH,
+            max_candidates=max_candidates, max_scored=max_scored,
+            sa_penalty_weight=sa_penalty_weight, hsab_filter=hsab_filter)
+
+    if not result.candidates:
+        return result
+
+    # Phase 2: 3D reranking
+    from core.design_engine_v2 import rerank_3d
+    result.candidates = rerank_3d(
+        result.candidates, target_metal,
+        donor_subtypes=donor_subtypes,
+        geometry=geometry,
+        n_conformers=n_conformers,
+        weight_2d=weight_2d,
+        weight_3d=weight_3d,
+    )
+
+    result.mode = result.mode + "_3d" if result.mode else "3d"
+    return result
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # SELF-TEST
 # ═══════════════════════════════════════════════════════════════════════════
 

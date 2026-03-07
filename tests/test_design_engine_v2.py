@@ -184,3 +184,70 @@ def test_discover_binders_with_seed():
     sources = set(c.source for c in r.candidates)
     # Should have at least library, possibly hopped
     assert len(sources) >= 1
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# 3D RERANKING TESTS
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.design_engine_v2 import rerank_3d
+
+
+class TestRerank3D:
+    def test_rerank_populates_3d_fields(self):
+        """rerank_3d should populate fidelity_3d, rmsd_3d, strain_kJ."""
+        r = discover_binders("Cu2+", top_n=3,
+                              max_generate=20, max_score_generated=3)
+        reranked = rerank_3d(r.candidates, "Cu2+",
+                              donor_subtypes=["N_amine"]*4,
+                              geometry="square_planar",
+                              n_conformers=5)
+        for c in reranked:
+            assert hasattr(c, "fidelity_3d")
+            assert hasattr(c, "rmsd_3d")
+            assert hasattr(c, "strain_kJ")
+            assert hasattr(c, "composite_3d")
+
+    def test_rerank_sorted_by_composite(self):
+        r = discover_binders("Cu2+", top_n=3,
+                              max_generate=20, max_score_generated=3)
+        reranked = rerank_3d(r.candidates, "Cu2+",
+                              donor_subtypes=["N_amine"]*4,
+                              n_conformers=5)
+        comps = [c.composite_3d for c in reranked]
+        assert comps == sorted(comps, reverse=True)
+
+
+class TestDiscover3D:
+    def test_discover_with_3d_flag(self):
+        r = discover_binders("Cu2+", top_n=3,
+                              max_generate=20, max_score_generated=3,
+                              score_3d_flag=True,
+                              donor_subtypes_3d=["N_amine"]*4,
+                              geometry_3d="square_planar",
+                              n_conformers_3d=5)
+        assert "3d" in r.mode
+        for c in r.candidates:
+            assert c.composite_3d >= 0
+
+    def test_discover_without_3d_unchanged(self):
+        """Default (no 3D) should leave 3D fields at zero."""
+        r = discover_binders("Cu2+", top_n=3,
+                              max_generate=20, max_score_generated=3,
+                              score_3d_flag=False)
+        assert "3d" not in r.mode
+        for c in r.candidates:
+            assert c.fidelity_3d == 0.0
+
+
+class TestGenerate3D:
+    def test_generate_and_score_3d(self):
+        from core.de_novo_generator import generate_and_score_3d
+        r = generate_and_score_3d("Cu2+",
+                                   donor_subtypes=["N_amine"]*4,
+                                   max_candidates=20, max_scored=3,
+                                   n_conformers=5)
+        assert "3d" in r.mode
+        assert r.n_scored > 0
+        for c in r.candidates:
+            assert c.composite_3d >= 0

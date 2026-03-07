@@ -16,6 +16,7 @@ Works across modalities: metal chelation, host-guest, mixed-mode.
 import sys
 import os
 import time
+import numpy as np
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -47,6 +48,13 @@ class ScoredCandidate:
     grade: str = ""
     rank: int = 0
     source: str = ""                     # "library", "generated", or ""
+
+    # 3D geometry fields (populated by rerank_3d)
+    fidelity_3d: float = 0.0            # 0-1, combined 3D match quality
+    rmsd_3d: float = 999.0              # RMSD of donors to ideal pocket (Å)
+    strain_kJ: float = 0.0              # strain energy to adopt binding geometry
+    preorganization: float = 0.0        # 0-1, preorganization score
+    composite_3d: float = 0.0           # blended 2D + 3D score
 
     @property
     def donors(self):
@@ -387,6 +395,88 @@ def print_ranking(result, verbose=False):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# 3D RERANKING
+# ═══════════════════════════════════════════════════════════════════════════
+
+def rerank_3d(candidates, target_metal, donor_subtypes=None,
+              geometry="auto", n_conformers=30,
+              weight_2d=0.5, weight_3d=0.5):
+    """Rerank candidates by 3D binding geometry quality.
+
+    Takes existing 2D-scored candidates and adds 3D assessment:
+    conformer generation → donor locator → Kabsch alignment →
+    strain energy → preorganization → blended composite score.
+
+    Args:
+        candidates:      list of ScoredCandidate (from any source)
+        target_metal:    e.g. "Cu2+"
+        donor_subtypes:  list of expected donors. If None, inferred per candidate.
+        geometry:        coordination geometry
+        n_conformers:    conformers per molecule
+        weight_2d:       weight for 2D log Ka in composite (0-1)
+        weight_3d:       weight for 3D fidelity in composite (0-1)
+
+    Returns:
+        Same candidates with 3D fields populated, sorted by composite_3d.
+    """
+    from core.conformer_3d import score_3d
+    from core.ideal_pocket import compute_ideal_pocket
+
+    # Compute ideal pocket once (if donor_subtypes provided)
+    ideal_pos = None
+    if donor_subtypes:
+        pocket = compute_ideal_pocket(target_metal, donor_subtypes, geometry)
+        ideal_pos = np.array([d.position_A for d in pocket.donors])
+
+    # Normalize 2D scores for blending
+    log_kas = [c.log_Ka_pred for c in candidates]
+    max_ka = max(log_kas) if log_kas else 1.0
+    min_ka = min(log_kas) if log_kas else 0.0
+    ka_range = max(max_ka - min_ka, 0.01)
+
+    for c in candidates:
+        try:
+            # Infer donors per candidate if not provided globally
+            if donor_subtypes:
+                dsubs = donor_subtypes
+                ip = ideal_pos
+            else:
+                # Use auto_descriptor to get donor subtypes
+                from core.auto_descriptor import from_smiles
+                uc = from_smiles(c.smiles, metal=target_metal)
+                dsubs = uc.donor_subtypes or ["N_amine"] * 2
+                pocket = compute_ideal_pocket(target_metal, dsubs, geometry)
+                ip = np.array([d.position_A for d in pocket.donors])
+
+            r = score_3d(c.smiles, target_metal, dsubs,
+                         ideal_positions=ip,
+                         geometry=geometry,
+                         n_conformers=n_conformers)
+
+            c.fidelity_3d = r.fidelity_score
+            c.rmsd_3d = r.best_rmsd_A
+            c.strain_kJ = r.strain_energy_kJ
+            c.preorganization = r.preorganization_score
+
+        except Exception:
+            c.fidelity_3d = 0.0
+            c.rmsd_3d = 999.0
+            c.strain_kJ = 0.0
+            c.preorganization = 0.0
+
+        # Composite: blend normalized 2D score + 3D fidelity
+        norm_2d = (c.log_Ka_pred - min_ka) / ka_range if ka_range > 0 else 0.5
+        c.composite_3d = weight_2d * norm_2d + weight_3d * c.fidelity_3d
+
+    # Sort by composite_3d
+    candidates.sort(key=lambda c: c.composite_3d, reverse=True)
+    for i, c in enumerate(candidates):
+        c.rank = i + 1
+
+    return candidates
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # UNIFIED DISCOVERY: LIBRARY SCREEN + DE NOVO GENERATION
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -394,7 +484,9 @@ def discover_binders(target_metal, interferents=None, pH=7.4,
                      top_n=20, library_categories=None,
                      generate=True, max_generate=200, max_score_generated=50,
                      seed_smiles=None, hop=True,
-                     sa_penalty_weight=0.3, hsab_filter=True):
+                     sa_penalty_weight=0.3, hsab_filter=True,
+                     score_3d_flag=False, donor_subtypes_3d=None,
+                     geometry_3d="auto", n_conformers_3d=20):
     """Screen existing library AND generate novel candidates in one call.
 
     Combines screen_ligand_library() + de_novo_generator + scaffold
@@ -514,9 +606,21 @@ def discover_binders(target_metal, interferents=None, pH=7.4,
         if interferents and not c.grade:
             c.grade = _grade(c.min_gap)
 
+    # ── Phase 5: Optional 3D reranking ────────────────────────────────
+    if score_3d_flag:
+        unique = rerank_3d(
+            unique, target_metal,
+            donor_subtypes=donor_subtypes_3d,
+            geometry=geometry_3d,
+            n_conformers=n_conformers_3d,
+        )
+        mode = f"discover_{mode}_3d"
+    else:
+        mode = f"discover_{mode}"
+
     return RankingResult(
         target=target_metal,
-        mode=f"discover_{mode}",
+        mode=mode,
         interferents=list(interferents) if interferents else [],
         candidates=unique,
         n_input=n_library + n_generated,
