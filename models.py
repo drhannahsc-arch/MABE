@@ -421,6 +421,134 @@ class SurfaceInteractionSpec(InteractionSpec):
         return InteractionParadigm.SURFACE.value
 
 
+
+# ─────────────────────────────────────────────
+# Field Interaction Paradigm
+# ─────────────────────────────────────────────
+
+class FieldType(str, Enum):
+    """Type of field interaction."""
+    ELECTROMAGNETIC = "electromagnetic"
+    ACOUSTIC = "acoustic"
+    THERMAL = "thermal"
+
+
+class FieldResponse(str, Enum):
+    """Desired interaction with the field."""
+    REFLECT = "reflect"
+    ABSORB = "absorb"
+    TRANSMIT = "transmit"
+    EMIT = "emit"
+    FILTER = "filter"
+
+
+class Polarization(str, Enum):
+    """Field polarization state."""
+    UNPOLARIZED = "unpolarized"
+    S = "s"
+    P = "p"
+    CIRCULAR = "circular"
+
+
+class AngularBehavior(str, Enum):
+    """Angular dependence of the optical response."""
+    IRIDESCENT = "iridescent"         # Bragg: angle-dependent color
+    NON_IRIDESCENT = "non_iridescent" # Photonic glass: angle-independent
+    DIRECTIONAL = "directional"       # TMM: designed angle response
+    ISOTROPIC = "isotropic"           # Same in all directions
+
+
+@dataclass
+class FieldInteractionSpec(InteractionSpec):
+    """
+    Interaction via electromagnetic, acoustic, or thermal fields.
+
+    No chemistry — pure physics of wave propagation, interference,
+    and resonance in structured media.
+
+    Applies to: photonic crystals, thin film stacks, plasmonic arrays,
+    structural color, acoustic metamaterials, thermal metamaterials.
+
+    This is the optical counterpart of DiscretePocketSpec. Where a
+    DiscretePocketSpec describes "capture this molecule," a
+    FieldInteractionSpec describes "capture this wavelength."
+
+    The four-layer architecture is identical:
+        Layer 1: Target physics (Maxwell's eqns / thermodynamic scoring)
+        Layer 2: This spec (periodic structure / pocket geometry)
+        Layer 3: Realization ranking (colloidal crystal vs thin film /
+                 macrocycle vs protein)
+        Layer 4: Fabrication spec (Stöber synthesis / RDKit)
+    """
+
+    # ── Field type ──
+    field_type: FieldType = FieldType.ELECTROMAGNETIC
+
+    # ── Spectral target ──
+    target_wavelength_nm: Optional[float] = None
+    target_bandwidth_nm: Optional[float] = None
+    target_response: FieldResponse = FieldResponse.REFLECT
+    target_efficiency: float = 0.9   # 0-1
+
+    # ── CIE chromaticity target (for color applications) ──
+    target_x: Optional[float] = None
+    target_y: Optional[float] = None
+
+    # ── Angular behavior ──
+    angular_behavior: AngularBehavior = AngularBehavior.NON_IRIDESCENT
+    polarization: Polarization = Polarization.UNPOLARIZED
+
+    # ── Periodic structure ──
+    dimensionality: str = "3D"          # "1D", "2D", "3D"
+    target_periodicity_nm: Optional[float] = None
+    target_refractive_index_contrast: Optional[float] = None
+
+    # ── Material constraints ──
+    allowed_materials: list[str] = field(default_factory=list)
+    excluded_materials: list[str] = field(default_factory=list)
+    substrate: Optional[str] = None
+
+    # ── Operating conditions ──
+    temperature_range_K: tuple[float, float] = (273.15, 373.15)
+    solvent: Solvent = Solvent.AQUEOUS
+    pH_range: tuple[float, float] = (5.0, 9.0)
+
+    # ── Application context ──
+    target_application: ApplicationContext = ApplicationContext.RESEARCH
+    required_scale: ScaleClass = ScaleClass.UMOL
+    cost_ceiling_per_unit: Optional[float] = None
+
+    @property
+    def spec_type(self) -> str:
+        return InteractionParadigm.FIELD.value
+
+    def design_variables(self) -> dict:
+        """What the optimizer can tune."""
+        return {
+            "particle_diameter_nm": "Core particle size",
+            "shell_thickness_nm": "Shell thickness (core-shell geometry)",
+            "shell_material": "Shell composition",
+            "packing_fraction": "Volume fraction of particles",
+            "assembly_method": "Ordered (Bragg) vs disordered (photonic glass)",
+            "absorber_fraction": "Absorber loading in shell or matrix",
+            "underlayer_material": "Substrate or primer layer",
+            "n_layers": "Number of layers (TMM multilayer)",
+        }
+
+    def scoring_axes(self) -> list[str]:
+        """What the ranker evaluates."""
+        return [
+            "spectral_match",
+            "angular_tolerance",
+            "efficiency",
+            "fabrication_precision",
+            "synthetic_accessibility",
+            "cost_score",
+            "scalability",
+            "durability",
+        ]
+
+
 # ─────────────────────────────────────────────
 # Layer 3 Phase 1 Output: The Ideal Pocket
 # ─────────────────────────────────────────────
