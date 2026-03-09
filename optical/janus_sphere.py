@@ -92,10 +92,10 @@ def janus_Q_back(
     r_core = diameter_nm / 2
 
     # Cap side: core-shell Mie (core + cap coating)
-    r_total_cap = r_core + cap_thickness_nm
+    d_total_cap = diameter_nm + 2 * cap_thickness_nm
     try:
         eff_cap = mie_coated_efficiencies(
-            r_core, r_total_cap,
+            diameter_nm, d_total_cap,
             n_core, n_complex(cap_material, wavelength_nm),
             n_medium, wavelength_nm)
         Q_back_cap = eff_cap["Q_back"]
