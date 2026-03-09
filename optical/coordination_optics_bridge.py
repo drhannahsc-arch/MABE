@@ -308,36 +308,54 @@ def _delta_alpha_coordination(metal_formula, n_waters_displaced):
     return alpha_metal - n_waters_displaced * ALPHA_WATER
 
 
-def _delta_n_from_delta_alpha(delta_alpha_A3, volume_fraction, base_n):
-    """Convert Δα to Δn via linearized Lorentz-Lorenz.
+def _delta_n_from_delta_alpha(delta_alpha_A3, sites_per_nm3, base_n):
+    """Convert Δα to Δn via Lorentz-Lorenz relation.
 
-    For small perturbations:
-    Δn ≈ (2π/3) × N × Δα × (n² + 2)² / (6n)
+    Computes the exact change in refractive index when binding sites
+    in the shell gain additional polarizability Δα.
 
-    Simplified: Δn ≈ f_vol × Δα × (n² + 2) / (6n × α₀)
+    The Lorentz-Lorenz relation:
+      (n² - 1)/(n² + 2) = (4π/3) × N × α_total
 
-    We use a simpler effective medium approach:
-    n_eff² ≈ n_base² + f × Δα/α₀ × (n_base² - 1)
+    We compute the LL parameter of the base material, add the contribution
+    from Δα at the site density, and invert for n_new.
 
-    For very thin shells with small volume fractions, linearize:
-    Δn ≈ f × Δα / (2 × n_base × V_molecule) × conversion_factor
+    Args:
+        delta_alpha_A3: Polarizability change per site (Å³)
+        sites_per_nm3: Number density of sites in the shell (nm⁻³)
+        base_n: Refractive index before the perturbation
+
+    Returns:
+        float: Δn (refractive index change)
     """
-    if abs(delta_alpha_A3) < 1e-10 or volume_fraction <= 0:
+    if abs(delta_alpha_A3) < 1e-10 or sites_per_nm3 <= 0:
         return 0.0
 
-    # Clausius-Mossotti perturbation for small Δα:
-    # Δε = ε × (3 × f × Δα/α_avg) / (ε + 2 - f(ε - 1))
-    # For small f: Δε ≈ 3f × Δα/α_avg
-    # Δn = Δε / (2n)
+    # Lorentz-Lorenz parameter of base shell
+    n2 = base_n**2
+    LL_base = (n2 - 1) / (n2 + 2)
 
-    # α_avg for typical shell material (silane/organic, n~1.46):
-    # (n²-1)/(n²+2) × 3/(4πN) gives α per unit volume
-    # Simpler: use empirical scaling
-    # For organic molecules: Δn/n ≈ 0.003 per Å³ per site at f=0.01
+    # Δα contribution to LL
+    # Convert: N (nm⁻³) → N (cm⁻³) = N × 1e21
+    # α (Å³) → α (cm³) = α × 1e-24
+    # (4π/3) × N(cm⁻³) × α(cm³) = (4π/3) × N × 1e21 × Δα × 1e-24
+    #                              = (4π/3) × N × Δα × 1e-3
+    delta_LL = (4 * math.pi / 3) * sites_per_nm3 * delta_alpha_A3 * 1e-3
 
-    # Volume fraction of the perturbation within the shell
-    dn = volume_fraction * delta_alpha_A3 * 0.003 / base_n
-    return dn
+    LL_new = LL_base + delta_LL
+
+    # Invert LL → n: n² = (1 + 2×LL)/(1 - LL)
+    if LL_new >= 1.0:
+        LL_new = 0.99  # physical limit
+    if LL_new <= -0.5:
+        LL_new = -0.49
+
+    n2_new = (1 + 2 * LL_new) / (1 - LL_new)
+    if n2_new < 1.0:
+        n2_new = 1.0
+    n_new = math.sqrt(n2_new)
+
+    return n_new - base_n
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -408,22 +426,22 @@ def coordination_optics_bridge(
 
     # ── Channel 2: n from polarizability ──────────────────────────────────
 
+    # Site number density in the shell (sites/nm³)
+    # surface_coverage (sites/nm²) spread over shell_thickness (nm)
+    sites_per_nm3 = surface_coverage_nm2 / shell_thickness_nm
+
     # Stage 1: functionalization (ligand replaces water on surface)
     delta_alpha_func = _delta_alpha_functionalization(donor_subtypes)
+    dn_func = _delta_n_from_delta_alpha(delta_alpha_func, sites_per_nm3,
+                                         base_shell_n)
 
-    # Volume fraction of functionalized sites in shell
-    # sites/nm² × (effective_site_volume) / shell_thickness
-    # Approximate site volume: ~0.5 nm³ for a small coordination complex
-    site_volume_nm3 = 0.5
-    f_vol = surface_coverage_nm2 * site_volume_nm3 / shell_thickness_nm
-    f_vol = min(f_vol, 0.5)  # cap at physical limit
-
-    dn_func = _delta_n_from_delta_alpha(delta_alpha_func, f_vol, base_shell_n)
-
-    # Stage 2: metal coordination (metal replaces waters at pre-functionalized site)
+    # Stage 2: metal coordination (metal displaces coordinated waters)
+    # Applied to the already-functionalized shell
+    n_after_func = base_shell_n + dn_func
     n_waters_displaced = min(len(donor_subtypes), cn_aqua)
     delta_alpha_coord = _delta_alpha_coordination(metal, n_waters_displaced)
-    dn_coord = _delta_n_from_delta_alpha(delta_alpha_coord, f_vol, base_shell_n)
+    dn_coord = _delta_n_from_delta_alpha(delta_alpha_coord, sites_per_nm3,
+                                          n_after_func)
 
     dn_total = dn_func + dn_coord
 
