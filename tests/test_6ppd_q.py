@@ -1161,3 +1161,113 @@ class TestReceptorGuestScorer:
         for e in dn_entries:
             assert e.raw_score_type == "log_Ka_physics"
             assert 0 < e.uas < 15
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 11: Repulsion physics
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestRepulsionPhysics:
+    def test_vdw_overlap_zero_below_threshold(self):
+        from core.repulsion_hg import dg_vdw_overlap
+        assert dg_vdw_overlap(0.5) == 0.0
+        assert dg_vdw_overlap(0.9) == 0.0
+        assert dg_vdw_overlap(1.0) == 0.0
+
+    def test_vdw_overlap_positive_above_threshold(self):
+        from core.repulsion_hg import dg_vdw_overlap
+        assert dg_vdw_overlap(1.01) > 0.0
+        assert dg_vdw_overlap(1.1) > 0.0
+        assert dg_vdw_overlap(1.5) > 0.0
+
+    def test_vdw_overlap_monotonic(self):
+        from core.repulsion_hg import dg_vdw_overlap
+        p1 = dg_vdw_overlap(1.1)
+        p2 = dg_vdw_overlap(1.2)
+        p3 = dg_vdw_overlap(1.5)
+        p4 = dg_vdw_overlap(2.0)
+        assert p1 < p2 < p3 < p4
+
+    def test_vdw_overlap_prohibitive_at_double(self):
+        """Packing = 2.0 should be prohibitive (≥50 kJ/mol)."""
+        from core.repulsion_hg import dg_vdw_overlap
+        assert dg_vdw_overlap(2.0) >= 50.0
+
+    def test_electrostatic_repulsion_same_sign(self):
+        from core.repulsion_hg import dg_electrostatic
+        # Both positive → repulsion (positive dG)
+        assert dg_electrostatic(4, 1) > 0
+        # Both negative → repulsion
+        assert dg_electrostatic(-2, -1) > 0
+
+    def test_electrostatic_attraction_opposite_sign(self):
+        from core.repulsion_hg import dg_electrostatic
+        # Opposite → attraction (negative dG)
+        assert dg_electrostatic(4, -1) < 0
+        assert dg_electrostatic(-12, 2) < 0
+
+    def test_electrostatic_zero_if_neutral(self):
+        from core.repulsion_hg import dg_electrostatic
+        assert dg_electrostatic(0, 2) == 0.0
+        assert dg_electrostatic(4, 0) == 0.0
+
+    def test_aperture_zero_when_fits(self):
+        from core.repulsion_hg import dg_aperture_exclusion
+        assert dg_aperture_exclusion(3.0, 4.0, 8.0) == 0.0
+
+    def test_aperture_positive_when_blocked(self):
+        from core.repulsion_hg import dg_aperture_exclusion
+        # Guest 8×8 Å cross-section vs 4 Å aperture
+        assert dg_aperture_exclusion(8.0, 8.0, 4.0) > 0.0
+
+    def test_steric_clash_zero_when_fits(self):
+        from core.repulsion_hg import dg_steric_clash
+        # 10 heavy atoms in 200 Å³ cavity (capacity ~13 atoms)
+        assert dg_steric_clash(10, 200.0) == 0.0
+
+    def test_steric_clash_positive_when_overflow(self):
+        from core.repulsion_hg import dg_steric_clash
+        # 30 heavy atoms in 200 Å³ cavity (capacity ~13 atoms, overflow 17)
+        assert dg_steric_clash(30, 200.0) > 0.0
+
+    def test_composite_repulsion(self):
+        from core.repulsion_hg import compute_hg_repulsion
+        r = compute_hg_repulsion(
+            packing_coefficient=1.5,
+            host_charge=4,
+            guest_charge=2,
+            cavity_diameter_A=7.3,
+        )
+        assert r.dg_vdw_overlap > 0
+        assert r.dg_electrostatic > 0
+        assert r.dg_total_repulsion > 0
+
+    def test_calibration_zero_regression(self):
+        """Adamantane in beta-CD must score identically (packing 0.56 → no repulsion)."""
+        import sys; sys.path.insert(0, '.')
+        from core.auto_descriptor import from_smiles
+        from core.unified_scorer_v2 import predict
+        uc = from_smiles('C1C2CC3CC1CC(C2)C3', host='beta-CD')
+        r = predict(uc)
+        assert r.dg_size_mismatch == 0.0, (
+            f"Adamantane/beta-CD should have zero size penalty, got {r.dg_size_mismatch}"
+        )
+        assert 3.5 < r.log_Ka_pred < 5.5
+
+    def test_overpacked_penalized_harder(self):
+        """6PPD-Q in alpha-CD (packing 1.68) should be strongly penalized."""
+        import sys; sys.path.insert(0, '.')
+        from core.auto_descriptor import from_smiles
+        from core.unified_scorer_v2 import predict
+        uc = from_smiles('CC(C)CC(NC1=CC(=O)C(=CC1=O)NC2=CC=CC=C2)C', host='alpha-CD')
+        r = predict(uc)
+        assert r.dg_size_mismatch > 10.0, (
+            f"6PPD-Q in alpha-CD should have strong penalty, got {r.dg_size_mismatch}"
+        )
+        assert r.log_Ka_pred < 0, "Overpacked should predict negative log Ka"
+
+    def test_receptor_guest_overpacking_penalized(self):
+        """Receptor-guest scorer should penalize overpacking."""
+        from core.receptor_guest_scorer import score_receptor_guest
+        # Small receptor + big guest
+        r = score_receptor_guest("c1ccccc1", SMILES_6PPD_Q)  # benzene as "receptor"
+        assert r.dg_size_match > 0, "Small receptor for big guest should have positive penalty"

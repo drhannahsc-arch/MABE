@@ -303,8 +303,28 @@ def _compute_hg_terms(uc, result):
     # 2. Cavity dehydration
     result.dg_cavity_dehydration = _hg_dg_cavity_dehydration(buried, host_key)
 
-    # 3. Size mismatch
+    # 3. Size mismatch (original linear penalty — kept for backward compatibility)
     result.dg_size_mismatch = _hg_dg_size_mismatch(guest_np, cavity_sasa)
+
+    # 3b. Repulsion physics: VdW overlap + steric clash (additive, fires only for packing > 1)
+    #     These are ADDITIONAL penalties on top of the existing size_mismatch.
+    #     Zero for all calibration data (packing ≤ 1.0).
+    if uc.packing_coefficient > 1.0:
+        from core.repulsion_hg import dg_vdw_overlap
+        result.dg_size_mismatch += dg_vdw_overlap(uc.packing_coefficient)
+
+    # 3c. Electrostatic charge-charge repulsion (host charge × guest charge)
+    #     CDs are neutral (zero). CB portals handled separately.
+    #     Fires for charged hosts like sulfonato-calixarene (negative).
+    if uc.host_charge != 0 and uc.guest_charge != 0:
+        from core.repulsion_hg import dg_electrostatic
+        cav_d_A = host.get("cavity_diameter", 10.0)  # HOST_DB stores in Å
+        elec = dg_electrostatic(int(uc.host_charge), int(uc.guest_charge), cav_d_A)
+        # Only add repulsive part to size_mismatch; attractive part goes into dg_hbond
+        if elec > 0:
+            result.dg_size_mismatch += elec
+        elif elec < 0:
+            result.dg_hbond += elec  # electrostatic attraction grouped with non-covalent
 
     # 4. H-bond network
     try:

@@ -303,15 +303,37 @@ def score_receptor_guest(
 
     result.dg_conf_entropy = receptor_rot_penalty + guest_rot_penalty  # positive
 
-    # ── 6. Size complementarity ──
-    # Gaussian match: optimal when guest fills ~55% of cavity
+    # ── 6. Size complementarity + repulsion ──
+    # Gaussian bonus for good packing + hard wall for overpacking
     if rec.cavity_volume_A3 > 0 and guest_vol > 0:
         packing = guest_vol / rec.cavity_volume_A3
         result.packing_coefficient = packing
-        # Optimal packing ~0.55, σ=0.2
+        # Gaussian bonus: optimal at 55% packing
         size_match = math.exp(-((packing - 0.55) ** 2) / (2 * 0.2 ** 2))
-        # Size bonus (favorable) or penalty (unfavorable)
         result.dg_size_match = -3.0 * size_match + 1.5  # range: -1.5 to +1.5 kJ/mol
+
+        # VdW overlap: exponential wall above packing 1.0
+        if packing > 1.0:
+            from core.repulsion_hg import dg_vdw_overlap
+            result.dg_size_match += dg_vdw_overlap(packing)
+
+    # Steric clash: heavy atoms exceeding cavity capacity
+    if rec.cavity_volume_A3 > 0:
+        from core.repulsion_hg import dg_steric_clash
+        try:
+            mol = Chem.MolFromSmiles(guest_smiles)
+            n_heavy = mol.GetNumHeavyAtoms() if mol else 0
+            n_branches = sum(1 for a in mol.GetAtoms()
+                           if a.GetDegree() >= 3 and a.GetAtomicNum() > 1) if mol else 0
+        except Exception:
+            n_heavy = 0
+            n_branches = 0
+
+        clash = dg_steric_clash(
+            n_heavy, rec.cavity_volume_A3,
+            n_branches, 1.0 - rec.preorganization_score,
+        )
+        result.dg_size_match += clash
 
     # ── Total ──
     dg_total = (
