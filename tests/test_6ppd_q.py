@@ -457,3 +457,149 @@ class TestDeNovoGenerator:
         )
         assert result.de_novo_result is None
         assert result.pipeline_complete
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 6: Selectivity screening
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestSelectivityScreen:
+    """Test selectivity screening for 6PPD-Q against interferent panel."""
+
+    def test_screen_selectivity_runs(self):
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q, target_name=NAME_6PPD_Q)
+        assert result is not None
+        assert result.target_name == NAME_6PPD_Q
+
+    def test_auto_panel_detected(self):
+        """6PPD-Q should auto-select its built-in interferent panel."""
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q, target_name=NAME_6PPD_Q)
+        assert len(result.interferents) == 6, (
+            f"Expected 6 interferents, got {len(result.interferents)}"
+        )
+
+    def test_interferent_names(self):
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q)
+        names = {i.name for i in result.interferents}
+        expected = {"6PPD", "DPPD-Q", "IPPD-Q", "aniline", "p-benzoquinone", "phenol"}
+        assert names == expected, f"Got: {names}"
+
+    def test_host_selectivity_computed(self):
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q)
+        assert len(result.host_selectivity) > 0
+
+    def test_selectivity_ratios_positive(self):
+        """All selectivity ratios should be > 0."""
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q)
+        for hs in result.host_selectivity:
+            for name, ratio in hs.selectivity_ratios.items():
+                assert ratio > 0, f"{hs.host_key} vs {name}: ratio={ratio}"
+
+    def test_selectivity_ratios_correct_math(self):
+        """ratio = 10^(target_log_ka - interferent_log_ka)."""
+        import math
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q)
+        for hs in result.host_selectivity:
+            for name, ratio in hs.selectivity_ratios.items():
+                if ratio == float("inf"):
+                    continue
+                intf_log_ka = hs.interferent_log_kas[name]
+                if intf_log_ka == float("-inf"):
+                    continue
+                expected = 10.0 ** (hs.target_log_ka - intf_log_ka)
+                assert abs(ratio - expected) < 0.01, (
+                    f"{hs.host_key} vs {name}: ratio={ratio} expected={expected}"
+                )
+
+    def test_sorted_by_worst_ratio(self):
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q)
+        worst_ratios = [
+            h.worst_ratio if h.worst_ratio != float("inf") else 1e10
+            for h in result.host_selectivity
+        ]
+        assert worst_ratios == sorted(worst_ratios, reverse=True)
+
+    def test_fragments_easier_to_discriminate(self):
+        """Simple hosts should discriminate 6PPD-Q from small fragments
+        better than from close structural analogs."""
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q)
+        # Find gamma-CD (reasonable host)
+        gamma = next(
+            (h for h in result.host_selectivity if h.host_key == "gamma-CD"),
+            None,
+        )
+        if gamma:
+            # Ratio vs aniline (fragment) should be > ratio vs 6PPD (parent)
+            r_aniline = gamma.selectivity_ratios.get("aniline", 1.0)
+            r_parent = gamma.selectivity_ratios.get("6PPD", 1.0)
+            assert r_aniline > r_parent, (
+                f"γ-CD: aniline ratio ({r_aniline:.1f}) should > "
+                f"6PPD ratio ({r_parent:.1f})"
+            )
+
+    def test_grade_assigned(self):
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q)
+        for hs in result.host_selectivity:
+            assert hs.grade in ("excellent", "good", "marginal", "non-selective")
+
+    def test_mip_selectivity_estimated(self):
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q, include_mip=True)
+        assert len(result.mip_selectivity) > 0
+
+    def test_mip_better_for_fragments(self):
+        """MIP should be more selective vs fragments than vs close analogs."""
+        from core.selectivity_screen import screen_selectivity
+        result = screen_selectivity(SMILES_6PPD_Q, include_mip=True)
+        mip = result.mip_selectivity
+        if "aniline" in mip and "IPPD-Q" in mip:
+            assert mip["aniline"] > mip["IPPD-Q"], (
+                f"MIP: aniline sel ({mip['aniline']:.1f}) should > "
+                f"IPPD-Q sel ({mip['IPPD-Q']:.1f})"
+            )
+
+    def test_pipeline_includes_selectivity(self):
+        """design_for_guest should include selectivity when enabled."""
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            include_de_novo=False,  # skip to save time
+        )
+        assert result.selectivity_result is not None
+        assert len(result.selectivity_result.interferents) == 6
+
+    def test_pipeline_selectivity_disabled(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q,
+            include_selectivity=False,
+            include_de_novo=False,
+            include_mip=False,
+        )
+        assert result.selectivity_result is None
+        assert result.pipeline_complete
+
+    def test_custom_interferents(self):
+        """Should accept custom interferent SMILES via exclude_species."""
+        from core.selectivity_screen import screen_selectivity, Interferent
+        custom = [
+            Interferent("caffeine", "CN1C=NC2=C1C(=O)N(C(=O)N2C)C", "custom"),
+        ]
+        result = screen_selectivity(
+            SMILES_6PPD_Q,
+            target_name=NAME_6PPD_Q,
+            interferents=custom,
+        )
+        assert len(result.interferents) == 1
+        assert result.interferents[0].name == "caffeine"
+        assert len(result.host_selectivity) > 0
+

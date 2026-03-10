@@ -818,6 +818,9 @@ class GuestDesignResult:
     # De novo receptor generation
     de_novo_result: object = None          # GenerationResult from de_novo_generator
 
+    # Selectivity screening
+    selectivity_result: object = None      # SelectivityResult from selectivity_screen
+
     # Summary
     top_host: str = ""
     top_host_log_ka: float = 0.0
@@ -838,6 +841,7 @@ def design_for_guest(
     exclude_species: list = None,
     include_mip: bool = True,
     include_de_novo: bool = True,
+    include_selectivity: bool = True,
     de_novo_max_candidates: int = 300,
     de_novo_max_scored: int = 30,
     prefer_electroactive: bool = False,
@@ -925,6 +929,26 @@ def design_for_guest(
             max_scored=de_novo_max_scored,
         )
         result.de_novo_result = de_novo
+
+    # ── Step 6: Selectivity screening ──
+    if include_selectivity:
+        from core.selectivity_screen import screen_selectivity, Interferent
+        # Build interferent list from exclude_species if provided
+        custom_interferents = None
+        if exclude_species:
+            custom_interferents = [
+                Interferent(name=sp, smiles=sp, relationship="custom")
+                if not sp.startswith("[") and "=" in sp or "c" in sp  # looks like SMILES
+                else Interferent(name=sp, smiles=sp, relationship="custom")
+                for sp in exclude_species
+            ]
+        sel = screen_selectivity(
+            target_smiles=smiles,
+            target_name=name,
+            interferents=custom_interferents,  # None → auto-detect panel
+            hosts=hosts,
+        )
+        result.selectivity_result = sel
 
     result.pipeline_complete = True
     return result
