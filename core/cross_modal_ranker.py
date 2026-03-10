@@ -105,6 +105,7 @@ def _deployment_readiness(modality, design=None):
         "coordination_cage": 0.20,   # academic only
         "porphyrin_metal": 0.85,     # commercial metalloporphyrins
         "porphyrin_guest": 0.40,     # less precedent for guest binding
+        "protein_design": 0.35,      # needs expression, purification, validation
     }
     return base_scores.get(modality, 0.3)
 
@@ -125,6 +126,8 @@ def _click_handle_available(modality, design=None):
         return False  # not standard yet
     if modality.startswith("porphyrin"):
         return design is not None and hasattr(design, 'has_click_handle') and design.has_click_handle
+    if modality == "protein_design":
+        return True  # Lys/Cys surface residues = natural conjugation handles
     if modality == "de_novo_receptor":
         return False  # depends on specific design
     return False
@@ -433,6 +436,36 @@ def rank_cross_modal(design_result) -> CrossModalResult:
                 raw_score_type="log_Ka" if mode == "metal" else "composite",
             ))
         modalities.add(f"porphyrin_{mode}")
+
+    # ── Protein binder design ──
+    if r.protein_design and r.protein_design.confidence != "infeasible":
+        prot = r.protein_design
+        uas_prot = prot.estimated_log_Ka
+
+        scaffold_name = prot.scaffold.name if prot.scaffold else "unknown"
+        hotspot_str = "/".join(
+            h.residue_3 for h in prot.hotspot_residues[:5] if h.shell == 1
+        )
+
+        entries.append(UASEntry(
+            modality="protein_design",
+            material_name=f"Designed protein ({scaffold_name}: {hotspot_str})",
+            uas=uas_prot,
+            uas_lower=uas_prot - 2.5,  # protein design ±2.5 log units
+            uas_upper=uas_prot + 2.5,
+            confidence=prot.confidence,
+            selectivity_worst=0.0,
+            selective=False,
+            deployment_readiness=0.35,  # needs expression + validation
+            click_handle=True,          # proteins have natural conjugation handles (Lys, Cys)
+            estimated_cost_usd=prot.estimated_cost_usd,
+            scale_feasibility="pilot",
+            raw_score=prot.estimated_log_Ka,
+            raw_score_type="log_Ka_estimated",
+            notes=f"{prot.n_first_shell} first-shell, {prot.design_success_rate:.0%} success rate, "
+                  f"Kd≈{prot.predicted_kd_nM:.0f}nM",
+        ))
+        modalities.add("protein_design")
 
     # ── Sort by UAS (descending) and assign ranks ──
     entries.sort(key=lambda e: e.uas, reverse=True)

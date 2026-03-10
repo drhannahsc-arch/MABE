@@ -1271,3 +1271,134 @@ class TestRepulsionPhysics:
         # Small receptor + big guest
         r = score_receptor_guest("c1ccccc1", SMILES_6PPD_Q)  # benzene as "receptor"
         assert r.dg_size_match > 0, "Small receptor for big guest should have positive penalty"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 12: Protein binder design adapter
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestProteinDesignAdapter:
+    def test_design_runs(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, NAME_6PPD_Q,
+                                           guest_volume_A3=pharma.volume_A3)
+        assert design is not None
+        assert design.guest_name == NAME_6PPD_Q
+
+    def test_hotspot_residues_mapped(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3)
+        assert len(design.hotspot_residues) > 0
+        assert design.n_first_shell > 0
+
+    def test_first_shell_has_hbond_residues(self):
+        """6PPD-Q has H-bond donors and acceptors → pocket should have complementary residues."""
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3)
+        first_shell = [h for h in design.hotspot_residues if h.shell == 1]
+        roles = {h.role for h in first_shell}
+        assert "hb_donor" in roles or "hb_acceptor" in roles
+
+    def test_second_shell_exists(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3)
+        assert design.n_second_shell > 0
+
+    def test_scaffold_selected(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3)
+        assert design.scaffold is not None
+        assert design.total_residues > 0
+
+    def test_rfdiffusion_spec_generated(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        import json
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3)
+        assert design.rfdiffusion_spec is not None
+        j = json.loads(design.rfdiffusion_spec.to_json())
+        assert "contig" in j
+        assert "hotspot_residues" in j
+        assert len(j["hotspot_residues"]) > 0
+
+    def test_proteinmpnn_spec_generated(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        import json
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3)
+        assert design.proteinmpnn_spec is not None
+        j = json.loads(design.proteinmpnn_spec.to_json())
+        assert "fixed_positions" in j
+
+    def test_bindcraft_spec_generated(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        import json
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3)
+        assert design.bindcraft_spec is not None
+        j = json.loads(design.bindcraft_spec.to_json())
+        assert j["target_smiles"] == SMILES_6PPD_Q
+
+    def test_scoring_realistic(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.protein_design_adapter import design_protein_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_protein_for_guest(spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3)
+        assert 2.0 < design.estimated_log_Ka < 15.0, (
+            f"log Ka {design.estimated_log_Ka} outside realistic range for designed protein"
+        )
+
+    def test_pipeline_includes_protein(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            include_de_novo=False, include_selectivity=False,
+            include_dna_origami=False, include_materials=False,
+        )
+        assert result.protein_design is not None
+        assert result.protein_design.n_first_shell > 0
+
+    def test_pipeline_protein_disabled(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q,
+            include_protein=False,
+            include_de_novo=False, include_selectivity=False,
+            include_dna_origami=False, include_materials=False,
+            include_mip=False,
+        )
+        assert result.protein_design is None
+        assert result.pipeline_complete
+
+    def test_uas_includes_protein(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            include_de_novo=False, include_selectivity=False,
+            include_dna_origami=False, include_materials=False,
+        )
+        prot_entries = [e for e in result.cross_modal.entries if e.modality == "protein_design"]
+        assert len(prot_entries) == 1
+        assert prot_entries[0].uas > 0
+        assert "first-shell" in prot_entries[0].notes

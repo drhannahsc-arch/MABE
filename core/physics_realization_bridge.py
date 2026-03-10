@@ -829,6 +829,9 @@ class GuestDesignResult:
     cage_designs: list = field(default_factory=list)         # list[CageDesign]
     porphyrin_designs: list = field(default_factory=list)    # list[PorphyrinDesign]
 
+    # Protein binder design
+    protein_design: object = None       # ProteinDesign from protein_design_adapter
+
     # Cross-modal UAS ranking
     cross_modal: object = None         # CrossModalResult from cross_modal_ranker
 
@@ -855,6 +858,7 @@ def design_for_guest(
     include_selectivity: bool = True,
     include_dna_origami: bool = True,
     include_materials: bool = True,
+    include_protein: bool = True,
     de_novo_max_candidates: int = 300,
     de_novo_max_scored: int = 30,
     prefer_electroactive: bool = False,
@@ -998,6 +1002,14 @@ def design_for_guest(
             guest_max_dim_A=pharma.max_dimension_A,
         )
         result.dna_origami_design = dna_design
+
+    # ── Step 8b: Protein binder design ──
+    if include_protein:
+        from adapters.protein_design_adapter import design_protein_for_guest
+        result.protein_design = design_protein_for_guest(
+            spec, guest_smiles=smiles, guest_name=name,
+            guest_volume_A3=pharma.volume_A3,
+        )
 
     # ── Step 9: Cross-modal UAS ranking ──
     from core.cross_modal_ranker import rank_cross_modal
