@@ -962,3 +962,115 @@ class TestMaterialsPipeline:
         assert len(result.cage_designs) == 0
         assert len(result.porphyrin_designs) == 0
         assert result.pipeline_complete
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 9: Cross-modal UAS ranking
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestCrossModalRanker:
+    def test_ranker_runs(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        assert result.cross_modal is not None
+
+    def test_multiple_modalities(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        assert result.cross_modal.n_modalities >= 5, (
+            f"Only {result.cross_modal.n_modalities} modalities"
+        )
+
+    def test_candidates_generated(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        assert result.cross_modal.n_candidates >= 10
+
+    def test_entries_sorted_by_uas(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        uas_scores = [e.uas for e in result.cross_modal.entries]
+        assert uas_scores == sorted(uas_scores, reverse=True)
+
+    def test_ranks_sequential(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        ranks = [e.rank for e in result.cross_modal.entries]
+        assert ranks == list(range(1, len(ranks) + 1))
+
+    def test_confidence_intervals(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        for e in result.cross_modal.entries:
+            assert e.uas_lower <= e.uas <= e.uas_upper, (
+                f"{e.material_name}: lower={e.uas_lower} > uas={e.uas}"
+            )
+
+    def test_best_entry_identified(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        assert result.cross_modal.best_entry is not None
+        assert result.cross_modal.best_entry.rank == 1
+
+    def test_deployment_readiness_scored(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        for e in result.cross_modal.entries:
+            assert 0 <= e.deployment_readiness <= 1.0
+
+    def test_mip_has_selectivity(self):
+        """MIP entry should have selectivity data from selectivity screen."""
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        mip_entries = [e for e in result.cross_modal.entries if e.modality == "mip"]
+        assert len(mip_entries) == 1
+        assert mip_entries[0].selectivity_worst > 0
+
+    def test_cd_cheapest(self):
+        """Cyclodextrins should be among the cheapest candidates."""
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        cd_entries = [e for e in result.cross_modal.entries if e.modality == "host_guest_CD"]
+        assert len(cd_entries) > 0
+        assert any(e.estimated_cost_usd <= 10 for e in cd_entries)
+
+    def test_modality_diversity(self):
+        """Cross-modal table should span hosts, MIP, MOF, cage, porphyrin, de novo."""
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        modalities = {e.modality for e in result.cross_modal.entries}
+        expected = {"mip", "mof", "coordination_cage"}
+        overlap = modalities & expected
+        assert len(overlap) >= 3, f"Missing modalities. Got: {modalities}"

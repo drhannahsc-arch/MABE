@@ -829,6 +829,9 @@ class GuestDesignResult:
     cage_designs: list = field(default_factory=list)         # list[CageDesign]
     porphyrin_designs: list = field(default_factory=list)    # list[PorphyrinDesign]
 
+    # Cross-modal UAS ranking
+    cross_modal: object = None         # CrossModalResult from cross_modal_ranker
+
     # Summary
     top_host: str = ""
     top_host_log_ka: float = 0.0
@@ -995,6 +998,10 @@ def design_for_guest(
             guest_max_dim_A=pharma.max_dimension_A,
         )
         result.dna_origami_design = dna_design
+
+    # ── Step 9: Cross-modal UAS ranking ──
+    from core.cross_modal_ranker import rank_cross_modal
+    result.cross_modal = rank_cross_modal(result)
 
     result.pipeline_complete = True
     return result
