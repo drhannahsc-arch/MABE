@@ -821,6 +821,9 @@ class GuestDesignResult:
     # Selectivity screening
     selectivity_result: object = None      # SelectivityResult from selectivity_screen
 
+    # DNA origami tertiary binding
+    dna_origami_design: object = None      # DNAOrigamiPocketDesign
+
     # Summary
     top_host: str = ""
     top_host_log_ka: float = 0.0
@@ -842,6 +845,7 @@ def design_for_guest(
     include_mip: bool = True,
     include_de_novo: bool = True,
     include_selectivity: bool = True,
+    include_dna_origami: bool = True,
     de_novo_max_candidates: int = 300,
     de_novo_max_scored: int = 30,
     prefer_electroactive: bool = False,
@@ -949,6 +953,18 @@ def design_for_guest(
             hosts=hosts,
         )
         result.selectivity_result = sel
+
+    # ── Step 7: DNA origami tertiary binding design ──
+    if include_dna_origami:
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        dna_design = design_dna_origami_pocket(
+            spec=spec,
+            guest_smiles=smiles,
+            guest_name=name,
+            guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        result.dna_origami_design = dna_design
 
     result.pipeline_complete = True
     return result

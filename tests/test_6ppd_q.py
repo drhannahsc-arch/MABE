@@ -603,3 +603,185 @@ class TestSelectivityScreen:
         assert result.interferents[0].name == "caffeine"
         assert len(result.host_selectivity) > 0
 
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 7: DNA origami tertiary binding
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestDNAOrigamiPocket:
+    """Test DNA origami tertiary binding design for 6PPD-Q."""
+
+    def test_decompose_to_modules(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import decompose_to_modules
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        modules = decompose_to_modules(spec)
+        assert len(modules) > 0
+
+    def test_modules_have_selections(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import decompose_to_modules
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        modules = decompose_to_modules(spec)
+        for m in modules:
+            assert m.selected is not None, f"Module {m.role} has no selection"
+
+    def test_module_roles_match_spec(self):
+        """Modules should include H-bond donors and acceptors."""
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import decompose_to_modules
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        modules = decompose_to_modules(spec)
+        roles = {m.role for m in modules}
+        assert "hb_donor" in roles or "hb_acceptor" in roles
+
+    def test_cage_presets_exist(self):
+        from core.dna_origami_pocket import CAGE_PRESETS
+        assert len(CAGE_PRESETS) >= 5
+
+    def test_cage_presets_have_interior_staples(self):
+        from core.dna_origami_pocket import CAGE_PRESETS
+        for cage in CAGE_PRESETS:
+            assert cage.n_interior_staples > 0, f"{cage.name}: no interior staples"
+
+    def test_cage_presets_volumes_positive(self):
+        from core.dna_origami_pocket import CAGE_PRESETS
+        for cage in CAGE_PRESETS:
+            assert cage.interior_volume_nm3 > 0, f"{cage.name}: volume={cage.interior_volume_nm3}"
+
+    def test_select_cage_geometry(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import decompose_to_modules, select_cage_geometry
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        modules = decompose_to_modules(spec)
+        scores = select_cage_geometry(modules, pharma.volume_A3, pharma.max_dimension_A)
+        assert len(scores) > 0
+
+    def test_design_dna_origami_pocket_runs(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_dna_origami_pocket(
+            spec, SMILES_6PPD_Q, guest_name=NAME_6PPD_Q,
+            guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        assert design is not None
+        assert design.guest_name == NAME_6PPD_Q
+
+    def test_design_has_modules(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_dna_origami_pocket(
+            spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        assert design.n_modules > 0
+        assert len(design.placements) > 0
+
+    def test_design_has_cage(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_dna_origami_pocket(
+            spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        assert design.cage is not None
+        assert design.cage.interior_volume_nm3 > 0
+
+    def test_placements_have_conjugation(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_dna_origami_pocket(
+            spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        for p in design.placements:
+            assert p.conjugation in ("azide-SPAAC", "NHS-amine", "thiol-maleimide")
+            assert p.linker_length_nm > 0
+
+    def test_athena_spec_generated(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_dna_origami_pocket(
+            spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        assert design.athena_spec is not None
+        assert design.athena_spec.polyhedron != ""
+        assert design.athena_spec.edge_length_bp > 0
+
+    def test_athena_spec_ply_valid(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_dna_origami_pocket(
+            spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        ply = design.athena_spec.to_ply()
+        assert ply.startswith("ply")
+        assert "end_header" in ply
+        assert len(design.athena_spec.ply_vertices) > 0
+        assert len(design.athena_spec.ply_faces) > 0
+
+    def test_athena_spec_json_valid(self):
+        import json
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_dna_origami_pocket(
+            spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        j = design.athena_spec.to_json()
+        parsed = json.loads(j)
+        assert "polyhedron" in parsed
+        assert "modified_staples" in parsed
+
+    def test_cost_estimate(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from core.dna_origami_pocket import design_dna_origami_pocket
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        design = design_dna_origami_pocket(
+            spec, SMILES_6PPD_Q, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+        )
+        assert design.estimated_cost_usd > 0
+
+    def test_pipeline_includes_dna_origami(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            include_de_novo=False, include_selectivity=False,
+        )
+        assert result.dna_origami_design is not None
+        assert result.dna_origami_design.n_modules > 0
+
+    def test_pipeline_dna_origami_disabled(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q,
+            include_dna_origami=False,
+            include_de_novo=False,
+            include_selectivity=False,
+            include_mip=False,
+        )
+        assert result.dna_origami_design is None
+        assert result.pipeline_complete
