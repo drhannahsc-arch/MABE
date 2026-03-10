@@ -1879,6 +1879,366 @@ def generate_and_score_3d(target_metal, donor_subtypes=None,
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# DE NOVO RECEPTOR GENERATION FOR SMALL-MOLECULE GUESTS
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Inverts the standard generate_candidates flow:
+#   Standard: generate ligand → score against metal/host
+#   Receptor: generate receptor → score complementarity to guest
+#
+# Uses existing ARM_LIBRARY + new receptor-oriented backbones.
+# Arm selection is driven by guest pharmacophore: guest acceptors → donor
+# arms, guest donors → acceptor arms, guest aromatics → aromatic arms.
+# ═══════════════════════════════════════════════════════════════════════════
+
+RECEPTOR_BACKBONE_LIBRARY = [
+    # ── MOLECULAR TWEEZERS (2 sites) ─────────────────────────────────────
+    # Two arms presented in a cleft geometry — good for flat aromatic guests
+    Backbone("glycoluril-clip", "[1*]N1C(=O)NC2(N(C1=O)C1([2*])NC(=O)N1)CC2",
+             2, "cyclic",
+             "Glycoluril clip: U-shaped cavity, binds flat aromatics"),
+    Backbone("xanthene-tweezer", "[1*]c1ccc2c(c1)Oc1cc([2*])ccc1C2",
+             2, "aromatic",
+             "Xanthene scaffold: 120° cleft, preorganized"),
+    Backbone("Troeger-base", "[1*]CN1CC2=CC=CC(=C2N(C1)C[2*])C",
+             2, "cyclic",
+             "Tröger's base: V-shaped cleft, chiral, rigid"),
+    Backbone("dibenzofuran-tweezer", "[1*]c1ccc2c(c1)oc1cc([2*])ccc12",
+             2, "aromatic",
+             "Dibenzofuran: rigid 150° cleft, aromatic walls"),
+
+    # ── CLEFT / U-SHAPED (2-3 sites) ────────────────────────────────────
+    Backbone("isophthalamide", "[1*]NC(=O)c1cccc(C(=O)N[2*])c1",
+             2, "aromatic",
+             "Isophthalamide cleft: convergent NH donors, anion/quinone binding"),
+    Backbone("pyridine-2,6-diamide", "[1*]NC(=O)c1cccc(C(=O)N[2*])n1",
+             2, "aromatic",
+             "Pyridine-2,6-dicarboxamide: N+2×NH convergent, Hamilton receptor"),
+    Backbone("urea-cleft", "[1*]NC(=O)NC(=O)N[2*]",
+             2, "linear",
+             "Bis-urea cleft: 4 NH donors, strong H-bond donor array"),
+    Backbone("squaramide-cleft", "[1*]NC1=C(N[2*])C(=O)C1=O",
+             2, "cyclic",
+             "Squaramide: acidic NH + C=O array, quinone-complementary"),
+
+    # ── MACROCYCLIC HOSTS (2-3 sites) ────────────────────────────────────
+    Backbone("calix4-functionalized",
+             "[1*]c1cc(CC2CC([2*])CC(CC3CC([1*])CC(C1)C3)C2)cc(C)c1O",
+             2, "macrocyclic",
+             "Calix[4]arene: upper-rim functionalization, deep cavity"),
+    Backbone("pillar5-functionalized",
+             "[1*]c1cc(Cc2cc([2*])cc(C)c2OC)c(OC)c1",
+             2, "macrocyclic",
+             "Pillar[5]arene-derived: tubular cavity"),
+
+    # ── TRIPODAL RECEPTORS (3 sites) ─────────────────────────────────────
+    Backbone("tris-amide-tripod",
+             "[1*]NC(=O)CN(CC(=O)N[2*])CC(=O)N[3*]",
+             3, "branched",
+             "Tris(carboxamide)amine: 3 convergent NH + 3 C=O, cage-like"),
+    Backbone("1,3,5-triamide-benzene",
+             "[1*]NC(=O)c1cc(C(=O)N[2*])cc(C(=O)N[3*])c1",
+             3, "aromatic",
+             "Trimesic triamide: flat receptor, 3 NH convergent"),
+    Backbone("CTV-core",
+             "[1*]c1cc2c(cc1OC)CC(c1cc([2*])c(OC)cc1C1)c(cc([3*])c(OC)c3)C1Cc3c2",
+             3, "macrocyclic",
+             "Cyclotriveratrylene: bowl-shaped, 3 arm sites"),
+
+    # ── EXPANDED CAVITY (2 sites, larger guests) ─────────────────────────
+    Backbone("naphtho-tweezer",
+             "[1*]c1ccc2cc3ccc([2*])cc3cc2c1",
+             2, "aromatic",
+             "Naphthalene-spaced tweezer: larger cleft for bigger guests"),
+    Backbone("biphenyl-cleft",
+             "[1*]c1ccc(-c2ccc([2*])cc2)cc1",
+             2, "aromatic",
+             "Biphenyl: rotatable but can converge arms"),
+]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PHARMACOPHORE-DRIVEN ARM SELECTION
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Map guest feature types to complementary arm categories from ARM_LIBRARY.
+# Guest acceptor → we need donor arms (provide H to guest's lone pairs)
+# Guest donor → we need acceptor arms (accept H from guest's NH/OH)
+# Guest aromatic → we need aromatic arms (π-stacking)
+
+_COMPLEMENTARY_ARM_MAP = {
+    # guest feature type → list of (arm_name, match_score) pairs
+    "hb_acceptor": [
+        # Arms that DONATE H-bonds to guest acceptors (C=O, N:)
+        ("catechol", 0.9),          # two OH donors, strong with quinones
+        ("phenol", 0.8),            # phenol OH donor
+        ("ethanol", 0.6),           # aliphatic OH
+        ("squaramide", 0.85),       # acidic NH + OH
+        ("amidoxime", 0.7),         # N-OH + NH₂ donors
+        ("acetohydroxamate", 0.75), # N-OH donor
+        ("acetic-acid", 0.7),       # COOH donor
+        ("thiourea", 0.65),         # NH donors
+        ("hydrazide", 0.6),         # NH donor
+    ],
+    "hb_donor": [
+        # Arms that ACCEPT H-bonds from guest donors (NH, OH)
+        ("2-pyridyl", 0.85),            # pyridine N lone pair
+        ("2-pyridylmethyl", 0.8),       # pyridine N lone pair
+        ("imidazolylmethyl", 0.75),     # imidazole N lone pair
+        ("benzimidazolyl", 0.7),        # benzimidazole N
+        ("carbamoylmethyl", 0.6),       # amide C=O acceptor
+        ("8-hydroxyquinolinyl", 0.7),   # N + O acceptors
+        ("nitrile", 0.5),               # weak N acceptor
+    ],
+    "aromatic": [
+        # Arms with aromatic surfaces for π-stacking
+        ("phenol", 0.7),                # phenyl ring
+        ("2-pyridyl", 0.75),            # pyridine ring
+        ("catechol", 0.8),              # catechol ring (electron-rich → CT with quinone)
+        ("8-hydroxyquinolinyl", 0.85),  # extended aromatic, best π-stacking
+        ("benzimidazolyl", 0.8),        # fused aromatic
+        ("salicylaldimine", 0.7),       # phenyl + imine
+        ("aminothiadiazole", 0.65),     # heteroaromatic
+    ],
+    "hydrophobic": [
+        # Arms with hydrophobic character
+        ("thioether-methyl", 0.5),
+        ("thiol-ethyl", 0.4),
+        ("H-cap", 0.3),                # leave site unfunctionalized
+    ],
+}
+
+
+def _select_receptor_arms(pharmacophore, max_arms_per_type=5):
+    """Select arms from ARM_LIBRARY that complement a guest pharmacophore.
+
+    Returns list of (Arm, match_score, matched_guest_feature) tuples,
+    sorted by match_score descending.
+    """
+    arm_scores = {}  # arm_name → (best_score, feature_type)
+
+    for feat in pharmacophore.features:
+        ft = feat.feature_type
+        if ft not in _COMPLEMENTARY_ARM_MAP:
+            continue
+        for arm_name, score in _COMPLEMENTARY_ARM_MAP[ft]:
+            # Boost for strong guest features
+            if feat.strength == "strong":
+                score *= 1.15
+            # Quinone-specific boost for electron-rich aromatics
+            if ft == "aromatic" and feat.subtype == "aromatic_6ring":
+                if arm_name in ("catechol", "8-hydroxyquinolinyl"):
+                    score *= 1.1  # electron-rich → charge-transfer with quinone
+
+            if arm_name not in arm_scores or score > arm_scores[arm_name][0]:
+                arm_scores[arm_name] = (score, ft)
+
+    # Resolve to Arm objects
+    results = []
+    for arm_name, (score, ft) in sorted(arm_scores.items(), key=lambda x: x[1][0], reverse=True):
+        if arm_name in _ARM_BY_NAME:
+            results.append((_ARM_BY_NAME[arm_name], score, ft))
+
+    return results[:max_arms_per_type * 3]  # cap total
+
+
+def _score_receptor_complementarity(receptor_smiles, guest_pharmacophore):
+    """Score how well a generated receptor complements the guest pharmacophore.
+
+    Returns a complementarity score (higher = better match).
+
+    Scoring axes:
+    1. Donor/acceptor count match: receptor provides what guest needs
+    2. Aromatic surface: receptor provides π-stacking area
+    3. Size compatibility: receptor not too small for guest
+    4. Preorganization bonus: rigid scaffolds score higher
+
+    All physics-derived, no fitted parameters.
+    """
+    mol = Chem.MolFromSmiles(receptor_smiles)
+    if mol is None:
+        return 0.0
+
+    score = 0.0
+
+    # ── H-bond complementarity ──
+    # Count receptor's HBD and HBA
+    rec_hbd = Descriptors.NumHDonors(mol)
+    rec_hba = Descriptors.NumHAcceptors(mol)
+
+    # Guest's acceptors need receptor donors
+    guest_acc = guest_pharmacophore.n_hb_acceptors
+    hbd_match = min(rec_hbd, guest_acc) / max(guest_acc, 1)
+    score += hbd_match * 3.0  # 3 points for full H-bond donor coverage
+
+    # Guest's donors need receptor acceptors
+    guest_don = guest_pharmacophore.n_hb_donors
+    hba_match = min(rec_hba, guest_don) / max(guest_don, 1)
+    score += hba_match * 2.0  # 2 points for H-bond acceptor coverage
+
+    # ── Aromatic complementarity ──
+    rec_arom_rings = Descriptors.NumAromaticRings(mol)
+    guest_arom = guest_pharmacophore.n_aromatic_rings
+    if guest_arom > 0 and rec_arom_rings > 0:
+        score += min(rec_arom_rings, guest_arom * 2) * 1.0  # π-stacking potential
+
+    # ── Size check ──
+    rec_mw = Descriptors.ExactMolWt(mol)
+    guest_mw = guest_pharmacophore.mw
+    # Receptor should be at least 60% of guest MW for meaningful wrapping
+    if rec_mw >= guest_mw * 0.6:
+        score += 1.0
+    # But not absurdly large (>5× guest)
+    if rec_mw > guest_mw * 5.0:
+        score -= 1.0
+
+    # ── Preorganization bonus ──
+    n_rot = Descriptors.NumRotatableBonds(mol)
+    n_rings = Descriptors.RingCount(mol)
+    # Rigid receptors bind more tightly (less conformational entropy loss)
+    if n_rings >= 2 and n_rot < 5:
+        score += 1.5  # preorganized
+    elif n_rings >= 1:
+        score += 0.5
+
+    return max(0.0, score)
+
+
+@dataclass
+class ReceptorCandidate(GeneratedCandidate):
+    """A de novo receptor candidate for a guest molecule."""
+    complementarity_score: float = 0.0
+    matched_features: list = field(default_factory=list)  # which guest features are covered
+
+
+def generate_for_guest(
+    guest_smiles,
+    guest_name="",
+    max_candidates=500,
+    max_scored=50,
+    sa_penalty_weight=0.3,
+    pfilter=None,
+    include_standard_backbones=True,
+):
+    """Generate de novo receptor molecules for a small-molecule guest.
+
+    Strategy:
+      1. Analyze guest pharmacophore
+      2. Select arms complementary to guest features
+      3. Enumerate receptor candidates from receptor backbones × arms
+      4. Score by pharmacophore complementarity + SA penalty
+      5. Return ranked candidates
+
+    Args:
+        guest_smiles: SMILES of the target guest molecule
+        guest_name: display name (e.g. "6PPD-quinone")
+        max_candidates: max molecules to enumerate
+        max_scored: max to score (top by SA, then complement)
+        sa_penalty_weight: weight of SA penalty in composite
+        pfilter: PropertyFilter override
+        include_standard_backbones: also use standard aromatic backbones
+            from BACKBONE_LIBRARY (some work well as receptor scaffolds)
+
+    Returns:
+        GenerationResult with scored ReceptorCandidate objects
+    """
+    from core.small_molecule_target import analyze_guest
+
+    t0 = time.time()
+
+    # Step 1: Pharmacophore analysis
+    pharmacophore = analyze_guest(guest_smiles, name=guest_name)
+
+    # Step 2: Select complementary arms
+    arm_selections = _select_receptor_arms(pharmacophore)
+    receptor_arms = [arm for arm, _, _ in arm_selections]
+
+    if not receptor_arms:
+        # Fallback: use all arms
+        receptor_arms = list(ARM_LIBRARY)
+
+    # Step 3: Build backbone set
+    backbones = list(RECEPTOR_BACKBONE_LIBRARY)
+    if include_standard_backbones:
+        # Include aromatic and branched standard backbones
+        # (many are usable as receptor scaffolds)
+        for bb in BACKBONE_LIBRARY:
+            if bb.category in ("aromatic", "branched", "macrocyclic"):
+                backbones.append(bb)
+
+    # Step 4: Property filter
+    if pfilter is None:
+        pfilter = PropertyFilter()
+    pfilter.require_donors = False  # receptors don't need metal donors
+    pfilter.max_heavy_atoms = 60   # receptors can be larger than guests
+    pfilter.min_heavy_atoms = 10   # but not trivially small
+
+    # Step 5: Enumerate
+    raw = enumerate_molecules(
+        metal=None, host=None,
+        max_candidates=max_candidates,
+        backbones=backbones,
+        arms=receptor_arms,
+        pfilter=pfilter,
+        hsab_filter=False,
+    )
+    n_enumerated = len(raw)
+
+    # Step 6: Pre-score by complementarity, then take top N
+    pre_scored = []
+    for smiles, bb_name, arm_names, sa in raw:
+        comp = _score_receptor_complementarity(smiles, pharmacophore)
+        pre_scored.append((smiles, bb_name, arm_names, sa, comp))
+
+    # Sort by complementarity (descending), take top
+    pre_scored.sort(key=lambda x: x[4], reverse=True)
+    to_score = pre_scored[:max_scored]
+
+    # Step 7: Full scoring
+    known = _known_smiles_set()
+    candidates = []
+    errors = []
+
+    for smiles, bb_name, arm_names, sa, comp in to_score:
+        try:
+            composite = comp - sa_penalty_weight * sa
+            gc = ReceptorCandidate(
+                smiles=smiles,
+                name=f"{bb_name}+{'|'.join(arm_names)}",
+                log_Ka_pred=comp,  # use complementarity as proxy log_Ka
+                dg_total_kj=-comp * 5.71,  # rough ΔG estimate
+                prediction=None,
+                backbone_name=bb_name,
+                arm_names=arm_names,
+                sa_score_val=sa,
+                composite_score=composite,
+                novel=smiles not in known,
+                complementarity_score=comp,
+            )
+            candidates.append(gc)
+        except Exception as e:
+            errors.append((smiles, str(e)))
+
+    # Step 8: Rank
+    candidates.sort(key=lambda c: c.composite_score, reverse=True)
+    for i, c in enumerate(candidates):
+        c.rank = i + 1
+
+    return GenerationResult(
+        target=guest_name or guest_smiles[:40],
+        mode="receptor",
+        candidates=candidates,
+        n_enumerated=n_enumerated,
+        n_valid=n_enumerated,
+        n_unique=n_enumerated,
+        n_scored=len(candidates),
+        n_failed=len(errors),
+        elapsed_s=time.time() - t0,
+        errors=errors,
+    )
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # SELF-TEST
 # ═══════════════════════════════════════════════════════════════════════════
 

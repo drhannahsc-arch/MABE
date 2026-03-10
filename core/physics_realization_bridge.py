@@ -786,3 +786,145 @@ def end_to_end_design(
     result.pipeline_complete = True
 
     return result
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# SMALL-MOLECULE GUEST DESIGN PIPELINE
+# ═══════════════════════════════════════════════════════════════════════════
+# Entry point for "I have a molecule, design me a binder"
+# Runs: SMILES → pharmacophore → host screening + MIP design + pocket spec
+# Does NOT modify the metal-ion pathway above.
+# ═══════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class GuestDesignResult:
+    """End-to-end design output for a small-molecule guest target."""
+
+    guest_smiles: str
+    guest_name: str = ""
+
+    # Layer 1: pharmacophore analysis
+    pharmacophore: object = None           # GuestPharmacophore
+
+    # Layer 2: ideal pocket geometry
+    pocket_spec: object = None             # InteractionGeometrySpec
+
+    # Host-guest screening (scored via unified_scorer_v2)
+    host_screen: list = field(default_factory=list)  # list[HostScreenResult]
+
+    # MIP design
+    mip_design: object = None              # MIPDesign
+
+    # De novo receptor generation
+    de_novo_result: object = None          # GenerationResult from de_novo_generator
+
+    # Summary
+    top_host: str = ""
+    top_host_log_ka: float = 0.0
+    n_hosts_screened: int = 0
+    n_hosts_feasible: int = 0
+    pipeline_complete: bool = False
+
+    # Conditions
+    conditions: dict = field(default_factory=dict)
+    application: str = "research"
+
+
+def design_for_guest(
+    smiles: str,
+    name: str = "",
+    conditions: dict = None,
+    application: str = "research",
+    exclude_species: list = None,
+    include_mip: bool = True,
+    include_de_novo: bool = True,
+    de_novo_max_candidates: int = 300,
+    de_novo_max_scored: int = 30,
+    prefer_electroactive: bool = False,
+    require_click: bool = False,
+    hosts: list = None,
+) -> GuestDesignResult:
+    """Full pipeline: guest SMILES → ranked binder designs across modalities.
+
+    Args:
+        smiles: Guest molecule SMILES
+        name: Display name (e.g. "6PPD-quinone")
+        conditions: {"pH": 7.0, "temperature_C": 25.0, "matrix": "stormwater"}
+        application: "research" | "remediation" | "diagnostic" | "separation"
+        exclude_species: Species that must not bind (selectivity targets)
+        include_mip: Whether to run MIP monomer selection
+        prefer_electroactive: Prioritize electrochemical MIP for sensor use
+        require_click: Require click-chemistry deployable designs
+        hosts: Specific host keys to screen (default: all in HOST_DB)
+
+    Returns:
+        GuestDesignResult with pharmacophore, pocket spec, host rankings,
+        and MIP design.
+    """
+    if conditions is None:
+        conditions = {}
+
+    result = GuestDesignResult(
+        guest_smiles=smiles,
+        guest_name=name,
+        conditions=conditions,
+        application=application,
+    )
+
+    # ── Step 1: Pharmacophore analysis ──
+    from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+    pharma = analyze_guest(smiles, name=name)
+    result.pharmacophore = pharma
+
+    # ── Step 2: Generate ideal pocket spec (Layer 2) ──
+    pH = conditions.get("pH", 7.0)
+    spec = guest_to_pocket_spec(
+        pharma,
+        application=application,
+        pH=pH,
+        exclude_species=exclude_species or [],
+    )
+    result.pocket_spec = spec
+
+    # ── Step 3: Screen existing host cavities via unified_scorer_v2 ──
+    from core.small_molecule_target import screen_hosts
+    host_results = screen_hosts(smiles, hosts=hosts, name=name)
+    result.host_screen = host_results
+    result.n_hosts_screened = len(host_results)
+
+    # Filter feasible hosts (packing OK, no error)
+    feasible = [
+        h for h in host_results
+        if h.feasibility_note == "" and h.log_Ka_pred > 0
+    ]
+    result.n_hosts_feasible = len(feasible)
+
+    if feasible:
+        result.top_host = feasible[0].host_key
+        result.top_host_log_ka = feasible[0].log_Ka_pred
+
+    # ── Step 4: MIP design ──
+    if include_mip:
+        from adapters.mip_adapter import select_monomers_for_guest
+        mip = select_monomers_for_guest(
+            guest_smiles=smiles,
+            guest_name=name,
+            pharmacophore=pharma,
+            prefer_electroactive=prefer_electroactive,
+            require_click=require_click,
+        )
+        result.mip_design = mip
+
+    # ── Step 5: De novo receptor generation ──
+    if include_de_novo:
+        from core.de_novo_generator import generate_for_guest as _gen_for_guest
+        de_novo = _gen_for_guest(
+            guest_smiles=smiles,
+            guest_name=name,
+            max_candidates=de_novo_max_candidates,
+            max_scored=de_novo_max_scored,
+        )
+        result.de_novo_result = de_novo
+
+    result.pipeline_complete = True
+    return result
