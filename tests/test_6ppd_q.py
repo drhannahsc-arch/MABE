@@ -785,3 +785,180 @@ class TestDNAOrigamiPocket:
         )
         assert result.dna_origami_design is None
         assert result.pipeline_complete
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 8: MOF, Coordination Cage, Porphyrin adapters
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestMOFAdapter:
+    def test_design_mof_runs(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.mof_adapter import design_mof_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_mof_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        assert len(designs) > 0
+
+    def test_mof_designs_sorted(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.mof_adapter import design_mof_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_mof_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        scores = [d.composite_score for d in designs]
+        assert scores == sorted(scores, reverse=True)
+
+    def test_mof_water_stable(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.mof_adapter import design_mof_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_mof_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A,
+                                        require_water_stable=True)
+        for d in designs:
+            assert d.topology.water_stable
+
+    def test_mof_has_synthesis(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.mof_adapter import design_mof_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_mof_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        for d in designs:
+            assert d.synthesis_route != ""
+
+    def test_mof_psm_proposed_when_needed(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.mof_adapter import design_mof_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_mof_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        # At least one design should have PSM (6PPD-Q needs H-bond donors)
+        has_psm = any(len(d.psm) > 0 for d in designs)
+        assert has_psm, "No MOF design proposed PSM for 6PPD-Q H-bond requirements"
+
+
+class TestCoordinationCageAdapter:
+    def test_design_cage_runs(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.coordination_cage_adapter import design_cage_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_cage_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        assert len(designs) > 0
+
+    def test_cage_designs_sorted(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.coordination_cage_adapter import design_cage_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_cage_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        scores = [d.composite_score for d in designs]
+        assert scores == sorted(scores, reverse=True)
+
+    def test_cage_has_metal(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.coordination_cage_adapter import design_cage_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_cage_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        for d in designs:
+            assert d.metal is not None
+            assert d.metal.formula != ""
+
+    def test_cage_cavity_volume_positive(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.coordination_cage_adapter import design_cage_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_cage_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        for d in designs:
+            assert d.cavity_volume_A3 > 0
+
+    def test_cage_endohedral_groups(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.coordination_cage_adapter import design_cage_for_guest
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_cage_for_guest(spec, pharma.volume_A3, pharma.max_dimension_A)
+        has_endo = any(len(d.endohedral_groups) > 0 for d in designs)
+        assert has_endo, "No cage design has endohedral groups"
+
+
+class TestPorphyrinAdapter:
+    def test_design_porphyrin_runs(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.porphyrin_adapter import design_porphyrin_for_spec
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_porphyrin_for_spec(spec, guest_smiles=SMILES_6PPD_Q)
+        assert len(designs) > 0
+
+    def test_porphyrin_designs_sorted(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.porphyrin_adapter import design_porphyrin_for_spec
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_porphyrin_for_spec(spec, guest_smiles=SMILES_6PPD_Q)
+        scores = [d.composite_score for d in designs]
+        assert scores == sorted(scores, reverse=True)
+
+    def test_porphyrin_metal_binding_mode(self):
+        """Test metal-binding mode for Pb2+."""
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.porphyrin_adapter import design_porphyrin_for_spec
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_porphyrin_for_spec(spec, target_metal="Pb2+")
+        assert len(designs) > 0
+        for d in designs:
+            assert d.target_metal == "Pb2+"
+            assert d.estimated_log_Ka_metal > 0
+
+    def test_porphyrin_core_types(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.porphyrin_adapter import design_porphyrin_for_spec
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_porphyrin_for_spec(spec, guest_smiles=SMILES_6PPD_Q, max_designs=10)
+        core_types = {d.macrocycle.core_type for d in designs}
+        assert len(core_types) >= 2, f"Only {core_types} core types"
+
+    def test_porphyrin_has_substituents(self):
+        from core.small_molecule_target import analyze_guest, guest_to_pocket_spec
+        from adapters.porphyrin_adapter import design_porphyrin_for_spec
+        pharma = analyze_guest(SMILES_6PPD_Q)
+        spec = guest_to_pocket_spec(pharma)
+        designs = design_porphyrin_for_spec(spec, guest_smiles=SMILES_6PPD_Q)
+        # At least one design should have substituents (meso or beta)
+        has_subs = any(
+            len(d.meso_substituents) > 0 or len(d.beta_substituents) > 0
+            for d in designs
+        )
+        assert has_subs, "No porphyrin design has any substituents"
+
+
+class TestMaterialsPipeline:
+    def test_pipeline_includes_materials(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            include_de_novo=False, include_selectivity=False,
+            include_dna_origami=False,
+        )
+        assert len(result.mof_designs) > 0, "No MOF designs"
+        assert len(result.cage_designs) > 0, "No cage designs"
+        assert len(result.porphyrin_designs) > 0, "No porphyrin designs"
+
+    def test_pipeline_materials_disabled(self):
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q,
+            include_materials=False,
+            include_de_novo=False, include_selectivity=False,
+            include_dna_origami=False, include_mip=False,
+        )
+        assert len(result.mof_designs) == 0
+        assert len(result.cage_designs) == 0
+        assert len(result.porphyrin_designs) == 0
+        assert result.pipeline_complete

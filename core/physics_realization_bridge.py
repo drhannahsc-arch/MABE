@@ -824,6 +824,11 @@ class GuestDesignResult:
     # DNA origami tertiary binding
     dna_origami_design: object = None      # DNAOrigamiPocketDesign
 
+    # Material system designs (from realization adapters)
+    mof_designs: list = field(default_factory=list)         # list[MOFDesign]
+    cage_designs: list = field(default_factory=list)         # list[CageDesign]
+    porphyrin_designs: list = field(default_factory=list)    # list[PorphyrinDesign]
+
     # Summary
     top_host: str = ""
     top_host_log_ka: float = 0.0
@@ -846,6 +851,7 @@ def design_for_guest(
     include_de_novo: bool = True,
     include_selectivity: bool = True,
     include_dna_origami: bool = True,
+    include_materials: bool = True,
     de_novo_max_candidates: int = 300,
     de_novo_max_scored: int = 30,
     prefer_electroactive: bool = False,
@@ -954,7 +960,31 @@ def design_for_guest(
         )
         result.selectivity_result = sel
 
-    # ── Step 7: DNA origami tertiary binding design ──
+    # ── Step 7: Material system adapters (MOF, cage, porphyrin) ──
+    if include_materials:
+        from adapters.mof_adapter import design_mof_for_guest
+        from adapters.coordination_cage_adapter import design_cage_for_guest
+        from adapters.porphyrin_adapter import design_porphyrin_for_spec
+
+        water_req = conditions.get("matrix", "") in ("stormwater", "mine_water", "river", "")
+
+        result.mof_designs = design_mof_for_guest(
+            spec, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+            require_water_stable=water_req,
+            application=application,
+        )
+        result.cage_designs = design_cage_for_guest(
+            spec, guest_volume_A3=pharma.volume_A3,
+            guest_max_dim_A=pharma.max_dimension_A,
+            require_water=water_req,
+        )
+        result.porphyrin_designs = design_porphyrin_for_spec(
+            spec, guest_smiles=smiles,
+            require_water_soluble=water_req,
+        )
+
+    # ── Step 8: DNA origami tertiary binding design ──
     if include_dna_origami:
         from core.dna_origami_pocket import design_dna_origami_pocket
         dna_design = design_dna_origami_pocket(
