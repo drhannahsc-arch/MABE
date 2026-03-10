@@ -326,6 +326,143 @@ def _compute_hg_terms(uc, result):
     except Exception:
         pass
 
+    # 8. Portal restriction penalty (CB[n] hosts only)
+    #
+    # CB[n] portals are rigid ureido rims, much narrower than the equatorial
+    # cavity. Guests whose minimum cross-section exceeds the portal area
+    # cannot enter. This adds a penalty proportional to the excess area^1.5.
+    #
+    # Physics: Barrow et al. portal diameters (Å): CB5=2.4, CB6=3.9, CB7=5.4, CB8=6.9
+    # Portal flexibility: ~1 Å expansion for spherical guests (Nau group MD).
+    # Non-spherical guests get less expansion (sphericity-weighted).
+    #
+    # Calibration: zero penalty for all known CB7 binders (adamantane, hexylamine,
+    # ferrocene etc.) — verified against frozen regression references.
+    if host_key.startswith("CB") and uc.guest_smiles:
+        portal_penalty = _cb_portal_penalty(uc.guest_smiles, host_key, host)
+        if portal_penalty > 0:
+            result.dg_portal_size += portal_penalty  # positive = unfavorable
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CB PORTAL RESTRICTION — rigid ureido rim gate
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Portal aperture diameters from Barrow, Kasera, Rowland, del Barrio,
+# Scherman, Clemmer & Bush, and Nau reviews. Inner portal diameter (Å).
+_CB_PORTAL_DIAMETERS = {
+    "CB5": 2.4,
+    "CB6": 3.9,
+    "CB7": 5.4,
+    "CB8": 6.9,
+}
+
+# Penalty parameters (physics-derived, not fitted against HG data)
+_PORTAL_K = 2.0        # kJ/mol per Å² excess^1.5
+_PORTAL_POWER = 1.5    # super-linear: large excess → steep penalty
+_PORTAL_FLEX = 1.0     # Å: max portal expansion for perfectly spherical guest
+
+# Cache for guest 3D dimensions {canonical_smiles: (min_d, mid_d, max_d)}
+_GUEST_DIM_CACHE = {}
+
+
+def _guest_dimensions_3d(smiles):
+    """Compute guest molecular dimensions from 3D conformer.
+
+    Returns (min_d, mid_d, max_d) in Å, or None if embedding fails.
+    Uses SVD on heavy-atom coordinates + VdW radii.
+    """
+    if smiles in _GUEST_DIM_CACHE:
+        return _GUEST_DIM_CACHE[smiles]
+
+    try:
+        from rdkit import Chem
+        from rdkit.Chem import AllChem
+        import numpy as np
+
+        mol = Chem.AddHs(Chem.MolFromSmiles(smiles))
+        if mol is None:
+            return None
+
+        params = AllChem.ETKDGv3()
+        params.randomSeed = 42
+        cid = AllChem.EmbedMolecule(mol, params)
+        if cid < 0:
+            params.useRandomCoords = True
+            cid = AllChem.EmbedMolecule(mol, params)
+        if cid < 0:
+            return None
+        AllChem.MMFFOptimizeMolecule(mol)
+        conf = mol.GetConformer(0)
+
+        coords = []
+        for i in range(mol.GetNumAtoms()):
+            if mol.GetAtomWithIdx(i).GetAtomicNum() > 1:
+                pos = conf.GetAtomPosition(i)
+                coords.append([pos.x, pos.y, pos.z])
+
+        if len(coords) < 3:
+            return None
+
+        coords = np.array(coords)
+        coords -= coords.mean(axis=0)
+
+        _, _, Vt = np.linalg.svd(coords, full_matrices=False)
+        extents = []
+        for i in range(min(3, Vt.shape[0])):
+            proj = coords @ Vt[i]
+            extents.append(proj.max() - proj.min() + 3.4)  # +2×VdW radius
+        extents.sort()
+
+        result = tuple(extents)
+        _GUEST_DIM_CACHE[smiles] = result
+        return result
+    except Exception:
+        return None
+
+
+def _cb_portal_penalty(guest_smiles, host_key, host_data):
+    """Compute portal restriction penalty for CB hosts.
+
+    Returns penalty in kJ/mol (positive = unfavorable, 0 = no penalty).
+    """
+    import math
+
+    # Get portal diameter for this CB host
+    portal_d = _CB_PORTAL_DIAMETERS.get(host_key)
+    if portal_d is None:
+        # Unknown CB variant — estimate from cavity diameter - 2.0
+        cav_d = host_data.get("cavity_diameter", 0)
+        if cav_d > 0:
+            portal_d = max(2.0, cav_d - 2.0)
+        else:
+            return 0.0
+
+    # Get guest 3D dimensions
+    dims = _guest_dimensions_3d(guest_smiles)
+    if dims is None:
+        return 0.0
+
+    min_d, mid_d = dims[0], dims[1]
+
+    # Sphericity: how close to spherical is the guest cross-section
+    sphericity = min_d / mid_d if mid_d > 0.1 else 1.0
+
+    # Flexible portal diameter: portal expands ~1 Å for spherical guests,
+    # less for non-spherical (can't stretch asymmetrically)
+    flex_portal_d = portal_d + _PORTAL_FLEX * sphericity
+
+    # Compare cross-sectional areas (elliptical guest vs circular portal)
+    flex_portal_area = math.pi * (flex_portal_d / 2) ** 2
+    guest_cross_area = math.pi / 4 * min_d * mid_d
+
+    excess_area = max(0.0, guest_cross_area - flex_portal_area)
+    if excess_area <= 0:
+        return 0.0
+
+    # Super-linear penalty: small excess → small penalty, large excess → large
+    return _PORTAL_K * excess_area ** _PORTAL_POWER
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # PROTEIN-LIGAND NON-COVALENT TERMS — Phase 14a + PL Calibration
