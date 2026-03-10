@@ -302,7 +302,8 @@ def rank_cross_modal(design_result) -> CrossModalResult:
     # ── De novo receptors ──
     if r.de_novo_result and r.de_novo_result.candidates:
         for cand in r.de_novo_result.candidates[:3]:  # top 3
-            uas_dn = cand.complementarity_score * DENOVO_COMP_TO_LOG_KA
+            # log_Ka_pred is now from physics-based receptor_guest_scorer
+            uas_dn = cand.log_Ka_pred
 
             entries.append(UASEntry(
                 modality="de_novo_receptor",
@@ -310,16 +311,16 @@ def rank_cross_modal(design_result) -> CrossModalResult:
                 uas=uas_dn,
                 uas_lower=uas_dn - DENOVO_RMSE,
                 uas_upper=uas_dn + DENOVO_RMSE,
-                confidence="low",
+                confidence="medium",
                 selectivity_worst=0.0,  # not computed for de novo
                 selective=False,
                 deployment_readiness=_deployment_readiness("de_novo_receptor"),
                 click_handle=False,
                 estimated_cost_usd=500.0,  # custom synthesis
                 scale_feasibility="lab",
-                raw_score=cand.complementarity_score,
-                raw_score_type="complementarity",
-                notes=f"SA={cand.sa_score_val:.1f}",
+                raw_score=cand.log_Ka_pred,
+                raw_score_type="log_Ka_physics",
+                notes=f"SA={cand.sa_score_val:.1f}, comp={cand.complementarity_score:.1f}",
             ))
         modalities.add("de_novo_receptor")
 

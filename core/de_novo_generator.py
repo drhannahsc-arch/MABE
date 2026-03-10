@@ -2194,19 +2194,28 @@ def generate_for_guest(
     pre_scored.sort(key=lambda x: x[4], reverse=True)
     to_score = pre_scored[:max_scored]
 
-    # Step 7: Full scoring
+    # Step 7: Physics-based scoring through receptor_guest_scorer
+    from core.receptor_guest_scorer import score_receptor_guest
+
     known = _known_smiles_set()
     candidates = []
     errors = []
 
     for smiles, bb_name, arm_names, sa, comp in to_score:
         try:
-            composite = comp - sa_penalty_weight * sa
+            # Score receptor-guest binding with calibrated physics
+            rg_score = score_receptor_guest(smiles, guest_smiles)
+            physics_log_ka = rg_score.log_Ka_pred
+            physics_dg = rg_score.dg_total_kJ
+
+            # Composite: physics log Ka minus SA penalty
+            composite = physics_log_ka - sa_penalty_weight * sa
+
             gc = ReceptorCandidate(
                 smiles=smiles,
                 name=f"{bb_name}+{'|'.join(arm_names)}",
-                log_Ka_pred=comp,  # use complementarity as proxy log_Ka
-                dg_total_kj=-comp * 5.71,  # rough ΔG estimate
+                log_Ka_pred=physics_log_ka,
+                dg_total_kj=physics_dg,
                 prediction=None,
                 backbone_name=bb_name,
                 arm_names=arm_names,

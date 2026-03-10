@@ -1074,3 +1074,90 @@ class TestCrossModalRanker:
         expected = {"mip", "mof", "coordination_cage"}
         overlap = modalities & expected
         assert len(overlap) >= 3, f"Missing modalities. Got: {modalities}"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# MODULE 10: Receptor-guest physics scoring
+# ═══════════════════════════════════════════════════════════════════════════
+
+class TestReceptorGuestScorer:
+    def test_score_receptor_guest_runs(self):
+        from core.receptor_guest_scorer import score_receptor_guest
+        result = score_receptor_guest(
+            "O=C1NC(c2ccc(O)c(O)c2)(N2C(=O)NC(=O)NC23CC3)N1",
+            SMILES_6PPD_Q,
+        )
+        assert result is not None
+        assert result.log_Ka_pred != 0.0
+
+    def test_energy_decomposition_populated(self):
+        from core.receptor_guest_scorer import score_receptor_guest
+        result = score_receptor_guest(
+            "O=C1NC(c2ccc(O)c(O)c2)(N2C(=O)NC(=O)NC23CC3)N1",
+            SMILES_6PPD_Q,
+        )
+        assert result.dg_hydrophobic < 0, "Hydrophobic should be favorable"
+        assert result.dg_conf_entropy > 0, "Conformational entropy should be unfavorable"
+
+    def test_more_aromatic_receptor_scores_higher_pi(self):
+        """Receptor with more aromatic walls should have stronger π-stacking."""
+        from core.receptor_guest_scorer import score_receptor_guest
+        # Simple receptor: 1 aromatic ring
+        r1 = score_receptor_guest("c1ccc(NC(=O)Nc2ccccc2)cc1", SMILES_6PPD_Q)
+        # Complex receptor: 3+ aromatic rings (glycoluril-clip + two 8HQ arms)
+        r2 = score_receptor_guest(
+            "O=C(CC1(N2C(=O)N(c3ccc4cccc(O)c4n3)C(=O)NC23CC3)NC(=O)N1)NO",
+            SMILES_6PPD_Q,
+        )
+        assert r2.dg_pi <= r1.dg_pi, (
+            f"More aromatic receptor should have stronger π: {r2.dg_pi} vs {r1.dg_pi}"
+        )
+
+    def test_preorganized_receptor_scores_better(self):
+        """Macrocyclic/rigid receptor should have lower conformational penalty."""
+        from core.receptor_guest_scorer import estimate_receptor_cavity
+        # Rigid: glycoluril clip (many rings, few rotors)
+        rigid = estimate_receptor_cavity(
+            "O=C1NC(c2ccc(O)c(O)c2)(N2C(=O)NC(=O)NC23CC3)N1"
+        )
+        # Flexible: open chain polyamine
+        flex = estimate_receptor_cavity("NCCNCCNCCNCCN")
+        assert rigid.preorganization_score > flex.preorganization_score
+
+    def test_cavity_estimate_macrocyclic(self):
+        from core.receptor_guest_scorer import estimate_receptor_cavity
+        # Cyclam-like macrocycle
+        est = estimate_receptor_cavity("C1CNCCNCCNCCNC1")
+        assert est.is_macrocyclic
+        assert est.curvature_class == "concave"
+
+    def test_denovo_uses_physics_scorer(self):
+        """generate_for_guest should now produce physics log_Ka, not complementarity."""
+        from core.de_novo_generator import generate_for_guest
+        result = generate_for_guest(
+            SMILES_6PPD_Q, guest_name=NAME_6PPD_Q,
+            max_candidates=50, max_scored=5,
+        )
+        for c in result.candidates:
+            # Physics log_Ka should be in reasonable range (0-10 for synthetic receptors)
+            assert -5 < c.log_Ka_pred < 15, (
+                f"log_Ka_pred={c.log_Ka_pred} out of range for synthetic receptor"
+            )
+            # Should differ from complementarity score
+            assert abs(c.log_Ka_pred - c.complementarity_score) > 0.1, (
+                "log_Ka_pred equals complementarity — physics scorer not wired"
+            )
+
+    def test_uas_uses_physics_score(self):
+        """Cross-modal UAS for de novo should use physics log_Ka."""
+        from core.physics_realization_bridge import design_for_guest
+        result = design_for_guest(
+            SMILES_6PPD_Q, name=NAME_6PPD_Q,
+            include_selectivity=False, include_dna_origami=False,
+            include_materials=False,
+            de_novo_max_candidates=50, de_novo_max_scored=5,
+        )
+        dn_entries = [e for e in result.cross_modal.entries if e.modality == "de_novo_receptor"]
+        assert len(dn_entries) > 0
+        for e in dn_entries:
+            assert e.raw_score_type == "log_Ka_physics"
+            assert 0 < e.uas < 15
