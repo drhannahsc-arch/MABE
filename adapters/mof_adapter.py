@@ -24,6 +24,10 @@ import math
 from dataclasses import dataclass, field
 from typing import Optional
 
+from adapters.base import ToolAdapter, Capability, ContributionAssessment
+from core.problem import Problem
+from core.candidate import CandidateResult
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # MOF NODE LIBRARY
@@ -188,6 +192,22 @@ MOF_TOPOLOGIES = [
     MOFTopology("PCN-222", "Zr6-oxo-8", "TCPP", "she", 3.70, 1.50,
                 2200, "hexagonal", True, "PCN-222",
                 "Largest Zr-porphyrin MOF. Metalloporphyrin active sites."),
+
+    # ── Selenite-relevant: Zr + urea functionalized ──
+    MOFTopology("UiO-66-urea", "Zr6-oxo", "BDC-NH2", "fcu", 0.70, 0.50,
+                900, "octahedral", True, "UiO-66-NH2 + urea PSM",
+                "HYPOTHETICAL: UiO-66-NH2 post-synthetically modified with "
+                "isocyanate to install urea groups. Each linker carries one urea "
+                "(2 NH donors) pointing into octahedral cavity. 12-connected Zr node "
+                "provides hard Lewis acid site. Combined: Zr coordination + urea H-bond "
+                "cavity = selenite receptor architecture from Phase 13a. "
+                "Reduced pore size from urea groups (~0.7 nm vs 0.8 nm native)."),
+    MOFTopology("MOF-808-urea", "Zr6-oxo-8", "BTC", "spn", 1.60, 0.90,
+                1700, "spherical", True, "MOF-808 + urea PSM",
+                "HYPOTHETICAL: MOF-808 with formate caps replaced by urea-bearing "
+                "modulators. 6 open Zr sites per node, each with adjacent urea donor. "
+                "Larger cavity than UiO-66-urea — may suit selenate (tetrahedral) "
+                "better than selenite (pyramidal). Aqueous stable."),
 ]
 
 _TOPOLOGY_BY_NAME = {t.name: t for t in MOF_TOPOLOGIES}
@@ -419,3 +439,216 @@ def _donor_match(node, linker, spec):
 
     score = min(1.0, matched / max(n_spec_donors, 1))
     return score, psm_applied
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# TOOL ADAPTER INTERFACE
+# ═══════════════════════════════════════════════════════════════════════════
+
+class MOFAdapter(ToolAdapter):
+    """MABE adapter for metal-organic framework design."""
+
+    @property
+    def name(self) -> str:
+        return "mof_adapter"
+
+    @property
+    def version(self) -> str:
+        return "0.2.0"
+
+    @property
+    def capabilities(self) -> list[Capability]:
+        return [
+            Capability(
+                description="Design MOF pore geometry for selective molecular capture",
+                target_types=["metal_ion", "anion", "small_molecule", "gas"],
+                interaction_types=["metal_coordination", "h_bond", "shape_selective",
+                                   "lewis_acid", "electrostatic"],
+                output_types=["topology_spec", "synthesis_conditions", "pore_properties"],
+            ),
+            Capability(
+                description="Rank MOF topologies with PSM for target binding",
+                target_types=["metal_ion", "anion", "small_molecule"],
+                interaction_types=["metal_coordination", "h_bond"],
+                output_types=["ranked_topologies", "psm_protocol"],
+            ),
+        ]
+
+    def assess_contribution(self, problem: Problem) -> ContributionAssessment:
+        """Assess whether a MOF can help with this problem."""
+        target = problem.target
+        relevance = 0.0
+
+        # MOFs excel at: metal coordination + cavity selectivity, bulk scale
+        if hasattr(target, 'size') and hasattr(target.size, 'vdw_radius'):
+            r_nm = target.size.vdw_radius
+            if 0.05 < r_nm < 1.5:  # MOF pore range
+                relevance += 0.3
+
+        # Metal coordination available → MOF nodes provide Lewis acid sites
+        if hasattr(target, 'electronic_structure'):
+            if hasattr(target.electronic_structure, 'hsab_class'):
+                if target.electronic_structure.hsab_class == 'hard':
+                    relevance += 0.2  # Hard oxyanions → Zr/Fe/Al nodes
+
+        # Scale: MOFs are bulk materials
+        if hasattr(problem, 'constraints'):
+            scale = getattr(problem.constraints, 'required_scale', 'g')
+            if scale in ('kg', 'tonne'):
+                relevance += 0.3  # MOFs scale to tonnes
+
+        # Selectivity needed
+        if hasattr(problem, 'exclusions') and len(problem.exclusions) > 0:
+            relevance += 0.1
+
+        can = relevance > 0.3
+
+        return ContributionAssessment(
+            can_contribute=can,
+            relevance=relevance,
+            what_it_would_do=(
+                "Design a metal-organic framework with node chemistry matched "
+                "to target coordination and pore geometry matched to target shape. "
+                "MOFs provide metal Lewis acid sites + tunable organic cavities at "
+                "industrial scale."
+            ),
+            what_part_of_problem="Selective capture via metal coordination + cavity geometry",
+            estimated_compute_time="<1 second (catalog lookup + scoring)",
+            limitations=[
+                "Cavity size limited to topology (discrete options, not continuous)",
+                "PSM conversion may be incomplete (<100% of linkers modified)",
+                "Some MOFs degrade in strongly acidic or basic conditions",
+                "Pore blockage possible with high-loading adsorbates",
+            ],
+        )
+
+    def generate_candidates(self, problem: Problem) -> list[CandidateResult]:
+        """Generate MOF candidates for a MABE Problem."""
+        target = problem.target
+
+        # Extract guest dimensions
+        guest_vol = 50.0  # default Å³
+        guest_dim = 5.0   # default Å
+        if hasattr(target, 'size'):
+            if hasattr(target.size, 'vdw_radius'):
+                r = target.size.vdw_radius * 10  # nm → Å
+                guest_vol = (4/3) * math.pi * r**3
+                guest_dim = 2 * r
+
+        # Check aqueous
+        water = True
+        if hasattr(problem, 'matrix'):
+            solvent = str(getattr(problem.matrix, 'solvent', 'aqueous')).lower()
+            water = 'aqueous' in solvent or 'water' in solvent
+
+        # Build a minimal spec-like object for the design function
+        class _MinSpec:
+            def __init__(self):
+                self.donor_positions = []
+        spec = _MinSpec()
+
+        designs = design_mof_for_guest(
+            spec=spec,
+            guest_volume_A3=guest_vol,
+            guest_max_dim_A=guest_dim,
+            require_water_stable=water,
+        )
+
+        results = []
+        for d in designs:
+            psm_names = [p.name for p in d.psm] if d.psm else []
+            results.append(CandidateResult(
+                name=d.topology_name,
+                description=(
+                    f"MOF: {d.node.formula} + {d.linker.name} "
+                    f"({d.topology.topology_code}, "
+                    f"cavity {d.predicted_cavity_nm:.1f} nm)"
+                    + (f" + PSM: {', '.join(psm_names)}" if psm_names else "")
+                ),
+                score=d.composite_score,
+                details={
+                    "cavity_nm": d.predicted_cavity_nm,
+                    "pore_aperture_nm": d.predicted_pore_nm,
+                    "water_stable": d.topology.water_stable,
+                    "node_metal": d.node.metal,
+                    "psm_applied": psm_names,
+                    "cost_per_kg": d.estimated_cost_per_kg,
+                },
+            ))
+        return results
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# STANDALONE DEMO
+# ═══════════════════════════════════════════════════════════════════════════
+
+if __name__ == "__main__":
+    print("=" * 70)
+    print("MOF ADAPTER — Selenite Receptor Design Demo")
+    print("=" * 70)
+    print()
+
+    # Build a minimal spec for selenite
+    # SeO₃²⁻: pyramidal, ~50 Å³, max dimension ~5 Å
+    # Needs: hard Lewis acid node (Zr) + H-bond donors (urea) + water stable
+    class _DonorPos:
+        def __init__(self, cs):
+            self.charge_state = cs
+
+    class _Spec:
+        def __init__(self):
+            # Selenite presents 3 anionic O donors → receptor needs 3 acceptors
+            # Plus we want H-bond donors (urea NH) → 4 donor positions
+            self.donor_positions = [
+                _DonorPos(-1),  # O acceptor site 1
+                _DonorPos(-1),  # O acceptor site 2
+                _DonorPos(+1),  # H-bond donor site 1 (urea)
+                _DonorPos(+1),  # H-bond donor site 2 (urea)
+                _DonorPos(+1),  # H-bond donor site 3 (urea)
+                _DonorPos(+1),  # H-bond donor site 4 (urea)
+            ]
+
+    spec = _Spec()
+
+    designs = design_mof_for_guest(
+        spec=spec,
+        guest_volume_A3=50.0,     # selenite ~50 Å³
+        guest_max_dim_A=5.0,      # ~5 Å across
+        require_water_stable=True,
+        application="remediation",
+        max_designs=10,
+    )
+
+    print(f"Candidates for selenite receptor (aqueous, Zr node + H-bond cavity):\n")
+    print(f"{'Rank':<5} {'Topology':<16} {'Cavity':>7} {'Pore':>6} "
+          f"{'CavM':>5} {'DonM':>5} {'Comp':>6} {'PSM':<25}")
+    print("-" * 78)
+
+    for i, d in enumerate(designs, 1):
+        psm_str = ", ".join(p.name for p in d.psm) if d.psm else "none"
+        print(f"  {i:<3} {d.topology_name:<16} {d.predicted_cavity_nm:>6.2f}nm "
+              f"{d.predicted_pore_nm:>5.2f}nm "
+              f"{d.cavity_match_score:>5.2f} {d.donor_match_score:>5.2f} "
+              f"{d.composite_score:>6.2f} {psm_str:<25}")
+
+    print()
+    if designs:
+        top = designs[0]
+        print(f"Top pick: {top.topology_name}")
+        print(f"  Node: {top.node.formula} ({top.node.metal}, {top.node.hardness})")
+        print(f"  Linker: {top.linker.name}")
+        print(f"  Cavity: {top.predicted_cavity_nm} nm")
+        print(f"  Water stable: {top.topology.water_stable}")
+        if top.psm:
+            print(f"  PSM: {[p.name for p in top.psm]}")
+            for p in top.psm:
+                print(f"    {p.name}: {p.handle_required} → {p.product_group} "
+                      f"({p.conditions})")
+        print(f"  Notes: {top.topology.notes}")
+        print(f"  Synthesis: {top.synthesis_route}")
+        print(f"  Est. cost: ${top.estimated_cost_per_kg}/kg")
+    print()
+
+    # Summary stats
+    print(f"Libraries: {len(NODE_LIBRARY)} nodes, {len(LINKER_LIBRARY)} linkers, "
+          f"{len(MOF_TOPOLOGIES)} topologies, {len(PSM_LIBRARY)} PSM reactions")
