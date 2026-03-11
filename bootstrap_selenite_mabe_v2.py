@@ -524,7 +524,7 @@ for key in ["CO3", "SO4", "SeO4"]:
     output["selectivity"][f"vs_{key}"] = round(
         se["logK"] - results[key]["logK"], 2)
 
-with open("/home/claude/selenite_v2_results.json", "w") as f:
+with open("selenite_v2_results.json", "w") as f:
     json.dump(output, f, indent=2)
 
 print("Results saved to selenite_v2_results.json")
