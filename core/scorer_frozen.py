@@ -101,6 +101,14 @@ SUBTYPE_EXCHANGE = {
     "O_carbonyl":       -2.5,
     "O_phosphonate":    -3.5,   # Martell & Smith vol 4
     "O_oxo":            -2.5,
+    # ── Oxyanion donor subtypes (v2, pKa2-calibrated exchange) ──
+    # Model: exchange = -2.097 × pKa2 + 12.648 (kJ/mol)
+    # Anchored at O_carboxylate (pKa 4.76) and O_phenolate (pKa 10.0)
+    # Source: bootstrap_selenite_v2_integration.py
+    "O_selenite":       -4.80,  # SeO₃²⁻, pKa2=8.32, stronger base → better donor
+    "O_carbonate":      -9.01,  # CO₃²⁻, pKa2=10.33, strongest base in set
+    "O_sulfate":        +8.48,  # SO₄²⁻, pKa2=1.99, very weak base → poor donor
+    "O_selenate":       +8.87,  # SeO₄²⁻, pKa2=1.80, weakest base in set
 }
 
 # Fallback per-element exchange (when subtype unknown)
@@ -439,7 +447,7 @@ IRVING_WILLIAMS_BONUS = {
     "Rh3+": -18.0, "Ir3+": -20.0,
     "Mo3+":  -8.0, "W4+":  -6.0,
     "Ge2+":  -3.0,
-    "Zr4+":  -2.0, "Hf4+": -2.0,
+    "Zr4+":  -4.68,  # NEA-TDB Zr-F back-calc, "Hf4+": -2.0,
     "Re3+":  -9.0, "Tc2+": -7.0,
     "Pd2+": -16.0, "Pt2+": -18.0,  # Already in METAL_DB; ensure IW coverage
 }

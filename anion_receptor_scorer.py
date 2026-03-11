@@ -17,7 +17,11 @@ Design principle:
     SO₄²⁻  = tetrahedral (Tᵈ)
   A cavity pre-shaped for pyramidal geometry excludes planar and tetrahedral.
 
-CALIBRATION STATUS: UNCALIBRATED.
+CALIBRATION STATUS: PARTIALLY CALIBRATED (v2, 2026-03-11).
+#   Geometry: k_geom=-95 kJ/mol, σ_h=0.20 Å (anchored to Phase 13a)
+#   Oxyanion exchange: pKa2→exchange model (anchored to O_carboxylate/O_phenolate)
+#   Zr⁴⁺ IW offset: -4.68 kJ/mol (NEA-TDB Zr-F back-calc)
+#   Desolvation: Born model (Marcus radii, ε_cavity=10)
   Metal-center log K: Literature values (NEA-TDB, Seby et al. 2001)
   Geometric scoring: First-principles from crystal structures
   Hydration penalties: Computed from ion thermodynamic radii
@@ -32,6 +36,53 @@ import numpy as np
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, Optional
 from enum import Enum
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# CALIBRATED PARAMETERS (v2, 2026-03-11)
+# Source: bootstrap_selenite_v2_integration.py
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Gap 1: Oxyanion exchange model (pKa2 → exchange energy)
+# Anchored: O_carboxylate (pKa 4.76, +2.666) and O_phenolate (pKa 10.0, -8.322)
+OXYANION_EXCHANGE_SLOPE = -2.097   # kJ/mol per pKa unit
+OXYANION_EXCHANGE_INTERCEPT = 12.648
+
+def oxyanion_exchange_energy(pka2: float) -> float:
+    """Compute per-donor exchange energy from oxyanion pKa2."""
+    return OXYANION_EXCHANGE_SLOPE * pka2 + OXYANION_EXCHANGE_INTERCEPT
+
+# Gap 2: Zr⁴⁺ IW offset (from NEA-TDB Zr-F log β₁=8.80)
+ZR4_IW_OFFSET_KJ = -4.68
+
+# Gap 3: Geometric scorer calibration (from Phase 13a decomposition)
+GEOMETRY_K_MAX_KJ = -95.0   # Maximum geometric stabilization (kJ/mol)
+GEOMETRY_SIGMA_H_A = 0.20   # Height selectivity width (Å)
+GEOMETRY_H_OPTIMAL_A = 0.75 # Optimal central atom height (selenite-tuned)
+
+# Gap 4: Born desolvation model
+BORN_CONSTANT_KJ_A = 69.47  # kJ·Å/mol for z=1 in water at 25°C
+BORN_EPS_WATER = 78.4
+BORN_EPS_CAVITY = 10.0      # Effective dielectric of MOF/organic framework
+BORN_CAVITY_COVERAGE = 0.40 # Fraction of solvation shell disrupted
+
+def born_desolvation_penalty(charge: int, thermo_radius_A: float,
+                              cavity_aperture_A: float) -> float:
+    """
+    Residual desolvation penalty from Born equation.
+
+    Returns positive value (unfavorable) in kJ/mol.
+    Inner-shell desolvation is handled by exchange + H-bond water_penalty terms.
+    This captures the outer-shell / confinement differential.
+    """
+    z = abs(charge)
+    r_free = thermo_radius_A
+    r_cavity = cavity_aperture_A / 2.0
+
+    dG_free = -z**2 * BORN_CONSTANT_KJ_A * (1 - 1/BORN_EPS_WATER) / r_free
+    dG_cavity = -z**2 * BORN_CONSTANT_KJ_A * (1 - 1/BORN_EPS_CAVITY) * 0.5 / r_cavity
+
+    return -dG_free * BORN_CAVITY_COVERAGE + dG_cavity * BORN_CAVITY_COVERAGE
 
 # ═══════════════════════════════════════════════════════════════════════════
 # OXYANION GEOMETRIC DATABASE
