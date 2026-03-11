@@ -1,0 +1,36 @@
+{
+  "version": "v2_gap_closed",
+  "fixes": [
+    "oxyanion_exchange",
+    "Zr_IW_offset",
+    "geom_calibration",
+    "Born_desolvation"
+  ],
+  "results": {
+    "SeO3": {
+      "formula": "SeO\u2083\u00b2\u207b",
+      "dG_kJ": -132.85,
+      "logK": 23.28
+    },
+    "CO3": {
+      "formula": "CO\u2083\u00b2\u207b",
+      "dG_kJ": -81.41,
+      "logK": 14.26
+    },
+    "SO4": {
+      "formula": "SO\u2084\u00b2\u207b",
+      "dG_kJ": -116.26,
+      "logK": 20.37
+    },
+    "SeO4": {
+      "formula": "SeO\u2084\u00b2\u207b",
+      "dG_kJ": -102.39,
+      "logK": 17.94
+    }
+  },
+  "selectivity": {
+    "vs_CO3": 9.01,
+    "vs_SO4": 2.91,
+    "vs_SeO4": 5.34
+  }
+}
