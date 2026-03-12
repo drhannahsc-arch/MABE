@@ -144,6 +144,56 @@ class UniversalComplex:
     scaffold_type: str = "free"
     geometry: str = "octahedral"           # Metal CN geometry / binding site geometry
 
+
+    # ── TIER 2 INTERACTION DESCRIPTORS ─────────────────────────────────
+    # Populated by auto_descriptor or manual annotation.
+    # All default to 0/empty → Tier 2 terms self-zero for existing data.
+
+    # T1: Dispersion
+    guest_polarizability_A3: float = 0.0        # Total guest polarizability (Å³)
+
+    # T2: Cation-π
+    n_cation_pi_contacts: int = 0               # Number of cation-π contacts
+    cation_pi_type: str = ""                     # Key into CATION_PI_AQUEOUS_DEFAULTS
+    cation_pi_distance_A: float = 0.0           # Cation-centroid distance (Å)
+
+    # T3: π-π stacking
+    n_pi_stack_contacts: int = 0                # Face-to-face aromatic contacts
+    pi_stack_type: str = "parallel_displaced"    # "parallel_displaced", "donor_acceptor"
+    pi_stack_hammett_sigma: float = 0.0         # Hammett σ for substituent correction
+
+    # T4: Halogen bonding
+    n_halogen_bonds: int = 0                    # Number of C-X···B contacts
+    halogen_bond_type: str = ""                 # "C-I", "C-Br", "C-Cl"
+    halogen_bond_nucleophile: str = ""          # "N", "O", "S"
+    halogen_bond_angle: float = 0.0             # C-X···B angle (degrees)
+
+    # T5: Salt bridge
+    n_salt_bridges: int = 0                     # Organic ion pairs
+    salt_bridge_z_product: int = 0              # z_A × z_B (negative for opposite charges)
+    salt_bridge_buried: bool = False            # Low-ε environment
+
+    # T6: Born solvation
+    guest_formal_charge: int = 0                # Net formal charge on guest
+    guest_ion_radius_A: float = 0.0             # Shannon ionic radius (Å)
+    has_marcus_hydration_dg: bool = False        # If True, existing Term 2 handles it
+
+    # T7: H-bond cooperativity
+    max_hbond_chain_length: int = 0             # Longest contiguous H-bond relay
+    hbond_chain_type: str = "default"           # "amide", "water", "hydroxyl", "default"
+
+    # T8: Anion-π
+    n_anion_pi_contacts: int = 0
+    anion_pi_type: str = "default"              # Key into ANION_PI_ENERGY
+
+    # T9: Metallophilic
+    n_d10_d10_contacts: int = 0
+    metallophilic_pair: tuple = ()              # e.g. ("Au", "Au")
+    metallophilic_distance_A: float = 0.0       # M···M distance (Å)
+
+    # T10: Group desolvation
+    buried_groups: list = field(default_factory=list)  # list of {"type": str, "burial_fraction": float}
+
     def __post_init__(self):
         """Auto-compute dg_exp from log_Ka if not set."""
         if self.log_Ka_exp != 0.0 and self.dg_exp_kj == 0.0:

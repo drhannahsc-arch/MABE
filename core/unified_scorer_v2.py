@@ -27,6 +27,7 @@ for _sub in ('knowledge', 'core'):
         sys.path.insert(0, _p)
 
 from core.universal_schema import UniversalComplex
+from core.tier2_terms import compute_all_tier2, tier2_total, TIER2_RESULT_FIELDS
 
 # ═══════════════════════════════════════════════════════════════════════════
 # CALIBRATED BACKENDS (imported at module level for speed)
@@ -86,6 +87,18 @@ class PredictionResult:
     dg_size_mismatch: float = 0.0
 
     # Cross-modal (metal@host)
+
+    # Tier 2 interaction terms
+    dg_dispersion_t2: float = 0.0
+    dg_cation_pi: float = 0.0
+    dg_pi_stack: float = 0.0
+    dg_halogen_bond: float = 0.0
+    dg_salt_bridge: float = 0.0
+    dg_born_solvation: float = 0.0
+    dg_hbond_coop: float = 0.0
+    dg_anion_pi: float = 0.0
+    dg_metallophilic: float = 0.0
+    dg_group_desolv: float = 0.0
     dg_ion_dipole: float = 0.0
     dg_ion_desolv: float = 0.0
     dg_portal_size: float = 0.0
@@ -208,6 +221,9 @@ def predict(uc, verbose=False):
     # ── CROSS-MODAL metal@host (self-zeros if no metal+cavity) ───────
     _compute_cm_terms(uc, result)
 
+    # ── TIER 2 INTERACTION TERMS (self-zero when inputs absent) ──
+    compute_all_tier2(uc, result)
+
     # ── SUM AND CONVERT ──────────────────────────────────────────────
     dg_net = (result.dg_metal
               + result.dg_hydrophobic + result.dg_cavity_dehydration
@@ -216,7 +232,8 @@ def predict(uc, verbose=False):
               + result.dg_size_mismatch
               + result.dg_ion_dipole + result.dg_ion_desolv
               + result.dg_portal_size + result.dg_cm_dehydration
-              + result.dg_cm_shape)
+              + result.dg_cm_shape
+              + tier2_total(result))
 
     result.dg_total_kj = dg_net
     result.log_Ka_pred = -dg_net / LN10_RT
@@ -1058,6 +1075,11 @@ def _print_decomposition(uc, result):
         terms.append(("CM dehydr.", result.dg_cm_dehydration))
     if result.dg_cm_shape != 0:
         terms.append(("CM shape", result.dg_cm_shape))
+    # Tier 2
+    for f in TIER2_RESULT_FIELDS:
+        v = getattr(result, f, 0.0)
+        if v != 0.0:
+            terms.append((f.replace("dg_","").replace("_"," ").title(), v))
 
     for label, val in terms:
         print(f"  {label:15s} {val:+8.2f} kJ/mol")
