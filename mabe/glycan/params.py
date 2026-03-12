@@ -55,8 +55,8 @@ class GlycanParams:
 
     # ── G5: Structural water (PLACEHOLDER) ─────────────────────────────
     # Will be calibrated from lectin mutant series
-    eps_water_bridge: float = -3.0        # kJ/mol per conserved water
-    n_water_bridge_norm: float = 0.02     # waters per Å² contact area
+    eps_water_bridge: float = -3.5        # kJ/mol per conserved water
+    n_water_bridge_norm: float = 0.015    # waters per Å² contact area
 
     # ── G7: Ca²⁺ bridging for C-type lectins (PLACEHOLDER) ────────────
     # Will reuse MABE metal scorer; this is just the coupling term
