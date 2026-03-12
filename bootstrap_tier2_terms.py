@@ -1189,6 +1189,45 @@ def patch_unified_scorer():
     print("  PATCH  core/unified_scorer_v2.py (wired Tier 2 terms)")
 
 
+def patch_guest_compute():
+    """Wire populate_tier2 into guest_compute.enrich_complex()."""
+    gc_path = os.path.join(REPO_ROOT, "core", "guest_compute.py")
+    with open(gc_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    if "tier2_descriptors" in content:
+        print("  SKIP  core/guest_compute.py (already patched)")
+        return
+
+    old = """    # Recompute packing coefficient now that guest volume is known
+    if uc.guest_volume_A3 > 0 and uc.cavity_volume_A3 > 0:
+        uc.packing_coefficient = uc.guest_volume_A3 / uc.cavity_volume_A3
+
+    return uc"""
+
+    new = """    # Recompute packing coefficient now that guest volume is known
+    if uc.guest_volume_A3 > 0 and uc.cavity_volume_A3 > 0:
+        uc.packing_coefficient = uc.guest_volume_A3 / uc.cavity_volume_A3
+
+    # Tier 2 interaction descriptors (auto-populate from SMILES + host context)
+    try:
+        from core.tier2_descriptors import populate_tier2
+        populate_tier2(uc)
+    except ImportError:
+        pass  # tier2_descriptors not installed — Tier 2 terms stay at zero
+
+    return uc"""
+
+    if old not in content:
+        print("  ERROR  Could not find enrich_complex return in guest_compute.py")
+        return
+
+    content = content.replace(old, new)
+    with open(gc_path, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print("  PATCH  core/guest_compute.py (wired populate_tier2 into enrich_complex)")
+
+
 def main():
     print("\n" + "="*60)
     print("  MABE Tier 2 Interaction Terms — Bootstrap")
@@ -1203,11 +1242,15 @@ def main():
     patch_universal_schema()
     patch_unified_scorer()
 
+    # Wire auto-population into guest_compute.enrich_complex()
+    patch_guest_compute()
+
     print("\n" + "─"*60)
     print("  Done. Next steps:")
     print("  1. pytest tests/test_tier2_terms.py -v")
-    print("  2. pytest tests/test_unified_scorer_v2.py -v  (regression)")
-    print("  3. git format-patch HEAD~1 --stdout > tier2_terms.patch")
+    print("  2. pytest tests/test_tier2_descriptors.py -v  (requires rdkit)")
+    print("  3. pytest tests/test_unified_scorer_v2.py -v  (regression)")
+    print("  4. git format-patch HEAD~1 --stdout > tier2_terms.patch")
     print("─"*60 + "\n")
 
 
