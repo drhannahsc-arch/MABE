@@ -105,6 +105,15 @@ class PredictionResult:
     dg_cm_dehydration: float = 0.0
     dg_cm_shape: float = 0.0
 
+    # Glycan recognition (G1-G5)
+    dg_glycan_polar_desolv: float = 0.0
+    dg_glycan_hbond: float = 0.0
+    dg_glycan_conf_entropy: float = 0.0
+    dg_glycan_ch_pi: float = 0.0
+    dg_glycan_structural_water: float = 0.0
+    dg_glycan_ca_coordination: float = 0.0
+    dg_glycan_total: float = 0.0
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # HOST-TYPE INFERENCE MAPS
@@ -143,35 +152,6 @@ def _resolve_host_key(uc):
         if candidate in _HOST_KEY_MAP:
             return _HOST_KEY_MAP[candidate]
     return None
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-# NOVEL HOST FALLBACK: synthesize HOST_DB-compatible dict from UC fields
-# ═══════════════════════════════════════════════════════════════════════════
-
-def _synthesize_host_dict(uc):
-    """Build a HOST_DB-compatible dict from UC cavity properties.
-
-    Used when host_name is not in HOST_DB but cavity_volume_A3 > 0,
-    enabling scoring of novel hosts (MOFs, synthetic receptors, etc.).
-
-    Geometry: sphere approximation (conservative — underpredicts SASA
-    for elongated cavities, which underpredicts Ka. Safe direction.)
-    """
-    import math
-    vol = uc.cavity_volume_A3
-    if vol <= 0:
-        return None
-    d = 2.0 * (3.0 * vol / (4.0 * math.pi)) ** (1.0 / 3.0)
-    sasa = math.pi * d * d
-    return {
-        "full_name": uc.host_name or "novel_host",
-        "cavity_diameter": d,
-        "cavity_depth": d,  # sphere: depth = diameter
-        "cavity_sasa": sasa,
-        "portal_type": getattr(uc, 'portal_type', 'neutral'),
-        "curvature_class": "concave",
-    }
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -253,6 +233,10 @@ def predict(uc, verbose=False):
     # ── TIER 2 INTERACTION TERMS (self-zero when inputs absent) ──
     compute_all_tier2(uc, result)
 
+
+    # ── GLYCAN RECOGNITION (self-zeros if no sugar/contacts) ──────
+    _compute_glycan_terms(uc, result)
+
     # ── SUM AND CONVERT ──────────────────────────────────────────────
     dg_net = (result.dg_metal
               + result.dg_hydrophobic + result.dg_cavity_dehydration
@@ -262,7 +246,8 @@ def predict(uc, verbose=False):
               + result.dg_ion_dipole + result.dg_ion_desolv
               + result.dg_portal_size + result.dg_cm_dehydration
               + result.dg_cm_shape
-              + tier2_total(result))
+              + tier2_total(result)
+              + result.dg_glycan_total)
 
     result.dg_total_kj = dg_net
     result.log_Ka_pred = -dg_net / LN10_RT
@@ -323,38 +308,23 @@ def _compute_hg_terms(uc, result):
     """
     if uc.binding_mode == "cross_modal":
         return
-    if not uc.guest_smiles and uc.guest_sasa_nonpolar_A2 <= 0:
+    if not uc.guest_smiles:
         return
 
-    # HOST_DB lookup with novel-host fallback
     host_key = _resolve_host_key(uc)
-    _is_novel_host = False
-    if host_key is not None and host_key in _HG_HOST_DB:
-        host = _HG_HOST_DB[host_key]
-    else:
-        # Novel host: synthesize from UC cavity properties
-        host = _synthesize_host_dict(uc)
-        if host is None:
-            return
-        _is_novel_host = True
-        host_key = host["full_name"]
+    if host_key is None or host_key not in _HG_HOST_DB:
+        return
 
+    host = _HG_HOST_DB[host_key]
     hg_entry = _uc_to_hg_entry(uc, host_key)
 
-    # Guest SASA with fallback to pre-populated UC fields
-    guest_np = 0.0
-    if uc.guest_smiles:
-        try:
-            sasa = compute_guest_sasa(uc.guest_smiles)
-            guest_np = sasa["nonpolar_sasa"]
-        except Exception:
-            guest_np = uc.guest_sasa_nonpolar_A2
-    else:
-        guest_np = uc.guest_sasa_nonpolar_A2
-
-    if guest_np <= 0:
+    # Guest SASA
+    try:
+        sasa = compute_guest_sasa(uc.guest_smiles)
+    except Exception:
         return
 
+    guest_np = sasa["nonpolar_sasa"]
     cavity_sasa = host["cavity_sasa"]
     buried = estimate_buried_sasa(guest_np, cavity_sasa)
 
@@ -388,19 +358,14 @@ def _compute_hg_terms(uc, result):
             result.dg_hbond += elec  # electrostatic attraction grouped with non-covalent
 
     # 4. H-bond network
-    #    For novel hosts, inject synthesized dict into a local copy of HOST_DB
-    _local_host_db = _HG_HOST_DB
-    if _is_novel_host:
-        _local_host_db = dict(_HG_HOST_DB)
-        _local_host_db[host_key] = host
     try:
-        result.dg_hbond = _hg_compute_dg_hbond(hg_entry, _local_host_db)
+        result.dg_hbond = _hg_compute_dg_hbond(hg_entry, _HG_HOST_DB)
     except Exception:
         result.dg_hbond = 0.0
 
     # 5. π-interactions
     try:
-        result.dg_pi = _hg_compute_dg_pi(hg_entry, _local_host_db)
+        result.dg_pi = _hg_compute_dg_pi(hg_entry, _HG_HOST_DB)
     except Exception:
         result.dg_pi = 0.0
 
@@ -586,9 +551,14 @@ def _compute_protein_ligand_terms(uc, result):
 
     Self-zeros if binding_mode != metalloprotein or guest properties absent.
     """
-    if uc.binding_mode != "metalloprotein":
-        return
-    if not uc.guest_smiles or uc.guest_sasa_nonpolar_A2 <= 0:
+    # Fires for metalloprotein binding_mode OR data-presence on new modes
+    is_metalloprotein_mode = (uc.binding_mode == "metalloprotein")
+    _HANDLED_MODES = {"metal_coordination", "host_guest_inclusion",
+                      "cross_modal", "protein_ligand_general"}
+    has_metal_pl_data = (uc.binding_mode not in _HANDLED_MODES
+                         and uc.metal_formula and uc.guest_smiles
+                         and uc.guest_sasa_nonpolar_A2 > 0)
+    if not (is_metalloprotein_mode or has_metal_pl_data):
         return
 
     p = PL_PARAMS
@@ -974,9 +944,14 @@ def _compute_general_pl_terms(uc, result):
     Uses per-target Ridge model (20 descriptors) if available,
     falls back to global 8-descriptor model for unknown targets.
     """
-    if uc.binding_mode != "protein_ligand_general":
-        return
-    if not uc.guest_smiles:
+    # Fires for protein_ligand_general binding_mode OR data-presence on new modes
+    is_general_pl_mode = (uc.binding_mode == "protein_ligand_general")
+    _HANDLED_MODES_PL = {"metal_coordination", "metalloprotein",
+                          "host_guest_inclusion", "cross_modal"}
+    has_general_pl_data = (uc.binding_mode not in _HANDLED_MODES_PL
+                           and uc.guest_smiles and uc.host_pdb_id
+                           and not uc.metal_formula)
+    if not (is_general_pl_mode or has_general_pl_data):
         return
 
     target = uc.host_name
@@ -1087,6 +1062,47 @@ def _resolve_cm_host(uc):
     return None
 
 
+
+# ═══════════════════════════════════════════════════════════════════════════
+# GLYCAN RECOGNITION — delegates to mabe.glycan.scorer
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _compute_glycan_terms(uc, result):
+    """Glycan-specific energy terms (G1-G5).
+
+    Self-zeros if sugar_property_card or glycan_contact_map is None.
+    Physics: polyol desolvation, H-bond compensation, conformational entropy,
+    CH-pi stacking, structural water bridges, Ca coordination.
+    """
+    sugar = getattr(uc, 'sugar_property_card', None)
+    contacts = getattr(uc, 'glycan_contact_map', None)
+
+    if sugar is None or contacts is None:
+        return
+
+    try:
+        from mabe.glycan.scorer import compute_glycan_terms as _glycan_score
+        from mabe.glycan.params import GLYCAN_PARAMS
+    except ImportError:
+        return  # glycan module not installed — self-zero
+
+    beta = getattr(uc, 'beta_context', None)
+
+    try:
+        gr = _glycan_score(sugar=sugar, contacts=contacts,
+                          params=GLYCAN_PARAMS, beta_context=beta)
+    except Exception:
+        return
+
+    result.dg_glycan_polar_desolv = gr.dG_polar_desolv
+    result.dg_glycan_hbond = gr.dG_hbond
+    result.dg_glycan_conf_entropy = gr.dG_conf_entropy
+    result.dg_glycan_ch_pi = gr.dG_ch_pi
+    result.dg_glycan_structural_water = gr.dG_structural_water
+    result.dg_glycan_ca_coordination = gr.dG_ca_coordination
+    result.dg_glycan_total = gr.dG_total
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 # VERBOSE OUTPUT
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1124,6 +1140,15 @@ def _print_decomposition(uc, result):
         terms.append(("CM dehydr.", result.dg_cm_dehydration))
     if result.dg_cm_shape != 0:
         terms.append(("CM shape", result.dg_cm_shape))
+    # Glycan
+    if result.dg_glycan_total != 0:
+        terms.append(("Glycan desolv", result.dg_glycan_polar_desolv))
+        terms.append(("Glycan H-bond", result.dg_glycan_hbond))
+        terms.append(("Glycan conf.S", result.dg_glycan_conf_entropy))
+        terms.append(("Glycan CH-π", result.dg_glycan_ch_pi))
+        terms.append(("Glycan water", result.dg_glycan_structural_water))
+        if result.dg_glycan_ca_coordination != 0:
+            terms.append(("Glycan Ca²⁺", result.dg_glycan_ca_coordination))
     # Tier 2
     for f in TIER2_RESULT_FIELDS:
         v = getattr(result, f, 0.0)

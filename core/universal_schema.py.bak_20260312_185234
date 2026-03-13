@@ -145,14 +145,6 @@ class UniversalComplex:
     geometry: str = "octahedral"           # Metal CN geometry / binding site geometry
 
 
-
-    # ── GLYCAN-SPECIFIC (active for lectin/receptor-sugar binding) ─────
-    # Populated by from_glycan_binding() or manual construction.
-    # All default to None → glycan terms self-zero for non-glycan entries.
-    sugar_property_card: Optional[object] = None   # SugarPropertyCard instance
-    glycan_contact_map: Optional[object] = None    # GlycanContactMap instance
-    beta_context: Optional[float] = None           # Solvent-exposure factor (0-1)
-
     # ── TIER 2 INTERACTION DESCRIPTORS ─────────────────────────────────
     # Populated by auto_descriptor or manual annotation.
     # All default to 0/empty → Tier 2 terms self-zero for existing data.
