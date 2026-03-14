@@ -41,90 +41,6 @@ from core.design_engine_v2 import (
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# NOVEL HOST SPECIFICATION
-# ═══════════════════════════════════════════════════════════════════════════
-
-@dataclass
-class NovelHostSpec:
-    """Specification for a novel cavity host not in HOST_REGISTRY.
-
-    Provides the minimum properties needed for the unified scorer's
-    novel host fallback path (see _synthesize_host_dict in unified_scorer_v2).
-
-    Args:
-        name: host identifier (e.g. "HKUST-1", "Cage-A")
-        cavity_volume_A3: accessible cavity volume in ų
-        host_charge: formal charge on host framework (default 0)
-        n_hbonds_host: number of H-bond donor/acceptor sites at cavity portal
-        portal_type: "neutral", "hydroxyl", "carbonyl", "amine" (affects H-bond model)
-        host_type: classification string (e.g. "MOF", "cage", "synthetic_receptor")
-        max_guest_volume_A3: optional; if set, enforces Rebek packing constraint.
-            If 0, auto-computed as cavity_volume * 0.65 (upper Rebek bound).
-    """
-    name: str = "novel_host"
-    cavity_volume_A3: float = 0.0
-    host_charge: int = 0
-    n_hbonds_host: int = 0
-    portal_type: str = "neutral"
-    host_type: str = "novel_cavity"
-    max_guest_volume_A3: float = 0.0
-
-    def __post_init__(self):
-        if self.max_guest_volume_A3 <= 0 and self.cavity_volume_A3 > 0:
-            # Rebek 55% rule: optimal packing 0.55, allow up to 0.65
-            self.max_guest_volume_A3 = self.cavity_volume_A3 * 0.65
-
-
-def _score_for_novel_host(smiles, host_spec, pH=7.4, name=None):
-    """Score a guest SMILES against a novel host specification.
-
-    Builds a UniversalComplex with cavity properties set directly,
-    bypassing HOST_REGISTRY lookup. The unified scorer's novel host
-    fallback (_synthesize_host_dict) handles the rest.
-
-    Args:
-        smiles: guest SMILES
-        host_spec: NovelHostSpec instance
-        pH: working pH
-        name: optional label
-
-    Returns:
-        ScoredCandidate
-    """
-    from core.auto_descriptor import from_smiles, compute_guest_properties
-    from core.unified_scorer_v2 import predict
-
-    # Build UC from SMILES (no host= arg, so _apply_host won't fire)
-    uc = from_smiles(smiles, pH=pH)
-
-    # Manually apply novel host properties
-    uc.host_name = host_spec.name
-    uc.host_type = host_spec.host_type
-    uc.binding_mode = "host_guest_inclusion"
-    uc.cavity_volume_A3 = host_spec.cavity_volume_A3
-    uc.host_charge = host_spec.host_charge
-
-    # Estimate portal H-bonds from host spec
-    uc.n_hbonds_formed = host_spec.n_hbonds_host
-
-    # Packing coefficient
-    if uc.guest_volume_A3 > 0 and host_spec.cavity_volume_A3 > 0:
-        uc.packing_coefficient = uc.guest_volume_A3 / host_spec.cavity_volume_A3
-
-    # Name
-    uc.name = name or f"{smiles[:30]}@{host_spec.name}"
-
-    r = predict(uc)
-    return ScoredCandidate(
-        smiles=smiles,
-        name=uc.name,
-        log_Ka_pred=r.log_Ka_pred,
-        dg_total_kj=r.dg_total_kj,
-        prediction=r,
-    )
-
-
-# ═══════════════════════════════════════════════════════════════════════════
 # SYNTHETIC ACCESSIBILITY SCORE (SA_Score)
 # Ertl & Schuffenhauer, J. Cheminf. 1:8 (2009) — simplified version
 # Uses fragment complexity + ring penalty + stereo penalty + size penalty
@@ -1396,43 +1312,25 @@ def generate_and_screen(target_metal, interferents, pH=7.4,
 
 
 def generate_for_host(host_key, max_candidates=200, max_scored=50,
-                      pfilter=None, sa_penalty_weight=0.3,
-                      ranking_mode="composite", objectives=None):
-    """Generate novel guests for a host — known or novel.
+                      pfilter=None, sa_penalty_weight=0.3):
+    """Generate novel guests for a synthetic host.
 
     Args:
-        host_key: HOST_REGISTRY key (str, e.g. "beta-CD", "CB7")
-                  OR NovelHostSpec instance for MOFs, cages, etc.
-        max_candidates: max molecules to enumerate
-        max_scored: max to score (top by SA)
-        pfilter: PropertyFilter instance
-        sa_penalty_weight: weight for SA penalty in composite score
-        ranking_mode: "composite" (default) or "pareto"
-        objectives: custom Objective list for Pareto mode
+        host_key: HOST_REGISTRY key, e.g. "beta-CD", "CB7"
+        max_candidates, max_scored, pfilter: as above
 
     Returns:
         GenerationResult
     """
     t0 = time.time()
-    _is_novel = isinstance(host_key, NovelHostSpec)
-    host_spec = host_key if _is_novel else None
-    host_name = host_spec.name if _is_novel else host_key
 
     if pfilter is None:
         pfilter = PropertyFilter()
     pfilter.require_donors = False  # guests don't need donor atoms
+    pfilter.max_heavy_atoms = 30   # guests must fit in host cavity
 
-    # Size constraint from cavity volume
-    if _is_novel and host_spec.max_guest_volume_A3 > 0:
-        # Estimate max heavy atoms from volume: ~10 ų per heavy atom (rough)
-        max_ha = max(10, int(host_spec.max_guest_volume_A3 / 10.0))
-        pfilter.max_heavy_atoms = min(pfilter.max_heavy_atoms or 50, max_ha)
-    else:
-        pfilter.max_heavy_atoms = 30  # default for known hosts
-
-    # enumerate_molecules only uses host for relaxing donor filter
     raw = enumerate_molecules(
-        host=host_name, max_candidates=max_candidates,
+        host=host_key, max_candidates=max_candidates,
         pfilter=pfilter, hsab_filter=False
     )
     raw.sort(key=lambda x: x[3])
@@ -1444,30 +1342,10 @@ def generate_for_host(host_key, max_candidates=200, max_scored=50,
 
     for smiles, bb_name, arm_names, sa in to_score:
         try:
-            if _is_novel:
-                sc = _score_for_novel_host(smiles, host_spec, name=smiles[:40])
-            else:
-                sc = score_one(smiles, host=host_name, name=smiles[:40])
-
-            # Guest volume check against cavity (Rebek constraint)
-            if _is_novel and host_spec.max_guest_volume_A3 > 0:
-                gv = sc.prediction.dg_metal  # wrong — need guest_volume
-                # Get guest volume from the UC that was scored
-                # prediction is PredictionResult which doesn't carry guest_volume
-                # Instead, compute from SMILES
-                mol = Chem.MolFromSmiles(smiles)
-                if mol is not None:
-                    AllChem.EmbedMolecule(mol, randomSeed=42)
-                    try:
-                        gv_est = AllChem.ComputeMolVolume(mol)
-                    except Exception:
-                        gv_est = Descriptors.HeavyAtomCount(mol) * 10.0
-                    if gv_est > host_spec.max_guest_volume_A3:
-                        continue  # too large for cavity
-
+            sc = score_one(smiles, host=host_key, name=smiles[:40])
             gc = GeneratedCandidate(
                 smiles=smiles,
-                name=f"{bb_name}+{'|'.join(arm_names)}@{host_name}",
+                name=f"{bb_name}+{'|'.join(arm_names)}",
                 log_Ka_pred=sc.log_Ka_pred,
                 dg_total_kj=sc.dg_total_kj,
                 prediction=sc.prediction,
@@ -1481,27 +1359,12 @@ def generate_for_host(host_key, max_candidates=200, max_scored=50,
         except Exception as e:
             errors.append((smiles, str(e)))
 
-    # Ranking
-    _pareto_result = None
-    if ranking_mode == "pareto" and candidates:
-        from core.pareto import pareto_rank as _pareto_rank, AFFINITY_SA_OBJECTIVES
-        _objs = objectives if objectives is not None else AFFINITY_SA_OBJECTIVES
-        _pareto_result = _pareto_rank(candidates, objectives=_objs)
-        for pc in _pareto_result.candidates:
-            c = candidates[pc.index]
-            c.pareto_front_idx = pc.front
-            c.pareto_rank = pc.pareto_rank
-            c.pareto_crowding = pc.crowding
-            c.pareto_objectives = pc.objectives
-        candidates.sort(key=lambda c: c.pareto_rank if c.pareto_rank > 0 else 9999)
-    else:
-        candidates.sort(key=lambda c: c.composite_score, reverse=True)
-
+    candidates.sort(key=lambda c: c.composite_score, reverse=True)
     for i, c in enumerate(candidates):
         c.rank = i + 1
 
     return GenerationResult(
-        target=host_name,
+        target=host_key,
         mode="host_guest",
         candidates=candidates,
         n_enumerated=len(raw),
@@ -1511,8 +1374,6 @@ def generate_for_host(host_key, max_candidates=200, max_scored=50,
         n_failed=len(errors),
         elapsed_s=time.time() - t0,
         errors=errors,
-        ranking_mode=ranking_mode,
-        pareto_result=_pareto_result,
     )
 
 
