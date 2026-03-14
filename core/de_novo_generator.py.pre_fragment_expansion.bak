@@ -291,44 +291,6 @@ BACKBONE_LIBRARY = [
              "Dioxo-cyclam, N2O2 mixed macrocycle"),
     Backbone("9aneS3-core", "[1*]SCCSCC[2*]SCC", 2, "macrocyclic",
              "9-ane-S3 thioether macrocycle, soft metal selective"),
-
-    # ── CROWN ETHERS (macrocyclic O-donors) ───────────────────────────
-    Backbone("12-crown-4", "[1*]OCCOCCOC[2*]", 2, "macrocyclic",
-             "12-crown-4 open form, O4 donor set, Li+/Na+ selective"),
-    Backbone("15-crown-5-open", "[1*]OCCOCCOCCOC[2*]", 2, "macrocyclic",
-             "15-crown-5 open, O5 donor set, Na+/K+ selective"),
-    Backbone("18-crown-6-open", "[1*]OCCOCCOCCOCCOC[2*]", 2, "macrocyclic",
-             "18-crown-6 open, O6 donor set, K+/Ba2+ selective"),
-
-    # ── CRYPTAND ──────────────────────────────────────────────────────
-    Backbone("cryptand-222-open", "[1*]N(CCOCCOCCOC[2*])CCOCC", 2, "macrocyclic",
-             "[2.2.2] cryptand open form, 3D cage, extreme alkali selectivity"),
-
-    # ── HETEROCYCLIC N-DONORS ─────────────────────────────────────────
-    Backbone("terpyridine", "[1*]c1cc(-c2cccc(-c3cc([2*])ccn3)n2)ccn1", 2, "aromatic",
-             "2,2':6',2''-terpyridine, tridentate N3, Ru/Fe/Co"),
-    Backbone("phenanthroline", "[1*]c1cc2ccc3cc([2*])cnc3c2nc1", 2, "aromatic",
-             "1,10-phenanthroline disubst, rigid N2 chelator"),
-    Backbone("triazine", "[1*]c1nc([2*])nc([3*])n1", 3, "aromatic",
-             "1,3,5-triazine trisubstituted, C3-symmetric platform"),
-    Backbone("bipyrazole", "[1*]c1cc(-c2cc([2*])n[nH]2)[nH]n1", 2, "aromatic",
-             "3,3'-bipyrazole, N4 donor set, pH-switchable"),
-
-    # ── PEPTIDIC SCAFFOLDS ────────────────────────────────────────────
-    Backbone("tripeptide", "[1*]NCC(=O)NCC(=O)NCC(=O)[2*]", 2, "linear",
-             "Gly-Gly-Gly backbone, amide N/O donors, metal-peptide"),
-    Backbone("DKP", "[1*]C1NC(=O)C([2*])NC1=O", 2, "macrocyclic",
-             "Diketopiperazine, cyclic dipeptide, rigid N2O2 platform"),
-    Backbone("cyclic-tripeptide", "[1*]C1NC(=O)C([2*])NC(=O)C([3*])NC1=O", 3, "macrocyclic",
-             "Cyclic tripeptide scaffold, 3 diversification sites"),
-
-    # ── POLYAMINOCARBOXYLATE CORES ────────────────────────────────────
-    Backbone("BPA", "[1*]N(Cc1ccccn1)Cc1cccc([2*])n1", 2, "aromatic",
-             "Bis(2-pyridylmethyl)amine, N3 + 2 pendant sites"),
-    Backbone("IDA-core", "[1*]N(CC(=O)O)CC(=O)O", 1, "linear",
-             "Iminodiacetic acid, N1O4 chelator core (NTA half)"),
-    Backbone("DTPA-open", "[1*]N(CC(=O)O)CCN(CC(=O)O)CCN(CC(=O)O)[2*]", 2, "linear",
-             "DTPA-type open chain, N3O6, octadentate Gd3+ chelator"),
 ]
 
 
@@ -455,45 +417,6 @@ ARM_LIBRARY = [
 
     # ── HYDROGEN CAP ─────────────────────────────────────────────────────
     Arm("H-cap", "[*][H]", [], "", "", "cap"),
-
-    # ── PEPTIDIC SIDE CHAINS ──────────────────────────────────────────
-    Arm("cysteinyl", "[*]CC(N)C(=O)O",
-        ["S_thiolate", "N_amine", "O_carboxylate"], "S", "soft",
-        "cysteine"),
-    Arm("seryl-OH", "[*]CO", ["O_hydroxyl"], "O", "hard", "serine"),
-    Arm("threonyl-OH", "[*]C(C)O", ["O_hydroxyl"], "O", "hard", "threonine"),
-    Arm("tyrosyl", "[*]Cc1ccc(O)cc1", ["O_phenolate"], "O", "hard",
-        "tyrosine"),
-
-    # ── BORONIC ACIDS (saccharide recognition) ────────────────────────
-    Arm("phenylboronic", "[*]c1ccc(B(O)O)cc1", ["O_hydroxyl"], "B", "hard",
-        "boronic_acid"),
-    Arm("methylboronic", "[*]CB(O)O", ["O_hydroxyl"], "B", "hard",
-        "boronic_acid"),
-
-    # ── ANION RECOGNITION ─────────────────────────────────────────────
-    Arm("urea", "[*]NC(=O)N", ["N_amine"], "N", "hard", "urea"),
-    Arm("guanidinium", "[*]NC(=N)N", ["N_amine"], "N", "hard",
-        "guanidinium"),
-    Arm("sulfonamide", "[*]NS(=O)(=O)C", ["N_amine"], "N", "borderline",
-        "sulfonamide"),
-
-    # ── ETHER DONORS ──────────────────────────────────────────────────
-    Arm("methoxy", "[*]COC", ["O_ether"], "O", "hard", "ether"),
-    Arm("methoxyethyl", "[*]CCOC", ["O_ether"], "O", "hard", "ether"),
-    Arm("ethoxyethyl", "[*]CCOCC", ["O_ether"], "O", "hard", "ether"),
-
-    # ── CARBENE / ISOCYANIDE (soft C donors) ──────────────────────────
-    Arm("NHC-imidazolyl", "[*]c1nccn1C", ["C_carbene"], "C", "soft",
-        "NHC"),
-    Arm("isocyanide", "[*]C[N+]#[C-]", ["C_isocyanide"], "C", "soft",
-        "isocyanide"),
-
-    # ── N-HETEROCYCLIC DONORS ─────────────────────────────────────────
-    Arm("tetrazolyl", "[*]c1nnn[nH]1", ["N_pyridine"], "N", "borderline",
-        "tetrazole"),
-    Arm("pyrazolyl", "[*]c1cc[nH]n1", ["N_pyridine"], "N", "borderline",
-        "pyrazole"),
 ]
 
 
@@ -512,7 +435,6 @@ BIOISOSTERE_GROUPS = [
     # ── Monodentate O-acid (hard, single O_carboxylate/phosphate/sulfonate) ──
     ("mono_O_acid", [
         "acetic-acid", "propionic-acid", "phosphonate", "sulfonate",
-        "tetrazolyl",   # carboxylate bioisostere (pKa-matched)
     ]),
 
     # ── Bidentate O,O chelate (hard, catechol/hydroxamate equivalents) ──
@@ -524,7 +446,7 @@ BIOISOSTERE_GROUPS = [
     # ── Monodentate N aromatic (borderline, pyridine/imidazole type) ──
     ("mono_N_aromatic", [
         "2-pyridyl", "2-pyridylmethyl", "imidazolylmethyl",
-        "benzimidazolyl", "pyrazolyl",
+        "benzimidazolyl",
     ]),
 
     # ── Monodentate N amine (borderline, aliphatic amine) ──
@@ -535,7 +457,7 @@ BIOISOSTERE_GROUPS = [
     # ── Bidentate N,O (borderline, mixed imine/phenolate) ──
     ("bident_NO_mixed", [
         "salicylaldimine", "8-hydroxyquinolinyl", "oxime-simple",
-        "hydrazide", "picolylamine", "amidoxime",
+        "hydrazide", "picolylamine",
     ]),
 
     # ── Monodentate S (soft, thiol/thioether) ──
@@ -555,37 +477,12 @@ BIOISOSTERE_GROUPS = [
 
     # ── Monodentate O hydroxyl/phenol ──
     ("mono_O_hydroxyl", [
-        "ethanol", "phenol", "seryl-OH", "threonyl-OH", "tyrosyl",
+        "ethanol", "phenol",
     ]),
 
     # ── Weak/special ──
     ("mono_N_weak", [
         "nitrile", "carbamoylmethyl",
-    ]),
-
-    # ── Boronic acids (saccharide recognition) ──
-    ("boronic_acid", [
-        "phenylboronic", "methylboronic",
-    ]),
-
-    # ── Anion recognition (H-bond donors) ──
-    ("anion_donor", [
-        "urea", "guanidinium", "sulfonamide",
-    ]),
-
-    # ── Monodentate O ether (hard, crown-type coordination) ──
-    ("mono_O_ether", [
-        "methoxy", "methoxyethyl", "ethoxyethyl",
-    ]),
-
-    # ── Soft C donors (organometallic) ──
-    ("mono_C_soft", [
-        "NHC-imidazolyl", "isocyanide",
-    ]),
-
-    # ── Polydentate peptidic (multi-donor amino acid side chain) ──
-    ("peptidic_multi", [
-        "cysteinyl",   # S,N,O tridentate
     ]),
 ]
 
