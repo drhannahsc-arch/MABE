@@ -708,8 +708,8 @@ class UnifiedDesignResult:
 
 def unified_design(target: TargetSpec,
                     include_frameworks: bool = True,
-                    include_polymers: bool = False,     # M2 — future
-                    include_composites: bool = False,    # M3 — future
+                    include_polymers: bool = True,      # M2: Polymeric Sorbents
+                    include_composites: bool = True,     # M3: Composite Materials
                     include_structural_color: bool = False,  # M4 — future
                     framework_func_groups: Optional[List[str]] = None,
                     top_n: int = 15) -> UnifiedDesignResult:
@@ -752,9 +752,67 @@ def unified_design(target: TargetSpec,
                 weaknesses=weaknesses,
             ))
 
-    # M2-M4: stubs for future modules
-    # if include_polymers: ...
-    # if include_composites: ...
+    # M2: Polymeric Sorbents
+    if include_polymers:
+        polymers = screen_polymers(target)
+        for d in polymers:
+            strengths, weaknesses = [], []
+            m = d.metrics
+            if m.capacity_mg_g and m.capacity_mg_g.value > 50:
+                strengths.append("high capacity")
+            if m.cost_per_kg_usd and m.cost_per_kg_usd.value < 30:
+                strengths.append("very low cost")
+            if m.scalability_score and m.scalability_score.value > 0.8:
+                strengths.append("industrially mature")
+            if m.durability_cycles and m.durability_cycles.value > 100:
+                strengths.append("regenerable")
+            if m.selectivity_ratio and m.selectivity_ratio.value < 1.0:
+                weaknesses.append("poor selectivity for target")
+            if m.kinetics_t90_min and m.kinetics_t90_min.value > 30:
+                weaknesses.append("slow kinetics")
+            if d.func_group_activity < 0.1:
+                weaknesses.append(f"func group inactive at pH {target.pH}")
+
+            all_rankings.append(MaterialRanking(
+                material_class=d.material_class(),
+                design_name=d.spec.resin_name,
+                design=d,
+                metrics=m,
+                composite_score=m.composite_score(),
+                strengths=strengths,
+                weaknesses=weaknesses,
+            ))
+
+    # M3: Composite Materials
+    if include_composites:
+        composites = screen_composites(target)
+        for d in composites:
+            strengths, weaknesses = [], []
+            m = d.metrics
+            if m.capacity_mg_g and m.capacity_mg_g.value > 5:
+                strengths.append("published capacity")
+            if d.BV_to_breakthrough and d.BV_to_breakthrough > 5000:
+                strengths.append(f"long run ({d.BV_to_breakthrough:.0f} BV)")
+            if m.scalability_score and m.scalability_score.value > 0.7:
+                strengths.append("scalable process")
+            if d.pressure_drop_kPa and d.pressure_drop_kPa < 10:
+                strengths.append("low pressure drop")
+            if m.capacity_mg_g is None:
+                weaknesses.append("no capacity data for this target")
+            if d.pressure_drop_kPa and d.pressure_drop_kPa > 50:
+                weaknesses.append("high pressure drop")
+
+            all_rankings.append(MaterialRanking(
+                material_class=d.material_class(),
+                design_name=d.config.name,
+                design=d,
+                metrics=m,
+                composite_score=m.composite_score(),
+                strengths=strengths,
+                weaknesses=weaknesses,
+            ))
+
+    # M4: Structural Color — future
     # if include_structural_color: ...
 
     all_rankings.sort(key=lambda r: r.composite_score, reverse=True)
@@ -865,3 +923,1200 @@ if __name__ == "__main__":
 
     result = unified_design(selenite, framework_func_groups=["amine-primary"])
     print_material_report(result)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# M2: Polymeric Sorbents (Ion Exchange, Hydrogels, Functionalized Resins)
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Physics:
+#   Donnan equilibrium — ion partitioning into charged polymer phase
+#   Flory-Rehner — swelling equilibrium for crosslinked networks
+#   Ion exchange selectivity — from selectivity coefficients
+#   Film/particle diffusion kinetics
+#
+# References:
+#   Helfferich F. Ion Exchange. McGraw-Hill 1962 (reprinted Dover 1995).
+#   Flory PJ. Principles of Polymer Chemistry. Cornell 1953.
+#   Flory PJ, Rehner J. J. Chem. Phys. 1943, 11, 521.
+#   Marcus Y. Ion Properties. CRC Press 1997.
+#   Zagorodni AA. Ion Exchange Materials. Elsevier 2007.
+
+# ── Published Polymer Sorbent Data (T1) ──────────────────────────────────
+
+POLYMER_DATABASE = {
+    # name: (type, capacity_meq_g, functional_group, matrix, selectivity_class, cost_class)
+    # Capacity in meq/g (milliequivalents per gram dry resin)
+
+    # Strong acid cation exchangers (SAC) — sulfonate groups, always ionized
+    "Amberlite-IR120":  ("SAC", 4.4, "sulfonate", "PS-DVB", "cation", "low"),
+    "Dowex-50WX8":      ("SAC", 5.0, "sulfonate", "PS-DVB", "cation", "low"),
+    "Purolite-C100":    ("SAC", 4.2, "sulfonate", "PS-DVB", "cation", "low"),
+
+    # Weak acid cation exchangers (WAC) — carboxylate groups, pH-dependent
+    "Amberlite-IRC86":  ("WAC", 10.0, "carboxylate", "polyacrylic", "cation", "low"),
+    "Dowex-MAC3":       ("WAC", 10.5, "carboxylate", "polyacrylic", "cation", "low"),
+
+    # Strong base anion exchangers (SBA) — quaternary amine, always ionized
+    "Amberlite-IRA400": ("SBA", 3.5, "quaternary-N", "PS-DVB", "anion", "moderate"),
+    "Dowex-1X8":        ("SBA", 3.5, "quaternary-N", "PS-DVB", "anion", "moderate"),
+    "Purolite-A300":    ("SBA", 3.8, "quaternary-N", "PS-DVB", "anion", "moderate"),
+
+    # Weak base anion exchangers (WBA) — amine groups, pH-dependent
+    "Amberlite-IRA67":  ("WBA", 5.5, "amine-primary", "polyacrylic", "anion", "low"),
+    "Purolite-A100":    ("WBA", 5.0, "amine-primary", "PS-DVB", "anion", "low"),
+
+    # Chelating resins — selective for heavy metals
+    "Chelex-100":       ("chelating", 2.8, "iminodiacetate", "PS-DVB", "heavy-metal", "high"),
+    "Lewatit-TP207":    ("chelating", 2.5, "iminodiacetate", "PS-DVB", "heavy-metal", "high"),
+    "Duolite-GT73":     ("chelating", 1.3, "thiol", "PS-DVB", "soft-metal", "high"),
+
+    # Specialty: amidoxime (uranium from seawater)
+    "amidoxime-fiber":  ("specialty", 3.0, "amidoxime", "polyethylene", "uranium", "high"),
+
+    # Hydrogels
+    "polyHEMA":         ("hydrogel", 0.5, "hydroxyl", "crosslinked-HEMA", "general", "moderate"),
+    "chitosan-bead":    ("hydrogel", 4.5, "amine-primary", "chitosan", "heavy-metal", "low"),
+}
+
+# Ion exchange selectivity coefficients (T1/T2)
+# K_AB = preference of resin for ion A over ion B
+# For SAC (sulfonate): selectivity series (Hofmeister-like)
+# Ref: Helfferich 1962 Table 5.3; Marcus 1997
+SAC_SELECTIVITY = {
+    # ion: relative selectivity vs Na+ on sulfonate resin (8% DVB)
+    "Li+": 0.85, "H+": 1.0, "Na+": 1.0, "K+": 1.7, "NH4+": 1.9,
+    "Rb+": 2.0, "Cs+": 2.1, "Ag+": 4.0, "Tl+": 6.0,
+    "Mg2+": 2.5, "Ca2+": 3.9, "Sr2+": 5.0, "Ba2+": 8.7,
+    "Mn2+": 2.4, "Fe2+": 2.6, "Co2+": 2.8, "Ni2+": 2.9,
+    "Cu2+": 2.7, "Zn2+": 2.6, "Cd2+": 2.9,
+    "Pb2+": 5.0, "Hg2+": 7.0,
+}
+
+# For SBA (quaternary N): selectivity for anions
+# Ref: Helfferich 1962; Zagorodni 2007
+SBA_SELECTIVITY = {
+    # ion: relative selectivity vs Cl- on Type I SBA
+    "OH-": 0.06, "F-": 0.09, "Cl-": 1.0, "Br-": 2.8,
+    "NO3-": 3.2, "I-": 8.7, "ClO4-": 10.0,
+    "HCO3-": 0.32, "CH3COO-": 0.14,
+    "SO4^2-": 0.15, "CrO4^2-": 1.0,
+    "HPO4^2-": 0.25, "SeO3^2-": 0.50, "SeO4^2-": 0.17,
+    "AsO4^3-": 0.10, "PO4^3-": 0.07,
+}
+
+# Polymer cost estimates
+POLYMER_COST = {
+    "low": TieredValue(15.0, DataTier.T1_KNOWN, "Bulk ion exchange resin: ~$15/kg", 20),
+    "moderate": TieredValue(50.0, DataTier.T2_SOLID, "Specialty resin: ~$50/kg", 30),
+    "high": TieredValue(200.0, DataTier.T3_CONCEPTUAL, "Chelating/specialty: ~$200/kg", 50),
+}
+
+
+# ── Donnan Equilibrium (T2) ──────────────────────────────────────────────
+
+def donnan_partition(z_ion: int, C_ext_mM: float,
+                      Q_resin_meq_mL: float,
+                      z_co: int = 1) -> float:
+    """Donnan equilibrium: ion concentration ratio inside/outside resin.
+
+    For a resin with fixed charge Q and external electrolyte at concentration C,
+    the co-ion exclusion and counter-ion enrichment follow:
+
+    For monovalent counter-ion:
+        C_in / C_ext = Q / C_ext  (approximate, high Q limit)
+
+    General (ideal Donnan):
+        (C_counter_in / C_counter_ext) = (C_co_ext / C_co_in)^(z_co/z_counter)
+
+    Simplified for practical use:
+        Enrichment factor ≈ (Q / C_ext)^(1/|z_ion|) for counter-ions
+        Exclusion factor ≈ (C_ext / Q)^(|z_ion|) for co-ions
+
+    Parameters
+    ----------
+    z_ion : int
+        Charge of the ion (+1, +2, -1, -2, etc.).
+    C_ext_mM : float
+        External solution concentration (mM).
+    Q_resin_meq_mL : float
+        Resin capacity in meq per mL swollen resin.
+    z_co : int
+        Co-ion charge magnitude (default 1).
+
+    Returns
+    -------
+    float
+        Enrichment factor (C_in / C_ext). >1 = enriched, <1 = excluded.
+
+    Physics tier: T2 (Donnan 1911, Helfferich 1962 Ch. 4).
+    """
+    if C_ext_mM <= 0 or Q_resin_meq_mL <= 0:
+        return 1.0
+
+    # Convert: Q in meq/mL ≈ mM equivalent (rough, assuming ~1 g/mL wet density)
+    Q_mM = Q_resin_meq_mL * 1000.0  # meq/mL → μeq/mL ≈ mM
+
+    ratio = Q_mM / C_ext_mM
+    z_abs = abs(z_ion)
+
+    if z_abs == 0:
+        return 1.0  # neutral species, no Donnan effect
+
+    # Counter-ion (sign of z opposite to resin charge → enriched)
+    # We assume the resin charge sign is determined by the selectivity class
+    # For simplicity: enrichment_factor = ratio^(1/|z|) for counter-ions
+    return ratio ** (1.0 / z_abs)
+
+
+def donnan_exclusion(z_co: int, C_ext_mM: float,
+                      Q_resin_meq_mL: float) -> float:
+    """Co-ion exclusion factor (Donnan).
+
+    Co-ions (same charge as resin) are excluded from the resin phase.
+    Exclusion factor = C_co_in / C_co_ext < 1.
+
+    Physics tier: T2.
+    """
+    if C_ext_mM <= 0 or Q_resin_meq_mL <= 0:
+        return 1.0
+
+    Q_mM = Q_resin_meq_mL * 1000.0
+    ratio = C_ext_mM / Q_mM
+    z_abs = abs(z_co)
+    return min(1.0, ratio ** z_abs)
+
+
+# ── Ion Exchange Selectivity (T1/T2) ─────────────────────────────────────
+
+def ion_exchange_selectivity(target_ion: str, interferent_ion: str,
+                               resin_type: str = "SAC") -> float:
+    """Selectivity coefficient for target vs interferent on a resin.
+
+    α(A/B) = K_A / K_B where K values are from published selectivity tables.
+
+    Parameters
+    ----------
+    target_ion : str
+        Target ion (e.g., "Pb2+", "SeO3^2-").
+    interferent_ion : str
+        Competing ion (e.g., "Ca2+", "SO4^2-").
+    resin_type : str
+        "SAC" (sulfonate cation) or "SBA" (quaternary amine anion).
+
+    Returns
+    -------
+    float
+        Selectivity ratio (>1 = prefers target).
+
+    Physics tier: T1 (published selectivity coefficients) / T3 (if estimated).
+    """
+    if resin_type == "SAC":
+        table = SAC_SELECTIVITY
+    elif resin_type == "SBA":
+        table = SBA_SELECTIVITY
+    else:
+        return 1.0  # unknown resin type
+
+    K_target = table.get(target_ion, 1.0)
+    K_interf = table.get(interferent_ion, 1.0)
+
+    if K_interf <= 0:
+        return float('inf')
+    return K_target / K_interf
+
+
+# ── Flory-Rehner Swelling (T2) ───────────────────────────────────────────
+
+def flory_rehner_swelling_ratio(chi: float, Mc: float, rho_p: float = 1.1,
+                                  V1: float = 18.0) -> float:
+    """Flory-Rehner equilibrium swelling ratio for crosslinked polymer.
+
+    At swelling equilibrium, the elastic retraction (crosslinks) balances
+    the osmotic drive (mixing entropy + ion osmotic pressure).
+
+    Simplified Flory-Rehner for neutral gels:
+        Q_vol = (V1 / (Mc × ν × (0.5 - χ)))^(3/5)
+
+    where:
+        V1 = molar volume of solvent (18 cm³/mol for water)
+        Mc = molecular weight between crosslinks
+        ν = specific volume of polymer ≈ 1/ρ_p
+        χ = Flory-Huggins interaction parameter (0.3-0.5 for hydrophilic)
+
+    Parameters
+    ----------
+    chi : float
+        Flory-Huggins parameter. <0.5 = hydrophilic, >0.5 = hydrophobic.
+    Mc : float
+        Molecular weight between crosslinks (g/mol). Higher = more swelling.
+    rho_p : float
+        Dry polymer density (g/cm³).
+    V1 : float
+        Molar volume of solvent (cm³/mol). 18.0 for water.
+
+    Returns
+    -------
+    float
+        Volumetric swelling ratio Q = V_swollen / V_dry.
+
+    Physics tier: T2 (Flory & Rehner 1943).
+    """
+    if chi >= 0.5:
+        # Hydrophobic: minimal swelling
+        return 1.1
+
+    nu = 1.0 / rho_p  # specific volume cm³/g
+    # Q ∝ (ν × Mc × (0.5 - χ) / V1)^(3/5)
+    # Higher Mc = more swelling, lower chi = more hydrophilic = more swelling
+    numerator = nu * Mc * (0.5 - chi)
+    if numerator <= 0:
+        return 1.0
+
+    Q = (numerator / V1) ** 0.6
+    return max(1.0, Q)
+
+
+def hydrogel_water_content(Q_vol: float) -> float:
+    """Water content from volumetric swelling ratio.
+
+    wt% water = (Q - 1) / Q × 100
+
+    Physics tier: T2.
+    """
+    if Q_vol <= 1.0:
+        return 0.0
+    return (Q_vol - 1.0) / Q_vol * 100.0
+
+
+# ── Kinetics: Film and Particle Diffusion (T2) ───────────────────────────
+
+def film_diffusion_t90(bead_radius_m: float, film_thickness_m: float = 50e-6,
+                        D_film: float = 1e-9,
+                        C_bulk_mM: float = 1.0,
+                        Q_meq_g: float = 3.0,
+                        rho_bead: float = 1.1e6) -> float:
+    """Time to 90% equilibrium by film (external) diffusion.
+
+    t_0.9 ≈ -ln(0.1) × R × Q × ρ / (3 × D_f × C_bulk / δ)
+
+    Parameters
+    ----------
+    bead_radius_m : float
+        Bead radius (m).
+    film_thickness_m : float
+        Nernst film thickness (m). Typical: 10-100 μm.
+    D_film : float
+        Diffusivity in the stagnant film (m²/s).
+    C_bulk_mM : float
+        Bulk solution concentration (mM).
+    Q_meq_g : float
+        Resin capacity (meq/g).
+    rho_bead : float
+        Wet bead density (g/m³). ~1.1e6 g/m³ = 1.1 g/cm³.
+
+    Returns
+    -------
+    float
+        t_90 in minutes.
+
+    Physics tier: T2 (Boyd 1947, Helfferich 1962 Ch. 6).
+    """
+    if D_film <= 0 or C_bulk_mM <= 0:
+        return 999.0
+
+    C_bulk_mol_m3 = C_bulk_mM  # mM ≈ mol/m³ (1 mM = 1 mol/m³)
+    Q_eq_m3 = Q_meq_g * rho_bead / 1000.0  # meq/m³ bead volume
+
+    # Mass transfer coefficient: k_f = D / δ
+    k_f = D_film / film_thickness_m
+
+    # Characteristic time: τ = R × Q / (3 × k_f × C)
+    tau = bead_radius_m * Q_eq_m3 / (3.0 * k_f * C_bulk_mol_m3)
+
+    # t_90 ≈ 2.303 × τ (from -ln(0.1))
+    t_90_s = 2.303 * tau
+    return t_90_s / 60.0
+
+
+def particle_diffusion_t90(bead_radius_m: float,
+                             D_eff: float = 1e-11) -> float:
+    """Time to 90% equilibrium by intraparticle diffusion.
+
+    t_0.9 ≈ 0.307 × R² / D_eff
+
+    (From Vermeulen's approximation for the particle diffusion model.)
+
+    Parameters
+    ----------
+    bead_radius_m : float
+        Bead radius (m).
+    D_eff : float
+        Effective intraparticle diffusivity (m²/s).
+        Typical: 1e-11 to 1e-10 m²/s for ions in resin.
+
+    Returns
+    -------
+    float
+        t_90 in minutes.
+
+    Physics tier: T2 (Vermeulen 1953, Helfferich 1962).
+    """
+    if D_eff <= 0:
+        return 999.0
+    t_90_s = 0.307 * bead_radius_m ** 2 / D_eff
+    return t_90_s / 60.0
+
+
+def rate_limiting_step(t_film_min: float, t_particle_min: float) -> str:
+    """Identify rate-limiting step.
+
+    The slower step controls the overall rate.
+    """
+    if t_film_min > t_particle_min * 2:
+        return "film-diffusion"
+    elif t_particle_min > t_film_min * 2:
+        return "particle-diffusion"
+    else:
+        return "mixed"
+
+
+# ── Polymer Sorbent Design Engine ─────────────────────────────────────────
+
+@dataclass
+class PolymericSorbentSpec:
+    """Specification for a polymeric sorbent material."""
+    resin_name: str = ""
+    resin_type: str = ""          # SAC, WAC, SBA, WBA, chelating, hydrogel, specialty
+    functional_group: str = ""
+    matrix: str = ""              # PS-DVB, polyacrylic, chitosan, etc.
+    selectivity_class: str = ""   # cation, anion, heavy-metal, soft-metal, etc.
+
+    # Properties
+    capacity_meq_g: float = 0.0   # total exchange capacity (meq/g dry)
+    bead_diameter_mm: float = 0.5  # typical bead size
+    water_content_pct: float = 50.0  # water content of swollen resin
+
+    # Swelling (for hydrogels)
+    chi_parameter: float = 0.4    # Flory-Huggins (lower = more hydrophilic)
+    Mc_crosslink: float = 5000.0  # MW between crosslinks
+
+    # Stability
+    pH_range: Tuple[float, float] = (0.0, 14.0)
+    max_temp_K: float = 393.15    # 120°C default
+    regenerable: bool = True
+
+    cost_class: str = "low"
+
+    @classmethod
+    def from_database(cls, name: str) -> 'PolymericSorbentSpec':
+        if name not in POLYMER_DATABASE:
+            raise KeyError(f"Unknown polymer '{name}'. "
+                           f"Known: {sorted(POLYMER_DATABASE.keys())}")
+        rtype, cap, fg, matrix, sel, cost = POLYMER_DATABASE[name]
+        return cls(
+            resin_name=name, resin_type=rtype,
+            functional_group=fg, matrix=matrix,
+            selectivity_class=sel, capacity_meq_g=cap,
+            cost_class=cost,
+        )
+
+
+@dataclass
+class PolymericSorbentDesign(MaterialDesign):
+    """Complete polymeric sorbent design."""
+    spec: PolymericSorbentSpec = field(default_factory=PolymericSorbentSpec)
+    target: TargetSpec = field(default_factory=TargetSpec)
+    metrics: PerformanceMetrics = field(default_factory=PerformanceMetrics)
+
+    # Design details
+    q_max_mg_g: float = 0.0
+    donnan_enrichment: float = 1.0
+    selectivity_vs_worst: float = 1.0
+    t_film_min: float = 0.0
+    t_particle_min: float = 0.0
+    rate_limiting: str = ""
+    func_group_activity: float = 1.0
+    swelling_ratio: float = 1.0
+
+    def material_class(self) -> str:
+        return f"PolymericSorbent ({self.spec.resin_type})"
+
+    def design_summary(self) -> str:
+        lines = [
+            f"Resin: {self.spec.resin_name} ({self.spec.resin_type})",
+            f"Functional group: {self.spec.functional_group} on {self.spec.matrix}",
+            f"Capacity: {self.spec.capacity_meq_g:.1f} meq/g",
+        ]
+        if self.metrics.capacity_mg_g:
+            lines.append(f"Predicted capacity: {self.metrics.capacity_mg_g}")
+        return "\n".join(lines)
+
+    def predict_performance(self, target: TargetSpec = None) -> PerformanceMetrics:
+        if target is None:
+            target = self.target
+        self.target = target
+        s = self.spec
+
+        # 1. Functional group activity at pH
+        is_anion = target.target_charge < 0
+        self.func_group_activity = func_group_fraction_active(
+            s.functional_group, target.pH,
+            for_anion_capture=is_anion
+        )
+
+        # 2. Effective capacity
+        effective_cap_meq = s.capacity_meq_g * self.func_group_activity
+        mw = target.target_mw if target.target_mw > 0 else 80.0
+        z_abs = max(1, abs(target.target_charge))
+        # meq/g to mg/g: meq × (MW / |z|) = mg
+        self.q_max_mg_g = effective_cap_meq * mw / z_abs
+
+        # 3. Donnan enrichment
+        Q_meq_mL = s.capacity_meq_g * 0.5  # rough: 0.5 g dry resin per mL wet
+        C_ext = 0.1  # mM default trace concentration
+        if target.target_charge != 0:
+            self.donnan_enrichment = donnan_partition(
+                target.target_charge, C_ext, Q_meq_mL
+            )
+
+        # 4. Selectivity
+        if s.resin_type == "SAC" and target.target_charge > 0:
+            sel_table_type = "SAC"
+        elif s.resin_type in ("SBA", "WBA") and target.target_charge < 0:
+            sel_table_type = "SBA"
+        else:
+            sel_table_type = None
+
+        worst_selectivity = 1.0
+        if sel_table_type and target.interferent_species:
+            sels = []
+            for intf in target.interferent_species:
+                # Strip common formatting
+                intf_clean = intf.replace("^", "")
+                target_clean = target.target_species.replace("^", "")
+                sel = ion_exchange_selectivity(target_clean, intf_clean, sel_table_type)
+                sels.append(sel)
+            if sels:
+                worst_selectivity = min(sels)
+        elif s.selectivity_class == "heavy-metal" and target.target_charge > 0:
+            worst_selectivity = 50.0  # chelating resins are highly selective
+        elif s.selectivity_class == "soft-metal":
+            worst_selectivity = 100.0  # thiol resins extremely selective for Hg/Pb
+        self.selectivity_vs_worst = worst_selectivity
+
+        # 5. Kinetics
+        R_bead = s.bead_diameter_mm * 1e-3 / 2.0  # m
+        self.t_film_min = film_diffusion_t90(R_bead)
+        self.t_particle_min = particle_diffusion_t90(R_bead)
+        self.rate_limiting = rate_limiting_step(self.t_film_min, self.t_particle_min)
+        t90 = max(self.t_film_min, self.t_particle_min)
+
+        # 6. Swelling (hydrogels)
+        if s.resin_type == "hydrogel":
+            self.swelling_ratio = flory_rehner_swelling_ratio(
+                s.chi_parameter, s.Mc_crosslink
+            )
+
+        # 7. Langmuir equilibrium capacity at trace concentration
+        dG_bind = -20.0  # default moderate
+        if s.resin_type == "chelating":
+            dG_bind = -35.0
+        elif s.selectivity_class == "soft-metal":
+            dG_bind = -40.0
+        K_L = langmuir_K_from_dG(dG_bind, target.T_K)
+        C_eq = 0.1
+        q_eq = langmuir_capacity(self.q_max_mg_g, K_L, C_eq)
+
+        # 8. Cost
+        cost = POLYMER_COST.get(s.cost_class, POLYMER_COST["moderate"])
+
+        # 9. Scalability — ion exchange is industrially mature
+        scale_map = {
+            "SAC": 0.95, "SBA": 0.95, "WAC": 0.90, "WBA": 0.90,
+            "chelating": 0.75, "specialty": 0.40, "hydrogel": 0.50,
+        }
+        scalability = scale_map.get(s.resin_type, 0.5)
+
+        # 10. Environmental
+        env_map = {
+            "SAC": 0.6, "SBA": 0.5, "WAC": 0.7, "WBA": 0.7,
+            "chelating": 0.5, "hydrogel": 0.7, "specialty": 0.4,
+        }
+        env = env_map.get(s.resin_type, 0.5)
+        # Chitosan is bio-based → bonus
+        if s.matrix == "chitosan":
+            env = min(1.0, env + 0.2)
+
+        self.metrics = PerformanceMetrics(
+            capacity_mg_g=TieredValue(q_eq, DataTier.T2_SOLID,
+                f"Langmuir + IX capacity: q_max={self.q_max_mg_g:.1f} mg/g", 30),
+            selectivity_ratio=TieredValue(worst_selectivity, DataTier.T1_KNOWN
+                if sel_table_type else DataTier.T3_CONCEPTUAL,
+                f"IX selectivity table ({sel_table_type})" if sel_table_type
+                else "Estimated from resin class", 20 if sel_table_type else 50),
+            kinetics_t90_min=TieredValue(t90, DataTier.T2_SOLID,
+                f"Film+particle diffusion, {self.rate_limiting}", 30),
+            cost_per_kg_usd=cost,
+            scalability_score=TieredValue(scalability, DataTier.T2_SOLID,
+                f"{s.resin_type} industrial maturity"),
+            durability_cycles=TieredValue(
+                500.0 if s.regenerable else 1.0, DataTier.T2_SOLID,
+                "IX resins: ~500 regeneration cycles typical"),
+            environmental_score=TieredValue(env, DataTier.T3_CONCEPTUAL,
+                f"{s.matrix} environmental estimate"),
+        )
+
+        return self.metrics
+
+
+def design_polymer(resin_name: str, target: TargetSpec) -> PolymericSorbentDesign:
+    """Design a polymeric sorbent for a target."""
+    spec = PolymericSorbentSpec.from_database(resin_name)
+    design = PolymericSorbentDesign(spec=spec)
+    design.predict_performance(target)
+    return design
+
+
+def screen_polymers(target: TargetSpec, top_n: int = 10) -> List[PolymericSorbentDesign]:
+    """Screen all known polymeric sorbents against a target."""
+    designs = []
+    for name in POLYMER_DATABASE:
+        try:
+            d = design_polymer(name, target)
+            designs.append(d)
+        except Exception:
+            pass
+    designs.sort(key=lambda d: d.metrics.composite_score(), reverse=True)
+    return designs[:top_n]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# M3: Composite Materials (Scaffold-on-Support, Core-Shell, Packed Beds)
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Physics (all T2 — established engineering equations):
+#   Maxwell-Garnett effective medium theory (1904)
+#   Bruggeman symmetric effective medium (1935)
+#   Rule of mixtures (linear, Voigt/Reuss bounds)
+#   Kozeny-Carman pressure drop (1937)
+#   Shell diffusion for core-shell geometry
+#
+# Data policy: T1 (published) or T2 (textbook equations) ONLY.
+# No T3 estimates. Missing data returned as None, not fabricated.
+#
+# References:
+#   Maxwell Garnett JC. Phil. Trans. R. Soc. 1904, 203, 385.
+#   Bruggeman DAG. Ann. Phys. 1935, 416, 636.
+#   Kozeny J. Sitzber. Akad. Wiss. Wien 1927, 136, 271.
+#   Carman PC. Trans. Inst. Chem. Eng. 1937, 15, 150.
+#   Perry RH, Green DW. Perry's Chemical Engineers' Handbook, 8th ed., McGraw-Hill 2008.
+
+# ── Effective Medium Theory (T2) ─────────────────────────────────────────
+
+def maxwell_garnett(prop_matrix: float, prop_inclusion: float,
+                     volume_fraction: float) -> float:
+    """Maxwell-Garnett effective medium: dilute inclusions in a matrix.
+
+    For a property P (dielectric, thermal conductivity, etc.):
+    P_eff = P_m × (P_i + 2P_m + 2f(P_i - P_m)) / (P_i + 2P_m - f(P_i - P_m))
+
+    Valid for f < ~0.3 (dilute limit). Spherical inclusions assumed.
+
+    Parameters
+    ----------
+    prop_matrix : float
+        Property of the continuous matrix phase.
+    prop_inclusion : float
+        Property of the inclusion (dispersed) phase.
+    volume_fraction : float
+        Volume fraction of inclusions (0–1).
+
+    Returns
+    -------
+    float
+        Effective composite property.
+
+    Physics tier: T2 (Maxwell Garnett 1904).
+    """
+    Pm, Pi, f = prop_matrix, prop_inclusion, volume_fraction
+    if f <= 0:
+        return Pm
+    if f >= 1:
+        return Pi
+    num = Pi + 2*Pm + 2*f*(Pi - Pm)
+    den = Pi + 2*Pm - f*(Pi - Pm)
+    if den == 0:
+        return Pm
+    return Pm * num / den
+
+
+def bruggeman_ema(prop_a: float, prop_b: float,
+                   f_a: float, tol: float = 1e-8,
+                   max_iter: int = 100) -> float:
+    """Bruggeman symmetric effective medium approximation.
+
+    Self-consistent equation (no distinguished matrix):
+    f_a × (P_a - P_eff)/(P_a + 2P_eff) + f_b × (P_b - P_eff)/(P_b + 2P_eff) = 0
+
+    Solved iteratively. Valid for any volume fraction.
+
+    Parameters
+    ----------
+    prop_a, prop_b : float
+        Properties of components A and B.
+    f_a : float
+        Volume fraction of component A (f_b = 1 - f_a).
+
+    Returns
+    -------
+    float
+        Effective composite property.
+
+    Physics tier: T2 (Bruggeman 1935).
+    """
+    f_b = 1.0 - f_a
+    # Initial guess: rule of mixtures
+    P_eff = f_a * prop_a + f_b * prop_b
+
+    for _ in range(max_iter):
+        if P_eff <= 0:
+            P_eff = 0.5 * (prop_a + prop_b)
+        term_a = f_a * (prop_a - P_eff) / (prop_a + 2*P_eff) if (prop_a + 2*P_eff) != 0 else 0
+        term_b = f_b * (prop_b - P_eff) / (prop_b + 2*P_eff) if (prop_b + 2*P_eff) != 0 else 0
+        residual = term_a + term_b
+
+        # Newton step: d(residual)/d(P_eff)
+        dra = -f_a * (prop_a + 2*P_eff + 2*(prop_a - P_eff)) / (prop_a + 2*P_eff)**2 if (prop_a + 2*P_eff) != 0 else 0
+        drb = -f_b * (prop_b + 2*P_eff + 2*(prop_b - P_eff)) / (prop_b + 2*P_eff)**2 if (prop_b + 2*P_eff) != 0 else 0
+        deriv = dra + drb
+
+        if abs(deriv) < 1e-30:
+            break
+        P_eff -= residual / deriv
+
+        if abs(residual) < tol:
+            break
+
+    return max(0.0, P_eff)
+
+
+# ── Rule of Mixtures (T2) ────────────────────────────────────────────────
+
+def rule_of_mixtures(prop_a: float, prop_b: float, f_a: float) -> float:
+    """Linear rule of mixtures (Voigt upper bound).
+
+    P_eff = f_a × P_a + (1 - f_a) × P_b
+
+    Exact for additive properties (density, cost per volume).
+    Upper bound for transport properties.
+
+    Physics tier: T2 (thermodynamic mixing).
+    """
+    return f_a * prop_a + (1.0 - f_a) * prop_b
+
+
+def inverse_rule_of_mixtures(prop_a: float, prop_b: float, f_a: float) -> float:
+    """Inverse (Reuss) rule of mixtures — lower bound.
+
+    1/P_eff = f_a/P_a + (1-f_a)/P_b
+
+    Lower bound for transport properties (series arrangement).
+
+    Physics tier: T2.
+    """
+    if prop_a <= 0 or prop_b <= 0:
+        return 0.0
+    f_b = 1.0 - f_a
+    return 1.0 / (f_a / prop_a + f_b / prop_b)
+
+
+# ── Composite Capacity (T2) ──────────────────────────────────────────────
+
+def composite_capacity(q_active_mg_g: float, f_active_mass: float) -> float:
+    """Capacity of a composite = active fraction × active material capacity.
+
+    q_composite = f_mass_active × q_active
+
+    This is exact (mass balance). The support contributes zero capacity.
+
+    Parameters
+    ----------
+    q_active_mg_g : float
+        Capacity of the active sorbent alone (mg/g).
+    f_active_mass : float
+        Mass fraction of active sorbent in the composite (0–1).
+
+    Returns
+    -------
+    float
+        Composite capacity (mg/g composite).
+
+    Physics tier: T2 (mass balance, exact).
+    """
+    return q_active_mg_g * f_active_mass
+
+
+def composite_density(rho_active: float, rho_support: float,
+                       f_vol_active: float) -> float:
+    """Composite density from volume-weighted components.
+
+    ρ_composite = f_vol × ρ_active + (1 - f_vol) × ρ_support
+
+    Physics tier: T2 (exact for non-porous composites).
+    """
+    return rule_of_mixtures(rho_active, rho_support, f_vol_active)
+
+
+def composite_cost(cost_active_per_kg: float, cost_support_per_kg: float,
+                    f_mass_active: float) -> float:
+    """Composite cost from mass-weighted components.
+
+    $/kg_composite = f_mass × $/kg_active + (1-f_mass) × $/kg_support
+
+    Physics tier: T2 (exact, accounting).
+    """
+    return rule_of_mixtures(cost_active_per_kg, cost_support_per_kg, f_mass_active)
+
+
+# ── Core-Shell Geometry (T2) ─────────────────────────────────────────────
+
+def core_shell_volume_fraction(R_core_m: float, shell_thickness_m: float) -> float:
+    """Volume fraction of shell in a core-shell particle.
+
+    f_shell = 1 - (R_core / R_total)³
+
+    Physics tier: T2 (geometry, exact).
+    """
+    R_total = R_core_m + shell_thickness_m
+    if R_total <= 0:
+        return 0.0
+    return 1.0 - (R_core_m / R_total) ** 3
+
+
+def core_shell_mass_fraction(R_core_m: float, shell_thickness_m: float,
+                               rho_core: float, rho_shell: float) -> float:
+    """Mass fraction of shell material in a core-shell particle.
+
+    f_mass_shell = f_vol_shell × ρ_shell / ρ_composite
+
+    Physics tier: T2 (geometry + density, exact).
+    """
+    f_vol = core_shell_volume_fraction(R_core_m, shell_thickness_m)
+    rho_comp = composite_density(rho_shell, rho_core, f_vol)
+    if rho_comp <= 0:
+        return 0.0
+    return f_vol * rho_shell / rho_comp
+
+
+def shell_diffusion_t90(R_total_m: float, R_core_m: float,
+                          D_shell: float = 1e-11) -> float:
+    """Diffusion time through a shell layer.
+
+    Approximate: t_90 ≈ 0.307 × (R_total - R_core)² / D_shell
+
+    For core-shell particles, only the shell is active. Diffusion
+    path length is shell thickness, not full particle radius.
+
+    Parameters
+    ----------
+    R_total_m : float
+        Total particle radius (m).
+    R_core_m : float
+        Inert core radius (m).
+    D_shell : float
+        Effective diffusivity in shell (m²/s).
+
+    Returns
+    -------
+    float
+        t_90 in minutes.
+
+    Physics tier: T2 (Fick's law in spherical shell geometry).
+    """
+    shell_thickness = R_total_m - R_core_m
+    if shell_thickness <= 0 or D_shell <= 0:
+        return 0.0
+    t_90_s = 0.307 * shell_thickness ** 2 / D_shell
+    return t_90_s / 60.0
+
+
+# ── Kozeny-Carman Pressure Drop (T2) ─────────────────────────────────────
+
+def kozeny_carman_dP(v_superficial_m_s: float, bed_length_m: float,
+                      dp_m: float, porosity: float = 0.4,
+                      viscosity: float = 8.9e-4) -> float:
+    """Kozeny-Carman equation: pressure drop across packed bed.
+
+    ΔP/L = 150 × η × v × (1-ε)² / (ε³ × dp²)
+
+    Valid for laminar flow (Re_p < 10, typical for IX/sorbent beds).
+
+    Parameters
+    ----------
+    v_superficial_m_s : float
+        Superficial velocity (m/s).
+    bed_length_m : float
+        Bed length (m).
+    dp_m : float
+        Particle diameter (m).
+    porosity : float
+        Bed void fraction (0–1). Typical: 0.35–0.45 for packed spheres.
+    viscosity : float
+        Dynamic viscosity (Pa·s).
+
+    Returns
+    -------
+    float
+        Pressure drop in Pa.
+
+    Physics tier: T2 (Kozeny 1927, Carman 1937).
+    """
+    if dp_m <= 0 or porosity <= 0 or porosity >= 1:
+        return 0.0
+    dP_per_L = 150.0 * viscosity * v_superficial_m_s * (1 - porosity)**2 / \
+               (porosity**3 * dp_m**2)
+    return dP_per_L * bed_length_m
+
+
+def kozeny_carman_dP_kPa(v_superficial_m_s: float, bed_length_m: float,
+                           dp_m: float, porosity: float = 0.4,
+                           viscosity: float = 8.9e-4) -> float:
+    """Kozeny-Carman pressure drop in kPa."""
+    return kozeny_carman_dP(v_superficial_m_s, bed_length_m, dp_m,
+                             porosity, viscosity) / 1000.0
+
+
+# ── Breakthrough Estimation (T2) ─────────────────────────────────────────
+
+def bed_volumes_to_breakthrough(q_mg_g: float, rho_bed_kg_m3: float,
+                                  porosity: float, C_feed_mg_L: float) -> float:
+    """Estimate bed volumes (BV) to breakthrough.
+
+    BV = q × ρ_bed × (1 - ε) / C_feed
+
+    Assumes ideal plug flow with sharp front (Thomas model limit).
+    Real breakthrough curves are broader due to dispersion + kinetics.
+
+    Parameters
+    ----------
+    q_mg_g : float
+        Sorbent capacity at feed concentration (mg/g).
+    rho_bed_kg_m3 : float
+        Packed bed density (kg/m³). Typical: 600-900 for IX resins.
+    porosity : float
+        Bed void fraction.
+    C_feed_mg_L : float
+        Feed concentration (mg/L).
+
+    Returns
+    -------
+    float
+        Bed volumes to breakthrough (dimensionless).
+
+    Physics tier: T2 (mass balance, ideal).
+    """
+    if C_feed_mg_L <= 0:
+        return float('inf')
+    # q in mg/g → mg/kg × ρ_bed × (1-ε) / C_feed
+    q_mg_kg = q_mg_g * 1000.0  # mg/g → mg/kg
+    return q_mg_kg * rho_bed_kg_m3 * (1.0 - porosity) / (C_feed_mg_L * 1000.0)
+    # The 1000 converts L to m³: C_feed mg/L × 1000 L/m³ = mg/m³
+
+
+# ── Composite Configurations Database (T1 data only) ─────────────────────
+
+@dataclass
+class CompositeConfig:
+    """A published composite material configuration.
+
+    All properties from published data (T1). No estimates.
+    """
+    name: str
+    description: str
+    active_material: str        # what provides the sorption
+    support_material: str       # structural support / carrier
+    configuration: str          # "core-shell", "coating", "impregnated", "blended"
+
+    # Published properties (None = not available, do NOT estimate)
+    active_fraction_mass: Optional[float] = None     # mass fraction of active
+    particle_diameter_mm: Optional[float] = None      # typical particle size
+    density_kg_m3: Optional[float] = None             # bulk packed density
+    published_capacity_mg_g: Optional[float] = None   # published capacity for a specific target
+    published_target: str = ""                         # what the capacity was measured for
+    published_selectivity: Optional[float] = None
+    published_BV_breakthrough: Optional[float] = None
+
+    # References (DOI or specific citation)
+    source: str = ""
+
+
+# Published composite systems — T1 data only, no estimates
+COMPOSITE_DATABASE: Dict[str, CompositeConfig] = {}
+
+
+def _add_composite(c: CompositeConfig):
+    COMPOSITE_DATABASE[c.name] = c
+
+
+_add_composite(CompositeConfig(
+    name="FeOOH-on-sand",
+    description="Iron oxyhydroxide coated sand for arsenic/selenite removal",
+    active_material="FeOOH (goethite/ferrihydrite)",
+    support_material="silica sand",
+    configuration="coating",
+    active_fraction_mass=0.05,
+    particle_diameter_mm=0.5,
+    density_kg_m3=1500.0,
+    published_capacity_mg_g=1.5,
+    published_target="As(V)",
+    published_BV_breakthrough=5000.0,
+    source="Thirunavukkarasu OS et al. Water Res. 2003, 37, 4500. DOI:10.1016/S0043-1354(03)00395-4",
+))
+
+_add_composite(CompositeConfig(
+    name="GAC-FeOx",
+    description="Granular activated carbon impregnated with iron oxide",
+    active_material="Fe₂O₃ / FeOOH",
+    support_material="granular activated carbon",
+    configuration="impregnated",
+    active_fraction_mass=0.10,
+    particle_diameter_mm=1.0,
+    density_kg_m3=500.0,
+    published_capacity_mg_g=4.7,
+    published_target="As(V)",
+    published_BV_breakthrough=10000.0,
+    source="Gu Z, Fang J, Deng B. Environ. Sci. Technol. 2005, 39, 3833. DOI:10.1021/es048179r",
+))
+
+_add_composite(CompositeConfig(
+    name="TiO2-on-alumina",
+    description="TiO₂ coating on alumina beads for selenate photoreduction",
+    active_material="TiO₂ (anatase)",
+    support_material="γ-Al₂O₃ beads",
+    configuration="coating",
+    active_fraction_mass=0.08,
+    particle_diameter_mm=3.0,
+    density_kg_m3=1200.0,
+    published_capacity_mg_g=None,  # photocatalytic, not adsorptive
+    published_target="Se(VI) photoreduction",
+    source="Zhang N et al. J. Hazard. Mater. 2008, 150, 481. DOI:10.1016/j.jhazmat.2007.04.131",
+))
+
+_add_composite(CompositeConfig(
+    name="MOF-on-fiber",
+    description="UiO-66-NH₂ grown on electrospun PAN fiber",
+    active_material="UiO-66-NH₂",
+    support_material="PAN nanofiber",
+    configuration="coating",
+    active_fraction_mass=0.30,
+    particle_diameter_mm=None,  # fiber mat, not beads
+    density_kg_m3=None,
+    published_capacity_mg_g=62.0,
+    published_target="Cr(VI)",
+    source="Efome JE et al. Chem. Eng. J. 2018, 352, 737. DOI:10.1016/j.cej.2018.07.035",
+))
+
+_add_composite(CompositeConfig(
+    name="chitosan-MMT",
+    description="Chitosan-montmorillonite composite beads",
+    active_material="chitosan + montmorillonite clay",
+    support_material="chitosan matrix",
+    configuration="blended",
+    active_fraction_mass=0.60,
+    particle_diameter_mm=2.0,
+    density_kg_m3=800.0,
+    published_capacity_mg_g=35.7,
+    published_target="Cr(VI)",
+    published_BV_breakthrough=None,
+    source="Futalan CM et al. Carbohydr. Polym. 2011, 83, 528. DOI:10.1016/j.carbpol.2010.08.024",
+))
+
+_add_composite(CompositeConfig(
+    name="zeolite-cement",
+    description="Natural zeolite blended with Portland cement",
+    active_material="clinoptilolite",
+    support_material="Portland cement",
+    configuration="blended",
+    active_fraction_mass=0.50,
+    particle_diameter_mm=5.0,
+    density_kg_m3=1800.0,
+    published_capacity_mg_g=11.0,
+    published_target="NH₄⁺",
+    source="Widiastuti N et al. Desalination 2011, 277, 15. DOI:10.1016/j.desal.2011.03.030",
+))
+
+_add_composite(CompositeConfig(
+    name="MnO2-on-sand",
+    description="MnO₂-coated sand for radium and heavy metal removal",
+    active_material="MnO₂ (birnessite)",
+    support_material="silica sand",
+    configuration="coating",
+    active_fraction_mass=0.03,
+    particle_diameter_mm=0.7,
+    density_kg_m3=1550.0,
+    published_capacity_mg_g=0.8,
+    published_target="Ra²⁺",
+    published_BV_breakthrough=20000.0,
+    source="Qian J et al. Water Res. 2019, 148, 49. DOI:10.1016/j.watres.2018.10.027",
+))
+
+_add_composite(CompositeConfig(
+    name="alumina-coated-sand",
+    description="Activated alumina coated on sand for fluoride removal",
+    active_material="activated alumina (γ-Al₂O₃)",
+    support_material="silica sand",
+    configuration="coating",
+    active_fraction_mass=0.07,
+    particle_diameter_mm=0.6,
+    density_kg_m3=1500.0,
+    published_capacity_mg_g=3.5,
+    published_target="F⁻",
+    published_BV_breakthrough=8000.0,
+    source="Tripathy SS, Raichur AM. J. Hazard. Mater. 2008, 153, 1043. DOI:10.1016/j.jhazmat.2007.09.100",
+))
+
+
+# ── Composite Design Engine ──────────────────────────────────────────────
+
+@dataclass
+class CompositeDesign(MaterialDesign):
+    """Complete composite material design."""
+    config: CompositeConfig = field(default_factory=lambda: CompositeConfig(
+        name="", description="", active_material="", support_material="",
+        configuration=""))
+    target: TargetSpec = field(default_factory=TargetSpec)
+    metrics: PerformanceMetrics = field(default_factory=PerformanceMetrics)
+
+    # Computed from physics
+    effective_capacity_mg_g: Optional[float] = None
+    pressure_drop_kPa: Optional[float] = None
+    BV_to_breakthrough: Optional[float] = None
+
+    def material_class(self) -> str:
+        return f"Composite ({self.config.configuration})"
+
+    def design_summary(self) -> str:
+        c = self.config
+        lines = [
+            f"Composite: {c.name}",
+            f"  Active: {c.active_material} on {c.support_material} ({c.configuration})",
+        ]
+        if c.active_fraction_mass is not None:
+            lines.append(f"  Active fraction: {c.active_fraction_mass:.0%}")
+        if c.published_capacity_mg_g is not None:
+            lines.append(f"  Published capacity: {c.published_capacity_mg_g} mg/g "
+                         f"({c.published_target})")
+        return "\n".join(lines)
+
+    def predict_performance(self, target: TargetSpec = None) -> PerformanceMetrics:
+        if target is None:
+            target = self.target
+        self.target = target
+        c = self.config
+
+        # Capacity: use published value if target matches, else scale from active fraction
+        capacity_val = None
+        capacity_tier = DataTier.T1_KNOWN
+        capacity_source = ""
+
+        if c.published_capacity_mg_g is not None:
+            capacity_val = c.published_capacity_mg_g
+            capacity_source = f"Published: {c.published_capacity_mg_g} mg/g for {c.published_target}"
+            # If target doesn't match published target, note this
+            if c.published_target and target.target_species and \
+               target.target_species not in c.published_target:
+                capacity_source += f" (measured for {c.published_target}, not {target.target_species})"
+                capacity_tier = DataTier.T2_SOLID  # cross-applied, not direct measurement
+
+        # Pressure drop (T2, if bed parameters available)
+        self.pressure_drop_kPa = None
+        if c.particle_diameter_mm is not None and c.particle_diameter_mm > 0:
+            # Standard conditions: v=1e-3 m/s, L=1m, ε=0.4
+            v_std = 1e-3  # m/s
+            L_std = 1.0   # m
+            dp_m = c.particle_diameter_mm * 1e-3
+            self.pressure_drop_kPa = kozeny_carman_dP_kPa(v_std, L_std, dp_m)
+
+        # Bed volumes to breakthrough (T2 from mass balance, if data available)
+        self.BV_to_breakthrough = None
+        if c.published_BV_breakthrough is not None:
+            self.BV_to_breakthrough = c.published_BV_breakthrough
+        elif (capacity_val is not None and c.density_kg_m3 is not None
+              and capacity_val > 0):
+            # Estimate from capacity + bed density
+            C_feed_mg_L = 0.1  # 100 μg/L typical trace contaminant
+            self.BV_to_breakthrough = bed_volumes_to_breakthrough(
+                capacity_val, c.density_kg_m3, 0.4, C_feed_mg_L
+            )
+
+        # Kinetics: shell diffusion if core-shell
+        kinetics_val = None
+        kinetics_source = ""
+        if c.configuration in ("core-shell", "coating") and c.particle_diameter_mm is not None:
+            R_total = c.particle_diameter_mm * 1e-3 / 2.0
+            f_active = c.active_fraction_mass if c.active_fraction_mass else 0.1
+            # Shell thickness from volume fraction
+            R_core = R_total * (1.0 - f_active) ** (1.0/3.0)
+            kinetics_val = shell_diffusion_t90(R_total, R_core)
+            kinetics_source = "Shell diffusion (T2)"
+
+        # Selectivity: only report if published
+        sel_val = None
+        sel_tier = DataTier.T1_KNOWN
+        if c.published_selectivity is not None:
+            sel_val = c.published_selectivity
+
+        # Cost: only from components if fractions are known
+        cost_val = None
+        # Not estimating — would require T3 component costs. Leave as None.
+
+        # Scalability: composites are generally scalable (simple manufacturing)
+        # Based on configuration type — this is T2 (engineering knowledge)
+        scale_map = {
+            "coating": 0.85,      # coating processes are industrial
+            "impregnated": 0.80,  # impregnation is straightforward
+            "blended": 0.75,      # mixing/extrusion is standard
+            "core-shell": 0.60,   # more complex manufacturing
+        }
+        scalability = scale_map.get(c.configuration, 0.7)
+
+        self.metrics = PerformanceMetrics(
+            capacity_mg_g=TieredValue(capacity_val, capacity_tier, capacity_source)
+                if capacity_val is not None else None,
+            selectivity_ratio=TieredValue(sel_val, sel_tier, "Published")
+                if sel_val is not None else None,
+            kinetics_t90_min=TieredValue(kinetics_val, DataTier.T2_SOLID, kinetics_source)
+                if kinetics_val is not None else None,
+            cost_per_kg_usd=None,  # not estimating without published data
+            scalability_score=TieredValue(scalability, DataTier.T2_SOLID,
+                f"{c.configuration} process scalability"),
+            durability_cycles=None,  # not estimating
+            environmental_score=None,  # not estimating
+        )
+
+        return self.metrics
+
+
+def design_composite(config_name: str, target: TargetSpec) -> CompositeDesign:
+    """Design a composite material for a target."""
+    if config_name not in COMPOSITE_DATABASE:
+        raise KeyError(f"Unknown composite '{config_name}'. "
+                       f"Known: {sorted(COMPOSITE_DATABASE.keys())}")
+    config = COMPOSITE_DATABASE[config_name]
+    design = CompositeDesign(config=config)
+    design.predict_performance(target)
+    return design
+
+
+def screen_composites(target: TargetSpec, top_n: int = 10) -> List[CompositeDesign]:
+    """Screen all known composites against a target."""
+    designs = []
+    for name in COMPOSITE_DATABASE:
+        try:
+            d = design_composite(name, target)
+            designs.append(d)
+        except Exception:
+            pass
+    designs.sort(key=lambda d: d.metrics.composite_score(), reverse=True)
+    return designs[:top_n]
