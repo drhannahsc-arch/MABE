@@ -162,9 +162,37 @@ def sa_score(mol):
     # Size penalty (quadratic above 40 heavy atoms)
     size_penalty = max(0, (n_atoms - 40) * 0.05) if n_atoms > 40 else 0.0
 
+    # Heteroatom diversity: more types of heteroatoms = harder synthesis
+    het_types = set()
+    for atom in mol.GetAtoms():
+        sym = atom.GetSymbol()
+        if sym not in ("C", "H"):
+            het_types.add(sym)
+    n_het_types = len(het_types)
+
+    # Functional group complexity from SMILES patterns
+    smiles_for_fg = Chem.MolToSmiles(mol)
+    fg_penalty = 0.0
+    if "P(=O)" in smiles_for_fg or "P=O" in smiles_for_fg:
+        fg_penalty += 0.6         # phosphonate/phosphine oxide
+    if "C(=S)" in smiles_for_fg or "C=S" in smiles_for_fg:
+        fg_penalty += 0.4         # thioamide/dithiocarbamate
+    if "S(=O)(=O)" in smiles_for_fg:
+        fg_penalty += 0.5         # sulfonamide/sulfonate
+    if "N=C" in smiles_for_fg or "C=N" in smiles_for_fg:
+        fg_penalty += 0.2         # imine/oxime
+    if "B(O)" in smiles_for_fg:
+        fg_penalty += 0.5         # boronic acid
+    if "N=N" in smiles_for_fg:
+        fg_penalty += 0.3         # hydrazide/azo
+
+    # MW-based baseline (heavier molecules generally harder to make)
+    mw = Descriptors.MolWt(mol)
+    mw_term = mw / 200.0  # ~1.0 for MW=200, ~1.5 for MW=300
+
     # Complexity score
     complexity = (
-        1.0                                    # baseline
+        mw_term                                # MW-scaled baseline (not flat 1.0)
         + n_rings * 0.3                        # each ring adds difficulty
         + n_spiro * 1.0                        # spiro centers are hard
         + n_bridgehead * 1.0                   # bridgeheads are hard
@@ -172,6 +200,8 @@ def sa_score(mol):
         + macro_penalty
         + size_penalty
         + max(0, n_rotatable - 10) * 0.1       # very flexible = harder to purify
+        + max(0, n_het_types - 2) * 0.3        # heteroatom diversity penalty
+        + fg_penalty                           # functional group complexity
     )
 
     # Clamp to 1-10
@@ -454,7 +484,44 @@ ARM_LIBRARY = [
         "sulfonate"),
 
     # ── HYDROGEN CAP ─────────────────────────────────────────────────────
-    Arm("H-cap", "[*][H]", [], "", "", "cap"),
+
+    # ── SOFT DONOR ARMS (added for Pb/Hg/Cd selectivity) ────────────────
+    Arm("thioether-propyl", "[*]CCCS", ["S_thioether"], "S", "soft",
+        "thioether, propyl spacer"),
+    Arm("thioacetate", "[*]CC(=S)O", ["S_thioamide", "O_carboxylate"], "S", "soft",
+        "thioacetate, bidentate S/O"),
+    Arm("mercaptoacetate", "[*]SCC(=O)O", ["S_thiol", "O_carboxylate"], "S", "soft",
+        "mercaptoacetic acid arm, S+O bidentate"),
+    Arm("pyridine-2-thiol", "[*]c1cccc(S)n1", ["N_pyridine", "S_thiol"], "S", "borderline",
+        "NS bidentate, borderline-soft"),
+    Arm("thiadiazole-thiol", "[*]c1nnc(S)s1", ["S_thiol", "N_imine"], "S", "soft",
+        "1,3,4-thiadiazole-2-thiol, strong soft donor"),
+        # ── RECEPTOR-SPECIFIC ARMS (aromatic panels, H-bond arrays) ────────────
+    Arm("indolyl", "[*]c1c[nH]c2ccccc12",
+        ["N_pyrrole"], "N", "borderline",
+        "Indole: NH donor + large aromatic surface, tryptophan mimic"),
+    Arm("pyrrole", "[*]c1ccc[nH]1",
+        ["N_pyrrole"], "N", "borderline",
+        "Pyrrole: NH donor for anion binding, calixpyrrole unit"),
+    Arm("naphthyl", "[*]c1cccc2ccccc12",
+        [], "C", "borderline",
+        "Naphthyl: large aromatic panel for pi-stacking / hydrophobic wall"),
+    Arm("anthracenyl", "[*]c1ccc2cc3ccccc3cc2c1",
+        [], "C", "borderline",
+        "Anthracenyl: large pi surface, fluorescent reporter + stacking"),
+    Arm("urea-NH2", "[*]NC(=O)N",
+        ["N_amine", "O_carbonyl"], "N", "hard",
+        "Terminal urea: 2 NH donors + C=O acceptor, anion binding arm"),
+    Arm("guanidinium", "[*]NC(=N)N",
+        ["N_amine"], "N", "hard",
+        "Guanidinium: cationic, charge-assisted H-bond donor for oxoanions"),
+    Arm("sulfonamide-NH", "[*]NS(=O)(=O)C",
+        ["N_amine"], "N", "borderline",
+        "Sulfonamide: acidic NH donor (pKa ~10), anion recognition"),
+    Arm("nitrophenyl", "[*]c1ccc([N+](=O)[O-])cc1",
+        [], "C", "borderline",
+        "p-Nitrophenyl: electron-poor aromatic, CT stacking with electron-rich guests"),
+        Arm("H-cap", "[*][H]", [], "", "", "cap"),
 
     # ── PEPTIDIC SIDE CHAINS ──────────────────────────────────────────
     Arm("cysteinyl", "[*]CC(N)C(=O)O",
@@ -1263,30 +1330,54 @@ def enumerate_molecules(metal=None, host=None, max_candidates=500,
     seen = set()
     results = []
 
+    # Round-robin across backbones to ensure scaffold diversity.
+    # Each backbone gets a budget, then we cycle until max_candidates.
+    import random as _rng
+    _rng.seed(42)
+
+    # Build combo iterators per backbone
+    bb_combos = {}
     for bb in backbones:
-        # Generate all arm combinations for this backbone
-        arm_combos = cartesian_product(compatible_arms, repeat=bb.n_sites)
+        combos = list(cartesian_product(compatible_arms, repeat=bb.n_sites))
+        _rng.shuffle(combos)
+        bb_combos[bb.name] = (bb, combos, 0)  # (backbone, shuffled combos, index)
 
-        for arm_tuple in arm_combos:
+    # Round-robin: take N from each backbone per round
+    PER_ROUND = max(3, max_candidates // (len(backbones) * 5))
+    active_bbs = list(bb_combos.keys())
+    _rng.shuffle(active_bbs)
+
+    while len(results) < max_candidates and active_bbs:
+        next_active = []
+        for bb_name in active_bbs:
             if len(results) >= max_candidates:
-                return results
+                break
+            bb, combos, idx = bb_combos[bb_name]
+            added = 0
+            while idx < len(combos) and added < PER_ROUND:
+                arm_tuple = combos[idx]
+                idx += 1
 
-            smiles, mol = assemble(bb, list(arm_tuple))
-            if smiles is None:
-                continue
+                smiles, mol = assemble(bb, list(arm_tuple))
+                if smiles is None:
+                    continue
 
-            # Dedup by canonical SMILES
-            if smiles in seen:
-                continue
-            seen.add(smiles)
+                if smiles in seen:
+                    continue
+                seen.add(smiles)
 
-            # Property filter
-            if not passes_filter(smiles, mol, pfilter):
-                continue
+                if not passes_filter(smiles, mol, pfilter):
+                    continue
 
-            sa = sa_score(mol)
-            arm_names = [a.name for a in arm_tuple]
-            results.append((smiles, bb.name, arm_names, sa))
+                sa = sa_score(mol)
+                arm_names = [a.name for a in arm_tuple]
+                results.append((smiles, bb.name, arm_names, sa))
+                added += 1
+
+            bb_combos[bb_name] = (bb, combos, idx)
+            if idx < len(combos):
+                next_active.append(bb_name)
+        active_bbs = next_active
 
     return results
 
@@ -2239,6 +2330,102 @@ RECEPTOR_BACKBONE_LIBRARY = [
              "[1*]c1ccc(-c2ccc([2*])cc2)cc1",
              2, "aromatic",
              "Biphenyl: rotatable but can converge arms"),
+    # ── SOFT-METAL SELECTIVE (added for Pb/Hg/Cd selectivity) ────────────
+    Backbone("bis-thioether-en", "[1*]SCCSC[2*]", 2, "linear",
+             "S2N0 podand, soft-metal selective via thioether donors"),
+    Backbone("NS2-triamine", "[1*]NCCSCCS[2*]", 2, "linear",
+             "NS2 mixed donor, borderline-soft selectivity"),
+    Backbone("dithiol-propyl", "[1*]SCCCS[2*]", 2, "linear",
+             "S2 dithiol, highly soft-selective"),
+    Backbone("pyridine-2-thiol-6-subst", "[1*]c1cccc(S)n1", 1, "aromatic",
+             "Pyridine-thiol NS donor, borderline-soft"),
+    Backbone("thiophene-2,5-disubst", "[1*]c1ccc([2*])s1", 2, "aromatic",
+             "Thiophene S-donor platform, soft metal selective"),
+    Backbone("thioether-crown-S3", "[1*]SCCSCCSC[2*]", 2, "macrocyclic",
+             "Trithia macrocyclic motif, high Pb/Hg selectivity"),
+    Backbone("NS2-macrocycle", "[1*]N1CCSCCSCC1[2*]", 2, "macrocyclic",
+             "NS2 macrocycle, Pb²⁺ / Cd²⁺ selective"),
+    # ── DEEP CLEFTS & AROMATIC BOXES ─────────────────────────────────────
+    Backbone("diphenylmethane-cleft",
+             "[1*]c1ccc(Cc2ccc([2*])cc2)cc1",
+             2, "aromatic",
+             "Diphenylmethane: hinged aromatic cleft, ~120 deg angle. "
+             "Ref: Zimmerman HJ. Chem. Rev. 1997, 97, 1681"),
+    Backbone("fluorene-platform",
+             "[1*]c1ccc2c(c1)Cc1cc([2*])ccc1-2",
+             2, "aromatic",
+             "Fluorene: rigid 9H-fluorene platform, coplanar arms. "
+             "Ref: Cram DJ. Science 1988, 240, 760"),
+    Backbone("carbazole-cleft",
+             "[1*]c1ccc2c(c1)[nH]c1cc([2*])ccc12",
+             2, "aromatic",
+             "Carbazole: NH donor at hinge + two aromatic walls. "
+             "Ref: Etter MC. JACS 1990, 112, 8415"),
+    Backbone("acridine-cleft",
+             "[1*]c1ccc2cc3ccc([2*])cc3nc2c1",
+             2, "aromatic",
+             "Acridine: N-heterocycle hinge, fluorescent, intercalator geometry. "
+             "Ref: Albert A. The Acridines, 2nd ed., Arnold 1966"),
+    Backbone("terphenyl-spacer",
+             "[1*]c1ccc(-c2ccc(-c3ccc([2*])cc3)cc2)cc1",
+             2, "aromatic",
+             "Terphenyl: extended linear spacer, ~15 A arm separation. "
+             "Ref: Hamilton AD. Chem. Rev. 1997, 97, 1669"),
+    Backbone("diphenylamine-cleft",
+             "[1*]c1ccc(Nc2ccc([2*])cc2)cc1",
+             2, "aromatic",
+             "Diphenylamine: NH at hinge, electron-rich walls, ~120 deg. "
+             "Ref: Anslyn EV. JACS 2005, 127, 15566"),
+    Backbone("bis-naphthyl-methane",
+             "[1*]c1ccc2ccccc2c1Cc1c([2*])ccc2ccccc12",
+             2, "aromatic",
+             "Bis(naphthyl)methane: large aromatic cleft for PAH guests. "
+             "Ref: Klärner FG. Angew. Chem. Int. Ed. 2001, 40, 3635"),
+
+    # ── ANION-BINDING SCAFFOLDS ──────────────────────────────────────────
+    Backbone("thiourea-cleft",
+             "[1*]NC(=S)NC(=S)N[2*]",
+             2, "linear",
+             "Bis-thiourea: 4 NH donors, strong anion/oxoanion binding. "
+             "Ref: Gale PA. Chem. Commun. 2005, 3761"),
+    Backbone("bis-amidopyridine",
+             "[1*]NC(=O)c1cccc(C(=O)N[2*])n1",
+             2, "aromatic",
+             "2,6-bis(amido)pyridine: Hamilton-type receptor, 3 convergent H-bond "
+             "donors for barbiturate/carboxylate guests. "
+             "Ref: Hamilton AD. JACS 1988, 110, 1318"),
+    Backbone("bis-sulfonamide-arene",
+             "[1*]NS(=O)(=O)c1cccc(S(=O)(=O)N[2*])c1",
+             2, "aromatic",
+             "Bis-sulfonamide: acidic NH donors, anion cleft. "
+             "Ref: Gale PA. Coord. Chem. Rev. 2003, 240, 191"),
+    Backbone("bis-pyrrole-methane",
+             "[1*]c1ccc([nH]1)Cc1ccc([2*])[nH]1",
+             2, "aromatic",
+             "Dipyrromethane: calix[4]pyrrole precursor, 2 NH donors converging. "
+             "Ref: Sessler JL. Angew. Chem. Int. Ed. 1996, 35, 2380"),
+    Backbone("guanidinium-cleft",
+             "[1*]NC(=N)NC(=N)N[2*]",
+             2, "linear",
+             "Bis-guanidinium: cationic H-bond donor array, strong oxoanion binding. "
+             "Ref: Schmidtchen FP. Chem. Rev. 1997, 97, 1609"),
+
+    # ── CAPSULE-FORMING & 3D ENCAPSULATION ───────────────────────────────
+    Backbone("tris-urea-tripod",
+             "[1*]NC(=O)CCN(CCNC(=O)[2*])CCNC(=O)[3*]",
+             3, "branched",
+             "Tris(ureido)amine: 3 convergent urea NH pairs, cage-like H-bond "
+             "capsule when dimerized. Ref: Rebek J. JACS 1996, 118, 2545"),
+    Backbone("triamino-cyclohexane",
+             "[1*]N[C@H]1C[C@@H](N[2*])C[C@H](N[3*])C1",
+             3, "cyclic",
+             "cis,cis-1,3,5-triaminocyclohexane: preorganized tripodal receptor, "
+             "C3v symmetry. Ref: Steed JW. Supramol. Chem. 2000, 12, 129"),
+    Backbone("benzene-tricarboxamide-extended",
+             "[1*]CNC(=O)c1cc(C(=O)NC[2*])cc(C(=O)NC[3*])c1",
+             3, "aromatic",
+             "Extended trimesic triamide: methylene spacers give deeper cavity. "
+             "Ref: Meijer EW. Chem. Rev. 2001, 101, 3893"),
 ]
 
 
@@ -2289,7 +2476,32 @@ _COMPLEMENTARY_ARM_MAP = {
         # Arms with hydrophobic character
         ("thioether-methyl", 0.5),
         ("thiol-ethyl", 0.4),
-        ("H-cap", 0.3),                # leave site unfunctionalized
+        ("naphthyl", 0.85),            # large hydrophobic aromatic wall
+        ("anthracenyl", 0.9),          # largest aromatic panel
+        ("H-cap", 0.3),               # leave site unfunctionalized
+    ],
+    "anion": [
+        # Arms that bind anions (carboxylate, phosphate, halide)
+        ("pyrrole", 0.85),             # NH donor, calixpyrrole-like
+        ("indolyl", 0.8),              # indole NH donor
+        ("urea-NH2", 0.9),            # strong NH donor array
+        ("guanidinium", 0.95),         # charge-assisted, best for oxoanions
+        ("sulfonamide-NH", 0.75),      # acidic NH
+        ("squaramide", 0.85),          # acidic NH + planar
+        ("thiourea", 0.8),             # 2x NH donors
+    ],
+    "electron_poor_aromatic": [
+        # Arms for charge-transfer stacking with electron-rich guests
+        ("nitrophenyl", 0.9),          # strong electron-withdrawing
+        ("sulfonamide-NH", 0.5),       # weakly electron-poor ring
+        ("2-pyridyl", 0.6),            # moderately electron-poor
+    ],
+    "electron_rich_aromatic": [
+        # Arms for CT stacking with electron-poor guests (quinones, NDI)
+        ("catechol", 0.9),             # electron-rich, strong CT with quinones
+        ("indolyl", 0.85),             # electron-rich heterocycle
+        ("phenol", 0.7),               # moderately electron-rich
+        ("naphthyl", 0.6),             # neutral aromatic
     ],
 }
 
