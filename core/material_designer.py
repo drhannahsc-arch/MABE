@@ -362,6 +362,305 @@ def selectivity_from_K(K_target: float, K_interferent: float) -> float:
     return K_target / K_interferent
 
 
+
+# ── Competitive Langmuir (T2) ────────────────────────────────────────────
+
+def competitive_langmuir(q_max_mg_g: float, K_target: float, C_target_mM: float,
+                          K_interferents: list, C_interferents_mM: list) -> float:
+    """Competitive (multi-component) Langmuir isotherm.
+
+    q_target = q_max × K_t × C_t / (1 + K_t × C_t + Σ_i K_i × C_i)
+
+    All species compete for the same sites. Higher K_i × C_i for
+    interferents reduces target uptake.
+
+    Parameters
+    ----------
+    q_max_mg_g : float
+        Maximum monolayer capacity (mg target / g sorbent).
+    K_target : float
+        Langmuir constant for target (L/mmol).
+    C_target_mM : float
+        Target equilibrium concentration (mM).
+    K_interferents : list of float
+        Langmuir constants for each interferent (L/mmol).
+    C_interferents_mM : list of float
+        Equilibrium concentrations of interferents (mM).
+
+    Returns
+    -------
+    float
+        Target uptake under competition (mg/g).
+
+    Physics tier: T2 (Butler & Ockrent 1930; Markham & Benton 1931).
+    """
+    denominator = 1.0 + K_target * C_target_mM
+    for Ki, Ci in zip(K_interferents, C_interferents_mM):
+        denominator += Ki * Ci
+    if denominator <= 0:
+        return 0.0
+    return q_max_mg_g * K_target * C_target_mM / denominator
+
+
+def competitive_reduction_factor(K_target: float, C_target_mM: float,
+                                   K_interferents: list,
+                                   C_interferents_mM: list) -> float:
+    """Fraction of single-component capacity retained under competition.
+
+    f = q_competitive / q_single = (1 + K_t×C_t) / (1 + K_t×C_t + Σ K_i×C_i)
+
+    Parameters
+    ----------
+    (same as competitive_langmuir)
+
+    Returns
+    -------
+    float
+        Reduction factor 0–1. 1.0 = no competition effect.
+
+    Physics tier: T2.
+    """
+    single_denom = 1.0 + K_target * C_target_mM
+    comp_denom = single_denom
+    for Ki, Ci in zip(K_interferents, C_interferents_mM):
+        comp_denom += Ki * Ci
+    if comp_denom <= 0:
+        return 0.0
+    return single_denom / comp_denom
+
+
+# ── Ionic Strength Correction: Davies Equation (T2) ──────────────────────
+
+def davies_log_gamma(z: int, I: float) -> float:
+    """Davies equation: activity coefficient for an ion.
+
+    log₁₀(γ) = -A × z² × (√I / (1 + √I) - 0.3 × I)
+
+    where A = 0.509 at 25°C in water.
+
+    Valid for I < 0.5 M. Standard in environmental/geochemistry.
+
+    Parameters
+    ----------
+    z : int
+        Ion charge (absolute value used).
+    I : float
+        Ionic strength (M).
+
+    Returns
+    -------
+    float
+        log₁₀(γ), typically negative (γ < 1 at I > 0).
+
+    Physics tier: T2 (Davies 1962, based on Debye-Hückel theory).
+
+    Reference:
+        Davies CW. Ion Association. Butterworths, London, 1962.
+    """
+    A = 0.509  # Debye-Hückel A parameter at 25°C, water
+    z_abs = abs(z)
+    if I <= 0:
+        return 0.0  # ideal solution
+    sqrt_I = math.sqrt(I)
+    return -A * z_abs**2 * (sqrt_I / (1.0 + sqrt_I) - 0.3 * I)
+
+
+def activity_coefficient(z: int, I: float) -> float:
+    """Activity coefficient γ from Davies equation.
+
+    γ = 10^(log₁₀(γ))
+
+    Physics tier: T2.
+    """
+    return 10.0 ** davies_log_gamma(z, I)
+
+
+def ionic_strength_from_species(charges: list, concentrations_mM: list) -> float:
+    """Compute ionic strength from solution composition.
+
+    I = 0.5 × Σ c_i × z_i²
+
+    Parameters
+    ----------
+    charges : list of int
+    concentrations_mM : list of float
+        In mM (= mmol/L = mol/m³).
+
+    Returns
+    -------
+    float
+        Ionic strength in M (mol/L).
+
+    Physics tier: T2 (Lewis & Randall 1921).
+    """
+    I = 0.0
+    for z, c in zip(charges, concentrations_mM):
+        I += c * z**2
+    return I * 0.5 / 1000.0  # mM → M
+
+
+def correct_K_for_ionic_strength(K_ideal: float, z_target: int,
+                                   z_site: int, I: float) -> float:
+    """Correct a Langmuir constant for non-ideal solution behavior.
+
+    The binding equilibrium A^z + S^z' ⇌ AS involves activity coefficients:
+    K_apparent = K_ideal × γ_A × γ_S / γ_AS
+
+    Simplified for sorbent sites (γ_S ≈ 1, γ_AS ≈ 1):
+    K_apparent ≈ K_ideal × γ_A
+
+    Higher ionic strength → lower γ → lower effective K for charged species.
+    Neutral species (z=0): γ = 1, no correction.
+
+    Parameters
+    ----------
+    K_ideal : float
+        Langmuir constant at I → 0.
+    z_target : int
+        Target ion charge.
+    z_site : int
+        Sorbent site charge (for product correction). Set to 0 if unknown.
+    I : float
+        Ionic strength (M).
+
+    Returns
+    -------
+    float
+        Corrected Langmuir constant.
+
+    Physics tier: T2.
+    """
+    if I <= 0 or z_target == 0:
+        return K_ideal
+    gamma_target = activity_coefficient(z_target, I)
+    # Product correction: AS complex has charge z_target + z_site
+    gamma_product = activity_coefficient(z_target + z_site, I) if z_site != 0 else 1.0
+    gamma_site = activity_coefficient(z_site, I) if z_site != 0 else 1.0
+    # K_app = K_ideal × γ_A × γ_S / γ_AS
+    if gamma_product <= 0:
+        return K_ideal
+    return K_ideal * gamma_target * gamma_site / gamma_product
+
+
+# ── Thomas Model Breakthrough Curve (T2) ─────────────────────────────────
+
+def thomas_breakthrough(BV: float, BV_50: float, k_Th_BV: float) -> float:
+    """Thomas model: effluent concentration ratio at a given bed volume.
+
+    C/C₀ = 1 / (1 + exp(k_Th × (BV_50 - BV)))
+
+    This is the sigmoidal breakthrough curve. At BV = BV_50, C/C₀ = 0.5.
+    k_Th controls the steepness (sharper front = higher k_Th).
+
+    Parameters
+    ----------
+    BV : float
+        Bed volumes of solution passed (dimensionless).
+    BV_50 : float
+        Bed volumes at 50% breakthrough (center of S-curve).
+    k_Th_BV : float
+        Thomas rate parameter (1/BV). Higher = sharper front.
+        Typical: 0.001–0.01 for IX, 0.01–0.1 for adsorption.
+
+    Returns
+    -------
+    float
+        C/C₀ at the given BV (0–1).
+
+    Physics tier: T2 (Thomas 1944).
+
+    Reference:
+        Thomas HC. J. Am. Chem. Soc. 1944, 66, 1664.
+    """
+    exponent = k_Th_BV * (BV_50 - BV)
+    # Clamp to avoid overflow
+    exponent = max(-500.0, min(500.0, exponent))
+    return 1.0 / (1.0 + math.exp(exponent))
+
+
+def thomas_BV_at_breakthrough(BV_50: float, k_Th_BV: float,
+                                C_ratio: float = 0.05) -> float:
+    """Bed volumes at a specified breakthrough ratio.
+
+    Inverts the Thomas model:
+    BV = BV_50 - ln(1/f - 1) / k_Th
+
+    where f = C/C₀ at breakthrough.
+
+    Parameters
+    ----------
+    BV_50 : float
+        Bed volumes at 50% breakthrough.
+    k_Th_BV : float
+        Thomas rate parameter (1/BV).
+    C_ratio : float
+        Breakthrough criterion (default 0.05 = 5% of feed).
+
+    Returns
+    -------
+    float
+        Bed volumes to specified breakthrough.
+
+    Physics tier: T2.
+    """
+    if k_Th_BV <= 0 or C_ratio <= 0 or C_ratio >= 1:
+        return BV_50
+    return BV_50 - math.log(1.0 / C_ratio - 1.0) / k_Th_BV
+
+
+def thomas_curve(BV_50: float, k_Th_BV: float,
+                  n_points: int = 100) -> list:
+    """Generate a full Thomas breakthrough curve.
+
+    Returns list of (BV, C/C₀) tuples from 0 to 2×BV_50.
+
+    Physics tier: T2.
+    """
+    BV_max = 2.0 * BV_50
+    curve = []
+    for i in range(n_points + 1):
+        BV = BV_max * i / n_points
+        ratio = thomas_breakthrough(BV, BV_50, k_Th_BV)
+        curve.append((BV, ratio))
+    return curve
+
+
+def estimate_thomas_k_from_kinetics(t90_min: float, v_m_s: float,
+                                      dp_m: float) -> float:
+    """Estimate Thomas rate parameter from kinetic and flow data.
+
+    k_Th ≈ 1 / (t_90 × v / dp) (dimensionless scaling)
+
+    This is a T2 dimensional analysis estimate, not fitted.
+
+    Parameters
+    ----------
+    t90_min : float
+        Time to 90% equilibrium in batch (minutes).
+    v_m_s : float
+        Superficial velocity (m/s).
+    dp_m : float
+        Particle diameter (m).
+
+    Returns
+    -------
+    float
+        Estimated k_Th in 1/BV units.
+
+    Physics tier: T2 (dimensional analysis).
+    """
+    if t90_min <= 0 or v_m_s <= 0 or dp_m <= 0:
+        return 0.01  # default moderate steepness
+    t90_s = t90_min * 60.0
+    # Dimensionless time scale: number of particle transits during t90
+    n_transits = v_m_s * t90_s / dp_m
+    if n_transits <= 0:
+        return 0.01
+    # k_Th scales inversely with the number of transits needed
+    return 1.0 / n_transits
+
+
+
 def pore_size_exclusion(pore_diameter_A: float,
                          species_diameter_A: float) -> bool:
     """Check if species can enter the pore.
@@ -570,18 +869,54 @@ class FrameworkDesign(MaterialDesign):
             dG_bind = -35.0  # charged target + functionalized = stronger
         self.K_L = langmuir_K_from_dG(dG_bind, target.T_K)
 
-        # 6. Equilibrium capacity at target concentration
-        C_eq = 0.1  # mM default (typical trace contaminant)
-        q_eq = langmuir_capacity(self.q_max_mg_g, self.K_L, C_eq)
+        # 6. Ionic strength correction (T2: Davies equation)
+        I = target.ionic_strength_M
+        if I > 0 and target.target_charge != 0:
+            self.K_L = correct_K_for_ionic_strength(
+                self.K_L, target.target_charge, 0, I
+            )
 
-        # 7. Selectivity (T3: size + electronic)
+        # 7. Equilibrium capacity — single component
+        C_eq = 0.1  # mM default (typical trace contaminant)
+        q_eq_single = langmuir_capacity(self.q_max_mg_g, self.K_L, C_eq)
+
+        # 8. Competitive Langmuir if interferents present
+        q_eq = q_eq_single
+        comp_factor = 1.0
+        if target.interferent_species and target.interferent_concentrations_mM:
+            # Estimate K for interferents (scaled from target K by charge ratio)
+            K_intfs = []
+            C_intfs = list(target.interferent_concentrations_mM)
+            for intf in target.interferent_species:
+                # Interferent K: assume similar binding but corrected for charge
+                K_i = self.K_L * 0.5  # default: interferent binds half as well
+                if I > 0:
+                    # Rough charge estimate from species string
+                    z_i = intf.count('+') - intf.count('-')
+                    if z_i == 0:
+                        z_i = 1  # default monovalent
+                    K_i = correct_K_for_ionic_strength(K_i, z_i, 0, I)
+                K_intfs.append(K_i)
+
+            # Pad concentrations if fewer than species
+            while len(C_intfs) < len(K_intfs):
+                C_intfs.append(1.0)  # 1 mM default interferent
+
+            q_eq = competitive_langmuir(
+                self.q_max_mg_g, self.K_L, C_eq, K_intfs, C_intfs
+            )
+            comp_factor = competitive_reduction_factor(
+                self.K_L, C_eq, K_intfs, C_intfs
+            )
+
+        # 9. Selectivity from competitive model
         selectivity = 1.0
-        if self.pore_accessible and target.interferent_species:
-            # Size exclusion: if interferent is larger than pore, infinite selectivity
-            # Otherwise, selectivity from K ratio
-            selectivity = 10.0  # default moderate selectivity
-            if target.target_charge != 0:
-                selectivity *= 2.0  # charge helps
+        if self.pore_accessible and comp_factor > 0:
+            # Selectivity ≈ 1/competition_factor (how much capacity is retained)
+            selectivity = 1.0 / (1.0 - comp_factor + 1e-10) if comp_factor < 1.0 else 100.0
+            selectivity = min(selectivity, 100.0)  # cap at 100
+        if not self.pore_accessible:
+            selectivity = 0.1  # inaccessible pore = poor
 
         # 8. Kinetics
         # Realistic bead size for column application (200 μm default)
@@ -1425,8 +1760,31 @@ class PolymericSorbentDesign(MaterialDesign):
         elif s.selectivity_class == "soft-metal":
             dG_bind = -40.0
         K_L = langmuir_K_from_dG(dG_bind, target.T_K)
+
+        # Ionic strength correction (T2: Davies)
+        I = target.ionic_strength_M
+        if I > 0 and target.target_charge != 0:
+            K_L = correct_K_for_ionic_strength(
+                K_L, target.target_charge, 0, I
+            )
+
+        # Single-component capacity
         C_eq = 0.1
-        q_eq = langmuir_capacity(self.q_max_mg_g, K_L, C_eq)
+        q_eq_single = langmuir_capacity(self.q_max_mg_g, K_L, C_eq)
+
+        # Competitive Langmuir
+        q_eq = q_eq_single
+        if target.interferent_species and target.interferent_concentrations_mM:
+            K_intfs = []
+            C_intfs = list(target.interferent_concentrations_mM)
+            for intf in target.interferent_species:
+                K_i = K_L * 0.3  # interferents bind weaker on IX resins
+                K_intfs.append(K_i)
+            while len(C_intfs) < len(K_intfs):
+                C_intfs.append(1.0)
+            q_eq = competitive_langmuir(
+                self.q_max_mg_g, K_L, C_eq, K_intfs, C_intfs
+            )
 
         # 8. Cost
         cost = POLYMER_COST.get(s.cost_class, POLYMER_COST["moderate"])

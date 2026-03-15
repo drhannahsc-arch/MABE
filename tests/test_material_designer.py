@@ -699,3 +699,198 @@ class TestUnifiedWithComposites:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Enhanced Physics: Competitive Langmuir, Davies, Thomas
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.material_designer import (
+    competitive_langmuir, competitive_reduction_factor,
+    davies_log_gamma, activity_coefficient, ionic_strength_from_species,
+    correct_K_for_ionic_strength,
+    thomas_breakthrough, thomas_BV_at_breakthrough, thomas_curve,
+    estimate_thomas_k_from_kinetics,
+)
+
+
+class TestCompetitiveLangmuir:
+
+    def test_no_interferents_equals_single(self):
+        """With no interferents, competitive = single-component."""
+        q_single = langmuir_capacity(100.0, 1.0, 0.1)
+        q_comp = competitive_langmuir(100.0, 1.0, 0.1, [], [])
+        assert q_comp == pytest.approx(q_single)
+
+    def test_interferent_reduces_capacity(self):
+        q_single = competitive_langmuir(100.0, 1.0, 0.1, [], [])
+        q_comp = competitive_langmuir(100.0, 1.0, 0.1, [1.0], [5.0])
+        assert q_comp < q_single
+
+    def test_more_interferents_more_reduction(self):
+        q_1 = competitive_langmuir(100.0, 1.0, 0.1, [1.0], [1.0])
+        q_3 = competitive_langmuir(100.0, 1.0, 0.1, [1.0, 1.0, 1.0], [1.0, 1.0, 1.0])
+        assert q_3 < q_1
+
+    def test_high_target_K_resists_competition(self):
+        """High K_target means target wins competition."""
+        q_strong = competitive_langmuir(100.0, 100.0, 0.1, [1.0], [5.0])
+        q_weak = competitive_langmuir(100.0, 1.0, 0.1, [1.0], [5.0])
+        assert q_strong > q_weak
+
+    def test_reduction_factor_bounded(self):
+        f = competitive_reduction_factor(1.0, 0.1, [1.0], [5.0])
+        assert 0.0 < f < 1.0
+
+    def test_reduction_factor_one_without_competition(self):
+        f = competitive_reduction_factor(1.0, 0.1, [], [])
+        assert f == pytest.approx(1.0)
+
+
+class TestDaviesEquation:
+
+    def test_ideal_at_zero_I(self):
+        assert activity_coefficient(2, 0.0) == pytest.approx(1.0)
+
+    def test_gamma_decreases_with_I(self):
+        g_low = activity_coefficient(1, 0.001)
+        g_high = activity_coefficient(1, 0.1)
+        assert g_high < g_low
+
+    def test_higher_charge_lower_gamma(self):
+        """Divalent ions are more affected than monovalent."""
+        g1 = activity_coefficient(1, 0.1)
+        g2 = activity_coefficient(2, 0.1)
+        assert g2 < g1
+
+    def test_z1_I01_textbook_value(self):
+        """z=1 at I=0.1: γ ≈ 0.78 (textbook reference)."""
+        g = activity_coefficient(1, 0.1)
+        assert 0.75 < g < 0.82
+
+    def test_z2_I01_textbook_value(self):
+        """z=2 at I=0.1: γ ≈ 0.37 (textbook reference)."""
+        g = activity_coefficient(2, 0.1)
+        assert 0.33 < g < 0.42
+
+    def test_neutral_species_gamma_one(self):
+        """z=0: γ = 1 always (no charge → no Debye-Hückel effect)."""
+        assert activity_coefficient(0, 0.5) == pytest.approx(1.0)
+
+    def test_ionic_strength_calculation(self):
+        """0.1 M NaCl: I = 0.5×(0.1×1² + 0.1×1²) = 0.1 M."""
+        I = ionic_strength_from_species([1, -1], [100.0, 100.0])  # 100 mM each
+        assert I == pytest.approx(0.1)
+
+    def test_ionic_strength_divalent(self):
+        """0.01 M CaCl₂: I = 0.5×(0.01×4 + 0.02×1) = 0.03 M."""
+        I = ionic_strength_from_species([2, -1], [10.0, 20.0])  # 10 mM Ca, 20 mM Cl
+        assert I == pytest.approx(0.03)
+
+    def test_K_correction_reduces_K(self):
+        """Higher I → lower effective K for charged species."""
+        K_low = correct_K_for_ionic_strength(1.0, 2, 0, 0.001)
+        K_high = correct_K_for_ionic_strength(1.0, 2, 0, 0.5)
+        assert K_high < K_low
+
+    def test_K_correction_neutral_unchanged(self):
+        """Neutral species: K unaffected by ionic strength."""
+        K = correct_K_for_ionic_strength(1.0, 0, 0, 0.5)
+        assert K == pytest.approx(1.0)
+
+
+class TestThomasModel:
+
+    def test_midpoint_is_half(self):
+        """At BV = BV_50, C/C₀ = 0.5."""
+        ratio = thomas_breakthrough(5000.0, 5000.0, 0.01)
+        assert abs(ratio - 0.5) < 0.001
+
+    def test_early_BV_low_ratio(self):
+        """Well before BV_50, C/C₀ ≈ 0."""
+        ratio = thomas_breakthrough(1000.0, 5000.0, 0.005)
+        assert ratio < 0.01
+
+    def test_late_BV_high_ratio(self):
+        """Well after BV_50, C/C₀ ≈ 1."""
+        ratio = thomas_breakthrough(9000.0, 5000.0, 0.005)
+        assert ratio > 0.99
+
+    def test_monotonically_increasing(self):
+        """Breakthrough curve is monotonically increasing."""
+        ratios = [thomas_breakthrough(bv, 5000.0, 0.005)
+                  for bv in range(0, 10001, 500)]
+        for i in range(len(ratios) - 1):
+            assert ratios[i + 1] >= ratios[i]
+
+    def test_sharper_k_steeper_curve(self):
+        """Higher k_Th → steeper front."""
+        # At BV just before BV_50
+        r_gentle = thomas_breakthrough(4500.0, 5000.0, 0.001)
+        r_sharp = thomas_breakthrough(4500.0, 5000.0, 0.01)
+        assert r_gentle > r_sharp  # gentle slope → higher C/C0 before midpoint
+
+    def test_BV_at_breakthrough_before_midpoint(self):
+        """5% breakthrough occurs before BV_50."""
+        bv_5 = thomas_BV_at_breakthrough(5000.0, 0.005, 0.05)
+        assert bv_5 < 5000.0
+        assert bv_5 > 0
+
+    def test_BV_at_breakthrough_increases_with_sharper_k(self):
+        """Sharper front → later first breakthrough (cleaner effluent longer)."""
+        bv_gentle = thomas_BV_at_breakthrough(5000.0, 0.001, 0.05)
+        bv_sharp = thomas_BV_at_breakthrough(5000.0, 0.01, 0.05)
+        assert bv_sharp > bv_gentle
+
+    def test_curve_has_correct_length(self):
+        curve = thomas_curve(5000.0, 0.005, n_points=50)
+        assert len(curve) == 51  # 0..50 inclusive
+
+    def test_curve_starts_near_zero(self):
+        curve = thomas_curve(5000.0, 0.005)
+        assert curve[0][1] < 0.01  # first point near 0
+
+    def test_curve_ends_near_one(self):
+        curve = thomas_curve(5000.0, 0.005)
+        assert curve[-1][1] > 0.99  # last point near 1
+
+
+class TestCompetitionInFramework:
+
+    def test_competition_reduces_framework_capacity(self):
+        """Framework capacity should drop with interferents present."""
+        target_clean = TargetSpec(
+            target_species="SeO3^2-", target_charge=-2, target_mw=127.0,
+            pH=5.0, ionic_strength_M=0.01)
+        target_dirty = TargetSpec(
+            target_species="SeO3^2-", target_charge=-2, target_mw=127.0,
+            pH=5.0, ionic_strength_M=0.01,
+            interferent_species=["SO4^2-", "Ca^2+"],
+            interferent_concentrations_mM=[5.0, 10.0])
+
+        d_clean = design_framework("UiO-66", target_clean, functional_groups=["amine-primary"])
+        d_dirty = design_framework("UiO-66", target_dirty, functional_groups=["amine-primary"])
+
+        assert d_dirty.metrics.capacity_mg_g.value < d_clean.metrics.capacity_mg_g.value
+
+
+class TestCompetitionInPolymer:
+
+    def test_competition_reduces_polymer_capacity(self):
+        target_clean = TargetSpec(
+            target_species="Pb2+", target_charge=2, target_mw=207.2,
+            pH=5.0, ionic_strength_M=0.01)
+        target_dirty = TargetSpec(
+            target_species="Pb2+", target_charge=2, target_mw=207.2,
+            pH=5.0, ionic_strength_M=0.01,
+            interferent_species=["Ca2+", "Mg2+"],
+            interferent_concentrations_mM=[10.0, 5.0])
+
+        d_clean = design_polymer("Chelex-100", target_clean)
+        d_dirty = design_polymer("Chelex-100", target_dirty)
+
+        assert d_dirty.metrics.capacity_mg_g.value < d_clean.metrics.capacity_mg_g.value
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
