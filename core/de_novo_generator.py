@@ -2565,3 +2565,44 @@ if __name__ == "__main__":
     print_generation(r3, top_n=10, verbose=True)
 
     print("\n  All self-tests completed.")
+
+# ═══════════════════════════════════════════════════════════════════════════
+# NOVEL HOST LIBRARY CONVENIENCE WRAPPERS
+# Added by bootstrap_novel_host_library.py
+# ═══════════════════════════════════════════════════════════════════════════
+
+def generate_for_known_host(host_name, **kwargs):
+    """Generate guests for a named host from the novel host library.
+
+    Convenience wrapper: looks up host_name in novel_host_library,
+    then calls generate_for_host() with the resulting NovelHostSpec.
+
+    Args:
+        host_name: str - host name or alias (e.g. "HKUST-1", "Cu-BTC", "CC3")
+        **kwargs: passed to generate_for_host()
+
+    Returns:
+        GenerationResult
+
+    Example:
+        r = generate_for_known_host("HKUST-1", max_candidates=200)
+        r = generate_for_known_host("Cu-BTC", ranking_mode="pareto")
+    """
+    from core.novel_host_library import get_host
+    spec = get_host(host_name)
+    return generate_for_host(spec, **kwargs)
+
+
+def list_available_hosts(host_type=None):
+    """List all available novel hosts for guest generation.
+
+    Args:
+        host_type: optional filter - "MOF", "cage", "zeolite", "synthetic_receptor"
+
+    Returns:
+        list of (name, cavity_volume, host_type) tuples
+    """
+    from core.novel_host_library import list_hosts
+    entries = list_hosts(host_type=host_type)
+    return [(e.spec.name, e.spec.cavity_volume_A3, e.category) for e in entries]
+
