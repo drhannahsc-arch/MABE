@@ -856,3 +856,799 @@ if __name__ == "__main__":
         print(f"  {dt:<20}: f={f:.3f}  ΔG_pH={dG:+.2f} kJ/mol")
 
     print("\nPhase D (hydrodynamics) and Phase E (inverse design) → next session")
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase D: Hydrodynamics
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# D1. Diffusion / Mass Transport (Stokes-Einstein, Smoluchowski encounter)
+# D2. Flow Regime / Residence Time (Damköhler, Péclet)
+# D3. Hydrodynamic Radius / Filtration (R_h, Stokes settling)
+# D4. Solvent Access / Cavity Wetting (aperture vs solvent, desolvation)
+#
+# All equations from fluid mechanics / physical chemistry first principles.
+# No fitting to binding data.
+#
+# Key references:
+#   Einstein A. Ann. Phys. 1905, 17, 549 (Stokes-Einstein)
+#   Smoluchowski M. Z. Phys. Chem. 1917, 92, 129 (encounter rate)
+#   Bird RB, Stewart WE, Lightfoot EN. Transport Phenomena, 2nd ed., Wiley 2002
+#   Cussler EL. Diffusion: Mass Transfer in Fluid Systems, 3rd ed., Cambridge 2009
+
+# ─── Physical constants ───────────────────────────────────────────────────
+
+K_BOLTZMANN = 1.380649e-23     # J/K
+N_AVOGADRO = 6.02214076e23     # mol⁻¹
+WATER_VISCOSITY_25C = 8.9e-4   # Pa·s (water at 25°C)
+WATER_DENSITY_25C = 997.0      # kg/m³
+WATER_DIAMETER_A = 2.75        # Å (kinetic diameter of water molecule)
+G_ACCEL = 9.81                 # m/s²
+
+
+@dataclass
+class FlowConditions:
+    """Operating conditions for a flow-through capture system.
+
+    Describes the physical setup: column/bed dimensions, flow rate,
+    temperature, solution properties.
+    """
+    # Temperature and solvent
+    T_K: float = 298.15              # temperature (K)
+    viscosity_Pa_s: float = WATER_VISCOSITY_25C  # dynamic viscosity
+    density_kg_m3: float = WATER_DENSITY_25C     # solution density
+
+    # Column / bed geometry
+    bed_volume_L: float = 1.0        # bed volume (L)
+    flow_rate_L_min: float = 0.1     # volumetric flow rate (L/min)
+    bed_length_m: float = 0.1        # bed length (m)
+
+    # Scaffold deployment
+    particle_diameter_m: float = 100e-6  # scaffold particle/bead size (m)
+    particle_density_kg_m3: float = 1200.0  # scaffold particle density
+    bed_porosity: float = 0.4            # void fraction in packed bed
+
+    @property
+    def residence_time_s(self) -> float:
+        """Hydraulic residence time τ = V_bed / Q."""
+        if self.flow_rate_L_min <= 0:
+            return float('inf')
+        Q_L_s = self.flow_rate_L_min / 60.0
+        return self.bed_volume_L / Q_L_s
+
+    @property
+    def superficial_velocity_m_s(self) -> float:
+        """Superficial velocity = Q / A_cross."""
+        if self.bed_length_m <= 0:
+            return 0.0
+        V_m3 = self.bed_volume_L * 1e-3
+        A_cross = V_m3 / self.bed_length_m
+        Q_m3_s = self.flow_rate_L_min * 1e-3 / 60.0
+        return Q_m3_s / A_cross if A_cross > 0 else 0.0
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# D1. Diffusion / Mass Transport
+# ═══════════════════════════════════════════════════════════════════════════
+
+def stokes_einstein_D(R_h_m: float, T: float = 298.15,
+                       eta: float = WATER_VISCOSITY_25C) -> float:
+    """Stokes-Einstein diffusion coefficient.
+
+    D = kT / (6πηR_h)
+
+    Parameters
+    ----------
+    R_h_m : float
+        Hydrodynamic radius in meters.
+    T : float
+        Temperature in K.
+    eta : float
+        Dynamic viscosity in Pa·s.
+
+    Returns
+    -------
+    float
+        Diffusion coefficient in m²/s.
+    """
+    if R_h_m <= 0:
+        return 0.0
+    return K_BOLTZMANN * T / (6.0 * PI * eta * R_h_m)
+
+
+def smoluchowski_encounter_rate(D_guest_m2s: float, D_scaffold_m2s: float,
+                                 R_encounter_m: float) -> float:
+    """Smoluchowski diffusion-limited encounter rate constant.
+
+    k_enc = 4π(D_guest + D_scaffold) × R_encounter × N_A
+
+    Parameters
+    ----------
+    D_guest_m2s : float
+        Guest diffusion coefficient (m²/s).
+    D_scaffold_m2s : float
+        Scaffold diffusion coefficient (m²/s). 0 if immobilized.
+    R_encounter_m : float
+        Encounter radius (sum of molecular radii) in meters.
+
+    Returns
+    -------
+    float
+        Encounter rate constant in M⁻¹s⁻¹.
+    """
+    D_eff = D_guest_m2s + D_scaffold_m2s
+    return 4.0 * PI * D_eff * R_encounter_m * N_AVOGADRO
+
+
+def estimate_R_h_from_mw(mw: float) -> float:
+    """Estimate hydrodynamic radius from molecular weight.
+
+    Empirical correlation for organic molecules in water:
+    R_h ≈ 0.066 × MW^(1/3) nm  (Wilke-Chang type scaling)
+
+    Ref: Edward JT. J. Chem. Educ. 1970, 47, 261.
+
+    Parameters
+    ----------
+    mw : float
+        Molecular weight in Da.
+
+    Returns
+    -------
+    float
+        Hydrodynamic radius in meters.
+    """
+    if mw <= 0:
+        return 0.0
+    R_h_nm = 0.066 * mw ** (1.0 / 3.0)
+    return R_h_nm * 1e-9  # nm → m
+
+
+def estimate_R_h_from_sasa(sasa_A2: float) -> float:
+    """Estimate hydrodynamic radius from SASA.
+
+    SASA = 4πR_h² → R_h = √(SASA / 4π)
+
+    Parameters
+    ----------
+    sasa_A2 : float
+        Solvent-accessible surface area in Ų.
+
+    Returns
+    -------
+    float
+        Hydrodynamic radius in meters.
+    """
+    if sasa_A2 <= 0:
+        return 0.0
+    R_h_A = math.sqrt(sasa_A2 / (4.0 * PI))
+    return R_h_A * 1e-10  # Å → m
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# D2. Flow Regime / Residence Time
+# ═══════════════════════════════════════════════════════════════════════════
+
+def damkohler_number(k_bind_M_s: float, tau_res_s: float,
+                      c_scaffold_M: float = 1e-3) -> float:
+    """Damköhler number: ratio of binding rate to flow-through rate.
+
+    Da = k_bind × [scaffold] × τ_res
+
+    Da >> 1: binding-limited (scaffold affinity matters most)
+    Da << 1: transport-limited (scaffold surface area / mass transfer matters)
+    Da ≈ 1: both matter equally
+
+    Parameters
+    ----------
+    k_bind_M_s : float
+        Second-order binding rate constant (M⁻¹s⁻¹).
+    tau_res_s : float
+        Residence time in seconds.
+    c_scaffold_M : float
+        Effective scaffold concentration in bed (M).
+
+    Returns
+    -------
+    float
+        Damköhler number (dimensionless).
+    """
+    return k_bind_M_s * c_scaffold_M * tau_res_s
+
+
+def peclet_number(v_m_s: float, L_m: float, D_m2_s: float) -> float:
+    """Péclet number: convection vs diffusion dominance.
+
+    Pe = v × L / D
+
+    Pe >> 1: convection-dominated (plug flow, sharp fronts)
+    Pe << 1: diffusion-dominated (well-mixed, gradual gradients)
+    Pe ≈ 1: mixed regime
+
+    Parameters
+    ----------
+    v_m_s : float
+        Flow velocity (m/s).
+    L_m : float
+        Characteristic length (bed length or particle diameter) (m).
+    D_m2_s : float
+        Diffusion coefficient (m²/s).
+
+    Returns
+    -------
+    float
+        Péclet number (dimensionless).
+    """
+    if D_m2_s <= 0:
+        return float('inf')
+    return v_m_s * L_m / D_m2_s
+
+
+def reynolds_number(v_m_s: float, d_m: float,
+                     rho: float = WATER_DENSITY_25C,
+                     eta: float = WATER_VISCOSITY_25C) -> float:
+    """Reynolds number for flow around a particle.
+
+    Re = ρvd/η
+
+    Re < 1: Stokes (creeping) flow — valid for most packed beds
+    Re > 1000: turbulent
+
+    Parameters
+    ----------
+    v_m_s : float
+        Velocity (m/s).
+    d_m : float
+        Particle diameter (m).
+    rho : float
+        Fluid density (kg/m³).
+    eta : float
+        Dynamic viscosity (Pa·s).
+
+    Returns
+    -------
+    float
+        Reynolds number (dimensionless).
+    """
+    if eta <= 0:
+        return float('inf')
+    return rho * v_m_s * d_m / eta
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# D3. Hydrodynamic Radius / Filtration / Settling
+# ═══════════════════════════════════════════════════════════════════════════
+
+def stokes_settling_velocity(R_particle_m: float,
+                              rho_particle: float = 1200.0,
+                              rho_fluid: float = WATER_DENSITY_25C,
+                              eta: float = WATER_VISCOSITY_25C) -> float:
+    """Stokes settling velocity for a spherical particle.
+
+    v_settle = 2R²(ρ_p - ρ_f)g / (9η)
+
+    Valid for Re < 1 (Stokes regime). Returns 0 if particle is
+    neutrally buoyant or lighter than fluid.
+
+    Parameters
+    ----------
+    R_particle_m : float
+        Particle radius in meters.
+    rho_particle : float
+        Particle density (kg/m³).
+    rho_fluid : float
+        Fluid density (kg/m³).
+    eta : float
+        Dynamic viscosity (Pa·s).
+
+    Returns
+    -------
+    float
+        Settling velocity in m/s (positive = downward).
+    """
+    drho = rho_particle - rho_fluid
+    if drho <= 0 or R_particle_m <= 0:
+        return 0.0
+    return 2.0 * R_particle_m**2 * drho * G_ACCEL / (9.0 * eta)
+
+
+def membrane_cutoff_check(R_h_m: float, mwco_Da: float) -> bool:
+    """Check if molecule passes through a membrane with given MWCO.
+
+    Rough correlation: MWCO in Da → cutoff R_h.
+
+    Parameters
+    ----------
+    R_h_m : float
+        Molecule hydrodynamic radius in meters.
+    mwco_Da : float
+        Membrane molecular weight cutoff in Da.
+
+    Returns
+    -------
+    bool
+        True if molecule is expected to pass through (R_h < cutoff).
+    """
+    R_cutoff = estimate_R_h_from_mw(mwco_Da)
+    return R_h_m < R_cutoff
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# D4. Solvent Access / Cavity Wetting
+# ═══════════════════════════════════════════════════════════════════════════
+
+# Hydrophobic transfer parameter from MABE HG Phase 6
+GAMMA_FLAT = 0.025  # kJ/(mol·Å²) — surface tension coefficient
+
+
+def cavity_wetting_score(aperture_A: float, cavity_sasa_A2: float,
+                          cavity_hydrophobicity: float = 0.5) -> float:
+    """Assess whether a cavity can be wetted by water.
+
+    Two requirements:
+    1. Aperture ≥ 2 × water diameter (steric access)
+    2. Cavity not too hydrophobic (desolvation cost must be payable)
+
+    Parameters
+    ----------
+    aperture_A : float
+        Cavity mouth diameter in Å.
+    cavity_sasa_A2 : float
+        Internal cavity SASA in Ų.
+    cavity_hydrophobicity : float
+        Fraction of cavity surface that is nonpolar (0–1).
+        0 = fully polar/charged, 1 = fully hydrophobic.
+
+    Returns
+    -------
+    float
+        Wetting score 0–1. 1 = fully accessible to water.
+        0 = water-excluded (dry cavity).
+    """
+    # Steric access
+    min_aperture = 2.0 * WATER_DIAMETER_A  # 5.5 Å
+    if aperture_A < min_aperture:
+        steric_factor = max(0.0, aperture_A / min_aperture)
+    else:
+        steric_factor = 1.0
+
+    # Desolvation cost of wetting a hydrophobic cavity
+    # ΔG_desolv = γ × SASA_nonpolar
+    sasa_nonpolar = cavity_sasa_A2 * cavity_hydrophobicity
+    dG_desolv_kJ = GAMMA_FLAT * sasa_nonpolar
+
+    # Wetting probability (Boltzmann-like): high desolvation → low wetting
+    # Use a sigmoidal switch: dG < 5 kJ/mol → readily wet, > 15 → dry
+    K_WET = 0.2  # kJ/mol, steepness
+    MID_WET = 10.0  # kJ/mol, midpoint
+    thermo_factor = 1.0 / (1.0 + math.exp(K_WET * (dG_desolv_kJ - MID_WET)))
+
+    return steric_factor * thermo_factor
+
+
+def cavity_desolvation_cost(cavity_sasa_A2: float,
+                             cavity_hydrophobicity: float = 0.5) -> float:
+    """Cost of desolvating the cavity interior upon guest binding.
+
+    ΔG_desolv_cavity = γ × SASA_nonpolar
+
+    This is the cost PAID when a guest enters and displaces water.
+    A polar cavity has low cost (water was weakly held).
+    A hydrophobic cavity has high cost (but gains from hydrophobic effect).
+
+    Parameters
+    ----------
+    cavity_sasa_A2 : float
+        Internal cavity SASA in Ų.
+    cavity_hydrophobicity : float
+        Fraction nonpolar (0–1).
+
+    Returns
+    -------
+    float
+        Desolvation cost in kJ/mol.
+    """
+    sasa_nonpolar = cavity_sasa_A2 * cavity_hydrophobicity
+    return GAMMA_FLAT * sasa_nonpolar
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# D — Combined Hydrodynamic Assessment
+# ═══════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class HydroAssessment:
+    """Complete hydrodynamic assessment for a scaffold in a flow system."""
+
+    # D1: Diffusion
+    R_h_guest_m: float = 0.0
+    R_h_scaffold_m: float = 0.0
+    D_guest_m2s: float = 0.0
+    D_scaffold_m2s: float = 0.0
+    k_encounter_M_s: float = 0.0
+
+    # D2: Flow regime
+    Da: float = 0.0           # Damköhler number
+    Pe_bed: float = 0.0       # Péclet (bed-scale)
+    Pe_particle: float = 0.0  # Péclet (particle-scale)
+    Re_particle: float = 0.0  # Reynolds (particle-scale)
+    tau_res_s: float = 0.0    # residence time
+
+    # D3: Filtration
+    v_settle_m_s: float = 0.0
+    settle_time_1m_s: float = 0.0  # time to settle 1 m
+
+    # D4: Wetting
+    wetting_score: float = 1.0
+    dG_desolv_cavity_kJ: float = 0.0
+
+    # Regime flags
+    binding_limited: bool = True    # Da >> 1
+    transport_limited: bool = False  # Da << 1
+    diffusion_dominated: bool = False  # Pe << 1
+    convection_dominated: bool = False  # Pe >> 1
+
+    @property
+    def regime_summary(self) -> str:
+        """Human-readable regime description."""
+        parts = []
+        if self.binding_limited:
+            parts.append("binding-limited (increase affinity)")
+        elif self.transport_limited:
+            parts.append("transport-limited (increase surface area)")
+        else:
+            parts.append("mixed regime")
+
+        if self.convection_dominated:
+            parts.append("convection-dominated")
+        elif self.diffusion_dominated:
+            parts.append("diffusion-dominated")
+
+        return "; ".join(parts)
+
+
+def assess_hydrodynamics(sd: ScaffoldDescriptor,
+                          guest: GuestSpec,
+                          flow: FlowConditions,
+                          k_bind_estimate_M_s: float = 1e6,
+                          c_scaffold_M: float = 1e-3) -> HydroAssessment:
+    """Full hydrodynamic assessment for a scaffold–guest–flow system.
+
+    Parameters
+    ----------
+    sd : ScaffoldDescriptor
+        Scaffold (from Phase A extraction).
+    guest : GuestSpec
+        Target guest molecule.
+    flow : FlowConditions
+        Operating conditions.
+    k_bind_estimate_M_s : float
+        Estimated second-order binding rate constant (M⁻¹s⁻¹).
+        Default 1e6 is typical for small-molecule association.
+    c_scaffold_M : float
+        Effective scaffold concentration in the bed (M).
+
+    Returns
+    -------
+    HydroAssessment
+    """
+    ha = HydroAssessment()
+    T = flow.T_K
+    eta = flow.viscosity_Pa_s
+
+    # ── D1: Diffusion ─────────────────────────────────────────────────
+
+    # Guest R_h from diameter
+    ha.R_h_guest_m = (guest.diameter_A / 2.0) * 1e-10 if guest.diameter_A > 0 else \
+                      estimate_R_h_from_mw(guest.volume_A3 * 1.2)  # rough MW estimate
+
+    # Scaffold R_h
+    if sd.sasa_A2 > 0:
+        ha.R_h_scaffold_m = estimate_R_h_from_sasa(sd.sasa_A2)
+    elif sd.mw > 0:
+        ha.R_h_scaffold_m = estimate_R_h_from_mw(sd.mw)
+
+    ha.D_guest_m2s = stokes_einstein_D(ha.R_h_guest_m, T, eta)
+
+    # If scaffold is immobilized (on bead/support), D_scaffold = 0
+    if flow.particle_diameter_m > 1e-6:
+        ha.D_scaffold_m2s = 0.0  # immobilized on support
+    else:
+        ha.D_scaffold_m2s = stokes_einstein_D(ha.R_h_scaffold_m, T, eta)
+
+    R_encounter = ha.R_h_guest_m + ha.R_h_scaffold_m
+    ha.k_encounter_M_s = smoluchowski_encounter_rate(
+        ha.D_guest_m2s, ha.D_scaffold_m2s, R_encounter
+    )
+
+    # ── D2: Flow regime ───────────────────────────────────────────────
+
+    ha.tau_res_s = flow.residence_time_s
+    ha.Da = damkohler_number(k_bind_estimate_M_s, ha.tau_res_s, c_scaffold_M)
+
+    v = flow.superficial_velocity_m_s
+    ha.Pe_bed = peclet_number(v, flow.bed_length_m, ha.D_guest_m2s) if ha.D_guest_m2s > 0 else 0.0
+    ha.Pe_particle = peclet_number(v, flow.particle_diameter_m, ha.D_guest_m2s) if ha.D_guest_m2s > 0 else 0.0
+    ha.Re_particle = reynolds_number(v, flow.particle_diameter_m,
+                                      flow.density_kg_m3, eta)
+
+    # ── D3: Settling ──────────────────────────────────────────────────
+
+    R_part = flow.particle_diameter_m / 2.0
+    ha.v_settle_m_s = stokes_settling_velocity(
+        R_part, flow.particle_density_kg_m3,
+        flow.density_kg_m3, eta
+    )
+    ha.settle_time_1m_s = 1.0 / ha.v_settle_m_s if ha.v_settle_m_s > 0 else float('inf')
+
+    # ── D4: Wetting ───────────────────────────────────────────────────
+
+    # Estimate cavity aperture from d_arm (mouth ~ arm separation)
+    aperture_est = sd.d_arm_A if sd.d_arm_A > 0 else 6.0
+    cavity_sasa_est = sd.V_cavity_est_A3 ** (2.0/3.0) * 4.84 if sd.V_cavity_est_A3 > 0 else 50.0
+    # Hydrophobicity heuristic: aromatic scaffolds more hydrophobic
+    hydrophobicity = {"aromatic": 0.6, "macrocyclic": 0.4,
+                       "cyclic": 0.3, "linear": 0.2, "branched": 0.2
+                       }.get(sd.category, 0.3)
+
+    ha.wetting_score = cavity_wetting_score(aperture_est, cavity_sasa_est, hydrophobicity)
+    ha.dG_desolv_cavity_kJ = cavity_desolvation_cost(cavity_sasa_est, hydrophobicity)
+
+    # ── Regime flags ──────────────────────────────────────────────────
+
+    ha.binding_limited = ha.Da > 10.0
+    ha.transport_limited = ha.Da < 0.1
+    ha.convection_dominated = ha.Pe_bed > 10.0
+    ha.diffusion_dominated = ha.Pe_bed < 0.1
+
+    return ha
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase E: Inverse Design Engine
+# ═══════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class DesignResult:
+    """Complete output of the inverse scaffold design engine."""
+    guest: GuestSpec
+    requirements: ScaffoldRequirements
+    flow: Optional[FlowConditions]
+
+    # Ranked scaffolds (best first)
+    rankings: List[ScaffoldRanking] = field(default_factory=list)
+
+    # Hydrodynamic assessments (one per scaffold, same order as rankings)
+    hydro: List[HydroAssessment] = field(default_factory=list)
+
+    # Arm assignments (one per scaffold, same order as rankings)
+    arm_assignments: List = field(default_factory=list)
+
+    # Gap analysis
+    gaps: Dict[str, List[str]] = field(default_factory=dict)
+
+    # Summary metrics
+    n_scaffolds_evaluated: int = 0
+    n_convergent: int = 0
+    n_size_matched: int = 0
+    best_dG_total: float = 0.0
+    regime_summary: str = ""
+
+    @property
+    def best(self) -> Optional[ScaffoldRanking]:
+        return self.rankings[0] if self.rankings else None
+
+
+def design_scaffold(guest: GuestSpec,
+                     descriptors: Optional[List[ScaffoldDescriptor]] = None,
+                     flow: Optional[FlowConditions] = None,
+                     arm_donor_types: Optional[List[str]] = None,
+                     top_n: int = 20) -> DesignResult:
+    """Inverse scaffold design engine.
+
+    Given a guest specification (and optional flow conditions), computes
+    required scaffold geometry, scores all library scaffolds, assesses
+    hydrodynamics, identifies gaps, and returns a complete design report.
+
+    This is the main entry point for scaffold design.
+
+    Parameters
+    ----------
+    guest : GuestSpec
+        Target guest molecule specification.
+    descriptors : list of ScaffoldDescriptor, optional
+        Pre-extracted descriptors. If None, extracts from backbone libraries
+        (requires rdkit).
+    flow : FlowConditions, optional
+        Operating conditions. If None, hydrodynamic assessment is skipped.
+    arm_donor_types : list of str, optional
+        Common donor types to assume for arms (for pKa assessment).
+    top_n : int
+        Number of top scaffolds to return.
+
+    Returns
+    -------
+    DesignResult
+        Complete design report with ranked scaffolds, hydro assessment,
+        and gap analysis.
+    """
+    # Get descriptors
+    if descriptors is None:
+        descriptors = extract_all_descriptors()
+
+    # Compute requirements
+    req = compute_scaffold_requirements(guest)
+
+    # Rank all scaffolds (thermo + pKa)
+    rankings = rank_scaffolds_for_guest(guest, descriptors, arm_donor_types, top_n=len(descriptors))
+
+    # Hydrodynamic assessment
+    hydro_list = []
+    if flow is not None:
+        for r in rankings:
+            ha = assess_hydrodynamics(r.descriptor, guest, flow)
+            hydro_list.append(ha)
+
+    # Arm selection (Phase F integration)
+    arm_assignments = []
+    try:
+        from core.arm_selector import select_arms_for_rankings
+        arm_assignments = select_arms_for_rankings(rankings, guest, pH=guest.pH)
+    except (ImportError, Exception):
+        pass  # arm_selector not available or failed
+
+    # Gap analysis
+    gaps = gap_analysis(rankings, guest)
+
+    # Summary metrics
+    n_conv = sum(1 for r in rankings if r.descriptor.is_convergent)
+    size_tol = req.d_arm_required_A * 0.3  # ±30% tolerance
+    n_size = sum(1 for r in rankings
+                 if r.descriptor.d_arm_A > 0
+                 and abs(r.descriptor.d_arm_A - req.d_arm_required_A) < size_tol)
+
+    regime = ""
+    if hydro_list:
+        # Use median Da to characterize overall regime
+        das = [h.Da for h in hydro_list if h.Da > 0]
+        if das:
+            median_da = sorted(das)[len(das)//2]
+            if median_da > 10:
+                regime = "binding-limited"
+            elif median_da < 0.1:
+                regime = "transport-limited"
+            else:
+                regime = "mixed regime"
+
+    result = DesignResult(
+        guest=guest,
+        requirements=req,
+        flow=flow,
+        rankings=rankings[:top_n],
+        hydro=hydro_list[:top_n],
+        arm_assignments=arm_assignments[:top_n],
+        gaps=gaps,
+        n_scaffolds_evaluated=len(descriptors),
+        n_convergent=n_conv,
+        n_size_matched=n_size,
+        best_dG_total=rankings[0].dG_total if rankings else 0.0,
+        regime_summary=regime,
+    )
+
+    return result
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase E — Reporting
+# ═══════════════════════════════════════════════════════════════════════════
+
+def print_design_report(result: DesignResult, top_n: int = 15):
+    """Print full design report."""
+    g = result.guest
+    req = result.requirements
+
+    print("=" * 80)
+    print(f"SCAFFOLD DESIGN REPORT: {g.name}")
+    print("=" * 80)
+
+    print(f"\n  Guest: d={g.diameter_A:.1f} Å, V={g.volume_A3:.1f} ų, "
+          f"q={g.charge:+d}, pH={g.pH}")
+    print(f"  Requirements:")
+    print(f"    d_arm     = {req.d_arm_required_A:.1f} Å")
+    print(f"    V_cavity  = {req.V_cavity_required_A3:.1f} ų")
+    print(f"    HB donors = {req.min_hb_donors}  |  HB acceptors = {req.min_hb_acceptors}")
+    print(f"    Convergent: {req.convergence_required}  |  "
+          f"Aromatic walls: {req.prefer_aromatic_walls}  |  "
+          f"Cationic: {req.prefer_cationic}")
+
+    if result.flow:
+        f = result.flow
+        print(f"\n  Flow conditions:")
+        print(f"    τ_res     = {f.residence_time_s:.1f} s")
+        print(f"    v_super   = {f.superficial_velocity_m_s:.2e} m/s")
+        print(f"    d_particle = {f.particle_diameter_m*1e6:.0f} μm")
+        print(f"    Regime: {result.regime_summary}")
+
+    # Ranking table
+    has_hydro = len(result.hydro) > 0
+
+    print(f"\n  Scaffolds evaluated: {result.n_scaffolds_evaluated}")
+    print(f"  Convergent:         {result.n_convergent}")
+    print(f"  Size-matched (±30%): {result.n_size_matched}")
+
+    has_arms = len(result.arm_assignments) > 0
+    header = (f"{'Rank':>4} {'Scaffold':<30} {'ΔG_tot':>7} {'ΔG_thm':>7} "
+              f"{'ΔG_pKa':>7} {'d_arm':>6} {'rigid':>5}")
+    if has_hydro:
+        header += f" {'Da':>8} {'Pe':>8} {'wet':>4}"
+    if has_arms:
+        header += f"  {'Best Arms':<30}"
+    header += " Flags"
+    print(f"\n{header}")
+    print("-" * len(header) + "-" * 10)
+
+    for i, r in enumerate(result.rankings[:top_n]):
+        flags = []
+        if r.too_small: flags.append("S")
+        if r.too_large: flags.append("L")
+        if r.wrong_geometry: flags.append("G")
+        if r.insufficient_donors: flags.append("D")
+        if r.dG_pka > 5.0: flags.append("pH")
+        flag_str = ",".join(flags) if flags else "-"
+
+        line = (f"{i+1:4d} {r.descriptor.name:<30} {r.dG_total:+7.1f} "
+                f"{r.dG_thermo:+7.1f} {r.dG_pka:+7.1f} "
+                f"{r.descriptor.d_arm_A:6.1f} {r.descriptor.rigidity_index:5.2f}")
+
+        if has_hydro and i < len(result.hydro):
+            h = result.hydro[i]
+            line += f" {h.Da:8.1f} {h.Pe_bed:8.1f} {h.wetting_score:4.2f}"
+
+        if has_arms and i < len(result.arm_assignments):
+            aa = result.arm_assignments[i]
+            arms_str = ", ".join(aa.best_arms)
+            line += f"  {arms_str:<30}"
+
+        line += f" {flag_str}"
+        print(line)
+
+    # Gap analysis
+    if result.gaps:
+        print(f"\n  Gap Analysis:")
+        for gap_type, names in result.gaps.items():
+            n = len(names)
+            examples = ", ".join(names[:3])
+            if n > 3:
+                examples += f" ... (+{n-3})"
+            print(f"    {gap_type}: {n} scaffolds ({examples})")
+
+    # Recommendations
+    print(f"\n  Recommendations:")
+    if result.best:
+        b = result.best
+        print(f"    Best scaffold: {b.descriptor.name} (ΔG={b.dG_total:+.1f} kJ/mol)")
+    if "too_small" in result.gaps and len(result.gaps["too_small"]) > result.n_scaffolds_evaluated * 0.5:
+        print(f"    Warning: >50% scaffolds too small — consider larger frameworks")
+    if "severe_pka_penalty" in result.gaps:
+        n = len(result.gaps["severe_pka_penalty"])
+        print(f"    Warning: {n} scaffolds have severe pKa penalty at pH {g.pH} "
+              f"— consider pH-insensitive donors (thioether, urea)")
+    if has_hydro and result.regime_summary == "transport-limited":
+        print(f"    Design priority: maximize surface area, minimize particle size")
+    elif has_hydro and result.regime_summary == "binding-limited":
+        print(f"    Design priority: maximize binding affinity and selectivity")
+
+
+def print_hydro_summary(ha: HydroAssessment, name: str = ""):
+    """Print single hydrodynamic assessment."""
+    print(f"\n  Hydrodynamic Assessment{f' for {name}' if name else ''}:")
+    print(f"    R_h (guest):    {ha.R_h_guest_m*1e9:.2f} nm")
+    print(f"    R_h (scaffold): {ha.R_h_scaffold_m*1e9:.2f} nm")
+    print(f"    D (guest):      {ha.D_guest_m2s:.2e} m²/s")
+    print(f"    k_encounter:    {ha.k_encounter_M_s:.2e} M⁻¹s⁻¹")
+    print(f"    Da:             {ha.Da:.2f}  ({'binding' if ha.binding_limited else 'transport' if ha.transport_limited else 'mixed'}-limited)")
+    print(f"    Pe (bed):       {ha.Pe_bed:.2f}  ({'convection' if ha.convection_dominated else 'diffusion' if ha.diffusion_dominated else 'mixed'})")
+    print(f"    Re (particle):  {ha.Re_particle:.4f}")
+    print(f"    v_settle:       {ha.v_settle_m_s:.2e} m/s ({ha.settle_time_1m_s:.0f} s per m)")
+    print(f"    Wetting:        {ha.wetting_score:.2f}")
+    print(f"    Regime: {ha.regime_summary}")

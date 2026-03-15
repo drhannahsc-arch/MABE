@@ -401,3 +401,293 @@ class TestDescriptorExtraction:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase D: Hydrodynamics
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.scaffold_designer import (
+    stokes_einstein_D, smoluchowski_encounter_rate,
+    estimate_R_h_from_mw, estimate_R_h_from_sasa,
+    damkohler_number, peclet_number, reynolds_number,
+    stokes_settling_velocity, membrane_cutoff_check,
+    cavity_wetting_score, cavity_desolvation_cost,
+    assess_hydrodynamics, FlowConditions, HydroAssessment,
+    WATER_VISCOSITY_25C, K_BOLTZMANN,
+)
+
+
+class TestStokesEinstein:
+
+    def test_D_positive(self):
+        D = stokes_einstein_D(1e-9)  # 1 nm radius
+        assert D > 0
+
+    def test_larger_radius_slower_diffusion(self):
+        D_small = stokes_einstein_D(0.5e-9)
+        D_large = stokes_einstein_D(2.0e-9)
+        assert D_small > D_large
+
+    def test_D_inversely_proportional_to_R(self):
+        """D ∝ 1/R — doubling radius halves D."""
+        D1 = stokes_einstein_D(1e-9)
+        D2 = stokes_einstein_D(2e-9)
+        assert abs(D1 / D2 - 2.0) < 0.01
+
+    def test_higher_temp_faster_diffusion(self):
+        D_cold = stokes_einstein_D(1e-9, T=278.15)
+        D_hot = stokes_einstein_D(1e-9, T=318.15)
+        assert D_hot > D_cold
+
+    def test_higher_viscosity_slower(self):
+        D_water = stokes_einstein_D(1e-9, eta=8.9e-4)
+        D_glycerol = stokes_einstein_D(1e-9, eta=1.5)  # glycerol
+        assert D_water > D_glycerol
+
+    def test_zero_radius_returns_zero(self):
+        assert stokes_einstein_D(0.0) == 0.0
+
+    def test_known_value_sucrose(self):
+        """Sucrose in water at 25°C: D ≈ 5.2e-10 m²/s, R_h ≈ 0.47 nm."""
+        D = stokes_einstein_D(0.47e-9)
+        assert 4e-10 < D < 7e-10
+
+
+class TestSmoluchowski:
+
+    def test_encounter_rate_positive(self):
+        k = smoluchowski_encounter_rate(5e-10, 0.0, 1e-9)
+        assert k > 0
+
+    def test_immobilized_scaffold(self):
+        """Immobilized scaffold (D=0) still has finite encounter rate."""
+        k = smoluchowski_encounter_rate(5e-10, 0.0, 2e-9)
+        assert k > 0
+
+    def test_faster_diffusion_higher_rate(self):
+        k_slow = smoluchowski_encounter_rate(1e-10, 0.0, 1e-9)
+        k_fast = smoluchowski_encounter_rate(5e-10, 0.0, 1e-9)
+        assert k_fast > k_slow
+
+
+class TestRhEstimates:
+
+    def test_Rh_from_mw_positive(self):
+        assert estimate_R_h_from_mw(300.0) > 0
+
+    def test_Rh_scales_with_mw(self):
+        R_small = estimate_R_h_from_mw(100.0)
+        R_large = estimate_R_h_from_mw(1000.0)
+        assert R_large > R_small
+
+    def test_Rh_from_sasa_positive(self):
+        assert estimate_R_h_from_sasa(200.0) > 0
+
+    def test_Rh_from_sasa_sphere_consistent(self):
+        """For a sphere: SASA = 4πR² → R = √(SASA/4π)."""
+        sasa = 400.0  # Å²
+        R_h = estimate_R_h_from_sasa(sasa)
+        R_expected = math.sqrt(sasa / (4.0 * math.pi)) * 1e-10
+        assert abs(R_h - R_expected) / R_expected < 0.01
+
+
+class TestFlowNumbers:
+
+    def test_damkohler_scaling(self):
+        """Da ∝ k × τ × c."""
+        Da1 = damkohler_number(1e6, 100.0, 1e-3)
+        Da2 = damkohler_number(1e6, 200.0, 1e-3)
+        assert abs(Da2 / Da1 - 2.0) < 0.01
+
+    def test_damkohler_binding_limited(self):
+        """High Da = binding-limited."""
+        Da = damkohler_number(1e8, 600.0, 1e-2)
+        assert Da > 10.0
+
+    def test_damkohler_transport_limited(self):
+        """Low Da = transport-limited."""
+        Da = damkohler_number(1e2, 1.0, 1e-5)
+        assert Da < 0.1
+
+    def test_peclet_scaling(self):
+        Pe = peclet_number(1e-3, 0.1, 1e-9)
+        assert Pe == pytest.approx(1e5)
+
+    def test_reynolds_low_for_packed_bed(self):
+        """Typical packed bed: Re << 1."""
+        Re = reynolds_number(1e-4, 100e-6)
+        assert Re < 1.0
+
+
+class TestSettling:
+
+    def test_settling_positive(self):
+        v = stokes_settling_velocity(50e-6, 1200.0)
+        assert v > 0
+
+    def test_larger_particles_settle_faster(self):
+        v_small = stokes_settling_velocity(10e-6, 1200.0)
+        v_large = stokes_settling_velocity(100e-6, 1200.0)
+        assert v_large > v_small
+
+    def test_settling_proportional_to_R_squared(self):
+        """v ∝ R² — doubling radius quadruples settling."""
+        v1 = stokes_settling_velocity(50e-6, 1200.0)
+        v2 = stokes_settling_velocity(100e-6, 1200.0)
+        assert abs(v2 / v1 - 4.0) < 0.1
+
+    def test_neutrally_buoyant_no_settling(self):
+        v = stokes_settling_velocity(50e-6, 997.0)  # same as water
+        assert v == 0.0
+
+
+class TestWetting:
+
+    def test_large_aperture_polar_well_wet(self):
+        """Large opening + polar cavity → well wet (sigmoid, not binary)."""
+        s = cavity_wetting_score(10.0, 50.0, 0.0)
+        assert s > 0.8
+
+    def test_small_aperture_restricts(self):
+        """Aperture < 2×water_diameter → reduced wetting."""
+        s_large = cavity_wetting_score(8.0, 50.0, 0.2)
+        s_small = cavity_wetting_score(2.0, 50.0, 0.2)
+        assert s_large > s_small
+
+    def test_hydrophobic_cavity_harder_to_wet(self):
+        s_polar = cavity_wetting_score(8.0, 200.0, 0.1)
+        s_hydrophobic = cavity_wetting_score(8.0, 200.0, 0.9)
+        assert s_polar > s_hydrophobic
+
+    def test_desolvation_cost_scales_with_sasa(self):
+        dG_small = cavity_desolvation_cost(50.0, 0.5)
+        dG_large = cavity_desolvation_cost(200.0, 0.5)
+        assert dG_large > dG_small
+
+
+class TestHydroAssessment:
+
+    def _make_sd(self, **kwargs):
+        defaults = dict(name="test", smiles="", category="linear", n_sites=2,
+                        d_arm_A=6.0, n_rotors_bridge=2, rigidity_index=0.33,
+                        V_cavity_est_A3=80.0, theta_conv_deg=60.0, mw=200.0,
+                        sasa_A2=250.0)
+        defaults.update(kwargs)
+        return ScaffoldDescriptor(**defaults)
+
+    def test_assess_returns_hydro(self):
+        sd = self._make_sd()
+        guest = GuestSpec(diameter_A=3.5)
+        flow = FlowConditions()
+        ha = assess_hydrodynamics(sd, guest, flow)
+        assert isinstance(ha, HydroAssessment)
+        assert ha.D_guest_m2s > 0
+        assert ha.tau_res_s > 0
+
+    def test_immobilized_scaffold_zero_D(self):
+        """Scaffold on bead (particle > 1 μm) → D_scaffold = 0."""
+        sd = self._make_sd()
+        guest = GuestSpec(diameter_A=3.5)
+        flow = FlowConditions(particle_diameter_m=100e-6)
+        ha = assess_hydrodynamics(sd, guest, flow)
+        assert ha.D_scaffold_m2s == 0.0
+
+    def test_regime_summary_nonempty(self):
+        sd = self._make_sd()
+        guest = GuestSpec(diameter_A=3.5)
+        flow = FlowConditions()
+        ha = assess_hydrodynamics(sd, guest, flow)
+        assert len(ha.regime_summary) > 0
+
+    def test_flow_conditions_residence_time(self):
+        f = FlowConditions(bed_volume_L=2.0, flow_rate_L_min=0.5)
+        assert f.residence_time_s == pytest.approx(240.0)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Phase E: Inverse Design Engine
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.scaffold_designer import design_scaffold, DesignResult
+
+
+class TestDesignEngine:
+
+    def _make_descriptors(self):
+        """Build a small set of test descriptors."""
+        return [
+            ScaffoldDescriptor(name="rigid-small", smiles="", category="aromatic",
+                               n_sites=2, d_arm_A=5.0, theta_conv_deg=50.0,
+                               rigidity_index=0.8, n_rotors_bridge=1,
+                               V_cavity_est_A3=50.0, mw=150.0, sasa_A2=200.0,
+                               n_backbone_hb_donors=2, n_backbone_hb_acceptors=1),
+            ScaffoldDescriptor(name="flex-large", smiles="", category="linear",
+                               n_sites=2, d_arm_A=12.0, theta_conv_deg=160.0,
+                               rigidity_index=0.1, n_rotors_bridge=8,
+                               V_cavity_est_A3=500.0, mw=400.0, sasa_A2=500.0,
+                               n_backbone_hb_donors=0, n_backbone_hb_acceptors=0),
+            ScaffoldDescriptor(name="medium-match", smiles="", category="cyclic",
+                               n_sites=2, d_arm_A=6.5, theta_conv_deg=70.0,
+                               rigidity_index=0.5, n_rotors_bridge=3,
+                               V_cavity_est_A3=80.0, mw=250.0, sasa_A2=300.0,
+                               n_backbone_hb_donors=3, n_backbone_hb_acceptors=2),
+        ]
+
+    def test_design_returns_result(self):
+        descs = self._make_descriptors()
+        guest = GuestSpec(name="selenite", diameter_A=3.5, volume_A3=45.0,
+                          charge=-2, n_hb_acceptors=3, pH=5.0)
+        result = design_scaffold(guest, descriptors=descs)
+        assert isinstance(result, DesignResult)
+        assert len(result.rankings) > 0
+
+    def test_design_best_is_best_scored(self):
+        descs = self._make_descriptors()
+        guest = GuestSpec(diameter_A=3.5, volume_A3=45.0, charge=-2,
+                          n_hb_acceptors=3, pH=5.0)
+        result = design_scaffold(guest, descriptors=descs)
+        assert result.best.dG_total <= result.rankings[-1].dG_total
+
+    def test_design_with_flow(self):
+        descs = self._make_descriptors()
+        guest = GuestSpec(diameter_A=3.5, pH=5.0)
+        flow = FlowConditions(bed_volume_L=1.0, flow_rate_L_min=0.1)
+        result = design_scaffold(guest, descriptors=descs, flow=flow)
+        assert len(result.hydro) == len(result.rankings)
+        assert result.regime_summary != ""
+
+    def test_design_without_flow(self):
+        descs = self._make_descriptors()
+        guest = GuestSpec(diameter_A=3.5, pH=7.0)
+        result = design_scaffold(guest, descriptors=descs, flow=None)
+        assert len(result.hydro) == 0
+        assert result.regime_summary == ""
+
+    def test_design_selenite_prefers_convergent_donor(self):
+        """Selenite (anion, 3 acceptors) should prefer convergent scaffold
+        with H-bond donors."""
+        descs = self._make_descriptors()
+        guest = GuestSpec(name="selenite", diameter_A=3.5, volume_A3=45.0,
+                          charge=-2, n_hb_acceptors=3, pH=5.0)
+        result = design_scaffold(guest, descriptors=descs)
+        best = result.best
+        # "medium-match" has d_arm=6.5, convergent, 3 HB donors
+        assert best.descriptor.name == "medium-match"
+
+    def test_design_gap_analysis(self):
+        descs = self._make_descriptors()
+        guest = GuestSpec(diameter_A=3.5, pH=5.0)
+        result = design_scaffold(guest, descriptors=descs)
+        # flex-large should be flagged as too_large and wrong_geometry
+        assert isinstance(result.gaps, dict)
+
+    def test_design_n_scaffolds_evaluated(self):
+        descs = self._make_descriptors()
+        guest = GuestSpec(diameter_A=3.5)
+        result = design_scaffold(guest, descriptors=descs)
+        assert result.n_scaffolds_evaluated == 3
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
