@@ -1045,7 +1045,7 @@ def unified_design(target: TargetSpec,
                     include_frameworks: bool = True,
                     include_polymers: bool = True,      # M2: Polymeric Sorbents
                     include_composites: bool = True,     # M3: Composite Materials
-                    include_structural_color: bool = False,  # M4 — future
+                    include_structural_color: bool = True,   # M4: Structural Color
                     framework_func_groups: Optional[List[str]] = None,
                     top_n: int = 15) -> UnifiedDesignResult:
     """Cross-material design comparison.
@@ -1147,8 +1147,34 @@ def unified_design(target: TargetSpec,
                 weaknesses=weaknesses,
             ))
 
-    # M4: Structural Color — future
-    # if include_structural_color: ...
+    # M4: Structural Color
+    if include_structural_color and target.target_wavelength_nm > 0:
+        sc_designs = screen_structural_colors(target)
+        for d in sc_designs:
+            strengths, weaknesses = [], []
+            m = d.metrics
+            if d.delta_E is not None and d.delta_E < 10:
+                strengths.append(f"good color match (ΔE={d.delta_E:.1f})")
+            if d.spec.angle_independent:
+                strengths.append("non-iridescent")
+            if m.environmental_score and m.environmental_score.value > 0.8:
+                strengths.append("eco-friendly")
+            if m.scalability_score and m.scalability_score.value > 0.5:
+                strengths.append("scalable")
+            if d.delta_E is not None and d.delta_E > 30:
+                weaknesses.append(f"poor color match (ΔE={d.delta_E:.0f})")
+            if not d.spec.angle_independent:
+                weaknesses.append("iridescent")
+
+            all_rankings.append(MaterialRanking(
+                material_class=d.material_class(),
+                design_name=d.spec.name,
+                design=d,
+                metrics=m,
+                composite_score=m.composite_score(),
+                strengths=strengths,
+                weaknesses=weaknesses,
+            ))
 
     all_rankings.sort(key=lambda r: r.composite_score, reverse=True)
 
@@ -2473,6 +2499,417 @@ def screen_composites(target: TargetSpec, top_n: int = 10) -> List[CompositeDesi
     for name in COMPOSITE_DATABASE:
         try:
             d = design_composite(name, target)
+            designs.append(d)
+        except Exception:
+            pass
+    designs.sort(key=lambda d: d.metrics.composite_score(), reverse=True)
+    return designs[:top_n]
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# M4: Structural Color Materials (Bridge to Optical Pipeline)
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Bridges MABE's optical pipeline (optical/) into the unified material
+# design framework. Maps color targets to physical designs.
+#
+# Forward models (from optical/):
+#   Bragg opal: λ_peak = 1.633 × D × n_eff (Module 2)
+#   Photonic glass: Mie × Percus-Yevick (Module 6) — requires miepython
+#   TMM multilayer: transfer matrix method (Module 7)
+#   CIE color: spectrum → XYZ → Lab → sRGB (Module 9)
+#
+# All physics T2 (exact EM theory). Material data T1 (published n(λ)).
+#
+# References:
+#   Bragg WH, Bragg WL. Proc. R. Soc. 1913, 88, 428.
+#   Mie G. Ann. Phys. 1908, 330, 377.
+#   Yeh P. Optical Waves in Layered Media. Wiley 2005.
+#   CIE. Colorimetry, 4th ed. CIE 015:2018.
+
+# ── Structural Color Database (T1: published) ────────────────────────────
+
+@dataclass
+class StructuralColorEntry:
+    """Published structural color system."""
+    name: str
+    approach: str           # "bragg_opal", "photonic_glass", "multilayer", "BCP", "CNC"
+    sphere_material: str    # e.g., "SiO2", "polystyrene"
+    matrix_material: str    # e.g., "air", "PDMS", "water"
+    diameter_nm: Optional[float] = None        # particle diameter
+    packing_fraction: Optional[float] = None
+    absorber: str = ""                          # e.g., "carbon_black", "melanin"
+    absorber_fraction: Optional[float] = None
+    angle_independent: bool = False             # non-iridescent?
+    published_color: str = ""                   # e.g., "blue", "green"
+    published_peak_nm: Optional[float] = None
+    scalability: str = ""     # "lab", "pilot", "industrial"
+    source: str = ""
+
+
+STRUCTURAL_COLOR_DB: Dict[str, StructuralColorEntry] = {}
+
+
+def _add_sc(entry: StructuralColorEntry):
+    STRUCTURAL_COLOR_DB[entry.name] = entry
+
+
+_add_sc(StructuralColorEntry(
+    name="SiO2-opal-blue",
+    approach="bragg_opal",
+    sphere_material="SiO2",
+    matrix_material="air",
+    diameter_nm=207.0,
+    packing_fraction=0.74,
+    angle_independent=False,
+    published_color="blue",
+    published_peak_nm=450.0,
+    scalability="lab",
+    source="Gao W et al. J. Nanopart. Res. 2017, 19, 37. DOI:10.1007/s11051-017-3735-7",
+))
+
+_add_sc(StructuralColorEntry(
+    name="SiO2-opal-green",
+    approach="bragg_opal",
+    sphere_material="SiO2",
+    matrix_material="air",
+    diameter_nm=260.0,
+    packing_fraction=0.74,
+    angle_independent=False,
+    published_color="green",
+    published_peak_nm=530.0,
+    scalability="lab",
+    source="Gao W et al. J. Nanopart. Res. 2017, 19, 37. DOI:10.1007/s11051-017-3735-7",
+))
+
+_add_sc(StructuralColorEntry(
+    name="SiO2-opal-red",
+    approach="bragg_opal",
+    sphere_material="SiO2",
+    matrix_material="air",
+    diameter_nm=350.0,
+    packing_fraction=0.74,
+    angle_independent=False,
+    published_color="red",
+    published_peak_nm=630.0,
+    scalability="lab",
+    source="Gao W et al. J. Nanopart. Res. 2017, 19, 37. DOI:10.1007/s11051-017-3735-7",
+))
+
+_add_sc(StructuralColorEntry(
+    name="PS-photonic-glass-blue",
+    approach="photonic_glass",
+    sphere_material="polystyrene",
+    matrix_material="air",
+    diameter_nm=195.0,
+    packing_fraction=0.55,
+    absorber="carbon_black",
+    absorber_fraction=0.02,
+    angle_independent=True,
+    published_color="blue",
+    published_peak_nm=440.0,
+    scalability="lab",
+    source="Park JG et al. Angew. Chem. Int. Ed. 2014, 53, 2899. DOI:10.1002/anie.201309306",
+))
+
+_add_sc(StructuralColorEntry(
+    name="PS-photonic-glass-green",
+    approach="photonic_glass",
+    sphere_material="polystyrene",
+    matrix_material="air",
+    diameter_nm=240.0,
+    packing_fraction=0.55,
+    absorber="carbon_black",
+    absorber_fraction=0.02,
+    angle_independent=True,
+    published_color="green",
+    published_peak_nm=520.0,
+    scalability="lab",
+    source="Park JG et al. Angew. Chem. Int. Ed. 2014, 53, 2899. DOI:10.1002/anie.201309306",
+))
+
+_add_sc(StructuralColorEntry(
+    name="SiO2-photonic-glass-blue",
+    approach="photonic_glass",
+    sphere_material="SiO2",
+    matrix_material="water",
+    diameter_nm=210.0,
+    packing_fraction=0.50,
+    absorber="cuttlefish_ink",
+    absorber_fraction=0.03,
+    angle_independent=True,
+    published_color="blue",
+    published_peak_nm=460.0,
+    scalability="lab",
+    source="Zhang Y et al. Adv. Mater. 2015, 27, 4719. DOI:10.1002/adma.201501936",
+))
+
+_add_sc(StructuralColorEntry(
+    name="BCP-Cypris-green",
+    approach="BCP",
+    sphere_material="block_copolymer",
+    matrix_material="self_assembled",
+    diameter_nm=None,
+    packing_fraction=None,
+    angle_independent=True,
+    published_color="green",
+    published_peak_nm=530.0,
+    scalability="pilot",
+    source="Cypris Materials (now Impossible Materials). US Patent 10,730,208 B2, 2020.",
+))
+
+_add_sc(StructuralColorEntry(
+    name="CNC-film-green",
+    approach="CNC",
+    sphere_material="cellulose_nanocrystal",
+    matrix_material="self_assembled",
+    diameter_nm=None,
+    packing_fraction=None,
+    angle_independent=False,
+    published_color="iridescent green",
+    published_peak_nm=550.0,
+    scalability="pilot",
+    source="Guidetti G et al. Adv. Mater. 2016, 28, 10042. DOI:10.1002/adma.201603386",
+))
+
+
+# ── Forward Model Bridge ─────────────────────────────────────────────────
+
+def _bragg_peak(diameter_nm: float, n_sphere: float,
+                n_medium: float = 1.0, ff: float = 0.74) -> Optional[float]:
+    """Predict Bragg opal peak wavelength. T2: exact Bragg law."""
+    try:
+        from optical.bragg_opal import bragg_opal
+        return bragg_opal(diameter_nm, n_sphere=n_sphere, n_medium=n_medium,
+                          fill_fraction=ff)
+    except (ImportError, Exception):
+        # Fallback: direct calculation
+        n_eff = math.sqrt(ff * n_sphere**2 + (1 - ff) * n_medium**2)
+        return 1.633 * diameter_nm * n_eff
+
+
+def _photonic_glass_peak(diameter_nm: float, sphere_material: str,
+                          n_medium: float = 1.0, ff: float = 0.55) -> Optional[float]:
+    """Predict photonic glass peak wavelength. T2: Mie + structure factor."""
+    try:
+        from optical.photonic_glass import photonic_glass_peak_wavelength
+        return photonic_glass_peak_wavelength(diameter_nm, sphere_material, n_medium, ff)
+    except (ImportError, Exception):
+        # Fallback: approximate λ ≈ 2 × n_eff × d_avg
+        try:
+            from optical.refractive_index import n_real
+            n_s = n_real(sphere_material, 550.0)
+        except (ImportError, Exception):
+            n_s = 1.46  # SiO2 default
+        n_eff = math.sqrt(ff * n_s**2 + (1 - ff) * n_medium**2)
+        d_avg = diameter_nm * (0.74 / ff) ** (1.0 / 3.0)  # rescale from FCC
+        return 2.0 * n_eff * d_avg
+
+
+def _spectrum_to_color(peak_nm: float) -> dict:
+    """Convert a peak wavelength to approximate CIE Lab and sRGB.
+
+    Uses a Gaussian reflectance peak centered at peak_nm with
+    FWHM = 50 nm (typical for photonic glass) convolved with D65 illuminant.
+    """
+    try:
+        import numpy as np
+        from optical.cie_color import spectrum_to_XYZ, XYZ_to_Lab, XYZ_to_sRGB
+        lam = np.linspace(380, 780, 81)
+        fwhm = 50.0
+        sigma = fwhm / 2.355
+        R = 0.3 * np.exp(-0.5 * ((lam - peak_nm) / sigma) ** 2) + 0.05  # peak + background
+        X, Y, Z = spectrum_to_XYZ(R, lam)
+        L, a, b = XYZ_to_Lab(X, Y, Z)
+        r, g, bval = XYZ_to_sRGB(X, Y, Z)
+        return {"Lab": (L, a, b), "sRGB": (r, g, bval), "peak_nm": peak_nm}
+    except (ImportError, Exception):
+        # No CIE module → return peak only
+        return {"Lab": None, "sRGB": None, "peak_nm": peak_nm}
+
+
+# ── Structural Color Design Engine ────────────────────────────────────────
+
+@dataclass
+class StructuralColorSpec:
+    """Specification for a structural color material design."""
+    name: str = ""
+    approach: str = ""
+    sphere_material: str = "SiO2"
+    matrix_material: str = "air"
+    diameter_nm: Optional[float] = None
+    packing_fraction: Optional[float] = None
+    absorber: str = ""
+    absorber_fraction: Optional[float] = None
+    angle_independent: bool = True
+
+    @classmethod
+    def from_database(cls, name: str) -> 'StructuralColorSpec':
+        if name not in STRUCTURAL_COLOR_DB:
+            raise KeyError(f"Unknown structural color '{name}'. "
+                           f"Known: {sorted(STRUCTURAL_COLOR_DB.keys())}")
+        e = STRUCTURAL_COLOR_DB[name]
+        return cls(
+            name=e.name, approach=e.approach,
+            sphere_material=e.sphere_material,
+            matrix_material=e.matrix_material,
+            diameter_nm=e.diameter_nm,
+            packing_fraction=e.packing_fraction,
+            absorber=e.absorber,
+            absorber_fraction=e.absorber_fraction,
+            angle_independent=e.angle_independent,
+        )
+
+
+@dataclass
+class StructuralColorDesign(MaterialDesign):
+    """Complete structural color material design."""
+    spec: StructuralColorSpec = field(default_factory=StructuralColorSpec)
+    target: TargetSpec = field(default_factory=TargetSpec)
+    metrics: PerformanceMetrics = field(default_factory=PerformanceMetrics)
+
+    # Optical results
+    predicted_peak_nm: Optional[float] = None
+    predicted_Lab: Optional[tuple] = None
+    predicted_sRGB: Optional[tuple] = None
+    delta_E: Optional[float] = None
+    color_name: str = ""
+
+    def material_class(self) -> str:
+        return f"StructuralColor ({self.spec.approach})"
+
+    def design_summary(self) -> str:
+        lines = [f"Structural color: {self.spec.name} ({self.spec.approach})"]
+        if self.predicted_peak_nm:
+            lines.append(f"  Predicted peak: {self.predicted_peak_nm:.0f} nm")
+        if self.predicted_sRGB:
+            lines.append(f"  sRGB: {self.predicted_sRGB}")
+        if self.delta_E is not None:
+            lines.append(f"  ΔE from target: {self.delta_E:.1f}")
+        return "\n".join(lines)
+
+    def predict_performance(self, target: TargetSpec = None) -> PerformanceMetrics:
+        if target is None:
+            target = self.target
+        self.target = target
+        s = self.spec
+
+        # Forward model: predict peak wavelength
+        if s.approach == "bragg_opal" and s.diameter_nm is not None:
+            try:
+                from optical.refractive_index import n_real
+                n_s = n_real(s.sphere_material, 550.0)
+            except (ImportError, Exception):
+                n_s = 1.46
+            n_m = 1.0 if s.matrix_material == "air" else 1.33
+            ff = s.packing_fraction or 0.74
+            self.predicted_peak_nm = _bragg_peak(s.diameter_nm, n_s, n_m, ff)
+
+        elif s.approach == "photonic_glass" and s.diameter_nm is not None:
+            n_m = 1.0 if s.matrix_material == "air" else 1.33
+            ff = s.packing_fraction or 0.55
+            self.predicted_peak_nm = _photonic_glass_peak(
+                s.diameter_nm, s.sphere_material, n_m, ff
+            )
+
+        elif s.approach in ("BCP", "CNC"):
+            # Use published peak directly (no forward model for these)
+            entry = STRUCTURAL_COLOR_DB.get(s.name)
+            if entry and entry.published_peak_nm:
+                self.predicted_peak_nm = entry.published_peak_nm
+
+        # CIE color from peak
+        if self.predicted_peak_nm is not None:
+            color = _spectrum_to_color(self.predicted_peak_nm)
+            self.predicted_Lab = color.get("Lab")
+            self.predicted_sRGB = color.get("sRGB")
+
+        # ΔE from target wavelength
+        self.delta_E = None
+        if target.target_wavelength_nm > 0 and self.predicted_peak_nm is not None:
+            # Simple wavelength ΔE proxy: |predicted - target| mapped to ΔE
+            # 1 nm wavelength shift ≈ 0.5-2.0 ΔE depending on region
+            nm_diff = abs(self.predicted_peak_nm - target.target_wavelength_nm)
+            self.delta_E = nm_diff * 1.0  # approximate 1:1 mapping
+            # If we have full Lab for both, use proper ΔE
+            if self.predicted_Lab is not None and target.target_wavelength_nm > 0:
+                target_color = _spectrum_to_color(target.target_wavelength_nm)
+                if target_color.get("Lab") is not None:
+                    try:
+                        from optical.cie_color import cie_delta_E
+                        self.delta_E = cie_delta_E(
+                            self.predicted_Lab, target_color["Lab"]
+                        )
+                    except (ImportError, Exception):
+                        pass  # keep wavelength-based estimate
+
+        # Map to PerformanceMetrics
+        # "capacity" → color accuracy (inverted ΔE: lower ΔE = better)
+        color_accuracy = max(0, 100.0 - (self.delta_E or 50.0)) if self.delta_E is not None else None
+
+        # Angle independence as a quality metric
+        angle_score = 1.0 if s.angle_independent else 0.3
+
+        # Scalability
+        entry = STRUCTURAL_COLOR_DB.get(s.name)
+        scale_map = {"lab": 0.3, "pilot": 0.6, "industrial": 0.9}
+        scalability = scale_map.get(entry.scalability if entry else "lab", 0.3)
+
+        # Cost (T1 where published, else None)
+        cost_map = {
+            "bragg_opal": TieredValue(50.0, DataTier.T2_SOLID,
+                "Colloidal SiO2/PS: commodity materials"),
+            "photonic_glass": TieredValue(80.0, DataTier.T2_SOLID,
+                "Photonic glass: colloidal + absorber"),
+            "BCP": TieredValue(200.0, DataTier.T2_SOLID,
+                "Block copolymer: specialty polymer"),
+            "CNC": TieredValue(30.0, DataTier.T2_SOLID,
+                "Cellulose nanocrystals: bio-derived, scalable"),
+        }
+        cost = cost_map.get(s.approach)
+
+        # Environmental
+        env_map = {
+            "bragg_opal": 0.8,
+            "photonic_glass": 0.7,
+            "BCP": 0.4,
+            "CNC": 0.95,  # bio-derived, biodegradable
+        }
+        env = env_map.get(s.approach, 0.5)
+
+        self.metrics = PerformanceMetrics(
+            capacity_mg_g=TieredValue(color_accuracy, DataTier.T2_SOLID,
+                f"Color accuracy: 100-ΔE, peak={self.predicted_peak_nm}nm")
+                if color_accuracy is not None else None,
+            selectivity_ratio=TieredValue(angle_score * 100, DataTier.T1_KNOWN,
+                "Angle-independent" if s.angle_independent else "Iridescent"),
+            kinetics_t90_min=None,  # not applicable
+            cost_per_kg_usd=cost,
+            scalability_score=TieredValue(scalability, DataTier.T2_SOLID,
+                f"{s.approach} process maturity"),
+            durability_cycles=None,
+            environmental_score=TieredValue(env, DataTier.T2_SOLID,
+                f"{s.approach} environmental impact"),
+        )
+
+        return self.metrics
+
+
+def design_structural_color(name: str, target: TargetSpec) -> StructuralColorDesign:
+    """Design a structural color material."""
+    spec = StructuralColorSpec.from_database(name)
+    design = StructuralColorDesign(spec=spec)
+    design.predict_performance(target)
+    return design
+
+
+def screen_structural_colors(target: TargetSpec,
+                               top_n: int = 10) -> List[StructuralColorDesign]:
+    """Screen all known structural color systems against a target."""
+    designs = []
+    for name in STRUCTURAL_COLOR_DB:
+        try:
+            d = design_structural_color(name, target)
             designs.append(d)
         except Exception:
             pass

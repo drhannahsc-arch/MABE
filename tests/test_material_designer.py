@@ -894,3 +894,171 @@ class TestCompetitionInPolymer:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# M4: Structural Color Tests
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.material_designer import (
+    StructuralColorSpec, StructuralColorDesign, StructuralColorEntry,
+    design_structural_color, screen_structural_colors,
+    STRUCTURAL_COLOR_DB,
+    _bragg_peak, _photonic_glass_peak, _spectrum_to_color,
+)
+
+
+class TestStructuralColorDatabase:
+
+    def test_database_count(self):
+        assert len(STRUCTURAL_COLOR_DB) >= 8
+
+    def test_all_have_sources(self):
+        for name, entry in STRUCTURAL_COLOR_DB.items():
+            assert len(entry.source) > 10, f"{name}: missing source"
+
+    def test_all_have_approach(self):
+        for name, entry in STRUCTURAL_COLOR_DB.items():
+            assert entry.approach in ("bragg_opal", "photonic_glass", "BCP", "CNC",
+                                       "multilayer"), f"{name}: bad approach"
+
+    def test_all_have_published_peak(self):
+        for name, entry in STRUCTURAL_COLOR_DB.items():
+            assert entry.published_peak_nm is not None and entry.published_peak_nm > 0, \
+                f"{name}: missing published peak"
+
+
+class TestForwardModels:
+
+    def test_bragg_peak_in_visible(self):
+        """SiO2 sphere D=250nm: peak should be in visible range."""
+        peak = _bragg_peak(250.0, 1.46, 1.0, 0.74)
+        assert peak is not None
+        assert 380 < peak < 780
+
+    def test_bragg_peak_scales_with_diameter(self):
+        """Larger spheres → longer wavelength."""
+        peak_small = _bragg_peak(200.0, 1.46, 1.0, 0.74)
+        peak_large = _bragg_peak(350.0, 1.46, 1.0, 0.74)
+        assert peak_large > peak_small
+
+    def test_bragg_peak_scales_with_n(self):
+        """Higher n → longer wavelength at same diameter."""
+        peak_low_n = _bragg_peak(250.0, 1.2, 1.0, 0.74)
+        peak_high_n = _bragg_peak(250.0, 1.8, 1.0, 0.74)
+        assert peak_high_n > peak_low_n
+
+    def test_photonic_glass_peak_in_visible(self):
+        """Photonic glass D=250nm SiO2: peak in visible."""
+        peak = _photonic_glass_peak(250.0, "SiO2", 1.0, 0.55)
+        assert peak is not None
+        assert 380 < peak < 780
+
+    def test_spectrum_to_color_returns_dict(self):
+        result = _spectrum_to_color(530.0)
+        assert "peak_nm" in result
+        assert result["peak_nm"] == 530.0
+
+
+class TestStructuralColorDesign:
+
+    def test_from_database(self):
+        spec = StructuralColorSpec.from_database("SiO2-opal-blue")
+        assert spec.sphere_material == "SiO2"
+        assert spec.approach == "bragg_opal"
+
+    def test_unknown_raises(self):
+        with pytest.raises(KeyError):
+            StructuralColorSpec.from_database("FakeColor-99")
+
+    def test_design_returns_design(self):
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("SiO2-opal-green", target)
+        assert isinstance(d, StructuralColorDesign)
+        assert d.predicted_peak_nm is not None
+
+    def test_bragg_opal_predicts_peak(self):
+        """Bragg opal should compute peak from Bragg's law."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("SiO2-opal-green", target)
+        assert d.predicted_peak_nm is not None
+        assert 400 < d.predicted_peak_nm < 700
+
+    def test_bcp_uses_published_peak(self):
+        """BCP has no forward model → should use published peak."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("BCP-Cypris-green", target)
+        assert d.predicted_peak_nm == 530.0  # published value
+
+    def test_angle_independent_scores_higher(self):
+        """Non-iridescent should score better than iridescent for same color."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d_pg = design_structural_color("PS-photonic-glass-green", target)
+        d_opal = design_structural_color("SiO2-opal-green", target)
+        # Photonic glass is angle-independent, opal is not
+        assert d_pg.spec.angle_independent
+        assert not d_opal.spec.angle_independent
+        assert d_pg.metrics.selectivity_ratio.value > d_opal.metrics.selectivity_ratio.value
+
+    def test_delta_E_zero_for_exact_match(self):
+        """BCP-Cypris at 530nm target should have ΔE near 0."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("BCP-Cypris-green", target)
+        assert d.delta_E is not None
+        assert d.delta_E < 5.0
+
+
+class TestScreenStructuralColors:
+
+    def test_returns_ranked(self):
+        target = TargetSpec(target_wavelength_nm=530.0)
+        results = screen_structural_colors(target)
+        assert len(results) >= 5
+        scores = [d.metrics.composite_score() for d in results]
+        for i in range(len(scores) - 1):
+            assert scores[i] >= scores[i + 1]
+
+    def test_blue_target_prefers_blue_materials(self):
+        """Blue target (450nm) should rank blue materials higher."""
+        target = TargetSpec(target_wavelength_nm=450.0)
+        results = screen_structural_colors(target)
+        top_3 = [d.spec.name for d in results[:3]]
+        assert any("blue" in n.lower() for n in top_3)
+
+
+class TestUnifiedWithStructuralColor:
+
+    def test_structural_color_included_with_wavelength(self):
+        """Structural color materials appear when target has wavelength."""
+        target = TargetSpec(name="test", target_wavelength_nm=530.0)
+        result = unified_design(target, include_frameworks=False,
+                                 include_polymers=False, include_composites=False,
+                                 top_n=10)
+        classes = set(r.material_class for r in result.rankings)
+        assert any("StructuralColor" in c for c in classes)
+
+    def test_structural_color_excluded_without_wavelength(self):
+        """No wavelength target → structural color not included."""
+        target = TargetSpec(name="test", target_species="Pb2+",
+                            target_charge=2, target_mw=207.2)
+        result = unified_design(target, top_n=30)
+        classes = set(r.material_class for r in result.rankings)
+        assert not any("StructuralColor" in c for c in classes)
+
+    def test_zero_t3_data(self):
+        """M4 should produce zero T3 data (strict policy)."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        result = unified_design(target, include_frameworks=False,
+                                 include_polymers=False, include_composites=False)
+        for r in result.rankings:
+            m = r.metrics
+            for field_name in ['capacity_mg_g', 'selectivity_ratio', 'cost_per_kg_usd',
+                               'scalability_score', 'environmental_score']:
+                tv = getattr(m, field_name, None)
+                if tv is not None:
+                    assert tv.tier != DataTier.T3_CONCEPTUAL, \
+                        f"{r.design_name}/{field_name}: has T3 data"
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
