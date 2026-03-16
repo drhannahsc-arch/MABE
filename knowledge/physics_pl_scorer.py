@@ -168,6 +168,31 @@ def compute_physics_pl_terms(uc, result):
     except ImportError:
         pass
 
+    # ── 6. ENTROPY OF MIXING (translational + rotational loss) ───
+
+    try:
+        from knowledge.entropy_of_mixing import mixing_entropy_quick
+        mw = getattr(uc, 'guest_mw', 0.0)
+        if mw > 0:
+            result.dg_mixing_entropy = mixing_entropy_quick(
+                mw_Da=mw, include_vib_recovery=True)
+        else:
+            result.dg_mixing_entropy = mixing_entropy_quick(
+                category="drug_like", include_vib_recovery=True)
+    except ImportError:
+        pass
+
+    # ── 7. DISPERSION (Grimme D3-calibrated, atom-type C6) ──────
+
+    try:
+        from knowledge.dispersion_d3 import compute_dispersion_correction
+        if uc.sasa_buried_A2 > 0 and uc.guest_smiles:
+            result.dg_dispersion_t2 = compute_dispersion_correction(
+                uc.guest_smiles, uc.sasa_buried_A2,
+                uc.guest_sasa_total_A2 if uc.guest_sasa_total_A2 > 0 else None)
+    except ImportError:
+        pass
+
 
 def _hbond_from_counts(uc, result, n_hb):
     """Estimate H-bond energy from counts + guest charge.
@@ -231,6 +256,8 @@ def score_physics_pl(uc, verbose=False):
         dg_hbond: float = 0.0
         dg_conf_entropy: float = 0.0
         dg_born_solvation: float = 0.0
+        dg_mixing_entropy: float = 0.0
+        dg_dispersion_t2: float = 0.0
 
     # Temporarily override binding_mode to fire the scorer
     orig_mode = uc.binding_mode
@@ -242,7 +269,8 @@ def score_physics_pl(uc, verbose=False):
     uc.binding_mode = orig_mode  # restore
 
     dg_net = (r.dg_group_desolv + r.dg_hydrophobic + r.dg_hbond
-              + r.dg_conf_entropy + r.dg_born_solvation)
+              + r.dg_conf_entropy + r.dg_born_solvation
+              + r.dg_mixing_entropy + r.dg_dispersion_t2)
 
     if verbose:
         print(f"Physics PL scoring: {uc.name}")
@@ -251,6 +279,8 @@ def score_physics_pl(uc, verbose=False):
         print(f"  dG_hbond       = {r.dg_hbond:+.2f} kJ/mol")
         print(f"  dG_conf        = {r.dg_conf_entropy:+.2f} kJ/mol")
         print(f"  dG_elec_solv   = {r.dg_born_solvation:+.2f} kJ/mol")
+        print(f"  dG_mixing      = {r.dg_mixing_entropy:+.2f} kJ/mol")
+        print(f"  dG_dispersion  = {r.dg_dispersion_t2:+.2f} kJ/mol")
         print(f"  dG_total       = {dg_net:+.2f} kJ/mol")
 
     return {
@@ -259,6 +289,8 @@ def score_physics_pl(uc, verbose=False):
         "dg_hbond": r.dg_hbond,
         "dg_conf_entropy": r.dg_conf_entropy,
         "dg_born_solvation": r.dg_born_solvation,
+        "dg_mixing_entropy": r.dg_mixing_entropy,
+        "dg_dispersion": r.dg_dispersion_t2,
         "dg_total": dg_net,
         "log_Ka_pred": -dg_net / (2.303 * 8.314e-3 * 298.15),
     }

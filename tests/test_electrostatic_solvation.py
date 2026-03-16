@@ -264,7 +264,7 @@ class TestPhysicsPLIntegration:
         assert result["dg_born_solvation"] >= 0
 
     def test_five_term_decomposition(self):
-        """Physics PL scorer now has 5 terms summing to total."""
+        """Physics PL scorer terms sum to total."""
         from knowledge.physics_pl_scorer import score_physics_pl
         from core.universal_schema import UniversalComplex
 
@@ -273,6 +273,7 @@ class TestPhysicsPLIntegration:
             binding_mode="protein_ligand_physics",
             guest_smiles="CC(=O)[O-]",
             guest_charge=-1,
+            guest_mw=59.0,
             sasa_buried_A2=120.0,
             guest_sasa_total_A2=180.0,
             guest_sasa_nonpolar_A2=80.0,
@@ -281,7 +282,9 @@ class TestPhysicsPLIntegration:
         )
         r = score_physics_pl(uc)
         expected = (r["dg_desolv"] + r["dg_hydrophobic"] + r["dg_hbond"]
-                    + r["dg_conf_entropy"] + r["dg_born_solvation"])
+                    + r["dg_conf_entropy"] + r["dg_born_solvation"]
+                    + r.get("dg_mixing_entropy", 0.0)
+                    + r.get("dg_dispersion", 0.0))
         assert abs(r["dg_total"] - expected) < 0.01, (
             f"Sum ({expected:.2f}) != total ({r['dg_total']:.2f})"
         )
