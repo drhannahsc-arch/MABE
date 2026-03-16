@@ -136,6 +136,17 @@ def compute_physics_pl_terms(uc, result):
 
     n_rot = uc.guest_rotatable_bonds
     if n_rot > 0:
+        # Try bond-type-specific entropy (requires OpenBabel for classification)
+        try:
+            from knowledge.conf_entropy_druglike import compute_conf_entropy
+            if uc.guest_smiles:
+                conf_result = compute_conf_entropy(uc.guest_smiles)
+                if conf_result is not None:
+                    result.dg_conf_entropy = conf_result["total_kJ"]
+                    return
+        except ImportError:
+            pass
+        # Fallback: flat rate
         result.dg_conf_entropy = n_rot * EPS_ROTOR * F_PARTIAL
 
 

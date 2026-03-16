@@ -153,8 +153,8 @@ class TestEnergyDecomposition:
 
     def test_more_rotors_more_penalty(self):
         """More rotors → larger conformational penalty."""
-        r1 = score_physics_pl(self._make_uc(n_rot=2))
-        r5 = score_physics_pl(self._make_uc(n_rot=8))
+        r1 = score_physics_pl(self._make_uc(smiles="CCO", n_rot=1))        # ethanol: ~1 rotor
+        r5 = score_physics_pl(self._make_uc(smiles="CCCCCCCCO", n_rot=6))  # octanol: ~6 rotors
         assert r5["dg_conf_entropy"] > r1["dg_conf_entropy"]
 
     def test_more_burial_more_hydrophobic(self):
