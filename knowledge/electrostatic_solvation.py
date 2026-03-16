@@ -286,7 +286,8 @@ def compute_electrostatic_desolvation(uc_or_groups, burial_fraction=0.6):
     """Compute total electrostatic desolvation cost.
 
     If uc_or_groups is a list: use Tier 1 (group-additive).
-    If uc_or_groups has guest_charge: add Tier 2 Born for the charged group.
+    If uc_or_groups has guest_charge: add Tier 2 Born for the charged group,
+    MINUS Coulomb correction for counter-charges / salt bridges.
 
     Returns: ΔG_elec_desolv in kJ/mol (positive = unfavorable)
     """
@@ -315,6 +316,82 @@ def compute_electrostatic_desolvation(uc_or_groups, burial_fraction=0.6):
             ion = "COO-"   # generic anion
         # Scale by burial
         born_cost = born_desolvation_cost(ion, epsilon_pocket)
-        total += born_cost * abs(guest_charge) * burial_fraction
+        raw_born = born_cost * abs(guest_charge) * burial_fraction
+
+        # Tier 3: Coulomb correction for counter-charges / salt bridges
+        # When a charged ligand forms a salt bridge with a receptor
+        # counter-charge, the Born desolvation penalty is partially
+        # cancelled by the Coulomb attraction.
+        #
+        # IMPORTANT: The charge-assisted H-bond energy (Pace -17 kJ/mol)
+        # already includes the NET electrostatic effect (desolvation +
+        # Coulomb + H-bond). So we must NOT add Coulomb on top of
+        # the H-bond scorer — instead we REDUCE the Born penalty to
+        # avoid double-counting with the Pace value.
+        #
+        # Physics: each salt bridge "neutralizes" one unit of charge,
+        # removing its Born penalty. Remaining uncompensated charges
+        # still pay full Born cost.
+        reduction = _compute_born_reduction(uc, epsilon_pocket)
+
+        total += max(raw_born - reduction, 0.0)  # floor at 0
 
     return total
+
+
+def _compute_born_reduction(uc, epsilon_pocket):
+    """Compute Born penalty reduction from receptor-side counter-charges.
+
+    Three mechanisms (checked in order):
+
+    1. Explicit salt bridges: n_salt_bridges on UC → each neutralizes
+       one unit of Born penalty for one formal charge
+    2. Host charge: if host_charge has opposite sign to guest_charge,
+       the receptor provides electrostatic compensation
+    3. Charged H-bonds: if hbond_types includes charge-assisted entries,
+       those charges are already accounted for in Pace energies
+
+    Returns: reduction in kJ/mol (positive = amount to subtract from Born)
+    """
+    guest_q = abs(getattr(uc, 'guest_charge', 0))
+    if guest_q == 0:
+        return 0.0
+
+    # ── Method 1: explicit salt bridges ──
+    n_sb = getattr(uc, 'n_salt_bridges', 0)
+    if n_sb > 0:
+        # Each salt bridge neutralizes one charge unit's Born penalty
+        # Fraction of charges compensated:
+        f_compensated = min(n_sb / guest_q, 1.0)
+        # Full Born cost for one charge unit
+        ion = "RNH3+" if getattr(uc, 'guest_charge', 0) > 0 else "COO-"
+        born_per_charge = born_desolvation_cost(ion, epsilon_pocket)
+        return f_compensated * born_per_charge * guest_q
+
+    # ── Method 2: host_charge with opposite sign ──
+    host_q = getattr(uc, 'host_charge', 0)
+    guest_sign = 1 if getattr(uc, 'guest_charge', 0) > 0 else -1
+    if host_q != 0 and (host_q * guest_sign < 0):
+        # Opposite charges → compensation
+        compensated = min(abs(host_q), guest_q)
+        f_compensated = compensated / guest_q
+        ion = "RNH3+" if guest_sign > 0 else "COO-"
+        born_per_charge = born_desolvation_cost(ion, epsilon_pocket)
+        return f_compensated * born_per_charge * guest_q
+
+    # ── Method 3: charged H-bonds in hbond_types ──
+    hb_types = getattr(uc, 'hbond_types', [])
+    if hb_types:
+        n_charged_hb = sum(1 for t in hb_types
+                           if "+" in t or "carboxylate" in t
+                           or "charge" in t.lower())
+        if n_charged_hb > 0:
+            # Each charge-assisted HB implies a counter-charge is present
+            # Pace value already accounts for desolvation → reduce Born
+            f_compensated = min(n_charged_hb / (guest_q * 2), 1.0)
+            # × 2 because each charge-assisted HB partially (not fully) compensates
+            ion = "RNH3+" if guest_sign > 0 else "COO-"
+            born_per_charge = born_desolvation_cost(ion, epsilon_pocket)
+            return f_compensated * born_per_charge * guest_q
+
+    return 0.0

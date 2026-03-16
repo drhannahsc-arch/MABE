@@ -59,6 +59,14 @@ from cross_modal_predictor import (
 )
 from knowledge.cross_modal_dataset import CB_PORTAL_INFO
 
+# Physics-based PL scorer (parallel to QSAR path, graceful fallback)
+try:
+    from knowledge.physics_pl_scorer import compute_physics_pl_terms as _compute_physics_pl
+except ImportError:
+    def _compute_physics_pl(uc, result):
+        pass  # No-op if module unavailable
+
+
 
 # ═══════════════════════════════════════════════════════════════════════════
 # PREDICTION RESULT
@@ -246,6 +254,12 @@ def predict(uc, verbose=False):
 
     # ── GENERAL PROTEIN-LIGAND (non-metal targets) ────────────────────
     _compute_general_pl_terms(uc, result)
+
+    # ── PHYSICS-BASED PROTEIN-LIGAND (parallel to QSAR) ──────────────
+    _compute_physics_pl(uc, result)
+
+    # ── GLYCAN-LECTIN (self-zeros if not glycan mode) ────────────────
+    _compute_glycan_terms(uc, result)
 
     # ── CROSS-MODAL metal@host (self-zeros if no metal+cavity) ───────
     _compute_cm_terms(uc, result)
@@ -1046,6 +1060,48 @@ def _compute_general_pl_terms(uc, result):
 # ═══════════════════════════════════════════════════════════════════════════
 # CROSS-MODAL TERMS — delegates to cross_modal_predictor functions
 # ═══════════════════════════════════════════════════════════════════════════
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# GLYCAN-LECTIN SCORING — delegates to glycan/scorer.py
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _compute_glycan_terms(uc, result):
+    """Score glycan-lectin binding from contact maps + physics parameters.
+
+    Fires only for binding_mode == 'glycan_lectin'.
+    Self-zeros if glycan scorer or contact map not available.
+
+    Maps GlycanPrediction terms to PredictionResult fields:
+        DG0       -> dg_shape (scaffold geometry baseline)
+        dG_HB     -> dg_hbond (H-bonds at interface)
+        dG_desolv -> dg_group_desolv (OH burial desolvation)
+        dG_CHP    -> dg_pi (CH-pi contacts)
+        dG_linker -> dg_hbond_coop (linker cooperativity)
+    """
+    if uc.binding_mode != "glycan_lectin":
+        return
+
+    scaffold = uc.host_name
+    ligand = uc.guest_name
+
+    if not scaffold or not ligand:
+        return
+
+    try:
+        from glycan.scorer import GlycanScorer
+        scorer = GlycanScorer()
+        pred = scorer.score(scaffold, ligand)
+    except (ImportError, ValueError, KeyError):
+        return
+
+    # Map glycan terms to PredictionResult fields
+    result.dg_shape = pred.dG0
+    result.dg_hbond = pred.dG_HB
+    result.dg_group_desolv = pred.dG_desolv
+    result.dg_pi = pred.dG_CHP
+    result.dg_hbond_coop = pred.dG_linker
+
 
 def _compute_cm_terms(uc, result):
     """Cross-modal terms for metal@host (e.g. cation@CB[n]).
