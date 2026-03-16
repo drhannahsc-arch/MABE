@@ -458,6 +458,7 @@ class ArmScore:
     pka_score: float = 0.0           # 0–1, donor availability at pH
     steric_ok: bool = True           # passes steric filter
     geometry_score: float = 0.0      # 0–1, spatial match
+    repulsion_score: float = 0.0     # 0–1, differential repulsion selectivity
     pka_penalty_kJ: float = 0.0      # kJ/mol, pKa cost
     composite: float = 0.0           # weighted combination
 
@@ -478,12 +479,65 @@ class ArmAssignment:
     pH: float = 7.4
 
 
+def _arm_repulsion_score(arm_donor_types: List[str],
+                         target_species: str,
+                         interferent_species: List[str],
+                         cavity_radius_A: float = 3.0) -> float:
+    """Score how well an arm's donors differentially repel interferents.
+
+    Returns 0–1. Higher = this arm repels interferents more than the target.
+    1.0 = strong differential repulsion (great for selectivity).
+    0.0 = no differential repulsion (interferents bind equally).
+
+    Uses HSAB mismatch as the primary mechanism — donor hardness
+    determines which species are repelled.
+    """
+    try:
+        from core.repulsion_physics import (
+            hsab_mismatch_for_site, HSAB_HARDNESS_EV, IONIC_RADII_A,
+            steric_repulsion, hydrophobic_mismatch, HYDRATION_ENTHALPY_kJ,
+        )
+    except ImportError:
+        return 0.5  # neutral if repulsion module unavailable
+
+    if not interferent_species or not arm_donor_types:
+        return 0.5  # no interferents or no donors → neutral
+
+    # Compute repulsion for target
+    repel_target = hsab_mismatch_for_site(target_species, arm_donor_types)
+
+    # Compute repulsion for each interferent, take the average
+    repel_intfs = []
+    for intf in interferent_species:
+        r = hsab_mismatch_for_site(intf, arm_donor_types)
+        # Add steric component if radii available
+        r_sp = IONIC_RADII_A.get(intf, 1.0)
+        r += steric_repulsion(r_sp, cavity_radius_A) * 0.1  # scaled down
+        # Add hydrophobic mismatch component
+        h = HYDRATION_ENTHALPY_kJ.get(intf, -500.0)
+        r += hydrophobic_mismatch(h, 0.3) * 0.05  # mild contribution
+        repel_intfs.append(r)
+
+    if not repel_intfs:
+        return 0.5
+
+    avg_repel_intf = sum(repel_intfs) / len(repel_intfs)
+
+    # Differential: interferents should be MORE repelled than target
+    # ΔΔG = avg_repel_intf - repel_target
+    # Normalize: 10 kJ/mol differential → score 0.8, 0 → 0.5, -10 → 0.2
+    ddG = avg_repel_intf - repel_target
+    score = 0.5 + 0.03 * ddG  # 0.03 per kJ/mol
+    return max(0.0, min(1.0, score))
+
+
 def score_arm(arm_name: str, arm_donor_types: List[str], arm_hardness: str,
               guest, scaffold_d_arm: float, scaffold_theta_conv: float,
               pH: float,
-              w_electronic: float = 0.4,
-              w_pka: float = 0.3,
-              w_geometry: float = 0.3) -> ArmScore:
+              w_electronic: float = 0.30,
+              w_pka: float = 0.25,
+              w_geometry: float = 0.20,
+              w_repulsion: float = 0.25) -> ArmScore:
     """Score a single arm for a scaffold–guest pair.
 
     Parameters
@@ -495,7 +549,7 @@ def score_arm(arm_name: str, arm_donor_types: List[str], arm_hardness: str,
     scaffold_d_arm : float (Å)
     scaffold_theta_conv : float (degrees)
     pH : float
-    w_electronic, w_pka, w_geometry : float
+    w_electronic, w_pka, w_geometry, w_repulsion : float
         Weights for composite score (must sum to 1.0).
 
     Returns
@@ -514,9 +568,19 @@ def score_arm(arm_name: str, arm_donor_types: List[str], arm_hardness: str,
         arm_geo, scaffold_d_arm, scaffold_theta_conv, guest.diameter_A
     )
 
+    # Repulsion: how well does this arm differentially repel interferents?
+    interferents = getattr(guest, 'interferent_species', []) or []
+    r_score = _arm_repulsion_score(
+        arm_donor_types,
+        getattr(guest, 'target_species', guest.name) if hasattr(guest, 'target_species') else guest.name,
+        interferents,
+        cavity_radius_A=scaffold_d_arm / 2.0 if scaffold_d_arm > 0 else 3.0,
+    )
+
     composite = (w_electronic * e_score +
                  w_pka * p_score +
-                 w_geometry * g_score)
+                 w_geometry * g_score +
+                 w_repulsion * r_score)
 
     # Steric veto
     if not is_steric_ok:
@@ -530,6 +594,7 @@ def score_arm(arm_name: str, arm_donor_types: List[str], arm_hardness: str,
         pka_score=p_score,
         steric_ok=is_steric_ok,
         geometry_score=g_score,
+        repulsion_score=r_score,
         pka_penalty_kJ=p_penalty,
         composite=composite,
     )
@@ -712,13 +777,14 @@ def print_arm_assignment(assignment: ArmAssignment, top_n: int = 8):
           f"(score={assignment.best_combo_score:.3f})")
 
     print(f"\n  {'Rank':>4} {'Arm':<25} {'Elec':>5} {'pKa':>5} {'Geom':>5} "
-          f"{'Total':>6} {'Steric':>6} {'pKa kJ':>7}")
-    print("  " + "-" * 80)
+          f"{'Repul':>5} {'Total':>6} {'Steric':>6} {'pKa kJ':>7}")
+    print("  " + "-" * 88)
 
     for i, s in enumerate(assignment.arm_scores[:top_n]):
         steric_str = "OK" if s.steric_ok else "FAIL"
         print(f"  {i+1:4d} {s.arm_name:<25} {s.electronic_score:5.2f} "
               f"{s.pka_score:5.2f} {s.geometry_score:5.2f} "
+              f"{s.repulsion_score:5.2f} "
               f"{s.composite:6.3f} {steric_str:>6} {s.pka_penalty_kJ:+7.1f}")
 
 

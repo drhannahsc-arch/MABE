@@ -207,3 +207,99 @@ class TestBatchSelection:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Repulsion-Aware Arm Selection
+# ═══════════════════════════════════════════════════════════════════════════
+
+from core.arm_selector import _arm_repulsion_score
+
+
+class TestArmRepulsionScore:
+
+    def test_returns_bounded(self):
+        score = _arm_repulsion_score(["S_thiol"], "Pb2+", ["Ca2+", "Mg2+"])
+        assert 0.0 <= score <= 1.0
+
+    def test_no_interferents_neutral(self):
+        score = _arm_repulsion_score(["S_thiol"], "Pb2+", [])
+        assert score == pytest.approx(0.5)
+
+    def test_thiol_repels_hard_ions(self):
+        """Thiol (soft) repels Ca2+/Mg2+ (hard) more than Pb2+ (borderline)."""
+        score = _arm_repulsion_score(["S_thiol"], "Pb2+", ["Ca2+", "Mg2+"])
+        assert score > 0.7  # strong differential
+
+    def test_carboxylate_less_differential(self):
+        """Carboxylate (hard) has less HSAB differential between hard ions."""
+        score_thiol = _arm_repulsion_score(["S_thiol"], "Pb2+", ["Ca2+", "Mg2+"])
+        score_carb = _arm_repulsion_score(["O_carboxylate"], "Pb2+", ["Ca2+", "Mg2+"])
+        assert score_thiol > score_carb
+
+    def test_no_donors_neutral(self):
+        score = _arm_repulsion_score([], "Pb2+", ["Ca2+"])
+        assert score == pytest.approx(0.5)
+
+
+class TestRepulsionInArmSelection:
+
+    def _make_sd(self, **kwargs):
+        defaults = dict(name="test", smiles="", category="aromatic", n_sites=2,
+                        d_arm_A=6.0, theta_conv_deg=55.0, rigidity_index=0.7,
+                        n_rotors_bridge=2, V_cavity_est_A3=70.0)
+        defaults.update(kwargs)
+        return ScaffoldDescriptor(**defaults)
+
+    def test_thiol_promoted_with_interferents(self):
+        """Thiol arms should score higher when Ca2+/Mg2+ are interferents."""
+        sd = self._make_sd()
+        guest_clean = GuestSpec(name="Pb2+", target_species="Pb2+",
+                                 diameter_A=2.5, charge=2, pH=5.0)
+        guest_dirty = GuestSpec(name="Pb2+", target_species="Pb2+",
+                                 diameter_A=2.5, charge=2, pH=5.0,
+                                 interferent_species=["Ca2+", "Mg2+"])
+
+        a_clean = select_arms(sd, guest_clean)
+        a_dirty = select_arms(sd, guest_dirty)
+
+        # Find thiol score in each
+        thiol_clean = [s for s in a_clean.arm_scores if s.arm_name == "thiol-methyl"]
+        thiol_dirty = [s for s in a_dirty.arm_scores if s.arm_name == "thiol-methyl"]
+        assert len(thiol_clean) > 0 and len(thiol_dirty) > 0
+        assert thiol_dirty[0].composite > thiol_clean[0].composite
+
+    def test_repulsion_score_populated(self):
+        """All arm scores should have repulsion_score field."""
+        sd = self._make_sd()
+        guest = GuestSpec(name="Pb2+", target_species="Pb2+",
+                           diameter_A=2.5, charge=2, pH=5.0,
+                           interferent_species=["Ca2+"])
+        a = select_arms(sd, guest)
+        for s in a.arm_scores:
+            assert hasattr(s, 'repulsion_score')
+            assert 0.0 <= s.repulsion_score <= 1.0
+
+    def test_selenite_arms_have_modest_differential(self):
+        """SeO3 vs SO4: similar oxoanions → repulsion scores near 0.5."""
+        sd = self._make_sd()
+        guest = GuestSpec(name="selenite", target_species="SeO3^2-",
+                           diameter_A=3.5, charge=-2, n_hb_acceptors=3, pH=5.0,
+                           interferent_species=["SO4^2-"])
+        a = select_arms(sd, guest)
+        top = a.arm_scores[0]
+        # Oxoanions not in HSAB table → modest differential
+        assert 0.4 < top.repulsion_score < 0.7
+
+    def test_weights_sum_roughly_to_one(self):
+        """Default weights should sum to 1.0."""
+        from core.arm_selector import score_arm
+        import inspect
+        sig = inspect.signature(score_arm)
+        w_sum = sum(p.default for name, p in sig.parameters.items()
+                    if name.startswith('w_') and isinstance(p.default, float))
+        assert abs(w_sum - 1.0) < 0.01
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])

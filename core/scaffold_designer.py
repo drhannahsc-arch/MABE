@@ -312,8 +312,12 @@ class GuestSpec:
     is_anion: bool = False        # True for oxoanion targets
     pH: float = 7.4               # working pH
     smiles: str = ""              # optional SMILES
+    target_species: str = ""     # species identifier (e.g., "Pb2+", "SeO3^2-")
+    interferent_species: List[str] = field(default_factory=list)
 
     def __post_init__(self):
+        if not self.target_species and self.name:
+            self.target_species = self.name
         if self.charge < 0 and not self.is_anion:
             self.is_anion = True
         if self.volume_A3 > 0 and self.diameter_A <= 0:
