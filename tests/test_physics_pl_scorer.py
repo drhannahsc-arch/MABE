@@ -163,13 +163,14 @@ class TestEnergyDecomposition:
         r_large = score_physics_pl(self._make_uc(buried=200.0))
         assert r_large["dg_hydrophobic"] < r_small["dg_hydrophobic"]
 
-    def test_hbond_near_zero_neutral(self):
-        """Neutral H-bonds contribute near-zero net energy per bond."""
+    def test_hbond_scales_with_count(self):
+        """More H-bonds → more favorable dg_hbond."""
         r0 = score_physics_pl(self._make_uc(n_hb=0))
         r4 = score_physics_pl(self._make_uc(n_hb=4))
-        # 4 neutral HBs should change dg_hbond by < 8 kJ/mol (< 2 per bond)
-        delta = abs(r4["dg_hbond"] - r0["dg_hbond"])
-        assert delta < 8.0, f"4 HBs changed dg_hbond by {delta:.1f}, expected <8"
+        assert r4["dg_hbond"] < r0["dg_hbond"], (
+            f"4 HBs ({r4['dg_hbond']:.1f}) should be more favorable "
+            f"than 0 HBs ({r0['dg_hbond']:.1f})"
+        )
 
     def test_charged_hb_stronger(self):
         """Charged ligand gets stronger H-bond energy."""

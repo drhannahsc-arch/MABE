@@ -115,22 +115,25 @@ def compute_physics_pl_terms(uc, result):
         buried_np_actual = buried_np * np_frac
         result.dg_hydrophobic = GAMMA_HYDROPHOBIC * buried_np_actual
 
-    # ── 3. H-BOND NETWORK ────────────────────────────────────────────
+    # ── 3. H-BOND NETWORK (per-type physics) ────────────────────────
 
     n_hb = uc.n_hbonds_formed
     if n_hb > 0:
-        # Neutral H-bonds
-        dg_formed = n_hb * EPS_HBOND_FORMED
-        dg_water = n_hb * WATER_DISPLACEMENT * WATER_PENALTY_PER_HB
-        result.dg_hbond = dg_formed + dg_water
+        hb_types = getattr(uc, 'hbond_types', [])
 
-        # Charge-assisted bonus: if ligand is charged, some HBs are stronger
-        if abs(uc.guest_charge) >= 1:
-            # Estimate 1-2 charge-assisted HBs per formal charge
-            n_charged_hb = min(abs(uc.guest_charge) * 2, n_hb)
-            # Replace neutral HB energy with charged for those
-            charged_upgrade = n_charged_hb * (EPS_CHARGED_HB - EPS_HBOND_FORMED)
-            result.dg_hbond += charged_upgrade
+        if hb_types and len(hb_types) > 0:
+            # Detailed per-type scoring
+            try:
+                from knowledge.hbond_pl_physics import score_hbond_network
+                hb_list = [{"type": t} for t in hb_types]
+                hb_result = score_hbond_network(hb_list)
+                result.dg_hbond = hb_result["total_kJ"]
+            except ImportError:
+                # Fallback to count-based
+                _hbond_from_counts(uc, result, n_hb)
+        else:
+            # Count-based: estimate n_neutral vs n_charged from guest_charge
+            _hbond_from_counts(uc, result, n_hb)
 
     # ── 4. CONFORMATIONAL ENTROPY ────────────────────────────────────
 
@@ -148,6 +151,30 @@ def compute_physics_pl_terms(uc, result):
             pass
         # Fallback: flat rate
         result.dg_conf_entropy = n_rot * EPS_ROTOR * F_PARTIAL
+
+
+def _hbond_from_counts(uc, result, n_hb):
+    """Estimate H-bond energy from counts + guest charge.
+
+    When detailed hbond_types aren't available, estimate the breakdown:
+      - If ligand is charged: ~2 HBs per formal charge are charge-assisted
+      - Remainder are neutral
+    Uses per-category energies from hbond_pl_physics.
+    """
+    try:
+        from knowledge.hbond_pl_physics import score_hbond_simple
+        n_charged = 0
+        if abs(uc.guest_charge) >= 1:
+            n_charged = min(abs(uc.guest_charge) * 2, n_hb)
+        n_neutral = n_hb - n_charged
+        result.dg_hbond = score_hbond_simple(
+            n_neutral=n_neutral, n_charged=n_charged)
+    except ImportError:
+        # Ultimate fallback: flat rate
+        result.dg_hbond = n_hb * EPS_HBOND_FORMED + n_hb * WATER_DISPLACEMENT * WATER_PENALTY_PER_HB
+        if abs(uc.guest_charge) >= 1:
+            n_ch = min(abs(uc.guest_charge) * 2, n_hb)
+            result.dg_hbond += n_ch * (EPS_CHARGED_HB - EPS_HBOND_FORMED)
 
 
 def _fallback_desolvation(uc, result, f_burial):
