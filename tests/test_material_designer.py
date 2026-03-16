@@ -245,6 +245,151 @@ class TestPerformanceMetrics:
         assert 0 < s <= 1.0
 
 
+
+class TestTMMForwardModel:
+
+    def test_tmm_design_returns_stack(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        assert len(stack) == 10  # 5 bilayers × 2
+
+    def test_tmm_design_materials_valid(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        for mat, t in stack:
+            assert isinstance(mat, str)
+            assert t > 0
+
+    def test_tmm_spectrum_has_peak(self):
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        assert len(lam) > 0
+        assert len(R) == len(lam)
+        assert np.max(R) > 0.5  # should have strong reflectance peak
+
+    def test_tmm_peak_near_target(self):
+        """TMM designed for 530nm should peak near 530nm."""
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        peak_nm = lam[np.argmax(R)]
+        assert abs(peak_nm - 530.0) < 30  # within 30nm
+
+    def test_tmm_different_targets_different_peaks(self):
+        import numpy as np
+        stack_blue = _tmm_design_for_wavelength(450.0)
+        stack_red = _tmm_design_for_wavelength(630.0)
+        _, R_blue = _tmm_spectrum(stack_blue)
+        _, R_red = _tmm_spectrum(stack_red)
+        lam = np.linspace(380, 780, 81)
+        peak_blue = lam[np.argmax(R_blue)]
+        peak_red = lam[np.argmax(R_red)]
+        assert peak_red > peak_blue
+
+    def test_scan_bilayers_returns_best(self):
+        result = _scan_tmm_bilayers(530.0, bilayer_range=range(3, 8))
+        assert "n_bilayers" in result
+        assert "delta_E" in result
+        assert result["n_bilayers"] >= 3
+
+
+class TestBraggSpectrum:
+
+    def test_bragg_spectrum_shape(self):
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert len(lam) == 81
+        assert len(R) == 81
+
+    def test_bragg_spectrum_has_peak(self):
+        import numpy as np
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert np.max(R) > 0.1
+
+    def test_bragg_spectrum_peak_shifts_with_diameter(self):
+        import numpy as np
+        lam_s, R_s = _bragg_spectrum(200.0, 1.46)
+        lam_l, R_l = _bragg_spectrum(350.0, 1.46)
+        peak_s = lam_s[np.argmax(R_s)]
+        peak_l = lam_l[np.argmax(R_l)]
+        assert peak_l > peak_s
+
+
+class TestPhotonGlassSpectrum:
+
+    def test_photonic_glass_spectrum_broader(self):
+        """Photonic glass should have broader peak than Bragg opal."""
+        import numpy as np
+        _, R_bragg = _bragg_spectrum(260.0, 1.46, fwhm_nm=30.0)
+        _, R_pg = _photonic_glass_spectrum(260.0, "SiO2", fwhm_nm=60.0)
+        # FWHM of photonic glass > Bragg (by construction)
+        # Check that PG has lower peak (broader = lower max for same area)
+        assert np.max(R_pg) < np.max(R_bragg)
+
+
+class TestSpectrumToColor:
+
+    def test_spectrum_array_input(self):
+        import numpy as np
+        lam = np.linspace(380, 780, 81)
+        R = np.exp(-0.5 * ((lam - 530) / 20) ** 2)
+        color = _spectrum_to_color(R, lam)
+        assert color["Lab"] is not None
+        assert color["sRGB"] is not None
+
+    def test_float_input_gaussian(self):
+        color = _spectrum_to_color(530.0)
+        assert color["peak_nm"] == 530.0
+        assert color["Lab"] is not None
+
+    def test_green_has_negative_a_star(self):
+        """Green light should have negative a* in Lab."""
+        color = _spectrum_to_color(530.0)
+        if color["Lab"] is not None:
+            L, a, b = color["Lab"]
+            assert a < 0  # negative a* = green
+
+    def test_compute_delta_E_zero_for_same(self):
+        c1 = _spectrum_to_color(530.0)
+        dE = _compute_delta_E(c1, c1)
+        assert dE is not None
+        assert dE < 0.01
+
+    def test_compute_delta_E_large_for_different(self):
+        c_blue = _spectrum_to_color(450.0)
+        c_red = _spectrum_to_color(650.0)
+        dE = _compute_delta_E(c_blue, c_red)
+        assert dE is not None
+        assert dE > 30  # very different colors
+
+
+class TestMultilayerDesigns:
+
+    def test_multilayer_database_entries(self):
+        multilayer_names = [n for n, e in STRUCTURAL_COLOR_DB.items()
+                            if e.approach == "multilayer"]
+        assert len(multilayer_names) >= 3
+
+    def test_multilayer_design_uses_tmm(self):
+        """Multilayer design should produce spectrum from TMM, not Gaussian."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.predicted_Lab is not None
+        # TMM produces bright color (high L*) from high reflectance
+        L, a, b = d.predicted_Lab
+        assert L > 80  # TMM mirrors are very bright
+
+    def test_si3n4_multilayer(self):
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("Si3N4-SiO2-multilayer-green", target)
+        assert d.predicted_peak_nm is not None
+        assert d.delta_E is not None
+
+    def test_multilayer_scalable(self):
+        """Multilayer approaches should have high scalability."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.metrics.scalability_score.value >= 0.9
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
@@ -481,6 +626,151 @@ class TestUnifiedWithPolymers:
         assert t1_count > 0
 
 
+
+class TestTMMForwardModel:
+
+    def test_tmm_design_returns_stack(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        assert len(stack) == 10  # 5 bilayers × 2
+
+    def test_tmm_design_materials_valid(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        for mat, t in stack:
+            assert isinstance(mat, str)
+            assert t > 0
+
+    def test_tmm_spectrum_has_peak(self):
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        assert len(lam) > 0
+        assert len(R) == len(lam)
+        assert np.max(R) > 0.5  # should have strong reflectance peak
+
+    def test_tmm_peak_near_target(self):
+        """TMM designed for 530nm should peak near 530nm."""
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        peak_nm = lam[np.argmax(R)]
+        assert abs(peak_nm - 530.0) < 30  # within 30nm
+
+    def test_tmm_different_targets_different_peaks(self):
+        import numpy as np
+        stack_blue = _tmm_design_for_wavelength(450.0)
+        stack_red = _tmm_design_for_wavelength(630.0)
+        _, R_blue = _tmm_spectrum(stack_blue)
+        _, R_red = _tmm_spectrum(stack_red)
+        lam = np.linspace(380, 780, 81)
+        peak_blue = lam[np.argmax(R_blue)]
+        peak_red = lam[np.argmax(R_red)]
+        assert peak_red > peak_blue
+
+    def test_scan_bilayers_returns_best(self):
+        result = _scan_tmm_bilayers(530.0, bilayer_range=range(3, 8))
+        assert "n_bilayers" in result
+        assert "delta_E" in result
+        assert result["n_bilayers"] >= 3
+
+
+class TestBraggSpectrum:
+
+    def test_bragg_spectrum_shape(self):
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert len(lam) == 81
+        assert len(R) == 81
+
+    def test_bragg_spectrum_has_peak(self):
+        import numpy as np
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert np.max(R) > 0.1
+
+    def test_bragg_spectrum_peak_shifts_with_diameter(self):
+        import numpy as np
+        lam_s, R_s = _bragg_spectrum(200.0, 1.46)
+        lam_l, R_l = _bragg_spectrum(350.0, 1.46)
+        peak_s = lam_s[np.argmax(R_s)]
+        peak_l = lam_l[np.argmax(R_l)]
+        assert peak_l > peak_s
+
+
+class TestPhotonGlassSpectrum:
+
+    def test_photonic_glass_spectrum_broader(self):
+        """Photonic glass should have broader peak than Bragg opal."""
+        import numpy as np
+        _, R_bragg = _bragg_spectrum(260.0, 1.46, fwhm_nm=30.0)
+        _, R_pg = _photonic_glass_spectrum(260.0, "SiO2", fwhm_nm=60.0)
+        # FWHM of photonic glass > Bragg (by construction)
+        # Check that PG has lower peak (broader = lower max for same area)
+        assert np.max(R_pg) < np.max(R_bragg)
+
+
+class TestSpectrumToColor:
+
+    def test_spectrum_array_input(self):
+        import numpy as np
+        lam = np.linspace(380, 780, 81)
+        R = np.exp(-0.5 * ((lam - 530) / 20) ** 2)
+        color = _spectrum_to_color(R, lam)
+        assert color["Lab"] is not None
+        assert color["sRGB"] is not None
+
+    def test_float_input_gaussian(self):
+        color = _spectrum_to_color(530.0)
+        assert color["peak_nm"] == 530.0
+        assert color["Lab"] is not None
+
+    def test_green_has_negative_a_star(self):
+        """Green light should have negative a* in Lab."""
+        color = _spectrum_to_color(530.0)
+        if color["Lab"] is not None:
+            L, a, b = color["Lab"]
+            assert a < 0  # negative a* = green
+
+    def test_compute_delta_E_zero_for_same(self):
+        c1 = _spectrum_to_color(530.0)
+        dE = _compute_delta_E(c1, c1)
+        assert dE is not None
+        assert dE < 0.01
+
+    def test_compute_delta_E_large_for_different(self):
+        c_blue = _spectrum_to_color(450.0)
+        c_red = _spectrum_to_color(650.0)
+        dE = _compute_delta_E(c_blue, c_red)
+        assert dE is not None
+        assert dE > 30  # very different colors
+
+
+class TestMultilayerDesigns:
+
+    def test_multilayer_database_entries(self):
+        multilayer_names = [n for n, e in STRUCTURAL_COLOR_DB.items()
+                            if e.approach == "multilayer"]
+        assert len(multilayer_names) >= 3
+
+    def test_multilayer_design_uses_tmm(self):
+        """Multilayer design should produce spectrum from TMM, not Gaussian."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.predicted_Lab is not None
+        # TMM produces bright color (high L*) from high reflectance
+        L, a, b = d.predicted_Lab
+        assert L > 80  # TMM mirrors are very bright
+
+    def test_si3n4_multilayer(self):
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("Si3N4-SiO2-multilayer-green", target)
+        assert d.predicted_peak_nm is not None
+        assert d.delta_E is not None
+
+    def test_multilayer_scalable(self):
+        """Multilayer approaches should have high scalability."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.metrics.scalability_score.value >= 0.9
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
@@ -713,6 +1003,151 @@ class TestUnifiedWithComposites:
         assert len(classes) == 3
 
 
+
+class TestTMMForwardModel:
+
+    def test_tmm_design_returns_stack(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        assert len(stack) == 10  # 5 bilayers × 2
+
+    def test_tmm_design_materials_valid(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        for mat, t in stack:
+            assert isinstance(mat, str)
+            assert t > 0
+
+    def test_tmm_spectrum_has_peak(self):
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        assert len(lam) > 0
+        assert len(R) == len(lam)
+        assert np.max(R) > 0.5  # should have strong reflectance peak
+
+    def test_tmm_peak_near_target(self):
+        """TMM designed for 530nm should peak near 530nm."""
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        peak_nm = lam[np.argmax(R)]
+        assert abs(peak_nm - 530.0) < 30  # within 30nm
+
+    def test_tmm_different_targets_different_peaks(self):
+        import numpy as np
+        stack_blue = _tmm_design_for_wavelength(450.0)
+        stack_red = _tmm_design_for_wavelength(630.0)
+        _, R_blue = _tmm_spectrum(stack_blue)
+        _, R_red = _tmm_spectrum(stack_red)
+        lam = np.linspace(380, 780, 81)
+        peak_blue = lam[np.argmax(R_blue)]
+        peak_red = lam[np.argmax(R_red)]
+        assert peak_red > peak_blue
+
+    def test_scan_bilayers_returns_best(self):
+        result = _scan_tmm_bilayers(530.0, bilayer_range=range(3, 8))
+        assert "n_bilayers" in result
+        assert "delta_E" in result
+        assert result["n_bilayers"] >= 3
+
+
+class TestBraggSpectrum:
+
+    def test_bragg_spectrum_shape(self):
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert len(lam) == 81
+        assert len(R) == 81
+
+    def test_bragg_spectrum_has_peak(self):
+        import numpy as np
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert np.max(R) > 0.1
+
+    def test_bragg_spectrum_peak_shifts_with_diameter(self):
+        import numpy as np
+        lam_s, R_s = _bragg_spectrum(200.0, 1.46)
+        lam_l, R_l = _bragg_spectrum(350.0, 1.46)
+        peak_s = lam_s[np.argmax(R_s)]
+        peak_l = lam_l[np.argmax(R_l)]
+        assert peak_l > peak_s
+
+
+class TestPhotonGlassSpectrum:
+
+    def test_photonic_glass_spectrum_broader(self):
+        """Photonic glass should have broader peak than Bragg opal."""
+        import numpy as np
+        _, R_bragg = _bragg_spectrum(260.0, 1.46, fwhm_nm=30.0)
+        _, R_pg = _photonic_glass_spectrum(260.0, "SiO2", fwhm_nm=60.0)
+        # FWHM of photonic glass > Bragg (by construction)
+        # Check that PG has lower peak (broader = lower max for same area)
+        assert np.max(R_pg) < np.max(R_bragg)
+
+
+class TestSpectrumToColor:
+
+    def test_spectrum_array_input(self):
+        import numpy as np
+        lam = np.linspace(380, 780, 81)
+        R = np.exp(-0.5 * ((lam - 530) / 20) ** 2)
+        color = _spectrum_to_color(R, lam)
+        assert color["Lab"] is not None
+        assert color["sRGB"] is not None
+
+    def test_float_input_gaussian(self):
+        color = _spectrum_to_color(530.0)
+        assert color["peak_nm"] == 530.0
+        assert color["Lab"] is not None
+
+    def test_green_has_negative_a_star(self):
+        """Green light should have negative a* in Lab."""
+        color = _spectrum_to_color(530.0)
+        if color["Lab"] is not None:
+            L, a, b = color["Lab"]
+            assert a < 0  # negative a* = green
+
+    def test_compute_delta_E_zero_for_same(self):
+        c1 = _spectrum_to_color(530.0)
+        dE = _compute_delta_E(c1, c1)
+        assert dE is not None
+        assert dE < 0.01
+
+    def test_compute_delta_E_large_for_different(self):
+        c_blue = _spectrum_to_color(450.0)
+        c_red = _spectrum_to_color(650.0)
+        dE = _compute_delta_E(c_blue, c_red)
+        assert dE is not None
+        assert dE > 30  # very different colors
+
+
+class TestMultilayerDesigns:
+
+    def test_multilayer_database_entries(self):
+        multilayer_names = [n for n, e in STRUCTURAL_COLOR_DB.items()
+                            if e.approach == "multilayer"]
+        assert len(multilayer_names) >= 3
+
+    def test_multilayer_design_uses_tmm(self):
+        """Multilayer design should produce spectrum from TMM, not Gaussian."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.predicted_Lab is not None
+        # TMM produces bright color (high L*) from high reflectance
+        L, a, b = d.predicted_Lab
+        assert L > 80  # TMM mirrors are very bright
+
+    def test_si3n4_multilayer(self):
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("Si3N4-SiO2-multilayer-green", target)
+        assert d.predicted_peak_nm is not None
+        assert d.delta_E is not None
+
+    def test_multilayer_scalable(self):
+        """Multilayer approaches should have high scalability."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.metrics.scalability_score.value >= 0.9
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
@@ -908,6 +1343,151 @@ class TestCompetitionInPolymer:
         assert d_dirty.metrics.capacity_mg_g.value < d_clean.metrics.capacity_mg_g.value
 
 
+
+class TestTMMForwardModel:
+
+    def test_tmm_design_returns_stack(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        assert len(stack) == 10  # 5 bilayers × 2
+
+    def test_tmm_design_materials_valid(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        for mat, t in stack:
+            assert isinstance(mat, str)
+            assert t > 0
+
+    def test_tmm_spectrum_has_peak(self):
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        assert len(lam) > 0
+        assert len(R) == len(lam)
+        assert np.max(R) > 0.5  # should have strong reflectance peak
+
+    def test_tmm_peak_near_target(self):
+        """TMM designed for 530nm should peak near 530nm."""
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        peak_nm = lam[np.argmax(R)]
+        assert abs(peak_nm - 530.0) < 30  # within 30nm
+
+    def test_tmm_different_targets_different_peaks(self):
+        import numpy as np
+        stack_blue = _tmm_design_for_wavelength(450.0)
+        stack_red = _tmm_design_for_wavelength(630.0)
+        _, R_blue = _tmm_spectrum(stack_blue)
+        _, R_red = _tmm_spectrum(stack_red)
+        lam = np.linspace(380, 780, 81)
+        peak_blue = lam[np.argmax(R_blue)]
+        peak_red = lam[np.argmax(R_red)]
+        assert peak_red > peak_blue
+
+    def test_scan_bilayers_returns_best(self):
+        result = _scan_tmm_bilayers(530.0, bilayer_range=range(3, 8))
+        assert "n_bilayers" in result
+        assert "delta_E" in result
+        assert result["n_bilayers"] >= 3
+
+
+class TestBraggSpectrum:
+
+    def test_bragg_spectrum_shape(self):
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert len(lam) == 81
+        assert len(R) == 81
+
+    def test_bragg_spectrum_has_peak(self):
+        import numpy as np
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert np.max(R) > 0.1
+
+    def test_bragg_spectrum_peak_shifts_with_diameter(self):
+        import numpy as np
+        lam_s, R_s = _bragg_spectrum(200.0, 1.46)
+        lam_l, R_l = _bragg_spectrum(350.0, 1.46)
+        peak_s = lam_s[np.argmax(R_s)]
+        peak_l = lam_l[np.argmax(R_l)]
+        assert peak_l > peak_s
+
+
+class TestPhotonGlassSpectrum:
+
+    def test_photonic_glass_spectrum_broader(self):
+        """Photonic glass should have broader peak than Bragg opal."""
+        import numpy as np
+        _, R_bragg = _bragg_spectrum(260.0, 1.46, fwhm_nm=30.0)
+        _, R_pg = _photonic_glass_spectrum(260.0, "SiO2", fwhm_nm=60.0)
+        # FWHM of photonic glass > Bragg (by construction)
+        # Check that PG has lower peak (broader = lower max for same area)
+        assert np.max(R_pg) < np.max(R_bragg)
+
+
+class TestSpectrumToColor:
+
+    def test_spectrum_array_input(self):
+        import numpy as np
+        lam = np.linspace(380, 780, 81)
+        R = np.exp(-0.5 * ((lam - 530) / 20) ** 2)
+        color = _spectrum_to_color(R, lam)
+        assert color["Lab"] is not None
+        assert color["sRGB"] is not None
+
+    def test_float_input_gaussian(self):
+        color = _spectrum_to_color(530.0)
+        assert color["peak_nm"] == 530.0
+        assert color["Lab"] is not None
+
+    def test_green_has_negative_a_star(self):
+        """Green light should have negative a* in Lab."""
+        color = _spectrum_to_color(530.0)
+        if color["Lab"] is not None:
+            L, a, b = color["Lab"]
+            assert a < 0  # negative a* = green
+
+    def test_compute_delta_E_zero_for_same(self):
+        c1 = _spectrum_to_color(530.0)
+        dE = _compute_delta_E(c1, c1)
+        assert dE is not None
+        assert dE < 0.01
+
+    def test_compute_delta_E_large_for_different(self):
+        c_blue = _spectrum_to_color(450.0)
+        c_red = _spectrum_to_color(650.0)
+        dE = _compute_delta_E(c_blue, c_red)
+        assert dE is not None
+        assert dE > 30  # very different colors
+
+
+class TestMultilayerDesigns:
+
+    def test_multilayer_database_entries(self):
+        multilayer_names = [n for n, e in STRUCTURAL_COLOR_DB.items()
+                            if e.approach == "multilayer"]
+        assert len(multilayer_names) >= 3
+
+    def test_multilayer_design_uses_tmm(self):
+        """Multilayer design should produce spectrum from TMM, not Gaussian."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.predicted_Lab is not None
+        # TMM produces bright color (high L*) from high reflectance
+        L, a, b = d.predicted_Lab
+        assert L > 80  # TMM mirrors are very bright
+
+    def test_si3n4_multilayer(self):
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("Si3N4-SiO2-multilayer-green", target)
+        assert d.predicted_peak_nm is not None
+        assert d.delta_E is not None
+
+    def test_multilayer_scalable(self):
+        """Multilayer approaches should have high scalability."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.metrics.scalability_score.value >= 0.9
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
@@ -920,7 +1500,9 @@ from core.material_designer import (
     StructuralColorSpec, StructuralColorDesign, StructuralColorEntry,
     design_structural_color, screen_structural_colors,
     STRUCTURAL_COLOR_DB,
-    _bragg_peak, _photonic_glass_peak, _spectrum_to_color,
+    _bragg_peak, _bragg_spectrum, _photonic_glass_peak, _photonic_glass_spectrum,
+    _tmm_spectrum, _tmm_design_for_wavelength, _scan_tmm_bilayers,
+    _spectrum_to_color, _compute_delta_E,
 )
 
 
@@ -1074,6 +1656,151 @@ class TestUnifiedWithStructuralColor:
                 if tv is not None:
                     assert tv.tier != DataTier.T3_CONCEPTUAL, \
                         f"{r.design_name}/{field_name}: has T3 data"
+
+
+
+class TestTMMForwardModel:
+
+    def test_tmm_design_returns_stack(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        assert len(stack) == 10  # 5 bilayers × 2
+
+    def test_tmm_design_materials_valid(self):
+        stack = _tmm_design_for_wavelength(530.0)
+        for mat, t in stack:
+            assert isinstance(mat, str)
+            assert t > 0
+
+    def test_tmm_spectrum_has_peak(self):
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        assert len(lam) > 0
+        assert len(R) == len(lam)
+        assert np.max(R) > 0.5  # should have strong reflectance peak
+
+    def test_tmm_peak_near_target(self):
+        """TMM designed for 530nm should peak near 530nm."""
+        import numpy as np
+        stack = _tmm_design_for_wavelength(530.0)
+        lam, R = _tmm_spectrum(stack)
+        peak_nm = lam[np.argmax(R)]
+        assert abs(peak_nm - 530.0) < 30  # within 30nm
+
+    def test_tmm_different_targets_different_peaks(self):
+        import numpy as np
+        stack_blue = _tmm_design_for_wavelength(450.0)
+        stack_red = _tmm_design_for_wavelength(630.0)
+        _, R_blue = _tmm_spectrum(stack_blue)
+        _, R_red = _tmm_spectrum(stack_red)
+        lam = np.linspace(380, 780, 81)
+        peak_blue = lam[np.argmax(R_blue)]
+        peak_red = lam[np.argmax(R_red)]
+        assert peak_red > peak_blue
+
+    def test_scan_bilayers_returns_best(self):
+        result = _scan_tmm_bilayers(530.0, bilayer_range=range(3, 8))
+        assert "n_bilayers" in result
+        assert "delta_E" in result
+        assert result["n_bilayers"] >= 3
+
+
+class TestBraggSpectrum:
+
+    def test_bragg_spectrum_shape(self):
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert len(lam) == 81
+        assert len(R) == 81
+
+    def test_bragg_spectrum_has_peak(self):
+        import numpy as np
+        lam, R = _bragg_spectrum(260.0, 1.46)
+        assert np.max(R) > 0.1
+
+    def test_bragg_spectrum_peak_shifts_with_diameter(self):
+        import numpy as np
+        lam_s, R_s = _bragg_spectrum(200.0, 1.46)
+        lam_l, R_l = _bragg_spectrum(350.0, 1.46)
+        peak_s = lam_s[np.argmax(R_s)]
+        peak_l = lam_l[np.argmax(R_l)]
+        assert peak_l > peak_s
+
+
+class TestPhotonGlassSpectrum:
+
+    def test_photonic_glass_spectrum_broader(self):
+        """Photonic glass should have broader peak than Bragg opal."""
+        import numpy as np
+        _, R_bragg = _bragg_spectrum(260.0, 1.46, fwhm_nm=30.0)
+        _, R_pg = _photonic_glass_spectrum(260.0, "SiO2", fwhm_nm=60.0)
+        # FWHM of photonic glass > Bragg (by construction)
+        # Check that PG has lower peak (broader = lower max for same area)
+        assert np.max(R_pg) < np.max(R_bragg)
+
+
+class TestSpectrumToColor:
+
+    def test_spectrum_array_input(self):
+        import numpy as np
+        lam = np.linspace(380, 780, 81)
+        R = np.exp(-0.5 * ((lam - 530) / 20) ** 2)
+        color = _spectrum_to_color(R, lam)
+        assert color["Lab"] is not None
+        assert color["sRGB"] is not None
+
+    def test_float_input_gaussian(self):
+        color = _spectrum_to_color(530.0)
+        assert color["peak_nm"] == 530.0
+        assert color["Lab"] is not None
+
+    def test_green_has_negative_a_star(self):
+        """Green light should have negative a* in Lab."""
+        color = _spectrum_to_color(530.0)
+        if color["Lab"] is not None:
+            L, a, b = color["Lab"]
+            assert a < 0  # negative a* = green
+
+    def test_compute_delta_E_zero_for_same(self):
+        c1 = _spectrum_to_color(530.0)
+        dE = _compute_delta_E(c1, c1)
+        assert dE is not None
+        assert dE < 0.01
+
+    def test_compute_delta_E_large_for_different(self):
+        c_blue = _spectrum_to_color(450.0)
+        c_red = _spectrum_to_color(650.0)
+        dE = _compute_delta_E(c_blue, c_red)
+        assert dE is not None
+        assert dE > 30  # very different colors
+
+
+class TestMultilayerDesigns:
+
+    def test_multilayer_database_entries(self):
+        multilayer_names = [n for n, e in STRUCTURAL_COLOR_DB.items()
+                            if e.approach == "multilayer"]
+        assert len(multilayer_names) >= 3
+
+    def test_multilayer_design_uses_tmm(self):
+        """Multilayer design should produce spectrum from TMM, not Gaussian."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.predicted_Lab is not None
+        # TMM produces bright color (high L*) from high reflectance
+        L, a, b = d.predicted_Lab
+        assert L > 80  # TMM mirrors are very bright
+
+    def test_si3n4_multilayer(self):
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("Si3N4-SiO2-multilayer-green", target)
+        assert d.predicted_peak_nm is not None
+        assert d.delta_E is not None
+
+    def test_multilayer_scalable(self):
+        """Multilayer approaches should have high scalability."""
+        target = TargetSpec(target_wavelength_nm=530.0)
+        d = design_structural_color("TiO2-SiO2-multilayer-green", target)
+        assert d.metrics.scalability_score.value >= 0.9
 
 
 if __name__ == "__main__":

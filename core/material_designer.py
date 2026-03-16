@@ -2822,7 +2822,76 @@ _add_sc(StructuralColorEntry(
 ))
 
 
-# ── Forward Model Bridge ─────────────────────────────────────────────────
+_add_sc(StructuralColorEntry(
+    name="TiO2-SiO2-multilayer-blue",
+    approach="multilayer",
+    sphere_material="TiO2_rutile",
+    matrix_material="SiO2",
+    diameter_nm=None,
+    packing_fraction=None,
+    angle_independent=False,
+    published_color="blue",
+    published_peak_nm=450.0,
+    scalability="industrial",
+    source="Yeh P. Optical Waves in Layered Media. Wiley 2005. Standard dielectric mirror design.",
+))
+
+_add_sc(StructuralColorEntry(
+    name="TiO2-SiO2-multilayer-green",
+    approach="multilayer",
+    sphere_material="TiO2_rutile",
+    matrix_material="SiO2",
+    diameter_nm=None,
+    packing_fraction=None,
+    angle_independent=False,
+    published_color="green",
+    published_peak_nm=530.0,
+    scalability="industrial",
+    source="Yeh P. Optical Waves in Layered Media. Wiley 2005. Standard dielectric mirror design.",
+))
+
+_add_sc(StructuralColorEntry(
+    name="TiO2-SiO2-multilayer-red",
+    approach="multilayer",
+    sphere_material="TiO2_rutile",
+    matrix_material="SiO2",
+    diameter_nm=None,
+    packing_fraction=None,
+    angle_independent=False,
+    published_color="red",
+    published_peak_nm=630.0,
+    scalability="industrial",
+    source="Yeh P. Optical Waves in Layered Media. Wiley 2005. Standard dielectric mirror design.",
+))
+
+_add_sc(StructuralColorEntry(
+    name="Si3N4-SiO2-multilayer-green",
+    approach="multilayer",
+    sphere_material="Si3N4",
+    matrix_material="SiO2",
+    diameter_nm=None,
+    packing_fraction=None,
+    angle_independent=False,
+    published_color="green",
+    published_peak_nm=530.0,
+    scalability="industrial",
+    source="Macleod HA. Thin-Film Optical Filters, 4th ed. CRC 2010.",
+))
+
+
+# ── Forward Model Bridge (Enhanced) ───────────────────────────────────────
+#
+# Three levels of spectral prediction:
+#   L1: TMM multilayer — exact transfer matrix spectrum (T2)
+#   L2: Bragg opal — peak wavelength → Gaussian spectrum (T2)
+#   L3: Photonic glass — approximate peak (T2/T3 depending on miepython)
+#
+# All feed into full CIE color computation (spectrum → XYZ → Lab → sRGB → ΔE).
+
+import numpy as _np
+
+_LAM_GRID = _np.linspace(380, 780, 81)  # 5 nm steps, visible range
+
 
 def _bragg_peak(diameter_nm: float, n_sphere: float,
                 n_medium: float = 1.0, ff: float = 0.74) -> Optional[float]:
@@ -2832,49 +2901,193 @@ def _bragg_peak(diameter_nm: float, n_sphere: float,
         return bragg_opal(diameter_nm, n_sphere=n_sphere, n_medium=n_medium,
                           fill_fraction=ff)
     except (ImportError, Exception):
-        # Fallback: direct calculation
         n_eff = math.sqrt(ff * n_sphere**2 + (1 - ff) * n_medium**2)
         return 1.633 * diameter_nm * n_eff
 
 
+def _bragg_spectrum(diameter_nm: float, n_sphere: float,
+                     n_medium: float = 1.0, ff: float = 0.74,
+                     fwhm_nm: float = 30.0, peak_R: float = 0.6) -> tuple:
+    """Generate approximate Bragg opal reflectance spectrum.
+
+    Bragg diffraction produces a narrow peak. Modeled as Gaussian
+    centered on λ_peak with FWHM from crystal quality.
+
+    Returns (wavelengths, R_spectrum).
+    Physics tier: T2 (Bragg peak position exact, width approximate).
+    """
+    peak = _bragg_peak(diameter_nm, n_sphere, n_medium, ff)
+    if peak is None:
+        return _LAM_GRID, _np.zeros_like(_LAM_GRID)
+    sigma = fwhm_nm / 2.355
+    R = peak_R * _np.exp(-0.5 * ((_LAM_GRID - peak) / sigma) ** 2)
+    R += 0.04  # background scatter
+    return _LAM_GRID, R
+
+
 def _photonic_glass_peak(diameter_nm: float, sphere_material: str,
                           n_medium: float = 1.0, ff: float = 0.55) -> Optional[float]:
-    """Predict photonic glass peak wavelength. T2: Mie + structure factor."""
+    """Predict photonic glass peak wavelength."""
     try:
         from optical.photonic_glass import photonic_glass_peak_wavelength
         return photonic_glass_peak_wavelength(diameter_nm, sphere_material, n_medium, ff)
     except (ImportError, Exception):
-        # Fallback: approximate λ ≈ 2 × n_eff × d_avg
         try:
             from optical.refractive_index import n_real
             n_s = n_real(sphere_material, 550.0)
         except (ImportError, Exception):
-            n_s = 1.46  # SiO2 default
+            n_s = 1.46
         n_eff = math.sqrt(ff * n_s**2 + (1 - ff) * n_medium**2)
-        d_avg = diameter_nm * (0.74 / ff) ** (1.0 / 3.0)  # rescale from FCC
+        d_avg = diameter_nm * (0.74 / ff) ** (1.0 / 3.0)
         return 2.0 * n_eff * d_avg
 
 
-def _spectrum_to_color(peak_nm: float) -> dict:
-    """Convert a peak wavelength to approximate CIE Lab and sRGB.
+def _photonic_glass_spectrum(diameter_nm: float, sphere_material: str,
+                               n_medium: float = 1.0, ff: float = 0.55,
+                               fwhm_nm: float = 60.0, peak_R: float = 0.25) -> tuple:
+    """Generate approximate photonic glass reflectance spectrum.
 
-    Uses a Gaussian reflectance peak centered at peak_nm with
-    FWHM = 50 nm (typical for photonic glass) convolved with D65 illuminant.
+    Broader and weaker than Bragg opal (disordered, short-range order only).
+    Returns (wavelengths, R_spectrum).
+    """
+    peak = _photonic_glass_peak(diameter_nm, sphere_material, n_medium, ff)
+    if peak is None:
+        return _LAM_GRID, _np.zeros_like(_LAM_GRID)
+    sigma = fwhm_nm / 2.355
+    R = peak_R * _np.exp(-0.5 * ((_LAM_GRID - peak) / sigma) ** 2)
+    R += 0.05  # higher background for disordered
+    return _LAM_GRID, R
+
+
+def _tmm_spectrum(stack: list) -> tuple:
+    """Compute exact TMM reflectance spectrum for a multilayer stack.
+
+    Parameters
+    ----------
+    stack : list of (material_name, thickness_nm) tuples
+
+    Returns
+    -------
+    (wavelengths, R_spectrum)
+
+    Physics tier: T2 (exact electromagnetic transfer matrix).
     """
     try:
-        import numpy as np
-        from optical.cie_color import spectrum_to_XYZ, XYZ_to_Lab, XYZ_to_sRGB
-        lam = np.linspace(380, 780, 81)
-        fwhm = 50.0
-        sigma = fwhm / 2.355
-        R = 0.3 * np.exp(-0.5 * ((lam - peak_nm) / sigma) ** 2) + 0.05  # peak + background
-        X, Y, Z = spectrum_to_XYZ(R, lam)
-        L, a, b = XYZ_to_Lab(X, Y, Z)
-        r, g, bval = XYZ_to_sRGB(X, Y, Z)
-        return {"Lab": (L, a, b), "sRGB": (r, g, bval), "peak_nm": peak_nm}
+        from optical.tmm import tmm_spectrum
+        result = tmm_spectrum(stack, _LAM_GRID)
+        if isinstance(result, tuple):
+            R = _np.array(result[0])
+        else:
+            R = _np.array(result)
+        return _LAM_GRID, R
     except (ImportError, Exception):
-        # No CIE module → return peak only
-        return {"Lab": None, "sRGB": None, "peak_nm": peak_nm}
+        return _LAM_GRID, _np.zeros_like(_LAM_GRID)
+
+
+def _tmm_design_for_wavelength(target_nm: float, n_bilayers: int = 5,
+                                  mat_high: str = "TiO2_rutile",
+                                  mat_low: str = "SiO2") -> list:
+    """Design a quarter-wave multilayer stack for a target wavelength.
+
+    Returns list of (material, thickness_nm) tuples.
+    Physics tier: T2 (quarter-wave condition: t = λ/(4n)).
+    """
+    try:
+        from optical.tmm import quarter_wave_thickness
+        t_high = quarter_wave_thickness(mat_high, target_nm)
+        t_low = quarter_wave_thickness(mat_low, target_nm)
+    except (ImportError, Exception):
+        try:
+            from optical.refractive_index import n_real
+            n_h = n_real(mat_high, target_nm)
+            n_l = n_real(mat_low, target_nm)
+        except (ImportError, Exception):
+            n_h, n_l = 2.6, 1.46
+        t_high = target_nm / (4.0 * n_h)
+        t_low = target_nm / (4.0 * n_l)
+
+    stack = []
+    for _ in range(n_bilayers):
+        stack.append((mat_high, t_high))
+        stack.append((mat_low, t_low))
+    return stack
+
+
+def _spectrum_to_color(spectrum_or_peak, wavelengths=None) -> dict:
+    """Convert a reflectance spectrum (or peak wavelength) to CIE color.
+
+    Accepts either:
+      - (wavelengths, R_array) → full spectral convolution
+      - float → Gaussian approximation around that peak
+
+    Returns dict with Lab, sRGB, peak_nm.
+    """
+    try:
+        from optical.cie_color import spectrum_to_XYZ, XYZ_to_Lab, XYZ_to_sRGB
+    except (ImportError, Exception):
+        if isinstance(spectrum_or_peak, (int, float)):
+            return {"Lab": None, "sRGB": None, "peak_nm": float(spectrum_or_peak),
+                    "spectrum": None}
+        return {"Lab": None, "sRGB": None, "peak_nm": 0.0, "spectrum": None}
+
+    if isinstance(spectrum_or_peak, (int, float)):
+        # Gaussian approximation
+        peak_nm = float(spectrum_or_peak)
+        sigma = 50.0 / 2.355
+        R = 0.3 * _np.exp(-0.5 * ((_LAM_GRID - peak_nm) / sigma) ** 2) + 0.05
+        lam = _LAM_GRID
+    elif wavelengths is not None:
+        R = _np.array(spectrum_or_peak)
+        lam = _np.array(wavelengths)
+    else:
+        return {"Lab": None, "sRGB": None, "peak_nm": 0.0, "spectrum": None}
+
+    X, Y, Z = spectrum_to_XYZ(R, lam)
+    L, a, b = XYZ_to_Lab(X, Y, Z)
+    r, g, bv = XYZ_to_sRGB(X, Y, Z)
+    peak_nm = float(lam[_np.argmax(R)])
+
+    return {"Lab": (L, a, b), "sRGB": (r, g, bv), "peak_nm": peak_nm,
+            "spectrum": (lam, R)}
+
+
+def _compute_delta_E(color1: dict, color2: dict) -> Optional[float]:
+    """Compute CIE ΔE*ab between two color dicts."""
+    if color1.get("Lab") is None or color2.get("Lab") is None:
+        return None
+    try:
+        from optical.cie_color import cie_delta_E
+        return cie_delta_E(color1["Lab"], color2["Lab"])
+    except (ImportError, Exception):
+        L1, a1, b1 = color1["Lab"]
+        L2, a2, b2 = color2["Lab"]
+        return math.sqrt((L1-L2)**2 + (a1-a2)**2 + (b1-b2)**2)
+
+
+def _scan_tmm_bilayers(target_nm: float, mat_high: str = "TiO2_rutile",
+                         mat_low: str = "SiO2",
+                         bilayer_range: range = range(3, 12)) -> dict:
+    """Scan bilayer count to find optimal TMM design for target color.
+
+    Returns best design dict with stack, spectrum, color, ΔE.
+    Physics tier: T2.
+    """
+    target_color = _spectrum_to_color(target_nm)
+    best = {"n_bilayers": 5, "delta_E": 999.0, "stack": [], "color": None}
+
+    for n in bilayer_range:
+        stack = _tmm_design_for_wavelength(target_nm, n_bilayers=n,
+                                             mat_high=mat_high, mat_low=mat_low)
+        lam, R = _tmm_spectrum(stack)
+        if _np.max(R) < 0.01:
+            continue
+        color = _spectrum_to_color(R, lam)
+        dE = _compute_delta_E(color, target_color)
+        if dE is not None and dE < best["delta_E"]:
+            best = {"n_bilayers": n, "delta_E": dE, "stack": stack,
+                    "color": color, "spectrum": (lam, R)}
+
+    return best
 
 
 # ── Structural Color Design Engine ────────────────────────────────────────
@@ -2943,7 +3156,9 @@ class StructuralColorDesign(MaterialDesign):
         self.target = target
         s = self.spec
 
-        # Forward model: predict peak wavelength
+        predicted_color = None
+
+        # Forward model: approach-specific spectrum generation
         if s.approach == "bragg_opal" and s.diameter_nm is not None:
             try:
                 from optical.refractive_index import n_real
@@ -2952,45 +3167,56 @@ class StructuralColorDesign(MaterialDesign):
                 n_s = 1.46
             n_m = 1.0 if s.matrix_material == "air" else 1.33
             ff = s.packing_fraction or 0.74
-            self.predicted_peak_nm = _bragg_peak(s.diameter_nm, n_s, n_m, ff)
+            lam, R = _bragg_spectrum(s.diameter_nm, n_s, n_m, ff)
+            predicted_color = _spectrum_to_color(R, lam)
 
         elif s.approach == "photonic_glass" and s.diameter_nm is not None:
             n_m = 1.0 if s.matrix_material == "air" else 1.33
             ff = s.packing_fraction or 0.55
-            self.predicted_peak_nm = _photonic_glass_peak(
+            lam, R = _photonic_glass_spectrum(
                 s.diameter_nm, s.sphere_material, n_m, ff
             )
+            predicted_color = _spectrum_to_color(R, lam)
+
+        elif s.approach == "multilayer":
+            # Real TMM spectrum from quarter-wave design
+            entry = STRUCTURAL_COLOR_DB.get(s.name)
+            target_wl = entry.published_peak_nm if entry else 530.0
+            mat_h = s.sphere_material if s.sphere_material != "block_copolymer" else "TiO2_rutile"
+            mat_l = s.matrix_material if s.matrix_material != "self_assembled" else "SiO2"
+            stack = _tmm_design_for_wavelength(target_wl, n_bilayers=5,
+                                                  mat_high=mat_h, mat_low=mat_l)
+            lam, R = _tmm_spectrum(stack)
+            if _np.max(R) > 0.01:
+                predicted_color = _spectrum_to_color(R, lam)
 
         elif s.approach in ("BCP", "CNC"):
-            # Use published peak directly (no forward model for these)
+            entry = STRUCTURAL_COLOR_DB.get(s.name)
+            if entry and entry.published_peak_nm:
+                predicted_color = _spectrum_to_color(entry.published_peak_nm)
+
+        # Extract color results
+        if predicted_color is not None:
+            self.predicted_Lab = predicted_color.get("Lab")
+            self.predicted_sRGB = predicted_color.get("sRGB")
+            self.predicted_peak_nm = predicted_color.get("peak_nm")
+        else:
+            # Fallback to published peak
             entry = STRUCTURAL_COLOR_DB.get(s.name)
             if entry and entry.published_peak_nm:
                 self.predicted_peak_nm = entry.published_peak_nm
+                predicted_color = _spectrum_to_color(entry.published_peak_nm)
+                self.predicted_Lab = predicted_color.get("Lab")
+                self.predicted_sRGB = predicted_color.get("sRGB")
 
-        # CIE color from peak
-        if self.predicted_peak_nm is not None:
-            color = _spectrum_to_color(self.predicted_peak_nm)
-            self.predicted_Lab = color.get("Lab")
-            self.predicted_sRGB = color.get("sRGB")
-
-        # ΔE from target wavelength
+        # ΔE from target (full CIE ΔE*ab from spectral convolution)
         self.delta_E = None
-        if target.target_wavelength_nm > 0 and self.predicted_peak_nm is not None:
-            # Simple wavelength ΔE proxy: |predicted - target| mapped to ΔE
-            # 1 nm wavelength shift ≈ 0.5-2.0 ΔE depending on region
-            nm_diff = abs(self.predicted_peak_nm - target.target_wavelength_nm)
-            self.delta_E = nm_diff * 1.0  # approximate 1:1 mapping
-            # If we have full Lab for both, use proper ΔE
-            if self.predicted_Lab is not None and target.target_wavelength_nm > 0:
-                target_color = _spectrum_to_color(target.target_wavelength_nm)
-                if target_color.get("Lab") is not None:
-                    try:
-                        from optical.cie_color import cie_delta_E
-                        self.delta_E = cie_delta_E(
-                            self.predicted_Lab, target_color["Lab"]
-                        )
-                    except (ImportError, Exception):
-                        pass  # keep wavelength-based estimate
+        if target.target_wavelength_nm > 0 and predicted_color is not None:
+            target_color = _spectrum_to_color(target.target_wavelength_nm)
+            self.delta_E = _compute_delta_E(predicted_color, target_color)
+            # Fallback if CIE module unavailable
+            if self.delta_E is None and self.predicted_peak_nm is not None:
+                self.delta_E = abs(self.predicted_peak_nm - target.target_wavelength_nm)
 
         # Map to PerformanceMetrics
         # "capacity" → color accuracy (inverted ΔE: lower ΔE = better)
