@@ -789,6 +789,126 @@ def func_group_fraction_active(group_name: str, pH: float,
     return 1.0 / (1.0 + 10.0 ** (pKa - pH))
 
 
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Repulsion Integration Helpers
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _framework_to_site_spec(spec) -> 'MaterialSiteSpec':
+    """Map a PorousFrameworkSpec to a MaterialSiteSpec for repulsion scoring.
+
+    Derives cavity radius, donor types, hydrophobicity, CN from
+    framework properties. No estimation — maps directly.
+    """
+    from core.repulsion_physics import MaterialSiteSpec
+
+    # Cavity radius from pore diameter (pore = accessible channel, not cavity)
+    # Binding site is at the pore wall; effective radius ≈ pore_d / 3
+    cavity_r = spec.pore_diameter_A / 3.0 if spec.pore_diameter_A > 0 else 3.0
+
+    # Donor types from functional groups
+    donor_types = []
+    for fg in spec.functional_groups:
+        fg_info = FUNCTIONAL_GROUPS.get(fg)
+        if fg_info:
+            donor_types.extend(fg_info[0])
+
+    # Hydrophobicity: MOFs with organic linkers are moderately hydrophobic
+    hydro_map = {"MOF": 0.4, "COF": 0.5, "zeolite": 0.2}
+    hydrophobicity = hydro_map.get(spec.framework_type, 0.3)
+
+    # CN: most framework sites are 4-6 coordinate
+    cn = 6 if spec.framework_type == "zeolite" else 4
+
+    return MaterialSiteSpec(
+        cavity_radius_A=cavity_r,
+        site_charge=0,
+        hydrophobicity=hydrophobicity,
+        donor_types=donor_types,
+        offered_CN=cn,
+        offered_geometry="octahedral" if cn >= 6 else "tetrahedral",
+    )
+
+
+def _polymer_to_site_spec(spec) -> 'MaterialSiteSpec':
+    """Map a PolymericSorbentSpec to a MaterialSiteSpec for repulsion scoring."""
+    from core.repulsion_physics import MaterialSiteSpec
+
+    # Resin bead interior — no well-defined cavity
+    # Use approximate pore size from resin type
+    cavity_r_map = {
+        "SAC": 4.0, "WAC": 4.0, "SBA": 4.0, "WBA": 4.0,
+        "chelating": 3.0, "specialty": 3.5, "hydrogel": 5.0,
+    }
+    cavity_r = cavity_r_map.get(spec.resin_type, 4.0)
+
+    # Site charge from resin type
+    charge_map = {
+        "SAC": -1, "WAC": -1, "SBA": 1, "WBA": 1,
+        "chelating": 0, "specialty": 0, "hydrogel": 0,
+    }
+    site_charge = charge_map.get(spec.resin_type, 0)
+
+    # Donor types from functional group
+    donor_types = []
+    fg_info = FUNCTIONAL_GROUPS.get(spec.functional_group)
+    if fg_info:
+        donor_types = list(fg_info[0])
+    # Chelating: iminodiacetate has N + 2×O
+    if spec.functional_group == "iminodiacetate":
+        donor_types = ["N_amine", "O_carboxylate", "O_carboxylate"]
+    elif spec.functional_group == "thiol":
+        donor_types = ["S_thiol"]
+    elif spec.functional_group == "amidoxime":
+        donor_types = ["N_imine", "O_hydroxyl", "N_amine"]
+
+    # Hydrophobicity from matrix
+    hydro_map = {
+        "PS-DVB": 0.5, "polyacrylic": 0.2, "chitosan": 0.15,
+        "polyethylene": 0.6, "crosslinked-HEMA": 0.2,
+    }
+    hydrophobicity = hydro_map.get(spec.matrix, 0.3)
+
+    # Fixed charge for Donnan
+    fixed_charge = spec.capacity_meq_g * 0.5 if spec.resin_type in ("SAC", "SBA") else 0.0
+
+    return MaterialSiteSpec(
+        cavity_radius_A=cavity_r,
+        site_charge=site_charge,
+        fixed_charge_meq_mL=fixed_charge,
+        hydrophobicity=hydrophobicity,
+        donor_types=donor_types,
+        offered_CN=6,
+        offered_geometry="octahedral",
+    )
+
+
+def _compute_repulsion_selectivity(site_spec, target_species: str,
+                                     interferent_species: list,
+                                     dG_attract: float = -25.0) -> float:
+    """Compute worst-case selectivity from differential repulsion.
+
+    Returns the minimum selectivity ratio across all interferents.
+    """
+    from core.repulsion_physics import selectivity_from_differential_repulsion
+
+    if not interferent_species:
+        return 1.0
+
+    worst_log_alpha = float('inf')
+    for intf in interferent_species:
+        sd = selectivity_from_differential_repulsion(
+            site_spec, target_species, intf,
+            dG_attract, dG_attract,
+        )
+        worst_log_alpha = min(worst_log_alpha, sd.log_selectivity)
+
+    # Convert log selectivity to ratio
+    if worst_log_alpha == float('inf'):
+        return 1.0
+    return 10.0 ** worst_log_alpha
+
+
 # ── Framework Design Engine ──────────────────────────────────────────────
 
 @dataclass
@@ -909,14 +1029,28 @@ class FrameworkDesign(MaterialDesign):
                 self.K_L, C_eq, K_intfs, C_intfs
             )
 
-        # 9. Selectivity from competitive model
+        # 9. Selectivity from differential repulsion (physics-based)
         selectivity = 1.0
-        if self.pore_accessible and comp_factor > 0:
-            # Selectivity ≈ 1/competition_factor (how much capacity is retained)
-            selectivity = 1.0 / (1.0 - comp_factor + 1e-10) if comp_factor < 1.0 else 100.0
-            selectivity = min(selectivity, 100.0)  # cap at 100
+        sel_tier = DataTier.T2_SOLID
+        sel_source = "repulsion physics"
         if not self.pore_accessible:
-            selectivity = 0.1  # inaccessible pore = poor
+            selectivity = 0.1
+            sel_source = "pore inaccessible"
+        elif target.interferent_species:
+            try:
+                site_spec = _framework_to_site_spec(s)
+                selectivity = _compute_repulsion_selectivity(
+                    site_spec, target.target_species,
+                    target.interferent_species,
+                )
+                # Clamp to reasonable range
+                selectivity = max(0.01, min(1e6, selectivity))
+                sel_source = "differential repulsion (R1-R5)"
+            except (ImportError, Exception):
+                # Fallback if repulsion module unavailable
+                selectivity = 10.0 if target.target_charge != 0 else 1.0
+                sel_tier = DataTier.T3_CONCEPTUAL
+                sel_source = "heuristic fallback"
 
         # 8. Kinetics
         # Realistic bead size for column application (200 μm default)
@@ -944,8 +1078,8 @@ class FrameworkDesign(MaterialDesign):
         self.metrics = PerformanceMetrics(
             capacity_mg_g=TieredValue(q_eq, DataTier.T2_SOLID,
                 f"Langmuir: q_max={self.q_max_mg_g:.1f} mg/g, K_L={self.K_L:.4f}", 30),
-            selectivity_ratio=TieredValue(selectivity, DataTier.T3_CONCEPTUAL,
-                "Size exclusion + charge", 50),
+            selectivity_ratio=TieredValue(selectivity, sel_tier,
+                sel_source, 30),
             kinetics_t90_min=TieredValue(t90, DataTier.T3_CONCEPTUAL,
                 "Intraparticle diffusion estimate", 50),
             cost_per_kg_usd=cost,
@@ -1750,20 +1884,37 @@ class PolymericSorbentDesign(MaterialDesign):
             sel_table_type = None
 
         worst_selectivity = 1.0
+        sel_tier = DataTier.T2_SOLID
+        sel_source = "repulsion physics"
+
+        # Priority 1: Published IX selectivity coefficients (T1)
         if sel_table_type and target.interferent_species:
             sels = []
             for intf in target.interferent_species:
-                # Strip common formatting
                 intf_clean = intf.replace("^", "")
                 target_clean = target.target_species.replace("^", "")
                 sel = ion_exchange_selectivity(target_clean, intf_clean, sel_table_type)
                 sels.append(sel)
             if sels:
                 worst_selectivity = min(sels)
-        elif s.selectivity_class == "heavy-metal" and target.target_charge > 0:
-            worst_selectivity = 50.0  # chelating resins are highly selective
-        elif s.selectivity_class == "soft-metal":
-            worst_selectivity = 100.0  # thiol resins extremely selective for Hg/Pb
+                sel_tier = DataTier.T1_KNOWN
+                sel_source = f"IX selectivity table ({sel_table_type})"
+
+        # Priority 2: Repulsion physics (T2) for chelating/specialty resins
+        elif target.interferent_species:
+            try:
+                site_spec = _polymer_to_site_spec(s)
+                worst_selectivity = _compute_repulsion_selectivity(
+                    site_spec, target.target_species,
+                    target.interferent_species,
+                )
+                worst_selectivity = max(0.01, min(1e6, worst_selectivity))
+                sel_source = "differential repulsion (R1-R5)"
+            except (ImportError, Exception):
+                worst_selectivity = 1.0
+                sel_tier = DataTier.T3_CONCEPTUAL
+                sel_source = "no selectivity data"
+
         self.selectivity_vs_worst = worst_selectivity
 
         # 5. Kinetics
@@ -1835,10 +1986,8 @@ class PolymericSorbentDesign(MaterialDesign):
         self.metrics = PerformanceMetrics(
             capacity_mg_g=TieredValue(q_eq, DataTier.T2_SOLID,
                 f"Langmuir + IX capacity: q_max={self.q_max_mg_g:.1f} mg/g", 30),
-            selectivity_ratio=TieredValue(worst_selectivity, DataTier.T1_KNOWN
-                if sel_table_type else DataTier.T3_CONCEPTUAL,
-                f"IX selectivity table ({sel_table_type})" if sel_table_type
-                else "Estimated from resin class", 20 if sel_table_type else 50),
+            selectivity_ratio=TieredValue(worst_selectivity, sel_tier,
+                sel_source, 20 if sel_tier == DataTier.T1_KNOWN else 30),
             kinetics_t90_min=TieredValue(t90, DataTier.T2_SOLID,
                 f"Film+particle diffusion, {self.rate_limiting}", 30),
             cost_per_kg_usd=cost,

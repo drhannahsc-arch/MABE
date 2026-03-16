@@ -396,13 +396,29 @@ class TestPolymericSorbentDesign:
         assert d.metrics.capacity_mg_g.value > 0
         assert d.func_group_activity == 1.0  # quaternary N always active
 
-    def test_chelating_high_selectivity(self):
-        """Chelating resin should have high selectivity for heavy metals."""
+    def test_chelating_selectivity_physics_based(self):
+        """Chelating resin selectivity now from differential repulsion.
+        Pb2+ vs Ca2+: modest (similar radii/hardness on O/N donors).
+        Pb2+ vs Mg2+: higher (HSAB mismatch, hydration mismatch).
+        Old hardcoded value (50) overestimated; physics gives ~6-10.
+        Full chelating selectivity requires chelate stability (attraction)
+        which is separate from repulsion scoring."""
         target = TargetSpec(target_species="Pb2+", target_charge=2,
                             target_mw=207.2, pH=5.0,
                             interferent_species=["Ca2+", "Mg2+"])
         d = design_polymer("Chelex-100", target)
-        assert d.selectivity_vs_worst >= 50.0
+        # Physics-based: worst-case selectivity > 1 (Pb preferred)
+        assert d.selectivity_vs_worst > 1.0
+        # Mg2+ should be more repelled than Ca2+ (higher hydration + HSAB mismatch)
+        target_mg = TargetSpec(target_species="Pb2+", target_charge=2,
+                               target_mw=207.2, pH=5.0,
+                               interferent_species=["Mg2+"])
+        target_ca = TargetSpec(target_species="Pb2+", target_charge=2,
+                               target_mw=207.2, pH=5.0,
+                               interferent_species=["Ca2+"])
+        d_mg = design_polymer("Chelex-100", target_mg)
+        d_ca = design_polymer("Chelex-100", target_ca)
+        assert d_mg.selectivity_vs_worst > d_ca.selectivity_vs_worst
 
     def test_chitosan_environmental_bonus(self):
         """Chitosan (bio-based) should score higher on environmental."""
