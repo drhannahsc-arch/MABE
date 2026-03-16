@@ -184,7 +184,8 @@ class TestEnergyDecomposition:
         """Individual terms sum to dg_total."""
         r = score_physics_pl(self._make_uc())
         expected = (r["dg_desolv"] + r["dg_hydrophobic"]
-                    + r["dg_hbond"] + r["dg_conf_entropy"])
+                    + r["dg_hbond"] + r["dg_conf_entropy"]
+                    + r.get("dg_born_solvation", 0.0))
         assert abs(r["dg_total"] - expected) < 0.01
 
     def test_log_ka_correct_sign(self):

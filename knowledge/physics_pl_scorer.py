@@ -146,11 +146,27 @@ def compute_physics_pl_terms(uc, result):
                 conf_result = compute_conf_entropy(uc.guest_smiles)
                 if conf_result is not None:
                     result.dg_conf_entropy = conf_result["total_kJ"]
-                    return
+                    n_rot = 0  # skip fallback
         except ImportError:
             pass
-        # Fallback: flat rate
-        result.dg_conf_entropy = n_rot * EPS_ROTOR * F_PARTIAL
+        # Fallback: flat rate (only if bond-type didn't fire)
+        if n_rot > 0:
+            result.dg_conf_entropy = n_rot * EPS_ROTOR * F_PARTIAL
+
+    # ── 5. ELECTROSTATIC SOLVATION (Born + group-additive) ───────
+
+    try:
+        from knowledge.electrostatic_solvation import compute_electrostatic_desolvation
+        bf = 0.0
+        if uc.guest_sasa_total_A2 > 0 and uc.sasa_buried_A2 > 0:
+            bf = min(uc.sasa_buried_A2 / uc.guest_sasa_total_A2, 1.0)
+        elif uc.sasa_buried_A2 > 0:
+            bf = 0.6
+
+        if bf > 0:
+            result.dg_born_solvation = compute_electrostatic_desolvation(uc, bf)
+    except ImportError:
+        pass
 
 
 def _hbond_from_counts(uc, result, n_hb):
@@ -214,6 +230,7 @@ def score_physics_pl(uc, verbose=False):
         dg_hydrophobic: float = 0.0
         dg_hbond: float = 0.0
         dg_conf_entropy: float = 0.0
+        dg_born_solvation: float = 0.0
 
     # Temporarily override binding_mode to fire the scorer
     orig_mode = uc.binding_mode
@@ -224,21 +241,24 @@ def score_physics_pl(uc, verbose=False):
 
     uc.binding_mode = orig_mode  # restore
 
-    dg_net = r.dg_group_desolv + r.dg_hydrophobic + r.dg_hbond + r.dg_conf_entropy
+    dg_net = (r.dg_group_desolv + r.dg_hydrophobic + r.dg_hbond
+              + r.dg_conf_entropy + r.dg_born_solvation)
 
     if verbose:
         print(f"Physics PL scoring: {uc.name}")
-        print(f"  dG_desolv     = {r.dg_group_desolv:+.2f} kJ/mol")
+        print(f"  dG_desolv      = {r.dg_group_desolv:+.2f} kJ/mol")
         print(f"  dG_hydrophobic = {r.dg_hydrophobic:+.2f} kJ/mol")
-        print(f"  dG_hbond      = {r.dg_hbond:+.2f} kJ/mol")
-        print(f"  dG_conf       = {r.dg_conf_entropy:+.2f} kJ/mol")
-        print(f"  dG_total      = {dg_net:+.2f} kJ/mol")
+        print(f"  dG_hbond       = {r.dg_hbond:+.2f} kJ/mol")
+        print(f"  dG_conf        = {r.dg_conf_entropy:+.2f} kJ/mol")
+        print(f"  dG_elec_solv   = {r.dg_born_solvation:+.2f} kJ/mol")
+        print(f"  dG_total       = {dg_net:+.2f} kJ/mol")
 
     return {
         "dg_desolv": r.dg_group_desolv,
         "dg_hydrophobic": r.dg_hydrophobic,
         "dg_hbond": r.dg_hbond,
         "dg_conf_entropy": r.dg_conf_entropy,
+        "dg_born_solvation": r.dg_born_solvation,
         "dg_total": dg_net,
         "log_Ka_pred": -dg_net / (2.303 * 8.314e-3 * 298.15),
     }
