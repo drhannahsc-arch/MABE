@@ -293,6 +293,25 @@ def predict(uc, verbose=False):
 # METAL COORDINATION — delegates to scorer_frozen
 # ═══════════════════════════════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════════════════════════════
+# DATA-PRESENCE ROUTING HELPERS (replace binding_mode string gates)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _is_cross_modal(uc):
+    """Detect metal@host (cross-modal) from data, not binding_mode string."""
+    if not uc.metal_formula:
+        return False
+    for candidate in (uc.host_name, uc.host_type):
+        if not candidate:
+            continue
+        if candidate in CB_PORTAL_INFO:
+            return True
+        stripped = candidate.replace("[", "").replace("]", "")
+        if stripped in CB_PORTAL_INFO:
+            return True
+    return False
+
+
 def _compute_metal(uc, result):
     """Metal coordination: 17 physics terms bundled into dg_metal.
 
@@ -304,7 +323,7 @@ def _compute_metal(uc, result):
     # Only fire for metal_coordination binding mode (not for metal@host
     # where the CM terms handle it). If binding_mode is cross_modal,
     # the metal scoring path should NOT fire — the CM scorer handles it.
-    if uc.binding_mode == "cross_modal":
+    if _is_cross_modal(uc):
         return
 
     try:
@@ -332,11 +351,9 @@ def _compute_metal(uc, result):
 def _compute_hg_terms(uc, result):
     """Host-guest inclusion terms. Self-zeros if no guest SMILES or no host.
 
-    Fires for binding_mode = host_guest_inclusion or mixed.
-    Does NOT fire for cross_modal (metal@CB) — those are handled by CM terms.
-    Does NOT fire for pure metal_coordination (no cavity).
+    Does NOT fire for cross-modal (metal@CB) — those are handled by CM terms.
     """
-    if uc.binding_mode == "cross_modal":
+    if _is_cross_modal(uc):
         return
     if not uc.guest_smiles and uc.guest_sasa_nonpolar_A2 <= 0:
         return
@@ -595,13 +612,13 @@ PL_TARGET_OFFSETS = {
 def _compute_protein_ligand_terms(uc, result):
     """Non-covalent terms for metalloprotein-ligand binding.
 
-    Fires only for binding_mode == 'metalloprotein'.
+    Fires when has_metalloprotein_data flag is set.
     Uses 5 calibrated PL descriptors + per-target offset.
     Metal coordination term is computed separately by _compute_metal.
 
-    Self-zeros if binding_mode != metalloprotein or guest properties absent.
+    Self-zeros if metalloprotein data absent or guest properties absent.
     """
-    if uc.binding_mode != "metalloprotein":
+    if not uc.has_metalloprotein_data:
         return
     if not uc.guest_smiles or uc.guest_sasa_nonpolar_A2 <= 0:
         return
@@ -985,11 +1002,11 @@ PER_TARGET_PL_MODELS = {
 def _compute_general_pl_terms(uc, result):
     """Non-covalent scoring for non-metal protein targets.
 
-    Fires only for binding_mode == 'protein_ligand_general'.
+    Fires when has_general_pl_data flag is set.
     Uses per-target Ridge model (20 descriptors) if available,
     falls back to global 8-descriptor model for unknown targets.
     """
-    if uc.binding_mode != "protein_ligand_general":
+    if not uc.has_general_pl_data:
         return
     if not uc.guest_smiles:
         return
@@ -1070,7 +1087,7 @@ def _compute_general_pl_terms(uc, result):
 def _compute_glycan_terms(uc, result):
     """Score glycan-lectin binding from contact maps + physics parameters.
 
-    Fires only for binding_mode == 'glycan_lectin'.
+    Fires when glycan data is present (flag, data objects, or lectin names).
     Self-zeros if glycan scorer or contact map not available.
 
     Maps GlycanPrediction terms to PredictionResult fields:
@@ -1080,8 +1097,13 @@ def _compute_glycan_terms(uc, result):
         dG_CHP    -> dg_pi (CH-pi contacts)
         dG_linker -> dg_hbond_coop (linker cooperativity)
     """
-    if uc.binding_mode != "glycan_lectin":
-        return
+    if not uc.has_glycan_data:
+        has_data_objects = (uc.glycan_contact_map is not None
+                           or uc.sugar_property_card is not None)
+        has_lectin_names = (uc.host_name != "" and uc.guest_name != ""
+                           and uc.binding_mode in ("glycan_lectin", "lectin_glycan"))
+        if not has_data_objects and not has_lectin_names:
+            return
 
     scaffold = uc.host_name
     ligand = uc.guest_name
@@ -1107,9 +1129,9 @@ def _compute_glycan_terms(uc, result):
 def _compute_cm_terms(uc, result):
     """Cross-modal terms for metal@host (e.g. cation@CB[n]).
 
-    Self-zeros if no metal_formula or binding_mode != cross_modal.
+    Self-zeros if no metal or no cucurbituril host detected from data.
     """
-    if uc.binding_mode != "cross_modal":
+    if not _is_cross_modal(uc):
         return
     if not uc.metal_formula:
         return

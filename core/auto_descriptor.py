@@ -25,8 +25,13 @@ _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
-from rdkit import Chem
-from rdkit.Chem import AllChem, Descriptors, rdMolDescriptors, Lipinski
+_RDKIT_AVAILABLE = False
+try:
+    from rdkit import Chem
+    from rdkit.Chem import AllChem, Descriptors, rdMolDescriptors, Lipinski
+    _RDKIT_AVAILABLE = True
+except ImportError:
+    Chem = None
 
 from core.universal_schema import UniversalComplex
 from core.guest_compute import compute_guest_properties, estimate_sasa_burial
@@ -65,6 +70,8 @@ METAL_PROPERTIES = {
 
 def _compile(smarts_str):
     """Compile a SMARTS string, raise on failure."""
+    if not _RDKIT_AVAILABLE:
+        return None
     pat = Chem.MolFromSmarts(smarts_str)
     if pat is None:
         raise ValueError(f"Invalid SMARTS: {smarts_str}")
@@ -576,7 +583,12 @@ def from_smiles(smiles, metal=None, host=None, pH=7.4, n_ligand_molecules=1):
 
     Returns:
         UniversalComplex with all computable fields populated.
+
+    Raises:
+        ImportError: if RDKit is not installed.
     """
+    if not _RDKIT_AVAILABLE:
+        raise ImportError("from_smiles() requires RDKit.  # NEEDS_RDKIT")
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
         raise ValueError(f"Invalid SMILES: {smiles}")
@@ -1015,6 +1027,7 @@ def from_metalloprotein(entry):
         n_hb_acceptor_match = min(uc.guest_n_hbond_acceptors, pocket.get("pocket_hbd", 0))
         uc.n_hbonds_formed = n_hb_donor_match + n_hb_acceptor_match
 
+    uc.has_metalloprotein_data = True
     return uc
 
 
@@ -1035,8 +1048,13 @@ def from_protein_ligand(smiles, target_name, log_Ka_exp=0.0, name=None):
         name: optional label
 
     Returns:
-        UniversalComplex with binding_mode='protein_ligand_general'
+        UniversalComplex with has_general_pl_data=True
+
+    Raises:
+        ImportError: if RDKit is not installed.
     """
+    if not _RDKIT_AVAILABLE:
+        raise ImportError("from_protein_ligand() requires RDKit.  # NEEDS_RDKIT")
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
         raise ValueError(f"Invalid SMILES: {smiles}")
@@ -1086,4 +1104,5 @@ def from_protein_ligand(smiles, target_name, log_Ka_exp=0.0, name=None):
     uc.guest_n_aliphatic_rings = Descriptors.NumAliphaticRings(mol)
     uc.guest_n_saturated_rings = Descriptors.NumSaturatedRings(mol)
 
+    uc.has_general_pl_data = True
     return uc

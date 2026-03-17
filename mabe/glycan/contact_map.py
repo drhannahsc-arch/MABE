@@ -132,3 +132,175 @@ def cona_trimannoside() -> GlycanContactMap:
         linkage_types=['alpha1-3', 'alpha1-6'],
         n_branch_points=1,
     )
+
+
+def cona_deoxy_reference() -> GlycanContactMap:
+    """ConA pocket for deoxy-sugar prediction validation.
+
+    Same contacts as 5CNA monosaccharide pocket.
+    Used with Chervenak & Toone 1995 Biochemistry 34:5685 deoxy-sugar ITC data.
+    PDB: 2CNA
+    """
+    cm = cona_mannose_pocket()
+    cm.pdb_id = '2CNA'
+    cm.residue_in_binding_site = 'deoxy-sugar validation reference'
+    return cm
+
+
+def galectin3_lacnac() -> GlycanContactMap:
+    """Galectin-3 + LacNAc (N-acetyllactosamine).
+
+    Sources: Seetharaman 1998 JBC 273:13047, Fig 3 + Table 2
+             Leffler 2004 Glycoconj J 21:433 (review of galectin contacts)
+             Diehl 2010 PNAS 107:10299 (Trp181 CH-pi)
+    PDB: 3GAL (originally 1A3K also relevant)
+
+    Key: Trp181 stacks on alpha-face of Gal. C4-OH and C6-OH are
+    the primary H-bond donors. CH-pi is the dominant selectivity driver.
+    """
+    return GlycanContactMap(
+        pdb_id='3GAL',
+        receptor_name='galectin-3',
+        sugar_key='LacNAc',
+        residue_in_binding_site='Gal(beta1-4)GlcNAc',
+        oh_contacts=[
+            OHContact('Gal-C4', n_hbonds=2,
+                      hbond_partners=['His158_NE2', 'Asn160_ND2'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('Gal-C6', n_hbonds=2,
+                      hbond_partners=['Asn174_ND2', 'Glu184_OE1'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('Gal-C3', n_hbonds=0, is_solvent_exposed=True),
+            OHContact('GlcNAc-C3', n_hbonds=1,
+                      hbond_partners=['Arg162_NH2'],
+                      is_buried=False, is_solvent_exposed=True),
+        ],
+        ch_pi_contacts=[
+            CHPiContact(
+                sugar_hydrogens=['Gal-C3H', 'Gal-C4H', 'Gal-C5H'],
+                receptor_residue='Trp181',
+                n_CH_contacts=3,
+            ),
+        ],
+        n_conserved_waters=0,
+        linkage_types=['beta1-4'],
+        n_branch_points=0,
+    )
+
+
+def wga_glcnac() -> GlycanContactMap:
+    """WGA (wheat germ agglutinin) + GlcNAc.
+
+    Sources: Wright & Jaeger 1993 JMB 232:620, Table 4
+             Wright 1992 JMB 226:1039
+    PDB: 2UVO
+
+    Key: WGA has 4 binding sites per monomer (hevein domains).
+    Each site: Tyr73 stacks on GlcNAc + Ser H-bonds to OH groups.
+    NAc group is critical — GlcNAc >> Glc for WGA.
+    """
+    return GlycanContactMap(
+        pdb_id='2UVO',
+        receptor_name='WGA',
+        sugar_key='GlcNAc',
+        residue_in_binding_site='GlcNAc (primary site)',
+        oh_contacts=[
+            OHContact('C3', n_hbonds=1, hbond_partners=['Ser62_OG'],
+                      is_buried=False, is_solvent_exposed=True),
+            OHContact('C6', n_hbonds=1, hbond_partners=['Ser43_OG'],
+                      is_buried=False, is_solvent_exposed=True),
+            OHContact('NAc-CO', n_hbonds=1, hbond_partners=['backbone_NH'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('C1', n_hbonds=0, is_solvent_exposed=True),
+            OHContact('C4', n_hbonds=0, is_solvent_exposed=True),
+        ],
+        ch_pi_contacts=[
+            CHPiContact(
+                sugar_hydrogens=['C1-H', 'C3-H', 'C5-H'],
+                receptor_residue='Tyr73',
+                n_CH_contacts=3,
+            ),
+        ],
+        n_conserved_waters=1,
+        linkage_types=[],
+        n_branch_points=0,
+    )
+
+
+def pna_t_antigen() -> GlycanContactMap:
+    """PNA (peanut agglutinin) + T-antigen (Gal-beta1,3-GalNAc).
+
+    Sources: Banerjee 1996 PNAS 93:6737, Fig 3
+             Ravishankar 1997 Structure 5:1339
+    PDB: 2PEL
+
+    Key: PNA recognizes the T-antigen disaccharide.
+    No aromatic stacking — binding is H-bond-driven.
+    """
+    return GlycanContactMap(
+        pdb_id='2PEL',
+        receptor_name='PNA',
+        sugar_key='T-antigen',
+        residue_in_binding_site='Gal(beta1-3)GalNAc',
+        oh_contacts=[
+            OHContact('Gal-C3', n_hbonds=1, hbond_partners=['Asp83_OD'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('Gal-C4', n_hbonds=2, hbond_partners=['Asp83_OD', 'Gly104_N'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('Gal-C6', n_hbonds=0, is_solvent_exposed=True),
+            OHContact('GalNAc-C6', n_hbonds=1, hbond_partners=['Ser211_OG'],
+                      is_buried=False, is_solvent_exposed=True),
+        ],
+        ch_pi_contacts=[],
+        n_conserved_waters=2,
+        linkage_types=['beta1-3'],
+        n_branch_points=0,
+    )
+
+
+def lysozyme_triNAG() -> GlycanContactMap:
+    """Lysozyme + (GlcNAc)3 in subsites A-B-C.
+
+    Sources: Cheetham 1992 JMB 224:613
+             Muraki 1997 Biochemistry 36:7695 (Trp62 mutant data)
+             Strynadka 1991 JMB 220:401
+    PDB: 1LZB
+
+    Key: Trp62 stacks on GlcNAc-C ring face — the primary CH-pi contact.
+    Trp62Ala mutation loses ~3 kJ/mol (Muraki 1997) — direct CH-pi validation.
+    """
+    return GlycanContactMap(
+        pdb_id='1LZB',
+        receptor_name='lysozyme',
+        sugar_key='(GlcNAc)3',
+        residue_in_binding_site='GlcNAc-A + GlcNAc-B + GlcNAc-C',
+        oh_contacts=[
+            OHContact('A-C3', n_hbonds=1, hbond_partners=['Asn59_ND2'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('A-C6', n_hbonds=1, hbond_partners=['Asp101_OD'],
+                      is_buried=False, is_solvent_exposed=True),
+            OHContact('B-C3', n_hbonds=1, hbond_partners=['Ala107_O'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('B-NAc', n_hbonds=1, hbond_partners=['backbone_O'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('C-C6', n_hbonds=1, hbond_partners=['Asn44_ND2'],
+                      is_buried=True, is_solvent_exposed=False),
+            OHContact('C-NAc', n_hbonds=1, hbond_partners=['Asn37_OD'],
+                      is_buried=True, is_solvent_exposed=False),
+        ],
+        ch_pi_contacts=[
+            CHPiContact(
+                sugar_hydrogens=['C-C1H', 'C-C3H', 'C-C5H'],
+                receptor_residue='Trp62',
+                n_CH_contacts=3,
+            ),
+            CHPiContact(
+                sugar_hydrogens=['A-C1H', 'A-C3H'],
+                receptor_residue='Trp63',
+                n_CH_contacts=2,
+            ),
+        ],
+        n_conserved_waters=3,
+        linkage_types=['beta1-4', 'beta1-4'],
+        n_branch_points=0,
+    )

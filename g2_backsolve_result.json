@@ -1,0 +1,36 @@
+{
+  "parameter_id": "G2",
+  "parameter_name": "conformational_entropy_per_linkage",
+  "linkage_TdS_kJ": {
+    "alpha1-2": 6.58,
+    "alpha1-3": 6.88,
+    "alpha1-4": 6.94,
+    "alpha1-6": 11.12,
+    "beta1-2": 6.54,
+    "beta1-3": 6.54,
+    "beta1-4": 6.54,
+    "beta1-6": 11.14
+  },
+  "two_bond_mean_kJ": 6.67,
+  "three_bond_mean_kJ": 11.13,
+  "k_branch_kJ": 3.34,
+  "calibration_constant_C": 0.7079,
+  "sigma_bound_implicit": "Absorbed into C via ITC anchor",
+  "method": "QM barriers (Kirschner 2008) + MD populations (Salisburg 2009) + ITC anchor (Dam & Brewer 2002)",
+  "ITC_anchor": {
+    "source": "Dam & Brewer 2002 Chem.Rev. 102:387, Table 2",
+    "system": "ConA + trimannoside vs MeaMan",
+    "delta_TdS_kJ": 18.0,
+    "linkages_in_anchor": [
+      "alpha1-3",
+      "alpha1-6"
+    ]
+  },
+  "QM_barriers_kJ": {
+    "phi_alpha": 9.6,
+    "phi_beta": 10.5,
+    "psi": 12.6,
+    "omega": 8.4
+  },
+  "MD_source": "Salisburg 2009 J.Comput.Chem. 30:910"
+}

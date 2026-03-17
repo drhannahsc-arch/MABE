@@ -203,6 +203,19 @@ class UniversalComplex:
     # T10: Group desolvation
     buried_groups: list = field(default_factory=list)  # list of {"type": str, "burial_fraction": float}
 
+    # T11: Water competition penalty (P20/P13 back-solve from MNSol+FreeSolv)
+    sasa_oh_buried_A2: float = 0.0          # Buried OH donor SASA
+    sasa_nh_buried_A2: float = 0.0          # Buried NH donor SASA
+    sasa_o_acceptor_buried_A2: float = 0.0  # Buried O acceptor SASA
+    sasa_n_acceptor_buried_A2: float = 0.0  # Buried N acceptor SASA
+    n_water_hbonds_displaced: int = 0       # Count of water H-bonds broken
+
+    # ── SCORING CONTEXT FLAGS ──────────────────────────────────────────
+    # Data-presence guards in the scorer check these instead of binding_mode.
+    has_metalloprotein_data: bool = False
+    has_general_pl_data: bool = False
+    has_glycan_data: bool = False
+
     def __post_init__(self):
         """Auto-compute dg_exp from log_Ka if not set."""
         if self.log_Ka_exp != 0.0 and self.dg_exp_kj == 0.0:

@@ -1,0 +1,14 @@
+{
+  "parameter_id": "P26",
+  "parameter_name": "TdS_rot_per_rotor",
+  "value_kJ_per_rotor": 3.4,
+  "range_kJ": [
+    1.5,
+    4.5
+  ],
+  "calibration_status": "literature_consensus",
+  "primary_source": "Mammen, Shakhnovich, Whitesides. J. Org. Chem. 1998, 63, 3168",
+  "supporting_evidence": "MNSol SASA-corrected cyclic/linear pairs: -1.6 kJ/mol/rotor (N=3)",
+  "upgrade_path": "Curate Rekharsky beta-CD adamantane vs alkyl chain series",
+  "note": "Literature value adopted. MNSol pairs are contaminated by ring strain + H-count differences."
+}
