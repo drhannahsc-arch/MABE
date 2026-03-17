@@ -1,0 +1,32 @@
+{
+  "model": "MNSol_aqueous_neutral_SASA_group_regression_v2",
+  "n_entries": 390,
+  "r2": 0.6951,
+  "mae_kJ": 7.34,
+  "rmse_kJ": 10.24,
+  "coefficients": {
+    "description": "\u03b3\u1d62 in kJ/mol/\u00c5\u00b2 for \u0394G_solv = \u03a3(\u03b3\u1d62 \u00d7 SASA\u1d62) + intercept. Sign: negative = favorable solvation.",
+    "SASA_aliphatic_kJ_per_A2": 0.052257,
+    "SASA_aromatic_kJ_per_A2": -0.089294,
+    "SASA_OH_donor_kJ_per_A2": -1.097065,
+    "SASA_NH_donor_kJ_per_A2": -0.701192,
+    "SASA_O_acceptor_kJ_per_A2": -0.209862,
+    "SASA_N_acceptor_kJ_per_A2": -0.153564,
+    "SASA_halogen_kJ_per_A2": -0.008797,
+    "SASA_sulfur_kJ_per_A2": -0.073069,
+    "intercept_kJ": -1.765
+  },
+  "mabe_parameters": {
+    "P20_eps_water_kJ_per_hbond": 3.88,
+    "eps_water_from_OH": 3.86,
+    "eps_water_from_NH": 6.31,
+    "eps_water_from_CO": 1.47,
+    "desolvation_per_OH_group_kJ": 10.42,
+    "desolvation_per_NH2_group_kJ": 12.62,
+    "desolvation_per_CO_group_kJ": 2.94
+  },
+  "source": "MNSol v2012 (Marenich et al.)",
+  "license": "CC-BY-NC-ND",
+  "doi": "10.13020/3eks-j059",
+  "cross_validation": "FreeSolv (Mobley et al.)"
+}

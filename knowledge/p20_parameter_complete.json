@@ -1,0 +1,62 @@
+{
+  "parameter_id": "P20",
+  "parameter_name": "eps_water",
+  "description": "Desolvation penalty per water H-bond disrupted when a polar group is buried in a binding pocket",
+  "value_kJ_per_hbond": 5.2,
+  "range_kJ": [
+    2.2,
+    6.7
+  ],
+  "decomposition": {
+    "OH_donor_per_group_kJ": 14.2,
+    "OH_donor_per_hbond_kJ": 5.3,
+    "NH_donor_per_group_kJ": 10.1,
+    "NH_donor_per_hbond_kJ": 5.0,
+    "O_acceptor_per_group_kJ": 4.4,
+    "O_acceptor_per_hbond_kJ": 2.2
+  },
+  "sasa_coefficients_kJ_per_A2": {
+    "gamma_aliphatic": 0.0523,
+    "gamma_aromatic": -0.0893,
+    "gamma_OH_donor": -1.0971,
+    "gamma_NH_donor": -0.7012,
+    "gamma_O_acceptor": -0.2099,
+    "gamma_N_acceptor": -0.1536,
+    "gamma_halogen": -0.0088,
+    "gamma_sulfur": -0.0731,
+    "note": "Sign: negative = favorable solvation (gas\u2192water). Desolvation = -\u03b3."
+  },
+  "calibration": {
+    "method": "Multivariate OLS regression of \u0394G_solv on grouped atom-type SASA",
+    "dataset_1": "MNSol v2012 (390 aqueous neutrals, SASA decomposition)",
+    "dataset_2": "FreeSolv v0.52 (642 compounds, functional group tags)",
+    "total_datapoints": 1032,
+    "mnsol_r2": 0.695,
+    "mnsol_mae_kJ": 7.34,
+    "freesolv_r2": 0.499,
+    "freesolv_mae_kJ": 7.9,
+    "cross_dataset_correlation": 0.82
+  },
+  "sources": [
+    {
+      "name": "MNSol v2012",
+      "doi": "10.13020/3eks-j059",
+      "license": "CC-BY-NC-ND"
+    },
+    {
+      "name": "FreeSolv v0.52",
+      "doi": "10.1021/acs.jced.7b00104",
+      "license": "CC-BY"
+    }
+  ],
+  "scorer_integration": {
+    "function": "_compute_water_penalty",
+    "input_fields": [
+      "n_hbonds_formed",
+      "sasa_buried_A2",
+      "n_polar_contacts"
+    ],
+    "formula": "dG_water_penalty = eps_water \u00d7 n_water_hbonds_displaced",
+    "self_zero_condition": "if uc.n_hbonds_formed <= 0: return result (zero contribution)"
+  }
+}
