@@ -284,7 +284,10 @@ class TestPhysicsPLIntegration:
         expected = (r["dg_desolv"] + r["dg_hydrophobic"] + r["dg_hbond"]
                     + r["dg_conf_entropy"] + r["dg_born_solvation"]
                     + r.get("dg_mixing_entropy", 0.0)
-                    + r.get("dg_dispersion", 0.0))
+                    + r.get("dg_dispersion", 0.0)
+                    + r.get("dg_pocket_desolv", 0.0)
+                    + r.get("dg_water_displacement", 0.0)
+                    + r.get("dg_preorganization", 0.0))
         assert abs(r["dg_total"] - expected) < 0.01, (
             f"Sum ({expected:.2f}) != total ({r['dg_total']:.2f})"
         )

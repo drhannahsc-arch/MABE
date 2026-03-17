@@ -78,6 +78,7 @@ class UniversalComplex:
     n_hbond_acceptors_host: int = 0
     n_aromatic_walls: int = 0              # For calixarenes, cyclophanes
     host_pdb_id: str = ""                  # For protein hosts
+    host_pdb_text: str = ""                # Full PDB text (enables pocket analysis)
 
     # ── GUEST / LIGAND properties ─────────────────────────────────────
     guest_name: str = ""                   # "adamantane", "EDTA", "benzamidine"
