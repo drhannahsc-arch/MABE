@@ -48,18 +48,18 @@ class TestGlycanFieldsExist:
         r = PredictionResult(name="t", binding_mode="x",
                              log_Ka_exp=0, log_Ka_pred=0,
                              dg_total_kj=0, error=0)
-        assert hasattr(r, 'dg_glycan_total')
-        assert r.dg_glycan_total == 0.0
+        assert hasattr(r, 'dg_shape')
+        assert r.dg_shape == 0.0
 
     def test_result_has_all_glycan_fields(self):
         from core.unified_scorer_v2 import PredictionResult
         r = PredictionResult(name="t", binding_mode="x",
                              log_Ka_exp=0, log_Ka_pred=0,
                              dg_total_kj=0, error=0)
-        for field in ['dg_glycan_polar_desolv', 'dg_glycan_hbond',
-                      'dg_glycan_conf_entropy', 'dg_glycan_ch_pi',
+        for field in ['dg_group_desolv', 'dg_hbond',
+                      'dg_conf_entropy_entropy', 'dg_glycan_ch_pi',
                       'dg_glycan_structural_water', 'dg_glycan_ca_coordination',
-                      'dg_glycan_total']:
+                      'dg_shape']:
             assert hasattr(r, field), f"Missing {field}"
             assert getattr(r, field) == 0.0
 
@@ -79,7 +79,7 @@ class TestGlycanSelfZero:
             log_Ka_exp=4.26,
         )
         result = predict(uc)
-        assert result.dg_glycan_total == 0.0
+        assert result.dg_shape == 0.0
 
     def test_metal_entry_zero_glycan(self):
         """A metal coordination entry should have zero glycan."""
@@ -99,7 +99,7 @@ class TestGlycanSelfZero:
             log_Ka_exp=18.8,
         )
         result = predict(uc)
-        assert result.dg_glycan_total == 0.0
+        assert result.dg_shape == 0.0
 
 
 class TestGlycanFires:
@@ -125,10 +125,10 @@ class TestGlycanFires:
             beta_context=0.45,
         )
         result = predict(uc)
-        assert result.dg_glycan_total != 0.0
-        assert result.dg_glycan_total < 0  # should be favorable
-        assert result.dg_glycan_polar_desolv > 0  # desolvation is unfavorable
-        assert result.dg_glycan_hbond < 0  # H-bonds are favorable
+        assert result.dg_shape != 0.0
+        assert result.dg_shape < 0  # should be favorable
+        assert result.dg_group_desolv > 0  # desolvation is unfavorable
+        assert result.dg_hbond < 0  # H-bonds are favorable
 
     def test_glycan_adds_to_total(self):
         """Glycan energy should be included in dg_total_kj."""
@@ -152,6 +152,6 @@ class TestGlycanFires:
         # dg_total should include glycan
         # For a pure glycan entry, total should equal glycan_total
         # (other terms self-zero since no guest_smiles/metal/host)
-        assert abs(result.dg_total_kj - result.dg_glycan_total) < 0.01
+        assert abs(result.dg_total_kj - result.dg_shape) < 0.01
 
 
