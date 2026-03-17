@@ -1,0 +1,20 @@
+{
+  "parameter_id": "P16",
+  "parameter_name": "eps_neutral_hbond_portal",
+  "value_kJ": -13.8,
+  "values_per_pair_kJ": [
+    -15.1,
+    -12.6
+  ],
+  "n_pairs": 2,
+  "source": "CB7 adamantane \u00b1 NH2/OH matched pairs (MABE HG_DATA)",
+  "decomposition": {
+    "NH2_per_HB_kJ": -15.1,
+    "OH_per_HB_kJ": -12.6
+  },
+  "comparison": {
+    "CD_portal_HB_kJ": -2.0,
+    "CB_portal_HB_kJ": -13.8,
+    "note": "CB carbonyl is stronger HB acceptor than CD hydroxyl"
+  }
+}

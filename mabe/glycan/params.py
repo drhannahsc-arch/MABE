@@ -43,10 +43,14 @@ class GlycanParams:
     # Calibrated from Gupta 1996 trimannoside deoxy series
     beta_context_default: float = 0.45
 
-    # ── G2: Conformational entropy (PLACEHOLDER) ───────────────────────
-    # Will be calibrated from GLYCAM06 torsion potentials
-    eps_glycosidic_freeze: float = 4.0    # kJ/mol per frozen φ/ψ pair
-    k_branch_penalty: float = 2.0         # kJ/mol per branch point
+    # ── G2: Conformational entropy (ITC-CALIBRATED) ────────────────────
+    # QM barriers: Kirschner 2008 J.Comput.Chem. 29:622
+    # MD populations: Salisburg 2009 J.Comput.Chem. 30:910
+    # ITC anchor: Dam & Brewer 2002 Chem.Rev. 102:387 (ConA trimannoside)
+    # Per-torsion range: 3.3-3.7 kJ/mol (brackets Mammen 3.4 consensus)
+    eps_glycosidic_freeze: float = 6.7      # kJ/mol per frozen 2-bond linkage (mean)
+    eps_glycosidic_3bond: float = 11.1      # kJ/mol per frozen 3-bond (1->6) linkage
+    k_branch_penalty: float = 3.3           # kJ/mol per branch point
 
     # ── G3: CH-π interactions (LOCKED) ─────────────────────────────────
     # Source: Laughrey et al. 2008 (JACS 130, 14625)

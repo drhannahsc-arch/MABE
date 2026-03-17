@@ -1,0 +1,14 @@
+{
+  "parameter_id": "P28",
+  "parameter_name": "PC_opt_packing_coefficient",
+  "value": 0.55,
+  "uncertainty": 0.09,
+  "status": "literature_value_supported",
+  "primary_source": "Mecozzi, Rebek, Whitesides 1998 Chem.Eur.J. 4:1016",
+  "supporting_data": {
+    "CB7_cation_linear_R2": 0.58,
+    "CB7_cation_slope": 22.8,
+    "CB7_best_binder_PC": 0.574,
+    "note": "CB7 logKa monotonically increasing up to PC=0.574, consistent with PC_opt~0.55"
+  }
+}

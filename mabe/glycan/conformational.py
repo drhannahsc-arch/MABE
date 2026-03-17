@@ -125,7 +125,19 @@ LINKAGE_REGISTRY: Dict[str, LinkageTorsionProfile] = {
     'alpha1-6': ALPHA_1_6, 'alpha2-3': ALPHA_2_3,
 }
 
-K_BRANCH_PENALTY = 2.0  # kJ/mol per branch point (PLACEHOLDER)
+# ── ITC-CALIBRATED TOTAL TdS (intra-well + inter-well) ──────────────
+# Anchor: Dam & Brewer 2002, ConA triMan vs MeaMan: delta_TdS = 18.0 kJ/mol
+# QM barrier ratios from Kirschner 2008 set the relative per-linkage values.
+# Per-torsion: 3.3-3.7 kJ/mol (brackets Mammen 3.4 consensus).
+ITC_CALIBRATED_TDS = {
+    'alpha1-2': 6.58, 'alpha1-3': 6.88, 'alpha1-4': 6.94,
+    'alpha1-6': 11.12,
+    'beta1-2':  6.54, 'beta1-3':  6.54, 'beta1-4':  6.54,
+    'beta1-6':  11.14,
+    'alpha2-3': 5.0,  # Sialic acid: restricted by carboxylate (estimate)
+}
+
+K_BRANCH_PENALTY = 3.3  # kJ/mol per branch point (ITC-calibrated)
 
 
 def compute_conformational_entropy(
@@ -144,7 +156,9 @@ def compute_conformational_entropy(
     per_linkage = []
     details = []
     for lt in linkage_types:
-        if lt in LINKAGE_REGISTRY:
+        if lt in ITC_CALIBRATED_TDS:
+            tds = ITC_CALIBRATED_TDS[lt]
+        elif lt in LINKAGE_REGISTRY:
             tds = LINKAGE_REGISTRY[lt].TdS_freeze_kj
         else:
             tds = round(2 * R * T * math.log(3), 2)
@@ -165,5 +179,12 @@ def _self_test():
     for name, profile in LINKAGE_REGISTRY.items():
         assert 0.5 < profile.TdS_freeze_kj < 7.0
         assert abs(sum(profile.populations) - 1.0) < 0.01
+    # ITC-calibrated checks
+    assert ITC_CALIBRATED_TDS['alpha1-6'] > ITC_CALIBRATED_TDS['alpha1-3']
+    assert ITC_CALIBRATED_TDS['beta1-4'] < ITC_CALIBRATED_TDS['alpha1-6']
+    assert abs(ITC_CALIBRATED_TDS['alpha1-3'] + ITC_CALIBRATED_TDS['alpha1-6'] - 18.0) < 0.1
+    # Trimannoside entropy check
+    r2 = compute_conformational_entropy(['alpha1-3', 'alpha1-6'], n_branch_points=1)
+    assert r2['TdS_total'] > 20.0  # ~21.3 kJ/mol
 
 _self_test()

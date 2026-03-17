@@ -342,3 +342,29 @@ GAMMA_SASA_DESOLV = {
 # Note: For host-guest differential binding, γ_flat (0.018-0.025 kJ/mol/Å²)
 # from Rekharsky CD series is the correct parameter. γ_abs is for absolute
 # solvation predictions. Rekharsky data NOT YET CURATED.
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# P16: NEUTRAL H-BOND ENERGY AT HOST-GUEST PORTAL
+# Back-solved from CB7 adamantane ± NH2/OH matched pairs
+# Source: MABE HG_DATA, Moghaddam 2011 JACS 133:3570 (CB7 thermodynamics)
+# ═══════════════════════════════════════════════════════════════════════════
+EPS_NEUTRAL_HBOND_CB_NET = -13.8   # kJ/mol, NET observed ΔG per portal H-bond
+                                    # (includes desolvation, geometry, cooperativity)
+EPS_NEUTRAL_HBOND_NH2 = -15.1      # NH2 donor to CB portal C=O (bidentate, per HB)
+EPS_NEUTRAL_HBOND_OH = -12.6       # OH donor to CB portal C=O (monodentate)
+# Cross-reference: eps_charge_assisted (NH3+ → C=O) = -13.3 kJ/mol per HB
+# including ion-dipole. Neutral and charge-assisted are similar at CB portal
+# because the C=O is intrinsically a strong acceptor.
+# Compare: CD portal OH···OH = -2.0 kJ/mol (much weaker acceptor)
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# P28: OPTIMAL PACKING COEFFICIENT (Rebek 55% rule)
+# Supported by CB7 guest size series (logKa monotonic up to PC=0.574)
+# Source: Mecozzi, Rebek, Whitesides 1998 Chem.Eur.J. 4:1016
+# ═══════════════════════════════════════════════════════════════════════════
+PC_OPT = 0.55                      # Optimal V_guest / V_cavity
+PC_OPT_SIGMA = 0.09                # Standard deviation around optimum
+# CB7 adamantane-NH3+ at PC=0.574 is best binder → consistent with 0.55
+# CB7 dimethyladamantane-NH3+ at PC=0.635 binds weaker → overpacking onset

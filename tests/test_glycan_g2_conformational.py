@@ -5,6 +5,7 @@ import pytest, math
 from mabe.glycan.conformational import (
     LINKAGE_REGISTRY, K_BRANCH_PENALTY, compute_conformational_entropy, _compute_TdS,
     BETA_1_4, BETA_1_3, ALPHA_1_3, ALPHA_1_4, ALPHA_1_6, ALPHA_2_3, R, T,
+    ITC_CALIBRATED_TDS,
 )
 from mabe.glycan.scorer import compute_glycan_terms
 from mabe.glycan.sugar_properties import ALPHA_D_MANNOSE
@@ -61,10 +62,11 @@ class TestScoring:
         assert compute_conformational_entropy([])['TdS_total'] == 0.0
     def test_single(self):
         r = compute_conformational_entropy(['beta1-4'])
-        assert r['TdS_total'] == BETA_1_4.TdS_freeze_kj
+        assert abs(r['TdS_total'] - ITC_CALIBRATED_TDS['beta1-4']) < 0.01
     def test_additive(self):
         r = compute_conformational_entropy(['alpha1-3', 'alpha1-6'])
-        assert abs(r['TdS_total'] - (ALPHA_1_3.TdS_freeze_kj + ALPHA_1_6.TdS_freeze_kj)) < 0.01
+        expected = ITC_CALIBRATED_TDS['alpha1-3'] + ITC_CALIBRATED_TDS['alpha1-6']
+        assert abs(r['TdS_total'] - expected) < 0.01
     def test_branch(self):
         a = compute_conformational_entropy(['alpha1-3'], n_branch_points=0)
         b = compute_conformational_entropy(['alpha1-3'], n_branch_points=1)
@@ -78,7 +80,8 @@ class TestScorerIntegration:
         assert compute_glycan_terms(ALPHA_D_MANNOSE, cona_mannose_pocket()).dG_conf_entropy == 0.0
     def test_tri_has_conf(self):
         r = compute_glycan_terms(ALPHA_D_MANNOSE, cona_trimannoside())
-        assert 6.0 < r.dG_conf_entropy < 9.0
+        # Trimannoside: alpha1-3 + alpha1-6 + 1 branch = 6.88 + 11.12 + 3.3 = 21.3
+        assert 18.0 < r.dG_conf_entropy < 25.0
     def test_tri_less_favorable(self):
         m = compute_glycan_terms(ALPHA_D_MANNOSE, cona_mannose_pocket(), beta_context=0.45)
         t = compute_glycan_terms(ALPHA_D_MANNOSE, cona_trimannoside(), beta_context=0.45)
