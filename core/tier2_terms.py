@@ -18,6 +18,8 @@ from core.tier2_constants import (
     ANION_PI_ENERGY,
     METALLOPHILIC_ENERGY, METALLOPHILIC_D0, METALLOPHILIC_BETA, D10_METALS,
     GROUP_DESOLVATION_COST, GROUP_POLARIZABILITY,
+    EPS_WATER_PER_HBOND, EPS_WATER_OH, EPS_WATER_NH, EPS_WATER_O_ACCEPTOR,
+    GAMMA_SASA_DESOLV,
 )
 
 
@@ -322,6 +324,51 @@ def compute_group_desolvation(uc, result):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# T11: SASA-BASED WATER COMPETITION PENALTY (P20 + P13)
+# Back-solved from MNSol v2012 + FreeSolv v0.52
+# ═══════════════════════════════════════════════════════════════════════════
+
+def compute_water_penalty(uc, result):
+    """Water competition penalty from SASA-level polar burial.
+
+    Three modes (highest-detail wins):
+      1. Per-Å² SASA (if polar SASA fields populated)
+      2. Per-H-bond count (if n_water_hbonds_displaced > 0)
+      3. Self-zero (no data)
+
+    Does NOT overlap with T10 (group desolvation): T10 fires on
+    buried_groups list, T11 fires on SASA fields. If both are
+    populated, the UC constructor should use one or the other.
+
+    Calibration: MNSol v2012 N=390 aq. neutrals, R²=0.695
+                 FreeSolv v0.52 N=642, cross-validated r=0.82
+    """
+    # ── Mode 1: per-Å² SASA (most detailed) ──
+    sasa_oh = getattr(uc, 'sasa_oh_buried_A2', 0.0)
+    sasa_nh = getattr(uc, 'sasa_nh_buried_A2', 0.0)
+    sasa_o_acc = getattr(uc, 'sasa_o_acceptor_buried_A2', 0.0)
+    sasa_n_acc = getattr(uc, 'sasa_n_acceptor_buried_A2', 0.0)
+
+    sasa_polar_total = sasa_oh + sasa_nh + sasa_o_acc + sasa_n_acc
+    if sasa_polar_total > 0:
+        penalty = (GAMMA_SASA_DESOLV["OH_donor"] * sasa_oh
+                   + GAMMA_SASA_DESOLV["NH_donor"] * sasa_nh
+                   + GAMMA_SASA_DESOLV["O_acceptor"] * sasa_o_acc
+                   + GAMMA_SASA_DESOLV["N_acceptor"] * sasa_n_acc)
+        result.dg_water_penalty = penalty  # positive = unfavorable
+        return
+
+    # ── Mode 2: per-H-bond count ──
+    n_displaced = getattr(uc, 'n_water_hbonds_displaced', 0)
+    if n_displaced > 0:
+        result.dg_water_penalty = EPS_WATER_PER_HBOND * n_displaced
+        return
+
+    # ── Mode 3: self-zero ──
+    # No polar SASA data and no H-bond count → zero contribution
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 # MASTER DISPATCH — call all Tier 2 terms
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -336,6 +383,7 @@ ALL_TIER2_FUNCTIONS = [
     compute_anion_pi,
     compute_metallophilic,
     compute_group_desolvation,
+    compute_water_penalty,
 ]
 
 TIER2_RESULT_FIELDS = [
@@ -349,6 +397,7 @@ TIER2_RESULT_FIELDS = [
     "dg_anion_pi",
     "dg_metallophilic",
     "dg_group_desolv",
+    "dg_water_penalty",
 ]
 
 

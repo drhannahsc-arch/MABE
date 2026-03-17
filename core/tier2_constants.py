@@ -276,6 +276,11 @@ D10_METALS = {"Au+", "Au1+", "Ag+", "Ag1+", "Cu+", "Cu1+", "Hg0", "Tl+", "Tl1+"}
 #         Abraham solvation parameters (H-bond acidity A, basicity B)
 GROUP_DESOLVATION_COST = {
     # Group: k_desolv (kJ/mol) for complete burial
+    # Primary: Cabani 1981 J. Solution Chem. 10:563; Wolfenden 1981 Biochemistry 20:849
+    # Cross-checked: MNSol v2012 (doi:10.13020/3eks-j059) SASA regression, N=390
+    #   OH back-solve: 14.2 kJ/mol (MNSol+FreeSolv mean) vs Cabani 10.0
+    #   NH2 back-solve: 10.1 kJ/mol vs Wolfenden 10.0  ← excellent agreement
+    #   C=O back-solve:  4.4 kJ/mol vs Wolfenden 7.5   ← Wolfenden higher
     "OH_primary_eq":       10.0,   # Cabani + FreeSolv cross-check
     "OH_primary_ax":        7.5,   # axial less exposed
     "OH_secondary_eq":      8.5,
@@ -295,3 +300,45 @@ GROUP_DESOLVATION_COST = {
     "default_polar":        8.0,   # generic polar group
     "default_nonpolar":     2.0,   # generic nonpolar group
 }
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# P20: WATER H-BOND COMPETITION (per H-bond disrupted)
+# Back-solved from MNSol v2012 (390 aq. neutrals) + FreeSolv v0.52 (642 cpds)
+# doi:10.13020/3eks-j059 (MNSol), doi:10.1021/acs.jced.7b00104 (FreeSolv)
+# ═══════════════════════════════════════════════════════════════════════════
+EPS_WATER_PER_HBOND = 5.2    # kJ/mol, donor-weighted mean (OH + NH)
+EPS_WATER_OH = 5.3           # per OH-water H-bond disrupted
+EPS_WATER_NH = 5.0           # per NH-water H-bond disrupted
+EPS_WATER_O_ACCEPTOR = 2.2   # per C=O acceptor H-bond disrupted
+
+# Per-group desolvation from regression (kJ/mol, total per group buried)
+DESOLV_PER_OH_GROUP = 14.2   # OH makes ~2.7 H-bonds with water
+DESOLV_PER_NH2_GROUP = 10.1  # NH2 makes ~2 H-bonds
+DESOLV_PER_CO_GROUP = 4.4    # C=O makes ~2 H-bonds
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# P13: HYDROPHOBIC SASA TRANSFER COEFFICIENTS (absolute solvation)
+# Back-solved from MNSol v2012 pure hydrocarbon subsets
+# n-alkane series (methane→octane, N=8, R²=0.890)
+# aromatic series (benzene→anthracene, N=8, R²=0.650)
+# ═══════════════════════════════════════════════════════════════════════════
+GAMMA_ABS_ALIPHATIC = 0.0242  # kJ/mol/Å², positive = unfavorable in water
+GAMMA_ABS_AROMATIC = -0.1427  # kJ/mol/Å², negative = π-water stabilization
+
+# SASA-based solvation coefficients (from full 390-entry regression)
+# Sign: negative = favorable solvation (gas→water). Desolvation = negate.
+GAMMA_SASA_DESOLV = {
+    "aliphatic":   0.0523,   # burying aliphatic SASA is unfavorable (desolv cost)
+    "aromatic":   -0.0893,   # aromatic SASA is favorable in water (π-water)
+    "OH_donor":    1.0971,   # per Å² of OH surface buried (strong penalty)
+    "NH_donor":    0.7012,   # per Å² of NH surface buried
+    "O_acceptor":  0.2099,   # per Å² of O acceptor surface buried
+    "N_acceptor":  0.1536,   # per Å² of N acceptor surface buried
+    "halogen":     0.0088,   # nearly zero — halogens barely interact with water
+    "sulfur":      0.0731,   # moderate
+}
+# Note: For host-guest differential binding, γ_flat (0.018-0.025 kJ/mol/Å²)
+# from Rekharsky CD series is the correct parameter. γ_abs is for absolute
+# solvation predictions. Rekharsky data NOT YET CURATED.

@@ -107,6 +107,7 @@ class PredictionResult:
     dg_anion_pi: float = 0.0
     dg_metallophilic: float = 0.0
     dg_group_desolv: float = 0.0
+    dg_water_penalty: float = 0.0
     dg_ion_dipole: float = 0.0
     dg_ion_desolv: float = 0.0
     dg_portal_size: float = 0.0

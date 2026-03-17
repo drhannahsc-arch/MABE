@@ -1,0 +1,19 @@
+{
+  "parameter_id": "P13",
+  "parameter_name": "gamma_flat_absolute_solvation",
+  "gamma_abs_aliphatic_kJ_per_A2": 0.0242,
+  "gamma_abs_aliphatic_kcal_per_A2": 0.00578,
+  "gamma_abs_aromatic_kJ_per_A2": -0.1427,
+  "gamma_abs_aromatic_kcal_per_A2": -0.0341,
+  "r2_alkane": 0.8899,
+  "r2_aromatic": 0.6502,
+  "n_alkanes": 8,
+  "n_aromatics": 8,
+  "note": "Absolute solvation coefficients. HG differential \u03b3_flat requires Rekharsky CD series (not yet curated).",
+  "source": "MNSol v2012 pure HC subsets",
+  "literature_comparison": {
+    "Sitkoff_1994": "+0.0301 kJ/mol/\u00c5\u00b2",
+    "Eisenberg_McLachlan": "+0.0669 kJ/mol/\u00c5\u00b2",
+    "Sharp_1991": "+0.0209 kJ/mol/\u00c5\u00b2"
+  }
+}

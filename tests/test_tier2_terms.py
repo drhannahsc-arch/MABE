@@ -20,7 +20,7 @@ from core.tier2_terms import (
     compute_dispersion_upgraded, compute_cation_pi, compute_pi_stack,
     compute_halogen_bond, compute_salt_bridge, compute_born_solvation,
     compute_hbond_cooperativity, compute_anion_pi, compute_metallophilic,
-    compute_group_desolvation,
+    compute_group_desolvation, compute_water_penalty,
     compute_all_tier2, tier2_total, TIER2_RESULT_FIELDS,
 )
 
@@ -298,3 +298,120 @@ class TestAdditivity:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# T11: WATER PENALTY (P20 back-solve)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def _make_empty_uc():
+    return UniversalComplex(name="water_penalty_test")
+
+def _make_result():
+    return MockResult()
+
+def _sample_ucs():
+    """Return a few sample UCs that represent existing calibration entries."""
+    # Metal entry: has metal_formula but no SASA burial
+    m = UniversalComplex(name="Cu-EDTA_test", binding_mode="metal",
+                         metal_formula="Cu2+")
+    m.donor_subtypes = ["O_carboxylate"] * 4
+    # HG entry: has host but no polar SASA burial fields
+    h = UniversalComplex(name="betaCD-adamantane_test", binding_mode="host_guest")
+    h.host_name = "beta-CD"
+    h.sasa_buried_A2 = 80.0
+    # CM entry
+    c = UniversalComplex(name="Cs@CB7_test", binding_mode="cross_modal")
+    c.metal_formula = "Cs+"
+    c.host_name = "CB[7]"
+    return [m, h, c]
+
+
+class TestWaterPenalty:
+    """Tests for T11 compute_water_penalty (SASA-based water competition)."""
+
+    def test_self_zero_no_data(self):
+        """No SASA or H-bond count -> zero contribution."""
+        uc = _make_empty_uc()
+        result = _make_result()
+        compute_water_penalty(uc, result)
+        assert result.dg_water_penalty == 0.0
+
+    def test_sasa_mode_oh(self):
+        """OH burial via SASA produces positive penalty."""
+        uc = _make_empty_uc()
+        uc.sasa_oh_buried_A2 = 10.0  # ~1 OH group
+        result = _make_result()
+        compute_water_penalty(uc, result)
+        # 10 A^2 x 1.097 kJ/mol/A^2 ~ 11.0 kJ/mol
+        assert result.dg_water_penalty > 9.0
+        assert result.dg_water_penalty < 13.0
+
+    def test_sasa_mode_nh(self):
+        """NH burial via SASA produces positive penalty."""
+        uc = _make_empty_uc()
+        uc.sasa_nh_buried_A2 = 18.0  # ~1 NH2 group
+        result = _make_result()
+        compute_water_penalty(uc, result)
+        # 18 A^2 x 0.701 kJ/mol/A^2 ~ 12.6 kJ/mol
+        assert result.dg_water_penalty > 10.0
+        assert result.dg_water_penalty < 15.0
+
+    def test_sasa_mode_o_acceptor(self):
+        """O acceptor burial via SASA produces smaller penalty."""
+        uc = _make_empty_uc()
+        uc.sasa_o_acceptor_buried_A2 = 14.0  # ~1 C=O
+        result = _make_result()
+        compute_water_penalty(uc, result)
+        # 14 A^2 x 0.210 kJ/mol/A^2 ~ 2.9 kJ/mol
+        assert result.dg_water_penalty > 1.5
+        assert result.dg_water_penalty < 5.0
+
+    def test_hbond_count_mode(self):
+        """H-bond count mode when no SASA data."""
+        uc = _make_empty_uc()
+        uc.n_water_hbonds_displaced = 3
+        result = _make_result()
+        compute_water_penalty(uc, result)
+        # 3 x 5.2 = 15.6 kJ/mol
+        assert abs(result.dg_water_penalty - 15.6) < 0.1
+
+    def test_sasa_overrides_hbond_count(self):
+        """SASA mode takes priority over H-bond count."""
+        uc = _make_empty_uc()
+        uc.sasa_oh_buried_A2 = 10.0
+        uc.n_water_hbonds_displaced = 100  # should be ignored
+        result = _make_result()
+        compute_water_penalty(uc, result)
+        # Should use SASA mode (~11 kJ), not hbond count mode (520 kJ)
+        assert result.dg_water_penalty < 20.0
+
+    def test_existing_entries_unaffected(self):
+        """Existing metal/HG/CM entries have no SASA burial -> zero T11."""
+        for uc in _sample_ucs():
+            result = _make_result()
+            compute_water_penalty(uc, result)
+            assert result.dg_water_penalty == 0.0, \
+                f"{uc.name}: dg_water_penalty should be 0 for existing entries"
+
+    def test_combined_polar_sasa(self):
+        """Multiple polar types sum correctly."""
+        uc = _make_empty_uc()
+        uc.sasa_oh_buried_A2 = 9.5    # 1 OH
+        uc.sasa_nh_buried_A2 = 18.0   # 1 NH2
+        uc.sasa_o_acceptor_buried_A2 = 14.0  # 1 C=O
+        result = _make_result()
+        compute_water_penalty(uc, result)
+        # 9.5x1.097 + 18x0.701 + 14x0.210 ~ 10.4 + 12.6 + 2.9 = 25.9
+        assert result.dg_water_penalty > 22.0
+        assert result.dg_water_penalty < 30.0
+
+    def test_in_tier2_total(self):
+        """Water penalty included in tier2_total sum."""
+        uc = _make_empty_uc()
+        uc.n_water_hbonds_displaced = 2
+        result = _make_result()
+        compute_all_tier2(uc, result)
+        total = tier2_total(result)
+        assert total >= result.dg_water_penalty
+        assert result.dg_water_penalty > 0
