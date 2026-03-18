@@ -11,6 +11,7 @@ from glycan.pulldown_selector import (
     CELL_LECTIN_DB,
     PulldownRecommendation,
 )
+from glycan.bead_linker_design import is_oligosaccharide
 
 
 # ── Cell type resolution ────────────────────────────────────────────────
@@ -151,7 +152,16 @@ class TestNKCell:
         recs = recommend_pulldown("nk_cell", bead_diameter_nm=50)
         assert len(recs) >= 1
         assert recs[0].scorer_proxy == "WGA"
-        assert recs[0].sugar == "GlcNAc"
+        # Now recommends best binder (oligosaccharide) over monomer
+        assert recs[0].sugar in ("GlcNAc", "(GlcNAc)2", "(GlcNAc)3", "(GlcNAc)4")
+
+    def test_oligo_ranked_above_mono(self):
+        """Oligosaccharide should score higher than monomer for WGA."""
+        recs = recommend_pulldown("nk_cell", bead_diameter_nm=50)
+        oligo = [r for r in recs if is_oligosaccharide(r.sugar)]
+        mono = [r for r in recs if not is_oligosaccharide(r.sugar) and r.dG_pred is not None]
+        if oligo and mono:
+            assert oligo[0].composite_score >= mono[0].composite_score
 
 
 # ── Tumor epithelial ────────────────────────────────────────────────────
@@ -208,3 +218,75 @@ class TestBeadSize:
                     if l.lectin == s.lectin and l.position == s.position and l.linker:
                         assert l.linker.peg_n_recommended > s.linker.peg_n_recommended
                         break
+
+
+# ── Oligosaccharide-specific tests ──────────────────────────────────────
+
+class TestOligosaccharideDetection:
+    def test_mono_not_oligo(self):
+        for name in ["Man", "Glc", "Gal", "GlcNAc", "GalNAc", "Fru", "2dGlc"]:
+            assert not is_oligosaccharide(name), f"{name} should not be oligo"
+
+    def test_oligo_detected(self):
+        for name in ["1->2 diMan", "1->3 diMan", "(GlcNAc)2", "(GlcNAc)3",
+                      "triMan", "LacNAc", "1->6 diMan"]:
+            assert is_oligosaccharide(name), f"{name} should be oligo"
+
+
+class TestOligoRecommendations:
+    def test_cona_recommends_oligo_over_mono(self):
+        """ConA: 1->2 diMan (-26.5) should rank above Man (-22.2)."""
+        recs = recommend_pulldown("macrophage_m2", bead_diameter_nm=50)
+        cona_recs = [r for r in recs if r.scorer_proxy == "ConA"]
+        if len(cona_recs) >= 2:
+            # Top ConA rec should be an oligo
+            top = cona_recs[0]
+            assert is_oligosaccharide(top.sugar), \
+                f"Top ConA rec should be oligo, got {top.sugar}"
+
+    def test_oligo_uses_reducing_end(self):
+        """Oligosaccharide recommendations use C1_reducing position."""
+        recs = recommend_pulldown("macrophage_m2", bead_diameter_nm=50)
+        oligo_recs = [r for r in recs if is_oligosaccharide(r.sugar)]
+        for r in oligo_recs:
+            assert r.position == "C1_reducing", \
+                f"Oligo {r.sugar} should use C1_reducing, got {r.position}"
+
+    def test_oligo_has_feasible_linker(self):
+        """Reducing-end attachment should always be feasible for reasonable beads."""
+        recs = recommend_pulldown("macrophage_m2", bead_diameter_nm=50)
+        oligo_recs = [r for r in recs if is_oligosaccharide(r.sugar)]
+        for r in oligo_recs:
+            assert r.linker is not None
+            assert r.linker.feasible, f"Oligo {r.sugar} linker should be feasible"
+            assert r.linker.exit_class == "axial_out"
+
+    def test_oligo_has_stronger_dg(self):
+        """Best oligo should have more negative dG than best mono for same lectin."""
+        recs = recommend_pulldown("macrophage_m2", bead_diameter_nm=50)
+        cona_recs = [r for r in recs if r.scorer_proxy == "ConA" and r.dG_pred is not None]
+        oligo = [r for r in cona_recs if is_oligosaccharide(r.sugar)]
+        mono = [r for r in cona_recs if not is_oligosaccharide(r.sugar)]
+        if oligo and mono:
+            assert oligo[0].dG_pred < mono[0].dG_pred  # more negative = stronger
+
+    def test_wga_includes_chitooligomers(self):
+        """WGA/NK cell should include (GlcNAc)n oligomers."""
+        recs = recommend_pulldown("nk_cell", bead_diameter_nm=50)
+        oligos = [r for r in recs if is_oligosaccharide(r.sugar)]
+        assert len(oligos) >= 1
+        assert any("GlcNAc" in r.sugar for r in oligos)
+
+    def test_multiple_ligands_per_lectin(self):
+        """Should return multiple ligands per lectin (up to max_ligands_per_lectin)."""
+        recs = recommend_pulldown("macrophage_m2", bead_diameter_nm=50, max_ligands_per_lectin=3)
+        cona_sugars = {r.sugar for r in recs if r.scorer_proxy == "ConA"}
+        assert len(cona_sugars) >= 2  # at least one oligo + one mono
+
+    def test_reducing_end_note_in_summary(self):
+        """Oligo summaries should mention reducing end."""
+        recs = recommend_pulldown("macrophage_m2", bead_diameter_nm=50)
+        oligo_recs = [r for r in recs if is_oligosaccharide(r.sugar)]
+        for r in oligo_recs:
+            assert any("reducing" in n.lower() for n in r.notes), \
+                f"Oligo {r.sugar} notes should mention reducing end"

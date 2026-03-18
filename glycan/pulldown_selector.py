@@ -25,6 +25,8 @@ from glycan.click_site_predictor import get_attachment_sites, CANDIDATE
 from glycan.bead_linker_design import (
     design_pulldown, LinkerDesign, MultivalentEstimate,
     estimate_multivalent_enhancement,
+    is_oligosaccharide, design_pulldown_reducing_end,
+    recommend_peg_reducing_end,
 )
 
 # Lazy import scorer to avoid circular deps if scorer isn't deployed
@@ -306,13 +308,19 @@ def recommend_pulldown(
     cell_type: str,
     bead_diameter_nm: float = 50.0,
     sugar_spacing_nm: float = 5.0,
+    max_ligands_per_lectin: int = 3,
 ) -> list[PulldownRecommendation]:
     """Full pipeline: cell type -> ranked pulldown designs.
+
+    Scores ALL ligands per scaffold (mono + oligosaccharide) and picks
+    the best binders. Oligosaccharides use reducing-end C1 attachment;
+    monosaccharides use position-resolved click site analysis.
 
     Args:
         cell_type: target cell type (e.g., "macrophage_m2", "t_cell")
         bead_diameter_nm: magnetic bead diameter in nm
         sugar_spacing_nm: sugar spacing on bead surface in nm
+        max_ligands_per_lectin: max ligands to report per lectin (top N by dG)
 
     Returns:
         List of PulldownRecommendation sorted by composite_score (descending).
@@ -324,83 +332,53 @@ def recommend_pulldown(
     recommendations = []
 
     for entry in lectins:
-        if entry.scorer_proxy is not None and entry.sugar_for_scorer is not None:
-            # Full quantitative path: score sugar, get click sites, design linker
+        if entry.scorer_proxy is not None:
+            # Full quantitative path: score ALL ligands in this scaffold
             try:
-                pred = scorer.score(entry.scorer_proxy, entry.sugar_for_scorer)
-                dG_pred = pred.dG_pred
+                all_preds = scorer.score_scaffold(entry.scorer_proxy)
             except (ValueError, KeyError):
-                dG_pred = None
+                all_preds = []
 
-            # Get CANDIDATE positions
-            try:
-                sites = get_attachment_sites(entry.scorer_proxy, entry.sugar_for_scorer)
-            except ValueError:
-                sites = []
-
-            if sites:
-                for site in sites:
-                    pos = site.position
+            if not all_preds:
+                # Fallback: try single sugar if specified
+                if entry.sugar_for_scorer:
                     try:
-                        pd = design_pulldown(
-                            entry.scorer_proxy, entry.sugar_for_scorer, pos,
-                            bead_diameter_nm, sugar_spacing_nm,
-                            receptor_density_per_um2=_density_to_per_um2(entry.density_per_cell),
-                        )
-                        linker = pd.linker
-                        mv = pd.multivalent
+                        pred = scorer.score(entry.scorer_proxy, entry.sugar_for_scorer)
+                        all_preds = [pred]
                     except (ValueError, KeyError):
-                        linker = None
-                        mv = None
+                        pass
 
-                    composite = _compute_composite(dG_pred, linker, mv, entry.proxy_confidence)
+            # Sort by predicted dG (most negative = strongest binder)
+            all_preds.sort(key=lambda p: p.dG_pred)
 
-                    notes = [f"Proxy: {entry.scorer_proxy} models {entry.lectin}"]
-                    if entry.proxy_confidence == "MEDIUM":
-                        notes.append(f"Proxy is approximate (same sugar preference, different fold)")
+            # Take top N ligands
+            top_preds = all_preds[:max_ligands_per_lectin]
 
-                    recommendations.append(PulldownRecommendation(
-                        cell_type=canonical,
-                        lectin=entry.lectin,
-                        lectin_density=entry.density_per_cell,
-                        scorer_proxy=entry.scorer_proxy,
-                        proxy_confidence=entry.proxy_confidence,
-                        sugar=entry.sugar_for_scorer,
-                        dG_pred=dG_pred,
-                        position=pos,
-                        linker=linker,
-                        multivalent=mv,
-                        composite_score=composite,
-                        confidence=entry.proxy_confidence,
-                        notes=notes,
-                        source=entry.source,
-                    ))
-            else:
-                # Proxy exists but no CANDIDATE sites (all positions essential)
-                composite = _compute_composite(dG_pred, None, None, entry.proxy_confidence)
-                recommendations.append(PulldownRecommendation(
-                    cell_type=canonical,
-                    lectin=entry.lectin,
-                    lectin_density=entry.density_per_cell,
-                    scorer_proxy=entry.scorer_proxy,
-                    proxy_confidence=entry.proxy_confidence,
-                    sugar=entry.sugar_for_scorer,
-                    dG_pred=dG_pred,
-                    position="NONE",
-                    linker=None,
-                    multivalent=None,
-                    composite_score=composite,
-                    confidence=entry.proxy_confidence,
-                    notes=["No CANDIDATE positions available — all positions essential"],
-                    source=entry.source,
-                ))
+            for pred in top_preds:
+                dG_pred = pred.dG_pred
+                ligand_name = pred.ligand
+
+                if is_oligosaccharide(ligand_name):
+                    # Oligosaccharide: reducing-end C1 attachment
+                    recs_for_ligand = _build_oligo_recs(
+                        canonical, entry, ligand_name, dG_pred,
+                        bead_diameter_nm, sugar_spacing_nm,
+                    )
+                else:
+                    # Monosaccharide: position-resolved click sites
+                    recs_for_ligand = _build_mono_recs(
+                        canonical, entry, ligand_name, dG_pred,
+                        bead_diameter_nm, sugar_spacing_nm,
+                    )
+
+                recommendations.extend(recs_for_ligand)
         else:
-            # Qualitative path: no scorer proxy or no sugar in scorer
+            # Qualitative path: no scorer proxy
             mv = estimate_multivalent_enhancement(
                 bead_diameter_nm, sugar_spacing_nm,
                 receptor_density_per_um2=_density_to_per_um2(entry.density_per_cell),
             )
-            composite = 0.1  # low score for qualitative-only entries
+            composite = 0.1
 
             recommendations.append(PulldownRecommendation(
                 cell_type=canonical,
@@ -415,10 +393,138 @@ def recommend_pulldown(
                 multivalent=mv,
                 composite_score=composite,
                 confidence="LOW",
-                notes=["No MABE scorer proxy — qualitative sugar preference only",
+                notes=["No MABE scorer proxy -- qualitative sugar preference only",
                        "C1 anomeric is universally the safest attachment site"],
                 source=entry.source,
             ))
+
+    # Sort by composite score descending
+    recommendations.sort(key=lambda r: r.composite_score, reverse=True)
+    return recommendations
+
+
+def _build_oligo_recs(
+    cell_type: str,
+    entry: LectinEntry,
+    ligand: str,
+    dG_pred: float,
+    bead_diameter_nm: float,
+    sugar_spacing_nm: float,
+) -> list[PulldownRecommendation]:
+    """Build recommendations for an oligosaccharide ligand (reducing-end attachment)."""
+    try:
+        pd = design_pulldown_reducing_end(
+            entry.scorer_proxy, ligand, bead_diameter_nm, sugar_spacing_nm,
+            receptor_density_per_um2=_density_to_per_um2(entry.density_per_cell),
+        )
+        linker = pd.linker
+        mv = pd.multivalent
+    except (ValueError, KeyError):
+        linker = None
+        mv = None
+
+    composite = _compute_composite(dG_pred, linker, mv, entry.proxy_confidence)
+
+    notes = [
+        f"Proxy: {entry.scorer_proxy} models {entry.lectin}",
+        f"Oligosaccharide: reducing-end C1 attachment (neoglycoconjugate)",
+    ]
+    if entry.proxy_confidence == "MEDIUM":
+        notes.append("Proxy is approximate (same sugar preference, different fold)")
+
+    return [PulldownRecommendation(
+        cell_type=cell_type,
+        lectin=entry.lectin,
+        lectin_density=entry.density_per_cell,
+        scorer_proxy=entry.scorer_proxy,
+        proxy_confidence=entry.proxy_confidence,
+        sugar=ligand,
+        dG_pred=dG_pred,
+        position="C1_reducing",
+        linker=linker,
+        multivalent=mv,
+        composite_score=composite,
+        confidence=entry.proxy_confidence,
+        notes=notes,
+        source=entry.source,
+    )]
+
+
+def _build_mono_recs(
+    cell_type: str,
+    entry: LectinEntry,
+    ligand: str,
+    dG_pred: float,
+    bead_diameter_nm: float,
+    sugar_spacing_nm: float,
+) -> list[PulldownRecommendation]:
+    """Build recommendations for a monosaccharide ligand (position-resolved click sites)."""
+    recs = []
+
+    # Get CANDIDATE positions
+    try:
+        sites = get_attachment_sites(entry.scorer_proxy, ligand)
+    except ValueError:
+        sites = []
+
+    if sites:
+        for site in sites:
+            pos = site.position
+            try:
+                pd = design_pulldown(
+                    entry.scorer_proxy, ligand, pos,
+                    bead_diameter_nm, sugar_spacing_nm,
+                    receptor_density_per_um2=_density_to_per_um2(entry.density_per_cell),
+                )
+                linker = pd.linker
+                mv = pd.multivalent
+            except (ValueError, KeyError):
+                linker = None
+                mv = None
+
+            composite = _compute_composite(dG_pred, linker, mv, entry.proxy_confidence)
+
+            notes = [f"Proxy: {entry.scorer_proxy} models {entry.lectin}"]
+            if entry.proxy_confidence == "MEDIUM":
+                notes.append("Proxy is approximate (same sugar preference, different fold)")
+
+            recs.append(PulldownRecommendation(
+                cell_type=cell_type,
+                lectin=entry.lectin,
+                lectin_density=entry.density_per_cell,
+                scorer_proxy=entry.scorer_proxy,
+                proxy_confidence=entry.proxy_confidence,
+                sugar=ligand,
+                dG_pred=dG_pred,
+                position=pos,
+                linker=linker,
+                multivalent=mv,
+                composite_score=composite,
+                confidence=entry.proxy_confidence,
+                notes=notes,
+                source=entry.source,
+            ))
+    else:
+        # No position contacts for this mono at this scaffold -- use default C1
+        composite = _compute_composite(dG_pred, None, None, entry.proxy_confidence)
+        recs.append(PulldownRecommendation(
+            cell_type=cell_type,
+            lectin=entry.lectin,
+            lectin_density=entry.density_per_cell,
+            scorer_proxy=entry.scorer_proxy,
+            proxy_confidence=entry.proxy_confidence,
+            sugar=ligand,
+            dG_pred=dG_pred,
+            position="C1 (default)",
+            linker=None,
+            multivalent=None,
+            composite_score=composite,
+            confidence=entry.proxy_confidence,
+            notes=[f"No position contacts mapped for {ligand} at {entry.scorer_proxy}; default C1"],
+            source=entry.source,
+        ))
+
+    return recs
 
     # Sort by composite score descending
     recommendations.sort(key=lambda r: r.composite_score, reverse=True)

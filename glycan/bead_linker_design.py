@@ -394,3 +394,110 @@ def design_pulldown(scaffold: str, ligand: str, position: str,
             summary += f" [WARNING: {linker.warning}]"
 
     return PulldownDesign(linker=linker, multivalent=mv, summary=summary)
+
+
+# ── Oligosaccharide detection ───────────────────────────────────────────
+
+# Oligosaccharide ligand names contain linkage notation or multi-unit markers.
+# Monosaccharides: Man, Glc, Gal, GlcNAc, GalNAc, Fru, 2dGlc
+# Oligosaccharides: "1->2 diMan", "(GlcNAc)2", "triMan", "LacNAc"
+_OLIGO_MARKERS = ["->", "(", "tri", "di", "Lac"]
+
+def is_oligosaccharide(ligand: str) -> bool:
+    """Check if a ligand name represents an oligosaccharide."""
+    for marker in _OLIGO_MARKERS:
+        if marker in ligand:
+            # Exclude "2dGlc" which contains "d" but is a monosaccharide
+            return True
+    return False
+
+
+# ── Reducing-end linker design ──────────────────────────────────────────
+# For oligosaccharides, click handle attaches at the reducing-end C1.
+# This is universally CANDIDATE (solvent-exposed, no pharmacophore contacts)
+# and always axial_out (anomeric position points into solvent).
+#
+# Reducing-end pocket depth is shallow (~5 A) because the binding site
+# grabs the non-reducing end; the reducing end extends into solvent.
+
+_REDUCING_END_DEPTH_A = 5.0  # conservative; reducing end is at solvent boundary
+
+
+def recommend_peg_reducing_end(
+    scaffold: str,
+    ligand: str,
+    bead_diameter_nm: float,
+) -> LinkerDesign:
+    """Linker design for oligosaccharide via reducing-end C1 attachment.
+
+    Reducing-end C1 is always:
+    - CANDIDATE (solvent-exposed, no contacts to receptor)
+    - axial_out (anomeric position)
+    - Shallow pocket depth (~5 A)
+
+    This is how neoglycoconjugates are made in practice.
+    """
+    bead_radius_A = bead_diameter_nm * 10.0 / 2.0
+    pocket_depth = _REDUCING_END_DEPTH_A
+    exit_penalty = _EXIT_PENALTY["axial_out"]  # 1.0
+
+    L_min_A = pocket_depth * exit_penalty + SURFACE_CLEARANCE_A + bead_radius_A + CLICK_LINKER_LENGTH_A
+
+    peg_n_min = peg_units_for_length(1.5 * L_min_A)
+    peg_n_recommended = peg_units_for_length(2.0 * L_min_A)
+    L_contour_rec = peg_contour_length(peg_n_recommended)
+    ddG_entropy = compute_linker_entropy(L_contour_rec, L_min_A)
+
+    feasible = True
+    infeasibility_reason = None
+    if peg_n_recommended > 5000:
+        feasible = False
+        infeasibility_reason = f"PEG_{peg_n_recommended} exceeds practical synthesis limit (~PEG_5000)"
+
+    return LinkerDesign(
+        scaffold=scaffold,
+        ligand=ligand,
+        position="C1_reducing",
+        classification=CANDIDATE,
+        bead_diameter_nm=bead_diameter_nm,
+        bead_radius_A=bead_radius_A,
+        pocket_depth_A=pocket_depth,
+        exit_class="axial_out",
+        L_min_A=round(L_min_A, 1),
+        L_min_nm=round(L_min_A / 10.0, 1),
+        peg_n_min=peg_n_min,
+        peg_n_recommended=peg_n_recommended,
+        L_contour_recommended_A=round(L_contour_rec, 1),
+        ddG_entropy_kJ=round(ddG_entropy, 3),
+        feasible=feasible,
+        infeasibility_reason=infeasibility_reason,
+        warning=None,
+        note=f"Reducing-end C1 of {ligand}; always solvent-exposed (neoglycoconjugate attachment)",
+    )
+
+
+def design_pulldown_reducing_end(
+    scaffold: str,
+    ligand: str,
+    bead_diameter_nm: float,
+    sugar_spacing_nm: float = 5.0,
+    receptor_density_per_um2: float = 1000.0,
+) -> PulldownDesign:
+    """Complete pulldown design for oligosaccharide via reducing-end attachment."""
+    linker = recommend_peg_reducing_end(scaffold, ligand, bead_diameter_nm)
+    mv = estimate_multivalent_enhancement(bead_diameter_nm, sugar_spacing_nm,
+                                           receptor_density_per_um2)
+
+    if not linker.feasible:
+        summary = f"NOT FEASIBLE: {linker.infeasibility_reason}"
+    else:
+        summary = (
+            f"{scaffold}/{ligand} @ C1_reducing: "
+            f"PEG_{linker.peg_n_recommended} linker "
+            f"({linker.L_contour_recommended_A/10:.0f} nm contour), "
+            f"DDG_entropy={linker.ddG_entropy_kJ:.2f} kJ/mol, "
+            f"exit=axial_out (reducing end), "
+            f"multivalent enhancement ~10^{mv.enhancement_log10:.1f}"
+        )
+
+    return PulldownDesign(linker=linker, multivalent=mv, summary=summary)
