@@ -30,6 +30,100 @@ from glycan.parameters_v23 import (
 )
 from glycan.contact_maps import SCAFFOLD_CONTACTS, PREANCHORED_DG0
 
+# ── G2: Conformational entropy (physics-first) ─────────────────────────
+# TdS per linkage type from Mammen × QM flexibility factor
+# Source: Mammen & Whitesides 1998 (3.4 kJ/mol per rotor) × GLYCAM06 populations
+# Zero biology used. QM populations from Kirschner 2008 (GLYCAM06).
+G2_TDS_PER_LINKAGE = {
+    "alpha1-2": 5.99,
+    "alpha1-3": 4.91,
+    "alpha1-4": 5.52,
+    "alpha1-6": 9.98,
+    "alpha2-3": 3.19,
+    "beta1-2": 5.56,
+    "beta1-3": 5.99,
+    "beta1-4": 4.15,
+    "beta1-6": 9.98
+}
+
+G2_BRANCH_PENALTY = 3.3  # kJ/mol per branch point (Mammen-consistent)
+
+# Linkage types for known oligosaccharides
+_OLIGO_LINKAGES = {
+    "1->2 diMan": {
+        "linkages": [
+            "alpha1-2"
+        ],
+        "n_branch": 0
+    },
+    "1->3 diMan": {
+        "linkages": [
+            "alpha1-3"
+        ],
+        "n_branch": 0
+    },
+    "1->4 diMan": {
+        "linkages": [
+            "alpha1-4"
+        ],
+        "n_branch": 0
+    },
+    "1->6 diMan": {
+        "linkages": [
+            "alpha1-6"
+        ],
+        "n_branch": 0
+    },
+    "triMan": {
+        "linkages": [
+            "alpha1-3",
+            "alpha1-6"
+        ],
+        "n_branch": 1
+    },
+    "(GlcNAc)2": {
+        "linkages": [
+            "beta1-4"
+        ],
+        "n_branch": 0
+    },
+    "(GlcNAc)3": {
+        "linkages": [
+            "beta1-4",
+            "beta1-4"
+        ],
+        "n_branch": 0
+    },
+    "(GlcNAc)4": {
+        "linkages": [
+            "beta1-4",
+            "beta1-4",
+            "beta1-4"
+        ],
+        "n_branch": 0
+    },
+    "LacNAc": {
+        "linkages": [
+            "beta1-4"
+        ],
+        "n_branch": 0
+    }
+}
+
+def _compute_g2_entropy(ligand: str) -> float:
+    """Compute conformational entropy penalty for oligosaccharide binding.
+    Returns positive kJ/mol (unfavorable). Zero for monosaccharides.
+    """
+    info = _OLIGO_LINKAGES.get(ligand)
+    if info is None:
+        return 0.0
+    linkages = info["linkages"]
+    n_branch = info["n_branch"]
+    tds = sum(G2_TDS_PER_LINKAGE.get(lt, 5.0) for lt in linkages)
+    tds += n_branch * G2_BRANCH_PENALTY
+    return round(tds, 2)
+
+
 
 # ── Result dataclass ────────────────────────────────────────────────────
 
@@ -46,6 +140,7 @@ class GlycanPrediction:
     dG_desolv: float
     dG_CHP: float
     dG_linker: float
+    dG_conf: float = 0.0      # G2: conformational entropy penalty
     notes: list = field(default_factory=list)
 
     @property
@@ -113,6 +208,8 @@ class GlycanScorer:
         dG_linker = n_linker * EPS_LINKER_NET
 
         return dG_HB + dG_desolv + dG_CHP + dG_linker
+        # Note: G2 entropy NOT included in _physics_terms because it's zero for
+        # anchor ligands (monosaccharides). It's added in score() directly.
 
     def score(self, scaffold: str, ligand: str) -> GlycanPrediction:
         """Score a single ligand against a scaffold."""
@@ -137,7 +234,8 @@ class GlycanScorer:
         dG_CHP = n_CHP * eps_chp
         dG_linker = n_linker * EPS_LINKER_NET
 
-        dG_pred = dg0 + dG_HB + dG_desolv + dG_CHP + dG_linker
+        dG_conf = _compute_g2_entropy(ligand)
+        dG_pred = dg0 + dG_HB + dG_desolv + dG_CHP + dG_linker + dG_conf
 
         obs_dG = entry.get("obs_dG")
         residual = round(dG_pred - obs_dG, 3) if obs_dG is not None else None
@@ -154,6 +252,7 @@ class GlycanScorer:
             dG_desolv=round(dG_desolv, 3),
             dG_CHP=round(dG_CHP, 3),
             dG_linker=round(dG_linker, 3),
+            dG_conf=round(dG_conf, 3),
             notes=[entry.get("note", "")],
         )
 

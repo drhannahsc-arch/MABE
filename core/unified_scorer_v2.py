@@ -1154,6 +1154,7 @@ def _compute_glycan_terms(uc, result):
     result.dg_group_desolv = pred.dG_desolv
     result.dg_pi = pred.dG_CHP
     result.dg_hbond_coop = pred.dG_linker
+    result.dg_conf_entropy = pred.dG_conf
 
 
 def _compute_cm_terms(uc, result):
