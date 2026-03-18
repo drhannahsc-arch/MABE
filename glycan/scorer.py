@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from glycan.parameters_v23 import (
-    EPS_HB_EFF, CH_PI_EPS, K_DESOLV, EPS_LINKER_NET,
+    EPS_HB_EFF, CH_PI_EPS, K_DESOLV, EPS_LINKER_NET, EPS_WATER_BRIDGE,
 )
 from glycan.contact_maps import SCAFFOLD_CONTACTS, PREANCHORED_DG0
 
@@ -53,18 +53,31 @@ G2_BRANCH_PENALTY = 3.3  # kJ/mol per branch point (Mammen-consistent)
 # "flex": per-linkage bound-state flexibility fraction [0=fully frozen, 1=fully free]
 # Default: use position-based _BOUND_FLEX dict.
 # Override: specified when structural data shows specific linkage stays mobile.
+# "terminal_contacts": True if the sugar unit BEYOND this linkage makes
+# protein contacts (i.e., this torsion actually freezes upon binding).
+# If False, the linkage stays mobile → no entropy penalty.
+# Source: crystal structures (1CVN, 2UVO, 3GAL) + ITC chain-length data.
 _OLIGO_LINKAGES = {
-    "1->2 diMan": {"linkages": ["alpha1-2"], "n_branch": 0},
-    "1->3 diMan": {"linkages": ["alpha1-3"], "n_branch": 0},
-    "1->4 diMan": {"linkages": ["alpha1-4"], "n_branch": 0},
+    "1->2 diMan": {"linkages": ["alpha1-2"], "n_branch": 0,
+                    "terminal_contacts": [True]},  # Man2 contacts secondary subsite
+    "1->3 diMan": {"linkages": ["alpha1-3"], "n_branch": 0,
+                    "terminal_contacts": [True]},  # Man2 contacts backbone
+    "1->4 diMan": {"linkages": ["alpha1-4"], "n_branch": 0,
+                    "terminal_contacts": [True]},  # Man2 contacts Asn14 loop
     "1->6 diMan": {"linkages": ["alpha1-6"], "n_branch": 0,
-                    "flex_override": [0.70]},  # ω stays mobile in ConA (Loris 1994)
+                    "flex_override": [0.70],
+                    "terminal_contacts": [True]},  # Man2 minimal but present
     "triMan":     {"linkages": ["alpha1-3", "alpha1-6"], "n_branch": 1,
-                    "flex_override": [0.20, 0.70]},  # 1→3 tight, 1→6 mobile
-    "(GlcNAc)2":  {"linkages": ["beta1-4"], "n_branch": 0},
-    "(GlcNAc)3":  {"linkages": ["beta1-4", "beta1-4"], "n_branch": 0},
-    "(GlcNAc)4":  {"linkages": ["beta1-4", "beta1-4", "beta1-4"], "n_branch": 0},
-    "LacNAc":     {"linkages": ["beta1-4"], "n_branch": 0},
+                    "flex_override": [0.20, 0.70],
+                    "terminal_contacts": [True, True]},
+    "(GlcNAc)2":  {"linkages": ["beta1-4"], "n_branch": 0,
+                    "terminal_contacts": [True]},   # GlcNAc2 at subsite C
+    "(GlcNAc)3":  {"linkages": ["beta1-4", "beta1-4"], "n_branch": 0,
+                    "terminal_contacts": [True, True]},  # subsites C + A
+    "(GlcNAc)4":  {"linkages": ["beta1-4", "beta1-4", "beta1-4"], "n_branch": 0,
+                    "terminal_contacts": [True, True, False]},  # 4th unit: NO contacts (Bains plateau)
+    "LacNAc":     {"linkages": ["beta1-4"], "n_branch": 0,
+                    "terminal_contacts": [True]},   # GlcNAc contacts Gal3 groove
 }
 
 # Bound-state flexibility: not all torsions fully freeze.
@@ -80,7 +93,13 @@ _BOUND_FLEX = {
 
 def _compute_g2_entropy(ligand: str) -> float:
     """Compute conformational entropy penalty for oligosaccharide binding.
+    
     Returns positive kJ/mol (unfavorable). Zero for monosaccharides.
+    
+    Physics: a glycosidic torsion only freezes if the sugar unit BEYOND it
+    makes contacts with the receptor. If the terminal unit is solvent-exposed,
+    the linkage stays fully mobile → zero entropy cost for that linkage.
+    
     Includes bound-state flexibility correction from crystal B-factors.
     """
     info = _OLIGO_LINKAGES.get(ligand)
@@ -89,13 +108,17 @@ def _compute_g2_entropy(ligand: str) -> float:
     linkages = info["linkages"]
     n_branch = info["n_branch"]
     flex_overrides = info.get("flex_override", None)
+    tc = info.get("terminal_contacts", None)
     tds = 0.0
     for i, lt in enumerate(linkages):
+        # Skip linkages where terminal unit doesn't contact protein
+        if tc and i < len(tc) and not tc[i]:
+            continue
         raw_tds = G2_TDS_PER_LINKAGE.get(lt, 5.0)
         if flex_overrides and i < len(flex_overrides):
-            flex = flex_overrides[i]  # structure-specific override
+            flex = flex_overrides[i]
         else:
-            flex = _BOUND_FLEX.get(i + 1, 0.50)  # position-based default
+            flex = _BOUND_FLEX.get(i + 1, 0.50)
         tds += raw_tds * (1 - flex)
     tds += n_branch * G2_BRANCH_PENALTY * (1 - 0.30)
     return round(tds, 2)
@@ -118,6 +141,7 @@ class GlycanPrediction:
     dG_CHP: float
     dG_linker: float
     dG_conf: float = 0.0      # G2: conformational entropy penalty
+    dG_water: float = 0.0     # G5: structural water bridges
     notes: list = field(default_factory=list)
 
     @property
@@ -212,7 +236,9 @@ class GlycanScorer:
         dG_linker = n_linker * EPS_LINKER_NET
 
         dG_conf = _compute_g2_entropy(ligand)
-        dG_pred = dg0 + dG_HB + dG_desolv + dG_CHP + dG_linker + dG_conf
+        n_water = entry.get("n_water", 0)
+        dG_water = n_water * EPS_WATER_BRIDGE
+        dG_pred = dg0 + dG_HB + dG_desolv + dG_CHP + dG_linker + dG_conf + dG_water
 
         obs_dG = entry.get("obs_dG")
         residual = round(dG_pred - obs_dG, 3) if obs_dG is not None else None
@@ -230,6 +256,7 @@ class GlycanScorer:
             dG_CHP=round(dG_CHP, 3),
             dG_linker=round(dG_linker, 3),
             dG_conf=round(dG_conf, 3),
+            dG_water=round(dG_water, 3),
             notes=[entry.get("note", "")],
         )
 

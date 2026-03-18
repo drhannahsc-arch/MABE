@@ -62,3 +62,9 @@ DG0 = {
     "Gal3":  None,  # computed from Gal anchor at runtime
     "Davis": DG0_DAVIS,
 }
+
+# G5: Structural water bridges (conserved ordered waters at sugar-protein interface)
+# Source: osmotic stress experiments (Chervenak & Toone 1994, Robinson & Stokes)
+# Cross-check: solvent isotope effect data (Lemieux)
+# Back-solved from galectin mutant series (mabe/glycan/structural_water.py)
+EPS_WATER_BRIDGE = -3.5  # kJ/mol per conserved water [LOCKED v2.3]
