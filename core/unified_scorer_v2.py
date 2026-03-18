@@ -394,7 +394,7 @@ def _compute_hg_terms(uc, result):
     result.dg_hydrophobic = _hg_dg_hydrophobic(buried, host["curvature_class"])
 
     # 2. Cavity dehydration
-    result.dg_cavity_dehydration = _hg_dg_cavity_dehydration(buried, host_key)
+    result.dg_cavity_dehydration = _hg_dg_cavity_dehydration(buried, host_key, uc.packing_coefficient)
 
     # 3. Size mismatch (original linear penalty — kept for backward compatibility)
     result.dg_size_mismatch = _hg_dg_size_mismatch(guest_np, cavity_sasa)

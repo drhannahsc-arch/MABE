@@ -44,7 +44,10 @@ HG_PARAMS = {
 
     # Size match
     "k_size_penalty":   0.0,      # zeroed by SupraBank fit (was 0.031)    # kJ/(mol·Å²), oversize penalty
-    "k_undersize":      0.0,      # undersize (not significant at this phase)
+    "k_undersize":      0.0,
+
+    # PC-dependent dehydration (SupraBank piecewise fit)
+    "dehydr_CB_lowPC_scale": 2.015,  # CB dehydr multiplied by this when PC < 0.4      # undersize (not significant at this phase)
 }
 
 # RT at 298.15 K in kJ/mol
@@ -136,18 +139,27 @@ def dg_hydrophobic(buried_sasa: float, curvature_class: str) -> float:
     return -gamma * buried_sasa
 
 
-def dg_cavity_dehydration(buried_sasa: float, host_key: str) -> float:
+def dg_cavity_dehydration(buried_sasa: float, host_key: str,
+                         packing_coefficient: float = 0.0) -> float:
     """Extra energy from releasing frustrated/high-energy water from cavity.
 
     CB[n] cavities contain water molecules that cannot form a full H-bond
     network (Biedermann & Nau). Releasing them provides additional driving
     force beyond classical hydrophobic transfer.
 
+    PC-dependent scaling (SupraBank 1552-entry fit):
+    At low PC (< 0.4), the few buried Å² are disproportionately in the
+    high-energy water region → 2× dehydration coefficient for CB hosts.
+    At high PC (≥ 0.4), standard coefficient applies.
+
     Returns negative (favorable) kJ/mol.
     """
     base = HG_PARAMS["dg_dehydr_per_A2"]
     if host_key.startswith("CB"):
         mult = HG_PARAMS["dehydr_CB"]
+        # PC-dependent scaling: low-filling guests access highest-energy water first
+        if 0.0 < packing_coefficient < 0.4:
+            mult *= HG_PARAMS.get("dehydr_CB_lowPC_scale", 2.015)
     elif host_key.endswith("-CD"):
         mult = HG_PARAMS["dehydr_CD"]
     else:
