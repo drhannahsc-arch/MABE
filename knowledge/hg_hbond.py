@@ -17,8 +17,8 @@ Zero for metal coordination (metal-donor bonds handled by scorer_frozen.py).
 # ═══════════════════════════════════════════════════════════════════════════
 HBOND_PARAMS = {
     # Per-H-bond energies (kJ/mol, negative = favorable)
-    "eps_neutral":          -3.0,     # neutral donor → neutral acceptor
-    "eps_charge_assisted": -10.0,     # R-NH3+ → C=O (portal), charge-assisted
+    "eps_neutral":          -2.831,  # SupraBank re-fit (was -3.0)     # neutral donor → neutral acceptor
+    "eps_charge_assisted":  -5.693,  # SupraBank re-fit (was -10.0)     # R-NH3+ → C=O (portal), charge-assisted
     "eps_oh_pi":            -1.5,     # O-H → π-system (weak, CD guest aromatic)
 
     # Water competition penalty (kJ/mol, positive = unfavorable)

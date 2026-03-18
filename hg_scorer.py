@@ -27,14 +27,14 @@ from hg_conf_shape import compute_dg_conf_shape, CONF_SHAPE_PARAMS
 # ═══════════════════════════════════════════════════════════════════════════
 HG_PARAMS = {
     # Phase 6 core: hydrophobic transfer
-    "gamma_flat":       0.0251,   # kJ/(mol·Å²), Eisenberg-McLachlan consensus
+    "gamma_flat":       0.01242,  # SupraBank re-fit (was 0.0251)   # kJ/(mol·Å²), Eisenberg-McLachlan consensus
     "k_curvature":      1.149,    # concave cavity amplification
 
     # Cavity dehydration: high-energy water release (Biedermann & Nau 2014)
-    "dg_dehydr_per_A2": -0.0703,  # kJ/(mol·Å²) base dehydration
-    "dehydr_CB":         3.667,   # CB[n] multiplier (frustrated water)
-    "dehydr_CD":         0.644,   # cyclodextrin multiplier
-    "dehydr_other":      1.736,   # calixarene/pillararene multiplier
+    "dg_dehydr_per_A2": -0.03619, # SupraBank re-fit (was -0.0703)  # kJ/(mol·Å²) base dehydration
+    "dehydr_CB":         3.100,   # SupraBank re-fit (was 3.667)   # CB[n] multiplier (frustrated water)
+    "dehydr_CD":         1.220,   # SupraBank re-fit (was 0.644)   # cyclodextrin multiplier
+    "dehydr_other":      2.160,   # SupraBank re-fit (was 1.736)   # calixarene/pillararene multiplier
 
     # Portal corrections RETIRED — replaced by Phase 7 hg_hbond.py
     # Kept at 0.0 for backward compat; all portal physics now in HBOND_PARAMS
@@ -43,7 +43,7 @@ HG_PARAMS = {
     "k_electrostatic":  0.0,
 
     # Size match
-    "k_size_penalty":   0.031,    # kJ/(mol·Å²), oversize penalty
+    "k_size_penalty":   0.0,      # zeroed by SupraBank fit (was 0.031)    # kJ/(mol·Å²), oversize penalty
     "k_undersize":      0.0,      # undersize (not significant at this phase)
 }
 

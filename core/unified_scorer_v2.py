@@ -479,6 +479,7 @@ _CB_PORTAL_DIAMETERS = {
 _PORTAL_K = 2.0        # kJ/mol per Å² excess^1.5
 _PORTAL_POWER = 1.5    # super-linear: large excess → steep penalty
 _PORTAL_FLEX = 1.0     # Å: max portal expansion for perfectly spherical guest
+_PORTAL_CAP = 4.08      # kJ/mol: sigmoid cap on portal penalty (SupraBank fit)
 
 # Cache for guest 3D dimensions {canonical_smiles: (min_d, mid_d, max_d)}
 _GUEST_DIM_CACHE = {}
@@ -579,7 +580,8 @@ def _cb_portal_penalty(guest_smiles, host_key, host_data):
         return 0.0
 
     # Super-linear penalty: small excess → small penalty, large excess → large
-    return _PORTAL_K * excess_area ** _PORTAL_POWER
+    raw = _PORTAL_K * excess_area ** _PORTAL_POWER
+    return min(raw, _PORTAL_CAP)
 
 
 # ═══════════════════════════════════════════════════════════════════════════

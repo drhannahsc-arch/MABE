@@ -1,0 +1,3205 @@
+{
+  "entries": [
+    {
+      "int_id": 970,
+      "guest_name": "4-Hydroxy-7-methoxycoumarin",
+      "guest_mol_id": 227,
+      "host": "beta-CD",
+      "logKa": 1.91,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8229,
+      "guest_name": "(R)-[1,1\u2032-binaphthalene]-2,2\u2032-diols",
+      "guest_mol_id": 410,
+      "host": "beta-CD",
+      "logKa": 2.45,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7423,
+      "guest_name": "3-methylphenylacetate",
+      "guest_mol_id": 1709,
+      "host": "beta-CD",
+      "logKa": 1.08,
+      "conditions": "water"
+    },
+    {
+      "int_id": 758,
+      "guest_name": "(S)-(-)-Propranolol hydrochloride",
+      "guest_mol_id": 185,
+      "host": "beta-CD",
+      "logKa": 2.07,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7379,
+      "guest_name": "2-((1R,2R,4S)-bicyclo[2.2.1]heptan-2-yl)acetate",
+      "guest_mol_id": 1678,
+      "host": "beta-CD",
+      "logKa": 3.27,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5667,
+      "guest_name": "1-Adamantanamine",
+      "guest_mol_id": 196,
+      "host": "gamma-CD",
+      "logKa": 1.0,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7974,
+      "guest_name": "(-)-camphor",
+      "guest_mol_id": 1954,
+      "host": "alpha-CD",
+      "logKa": 6.16,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8567,
+      "guest_name": "1-Adamantanol",
+      "guest_mol_id": 936,
+      "host": "beta-CD",
+      "logKa": 4.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7436,
+      "guest_name": "Cyclooctanol",
+      "guest_mol_id": 1682,
+      "host": "beta-CD",
+      "logKa": 3.64,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8362,
+      "guest_name": "Berberine chloride",
+      "guest_mol_id": 18,
+      "host": "beta-CD",
+      "logKa": 2.18,
+      "conditions": "water"
+    },
+    {
+      "int_id": 835,
+      "guest_name": "1-Methyl-3-phenylpropylamine",
+      "guest_mol_id": 203,
+      "host": "beta-CD",
+      "logKa": 2.27,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8234,
+      "guest_name": "1-Adamantanamine",
+      "guest_mol_id": 196,
+      "host": "beta-CD",
+      "logKa": 4.48,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6220,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "gamma-CD",
+      "logKa": 3.7,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7139,
+      "guest_name": "1-adamantane carboxylate",
+      "guest_mol_id": 1601,
+      "host": "beta-CD",
+      "logKa": 4.3,
+      "conditions": "water"
+    },
+    {
+      "int_id": 9144,
+      "guest_name": "N-retinylidine-N-ethanolamine",
+      "guest_mol_id": 2100,
+      "host": "beta-CD",
+      "logKa": 2.4,
+      "conditions": "water"
+    },
+    {
+      "int_id": 986,
+      "guest_name": "(S)-N,N-Dimethyl-1-ferrocenylethylamine",
+      "guest_mol_id": 232,
+      "host": "beta-CD",
+      "logKa": 3.83,
+      "conditions": "water"
+    },
+    {
+      "int_id": 984,
+      "guest_name": "(R)-N,N-Dimethyl-1-ferrocenylethylamine",
+      "guest_mol_id": 223,
+      "host": "beta-CD",
+      "logKa": 3.75,
+      "conditions": "water"
+    },
+    {
+      "int_id": 829,
+      "guest_name": "Cyclohexanol",
+      "guest_mol_id": 201,
+      "host": "beta-CD",
+      "logKa": 2.85,
+      "conditions": "water"
+    },
+    {
+      "int_id": 826,
+      "guest_name": "N-Carboxybenzyl-L-Serine",
+      "guest_mol_id": 200,
+      "host": "beta-CD",
+      "logKa": 2.04,
+      "conditions": "water"
+    },
+    {
+      "int_id": 822,
+      "guest_name": "N-Carboxybenzyl-Glycine",
+      "guest_mol_id": 199,
+      "host": "beta-CD",
+      "logKa": 2.2,
+      "conditions": "water"
+    },
+    {
+      "int_id": 819,
+      "guest_name": "3-Bromo-1-propanol",
+      "guest_mol_id": 198,
+      "host": "beta-CD",
+      "logKa": 1.35,
+      "conditions": "water"
+    },
+    {
+      "int_id": 754,
+      "guest_name": "(R)-(+)-Propranolol hydrochloride",
+      "guest_mol_id": 183,
+      "host": "beta-CD",
+      "logKa": 2.06,
+      "conditions": "water"
+    },
+    {
+      "int_id": 748,
+      "guest_name": "(1S,2S,3R,5S)-(+)-Pinanediol",
+      "guest_mol_id": 181,
+      "host": "beta-CD",
+      "logKa": 3.8,
+      "conditions": "water"
+    },
+    {
+      "int_id": 738,
+      "guest_name": "(S)-(+)-2-Phenylpropionic acid",
+      "guest_mol_id": 178,
+      "host": "beta-CD",
+      "logKa": 1.56,
+      "conditions": "water"
+    },
+    {
+      "int_id": 729,
+      "guest_name": "(S)-(-)-3-Phenyllactic acid",
+      "guest_mol_id": 176,
+      "host": "beta-CD",
+      "logKa": 1.92,
+      "conditions": "water"
+    },
+    {
+      "int_id": 722,
+      "guest_name": "D-(+)-3-Phenyllactic acid",
+      "guest_mol_id": 175,
+      "host": "beta-CD",
+      "logKa": 1.94,
+      "conditions": "water"
+    },
+    {
+      "int_id": 711,
+      "guest_name": "(R)-(-)-1-Phenyl-1,2-ethanediol",
+      "guest_mol_id": 173,
+      "host": "beta-CD",
+      "logKa": 1.79,
+      "conditions": "water"
+    },
+    {
+      "int_id": 705,
+      "guest_name": "Safranine T",
+      "guest_mol_id": 172,
+      "host": "beta-CD",
+      "logKa": 2.2,
+      "conditions": "water"
+    },
+    {
+      "int_id": 684,
+      "guest_name": "(r)-3-phenylbutyric acid",
+      "guest_mol_id": 163,
+      "host": "beta-CD",
+      "logKa": 2.6,
+      "conditions": "water"
+    },
+    {
+      "int_id": 680,
+      "guest_name": "9-Hydroxyphenylfluoron",
+      "guest_mol_id": 167,
+      "host": "beta-CD",
+      "logKa": 3.03,
+      "conditions": "water"
+    },
+    {
+      "int_id": 668,
+      "guest_name": "(S)-2-Phenylbutanoic acid",
+      "guest_mol_id": 159,
+      "host": "beta-CD",
+      "logKa": 1.98,
+      "conditions": "water"
+    },
+    {
+      "int_id": 637,
+      "guest_name": "L-phenylalanine amide",
+      "guest_mol_id": 149,
+      "host": "beta-CD",
+      "logKa": 2.04,
+      "conditions": "water"
+    },
+    {
+      "int_id": 582,
+      "guest_name": "(S)-(+)-alpha-Methoxyphenylacetic acid",
+      "guest_mol_id": 137,
+      "host": "beta-CD",
+      "logKa": 1.0,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2986,
+      "guest_name": "Serotonin",
+      "guest_mol_id": 51,
+      "host": "beta-CD",
+      "logKa": 1.73,
+      "conditions": "water"
+    },
+    {
+      "int_id": 579,
+      "guest_name": "(R)-(-)-alpha-Methoxyphenylacetic acid",
+      "guest_mol_id": 136,
+      "host": "beta-CD",
+      "logKa": 1.03,
+      "conditions": "water"
+    },
+    {
+      "int_id": 544,
+      "guest_name": "(1S,2D,5S)-(-)-2-Hydroxy-3-pinanone",
+      "guest_mol_id": 127,
+      "host": "beta-CD",
+      "logKa": 3.36,
+      "conditions": "water"
+    },
+    {
+      "int_id": 436,
+      "guest_name": "(R)-(-)-3-Bromo-2-methyl-1-propanol",
+      "guest_mol_id": 100,
+      "host": "beta-CD",
+      "logKa": 2.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 390,
+      "guest_name": "(S)-(+)-Benzyl glycidyl ether",
+      "guest_mol_id": 85,
+      "host": "beta-CD",
+      "logKa": 2.36,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2496,
+      "guest_name": "Sodium taurocholate",
+      "guest_mol_id": 545,
+      "host": "beta-CD",
+      "logKa": 3.12,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2486,
+      "guest_name": "Cholic acid, monosodium salt",
+      "guest_mol_id": 542,
+      "host": "beta-CD",
+      "logKa": 3.68,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2483,
+      "guest_name": "Sodium deoxycholate",
+      "guest_mol_id": 544,
+      "host": "beta-CD",
+      "logKa": 3.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2466,
+      "guest_name": "Sodium glycocholate",
+      "guest_mol_id": 543,
+      "host": "beta-CD",
+      "logKa": 3.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2461,
+      "guest_name": "Sodium deoxycholate",
+      "guest_mol_id": 544,
+      "host": "beta-CD",
+      "logKa": 3.69,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7141,
+      "guest_name": "1-adamantane carboxylate",
+      "guest_mol_id": 1601,
+      "host": "beta-CD",
+      "logKa": 4.51,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1169,
+      "guest_name": "Butyl Rhodamine B",
+      "guest_mol_id": 267,
+      "host": "beta-CD",
+      "logKa": 2.55,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1100,
+      "guest_name": "Acridine red",
+      "guest_mol_id": 143,
+      "host": "beta-CD",
+      "logKa": 3.16,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1091,
+      "guest_name": "6-(p-toluidino)-2-naphthalenesulfonic acid sodium salt",
+      "guest_mol_id": 247,
+      "host": "beta-CD",
+      "logKa": 3.48,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1088,
+      "guest_name": "6-(p-toluidino)-2-naphthalenesulfonic acid sodium salt",
+      "guest_mol_id": 247,
+      "host": "beta-CD",
+      "logKa": 3.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1079,
+      "guest_name": "Acridine red",
+      "guest_mol_id": 143,
+      "host": "beta-CD",
+      "logKa": 3.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1076,
+      "guest_name": "Acridine red",
+      "guest_mol_id": 143,
+      "host": "beta-CD",
+      "logKa": 3.25,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5668,
+      "guest_name": "4,9-diaminodiamantane",
+      "guest_mol_id": 1060,
+      "host": "gamma-CD",
+      "logKa": 1.0,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5936,
+      "guest_name": "Oxazine 1",
+      "guest_mol_id": 1154,
+      "host": "beta-CD",
+      "logKa": 3.05,
+      "conditions": "water"
+    },
+    {
+      "int_id": 511,
+      "guest_name": "(2R)-2-[(2-aminoacetyl)amino]-3-phenylpropanoic acid",
+      "guest_mol_id": 122,
+      "host": "beta-CD",
+      "logKa": 1.67,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1056,
+      "guest_name": "Meldola\u2019s blue",
+      "guest_mol_id": 239,
+      "host": "beta-CD",
+      "logKa": 3.01,
+      "conditions": "water"
+    },
+    {
+      "int_id": 967,
+      "guest_name": "3-(2,3-dihydrobenzo[b][1,4]dioxin-6-yl)-6-ethyl-4-hydroxy-7-methoxy-2H-chromen-2-one",
+      "guest_mol_id": 226,
+      "host": "beta-CD",
+      "logKa": 2.53,
+      "conditions": "water"
+    },
+    {
+      "int_id": 761,
+      "guest_name": "New Methylene blue",
+      "guest_mol_id": 186,
+      "host": "beta-CD",
+      "logKa": 3.2,
+      "conditions": "water"
+    },
+    {
+      "int_id": 745,
+      "guest_name": "Toluidine Blue O",
+      "guest_mol_id": 182,
+      "host": "beta-CD",
+      "logKa": 2.65,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1807,
+      "guest_name": "(R)-[1,1\u2032-binaphthalene]-2,2\u2032-diols",
+      "guest_mol_id": 410,
+      "host": "alpha-CD",
+      "logKa": 1.93,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7972,
+      "guest_name": "(+)-camphor",
+      "guest_mol_id": 1202,
+      "host": "alpha-CD",
+      "logKa": 5.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3362,
+      "guest_name": "Procaine hydrochloride",
+      "guest_mol_id": 487,
+      "host": "beta-CD",
+      "logKa": 2.37,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3377,
+      "guest_name": "Procaine hydrochloride",
+      "guest_mol_id": 487,
+      "host": "beta-CD",
+      "logKa": 2.52,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8341,
+      "guest_name": "4-propan-2-ylphenol",
+      "guest_mol_id": 2152,
+      "host": "beta-CD",
+      "logKa": 3.23,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8321,
+      "guest_name": "4-(diethylamino)benzonitrile",
+      "guest_mol_id": 2099,
+      "host": "beta-CD",
+      "logKa": 3.43,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8090,
+      "guest_name": "4-hydroxyazobenzene",
+      "guest_mol_id": 2080,
+      "host": "beta-CD",
+      "logKa": 2.53,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5671,
+      "guest_name": "4-aminodiamantane",
+      "guest_mol_id": 1059,
+      "host": "gamma-CD",
+      "logKa": 3.26,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3302,
+      "guest_name": "Chlorpromazine hydrochloride",
+      "guest_mol_id": 483,
+      "host": "alpha-CD",
+      "logKa": 2.14,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3371,
+      "guest_name": "Tetracaine hydrochloride",
+      "guest_mol_id": 485,
+      "host": "beta-CD",
+      "logKa": 3.04,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7134,
+      "guest_name": "1-acetamidonaphthalene",
+      "guest_mol_id": 1597,
+      "host": "beta-CD",
+      "logKa": 2.12,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8322,
+      "guest_name": "4-(diethylamino)benzonitrile",
+      "guest_mol_id": 2099,
+      "host": "alpha-CD",
+      "logKa": 2.49,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3337,
+      "guest_name": "Tetracaine hydrochloride",
+      "guest_mol_id": 485,
+      "host": "beta-CD",
+      "logKa": 2.95,
+      "conditions": "water"
+    },
+    {
+      "int_id": 847,
+      "guest_name": "3-Ethoxypropylamine",
+      "guest_mol_id": 207,
+      "host": "alpha-CD",
+      "logKa": 0.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 844,
+      "guest_name": "3-Phenylpropanoic acid",
+      "guest_mol_id": 206,
+      "host": "beta-CD",
+      "logKa": 2.21,
+      "conditions": "water"
+    },
+    {
+      "int_id": 841,
+      "guest_name": "3-Phenylbutanoic acid",
+      "guest_mol_id": 205,
+      "host": "beta-CD",
+      "logKa": 2.62,
+      "conditions": "water"
+    },
+    {
+      "int_id": 838,
+      "guest_name": "4-Phenylbutylamine",
+      "guest_mol_id": 204,
+      "host": "beta-CD",
+      "logKa": 2.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 832,
+      "guest_name": "Cyclohexaneacetic acid",
+      "guest_mol_id": 202,
+      "host": "beta-CD",
+      "logKa": 3.1,
+      "conditions": "water"
+    },
+    {
+      "int_id": 814,
+      "guest_name": "2-(benzyloxy)acetaldehyde",
+      "guest_mol_id": 197,
+      "host": "beta-CD",
+      "logKa": 2.34,
+      "conditions": "water"
+    },
+    {
+      "int_id": 716,
+      "guest_name": "(S)-(+)-1-Phenyl-1,2-ethanediol",
+      "guest_mol_id": 174,
+      "host": "beta-CD",
+      "logKa": 1.8,
+      "conditions": "water"
+    },
+    {
+      "int_id": 664,
+      "guest_name": "(R)-(-)-2-Phenylbutyric acid",
+      "guest_mol_id": 158,
+      "host": "beta-CD",
+      "logKa": 1.97,
+      "conditions": "water"
+    },
+    {
+      "int_id": 656,
+      "guest_name": "L-Phenylalanine methyl ester hydrochloride",
+      "guest_mol_id": 157,
+      "host": "beta-CD",
+      "logKa": 1.08,
+      "conditions": "water"
+    },
+    {
+      "int_id": 651,
+      "guest_name": "D-Phenylalanine methyl ester HCl",
+      "guest_mol_id": 155,
+      "host": "beta-CD",
+      "logKa": 1.04,
+      "conditions": "water"
+    },
+    {
+      "int_id": 634,
+      "guest_name": "D-phenylalanine amide",
+      "guest_mol_id": 1004,
+      "host": "beta-CD",
+      "logKa": 2.0,
+      "conditions": "water"
+    },
+    {
+      "int_id": 601,
+      "guest_name": "(S)-(-)-alpha-Methoxy-alpha-(trifluoromethyl)phenylacetic acid",
+      "guest_mol_id": 139,
+      "host": "beta-CD",
+      "logKa": 2.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 585,
+      "guest_name": "(R)-3,3,3-trifluoro-2-methoxy-2-phenylpropanoic acid",
+      "guest_mol_id": 138,
+      "host": "beta-CD",
+      "logKa": 2.24,
+      "conditions": "water"
+    },
+    {
+      "int_id": 491,
+      "guest_name": "(R)-(-)-1-Cyclohexylethylamine",
+      "guest_mol_id": 116,
+      "host": "beta-CD",
+      "logKa": 2.52,
+      "conditions": "water"
+    },
+    {
+      "int_id": 414,
+      "guest_name": "N-Boc-l-Alanine",
+      "guest_mol_id": 93,
+      "host": "beta-CD",
+      "logKa": 2.56,
+      "conditions": "water"
+    },
+    {
+      "int_id": 387,
+      "guest_name": "(R)-(-)-Benzyl glycidyl ether",
+      "guest_mol_id": 84,
+      "host": "beta-CD",
+      "logKa": 2.37,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2508,
+      "guest_name": "Sodium taurocholate",
+      "guest_mol_id": 545,
+      "host": "beta-CD",
+      "logKa": 3.45,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2505,
+      "guest_name": "Sodium glycocholate",
+      "guest_mol_id": 543,
+      "host": "beta-CD",
+      "logKa": 3.59,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2502,
+      "guest_name": "Cholic acid, monosodium salt",
+      "guest_mol_id": 542,
+      "host": "beta-CD",
+      "logKa": 4.23,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2499,
+      "guest_name": "Sodium deoxycholate",
+      "guest_mol_id": 544,
+      "host": "beta-CD",
+      "logKa": 3.97,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2491,
+      "guest_name": "Sodium glycocholate",
+      "guest_mol_id": 543,
+      "host": "beta-CD",
+      "logKa": 3.35,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2480,
+      "guest_name": "Sodium taurocholate",
+      "guest_mol_id": 545,
+      "host": "beta-CD",
+      "logKa": 3.36,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2477,
+      "guest_name": "Sodium glycocholate",
+      "guest_mol_id": 543,
+      "host": "beta-CD",
+      "logKa": 3.32,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2475,
+      "guest_name": "Cholic acid, monosodium salt",
+      "guest_mol_id": 542,
+      "host": "beta-CD",
+      "logKa": 4.05,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2472,
+      "guest_name": "Sodium deoxycholate",
+      "guest_mol_id": 544,
+      "host": "beta-CD",
+      "logKa": 3.89,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2469,
+      "guest_name": "Sodium taurocholate",
+      "guest_mol_id": 545,
+      "host": "beta-CD",
+      "logKa": 3.36,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2463,
+      "guest_name": "Cholic acid, monosodium salt",
+      "guest_mol_id": 542,
+      "host": "beta-CD",
+      "logKa": 3.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 629,
+      "guest_name": "Pyronine b",
+      "guest_mol_id": 150,
+      "host": "beta-CD",
+      "logKa": 3.32,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7431,
+      "guest_name": "Cyclobutanol",
+      "guest_mol_id": 1680,
+      "host": "beta-CD",
+      "logKa": 1.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 457,
+      "guest_name": "(1S,3R)-(-)-Camphoric acid",
+      "guest_mol_id": 107,
+      "host": "beta-CD",
+      "logKa": 1.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8394,
+      "guest_name": "Chlorpromazine hydrochloride",
+      "guest_mol_id": 483,
+      "host": "alpha-CD",
+      "logKa": 2.08,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8360,
+      "guest_name": "Berberine chloride",
+      "guest_mol_id": 18,
+      "host": "beta-CD",
+      "logKa": 2.53,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7420,
+      "guest_name": "phenylacetate",
+      "guest_mol_id": 1716,
+      "host": "beta-CD",
+      "logKa": 1.24,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8342,
+      "guest_name": "4-propan-2-ylphenol",
+      "guest_mol_id": 2152,
+      "host": "beta-CD",
+      "logKa": 3.11,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3368,
+      "guest_name": "Cinchocaine hydrochloride",
+      "guest_mol_id": 484,
+      "host": "gamma-CD",
+      "logKa": 1.73,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6479,
+      "guest_name": "2-amino-9-hydroxyfluorene",
+      "guest_mol_id": 1355,
+      "host": "beta-CD",
+      "logKa": 3.73,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6222,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "gamma-CD",
+      "logKa": 2.36,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8126,
+      "guest_name": "triclosan",
+      "guest_mol_id": 2103,
+      "host": "beta-CD",
+      "logKa": 6.98,
+      "conditions": "water"
+    },
+    {
+      "int_id": 396,
+      "guest_name": "((4S,5S)-2-phenyl-1,3-dioxolane-4,5-diyl)dimethanol",
+      "guest_mol_id": 87,
+      "host": "beta-CD",
+      "logKa": 2.06,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8343,
+      "guest_name": "4-(4-hydroxyphenyl)phenol",
+      "guest_mol_id": 2151,
+      "host": "beta-CD",
+      "logKa": 3.46,
+      "conditions": "water"
+    },
+    {
+      "int_id": 560,
+      "guest_name": "R(-)-Mandelic acid methyl ester",
+      "guest_mol_id": 134,
+      "host": "beta-CD",
+      "logKa": 1.78,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5658,
+      "guest_name": "1-Adamantanamine",
+      "guest_mol_id": 196,
+      "host": "beta-CD",
+      "logKa": 3.84,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7412,
+      "guest_name": "N-Methylhexylammonium",
+      "guest_mol_id": 1701,
+      "host": "alpha-CD",
+      "logKa": 2.58,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8216,
+      "guest_name": "Butyl Rhodamine B",
+      "guest_mol_id": 267,
+      "host": "beta-CD",
+      "logKa": 3.56,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7372,
+      "guest_name": "(Trimethylamino)methyl)ferrocene",
+      "guest_mol_id": 462,
+      "host": "beta-CD",
+      "logKa": 3.46,
+      "conditions": "water"
+    },
+    {
+      "int_id": 508,
+      "guest_name": "O,O\u2032-Di-p-toluoyl-L-tartaric acid",
+      "guest_mol_id": 121,
+      "host": "beta-CD",
+      "logKa": 1.98,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8210,
+      "guest_name": "9-Hydroxyphenylfluoron",
+      "guest_mol_id": 167,
+      "host": "beta-CD",
+      "logKa": 3.24,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8215,
+      "guest_name": "Butyl Rhodamine B",
+      "guest_mol_id": 267,
+      "host": "beta-CD",
+      "logKa": 3.66,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8224,
+      "guest_name": "8-(phenylamino)naphthalene-1-sulfonic acid",
+      "guest_mol_id": 248,
+      "host": "beta-CD",
+      "logKa": 1.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1900,
+      "guest_name": "Phenoxathiine-3-carboxylic acid",
+      "guest_mol_id": 434,
+      "host": "beta-CD",
+      "logKa": 3.87,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7434,
+      "guest_name": "Cis-2-methylcyclohexanol",
+      "guest_mol_id": 1714,
+      "host": "beta-CD",
+      "logKa": 2.99,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7437,
+      "guest_name": "Cycloheptanol",
+      "guest_mol_id": 1681,
+      "host": "beta-CD",
+      "logKa": 3.34,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7438,
+      "guest_name": "3-methylcyclohexanol",
+      "guest_mol_id": 1717,
+      "host": "beta-CD",
+      "logKa": 2.92,
+      "conditions": "water"
+    },
+    {
+      "int_id": 494,
+      "guest_name": "(S)-(+)-1-Cyclohexylethylamine",
+      "guest_mol_id": 117,
+      "host": "beta-CD",
+      "logKa": 2.52,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5657,
+      "guest_name": "1-diadamantylcarboxylic acid",
+      "guest_mol_id": 1058,
+      "host": "gamma-CD",
+      "logKa": 4.1,
+      "conditions": "water"
+    },
+    {
+      "int_id": 514,
+      "guest_name": "glycyl-L-phenylalanine",
+      "guest_mol_id": 123,
+      "host": "beta-CD",
+      "logKa": 1.73,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6216,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "beta-CD",
+      "logKa": 5.46,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1061,
+      "guest_name": "Brilliant cresyl blue",
+      "guest_mol_id": 179,
+      "host": "beta-CD",
+      "logKa": 2.8,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1921,
+      "guest_name": "4-(dimethylamino)benzonitrile",
+      "guest_mol_id": 440,
+      "host": "beta-CD",
+      "logKa": 2.75,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1796,
+      "guest_name": "6-Phenylamino-naphthalene-2-sulfonic acid anion",
+      "guest_mol_id": 408,
+      "host": "beta-CD",
+      "logKa": 3.13,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7419,
+      "guest_name": "Benzoate",
+      "guest_mol_id": 1704,
+      "host": "beta-CD",
+      "logKa": 1.2,
+      "conditions": "water"
+    },
+    {
+      "int_id": 503,
+      "guest_name": "O,O\u2032-Di-p-toluoyl-D-tartaric acid",
+      "guest_mol_id": 120,
+      "host": "beta-CD",
+      "logKa": 2.02,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7140,
+      "guest_name": "1-adamantane carboxylate",
+      "guest_mol_id": 1601,
+      "host": "beta-CD",
+      "logKa": 4.56,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8365,
+      "guest_name": "Berberine chloride",
+      "guest_mol_id": 18,
+      "host": "beta-CD",
+      "logKa": 1.81,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6221,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "gamma-CD",
+      "logKa": 2.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 433,
+      "guest_name": "D-3-Bromocamphor-8-sulfonic acid ammonium salt",
+      "guest_mol_id": 99,
+      "host": "beta-CD",
+      "logKa": 3.56,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3325,
+      "guest_name": "Cinchocaine hydrochloride",
+      "guest_mol_id": 484,
+      "host": "beta-CD",
+      "logKa": 2.82,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8398,
+      "guest_name": "Auramine O",
+      "guest_mol_id": 188,
+      "host": "beta-CD",
+      "logKa": 1.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3328,
+      "guest_name": "Cinchocaine hydrochloride",
+      "guest_mol_id": 484,
+      "host": "beta-CD",
+      "logKa": 2.66,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2342,
+      "guest_name": "2,3-Diazabicyclo[2.2.1]-hept-2-ene",
+      "guest_mol_id": 519,
+      "host": "beta-CD",
+      "logKa": 2.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7435,
+      "guest_name": "Trans-2-methylcyclohexanol",
+      "guest_mol_id": 1715,
+      "host": "beta-CD",
+      "logKa": 2.87,
+      "conditions": "water"
+    },
+    {
+      "int_id": 408,
+      "guest_name": "O-Benzyl-L-Serine",
+      "guest_mol_id": 91,
+      "host": "beta-CD",
+      "logKa": 1.84,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8340,
+      "guest_name": "4-[1,1,1,3,3,3-hexafluoro-2-(4-hydroxyphenyl)propan-2-yl]phenol",
+      "guest_mol_id": 2150,
+      "host": "beta-CD",
+      "logKa": 3.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7432,
+      "guest_name": "Cyclopentanol",
+      "guest_mol_id": 1679,
+      "host": "beta-CD",
+      "logKa": 2.24,
+      "conditions": "water"
+    },
+    {
+      "int_id": 481,
+      "guest_name": "(2S)-2-(phenylmethoxycarbonylamino)propanoic acid",
+      "guest_mol_id": 113,
+      "host": "beta-CD",
+      "logKa": 2.17,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8572,
+      "guest_name": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+      "guest_mol_id": 2205,
+      "host": "beta-CD",
+      "logKa": 4.6,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7401,
+      "guest_name": "Heptanoate",
+      "guest_mol_id": 1690,
+      "host": "alpha-CD",
+      "logKa": 2.93,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8580,
+      "guest_name": "1-Adamantanol",
+      "guest_mol_id": 936,
+      "host": "beta-CD",
+      "logKa": 4.4,
+      "conditions": "water"
+    },
+    {
+      "int_id": 690,
+      "guest_name": "(s)-3-phenylbutyric acid",
+      "guest_mol_id": 168,
+      "host": "beta-CD",
+      "logKa": 2.63,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7422,
+      "guest_name": "4-Phenylbutanoate",
+      "guest_mol_id": 1707,
+      "host": "beta-CD",
+      "logKa": 2.64,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7400,
+      "guest_name": "6-heptenoate",
+      "guest_mol_id": 1691,
+      "host": "alpha-CD",
+      "logKa": 2.64,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2332,
+      "guest_name": "6,7-diazabicyclo(3.2.2)non-6-ene",
+      "guest_mol_id": 520,
+      "host": "beta-CD",
+      "logKa": 3.43,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3331,
+      "guest_name": "Cinchocaine hydrochloride",
+      "guest_mol_id": 484,
+      "host": "beta-CD",
+      "logKa": 2.68,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5930,
+      "guest_name": "Pyrene",
+      "guest_mol_id": 567,
+      "host": "beta-CD",
+      "logKa": 3.34,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6219,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "gamma-CD",
+      "logKa": 3.52,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8339,
+      "guest_name": "4-[1,1,1,3,3,3-hexafluoro-2-(4-hydroxyphenyl)propan-2-yl]phenol",
+      "guest_mol_id": 2150,
+      "host": "beta-CD",
+      "logKa": 4.48,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8230,
+      "guest_name": "(R)-[1,1\u2032-binaphthalene]-2,2\u2032-diols",
+      "guest_mol_id": 410,
+      "host": "beta-CD",
+      "logKa": 2.42,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5160,
+      "guest_name": "6-(p-toluidino)-2-naphthalenesulfonic acid sodium salt",
+      "guest_mol_id": 247,
+      "host": "beta-CD",
+      "logKa": 3.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 355,
+      "guest_name": "N-Acetyl-D-Tryptophan",
+      "guest_mol_id": 74,
+      "host": "beta-CD",
+      "logKa": 1.1,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1082,
+      "guest_name": "Rhodamine B",
+      "guest_mol_id": 152,
+      "host": "beta-CD",
+      "logKa": 3.71,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8359,
+      "guest_name": "Berberine chloride",
+      "guest_mol_id": 18,
+      "host": "alpha-CD",
+      "logKa": 1.78,
+      "conditions": "water"
+    },
+    {
+      "int_id": 563,
+      "guest_name": "(S)-Mandelic acid methyl ester",
+      "guest_mol_id": 135,
+      "host": "beta-CD",
+      "logKa": 1.86,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5670,
+      "guest_name": "4-aminodiamantane",
+      "guest_mol_id": 1059,
+      "host": "gamma-CD",
+      "logKa": 3.59,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1339,
+      "guest_name": "7-Methoxycoumarin",
+      "guest_mol_id": 193,
+      "host": "gamma-CD",
+      "logKa": 1.62,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8159,
+      "guest_name": "Palmatine",
+      "guest_mol_id": 338,
+      "host": "beta-CD",
+      "logKa": 2.8,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1735,
+      "guest_name": "Berberine chloride",
+      "guest_mol_id": 18,
+      "host": "beta-CD",
+      "logKa": 2.14,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8327,
+      "guest_name": "Neutral red hydrochloride",
+      "guest_mol_id": 171,
+      "host": "beta-CD",
+      "logKa": 2.83,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5648,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "beta-CD",
+      "logKa": 4.45,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7145,
+      "guest_name": "2-Adamantylamine hydrochloride",
+      "guest_mol_id": 1603,
+      "host": "beta-CD",
+      "logKa": 3.87,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8569,
+      "guest_name": "1-Adamantanol",
+      "guest_mol_id": 936,
+      "host": "beta-CD",
+      "logKa": 4.4,
+      "conditions": "water"
+    },
+    {
+      "int_id": 451,
+      "guest_name": "(1S)-(-)-Camphanic acid",
+      "guest_mol_id": 105,
+      "host": "beta-CD",
+      "logKa": 2.32,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5653,
+      "guest_name": "1-diadamantylcarboxylic acid",
+      "guest_mol_id": 1058,
+      "host": "gamma-CD",
+      "logKa": 4.1,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8571,
+      "guest_name": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+      "guest_mol_id": 2205,
+      "host": "beta-CD",
+      "logKa": 5.06,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8344,
+      "guest_name": "4-(4-hydroxyphenyl)phenol",
+      "guest_mol_id": 2151,
+      "host": "beta-CD",
+      "logKa": 3.57,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7975,
+      "guest_name": "(-)-camphor",
+      "guest_mol_id": 1954,
+      "host": "alpha-CD",
+      "logKa": 5.87,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7392,
+      "guest_name": "Cyclooctanol",
+      "guest_mol_id": 1682,
+      "host": "alpha-CD",
+      "logKa": 2.37,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5997,
+      "guest_name": "Sodium cyanoborohydride",
+      "guest_mol_id": 1068,
+      "host": "alpha-CD",
+      "logKa": 2.09,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7971,
+      "guest_name": "(+)-camphor",
+      "guest_mol_id": 1202,
+      "host": "alpha-CD",
+      "logKa": 6.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7970,
+      "guest_name": "(+)-camphor",
+      "guest_mol_id": 1202,
+      "host": "alpha-CD",
+      "logKa": 5.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5143,
+      "guest_name": "Ethanol",
+      "guest_mol_id": 10,
+      "host": "beta-CD",
+      "logKa": 1.93,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8203,
+      "guest_name": "6-(p-toluidino)-2-naphthalenesulfonic acid sodium salt",
+      "guest_mol_id": 247,
+      "host": "beta-CD",
+      "logKa": 3.57,
+      "conditions": "water"
+    },
+    {
+      "int_id": 381,
+      "guest_name": "(1R,2S)-2-Amino-1,2-diphenylethanol",
+      "guest_mol_id": 77,
+      "host": "beta-CD",
+      "logKa": 1.73,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6714,
+      "guest_name": "Rhodamine B",
+      "guest_mol_id": 152,
+      "host": "beta-CD",
+      "logKa": 3.77,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8197,
+      "guest_name": "Chlorpromazine hydrochloride",
+      "guest_mol_id": 483,
+      "host": "gamma-CD",
+      "logKa": 3.6,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8158,
+      "guest_name": "Dehydrocorydaline",
+      "guest_mol_id": 339,
+      "host": "beta-CD",
+      "logKa": 2.77,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5998,
+      "guest_name": "Sodium perrhenate",
+      "guest_mol_id": 1067,
+      "host": "alpha-CD",
+      "logKa": 1.76,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3340,
+      "guest_name": "Tetracaine hydrochloride",
+      "guest_mol_id": 485,
+      "host": "beta-CD",
+      "logKa": 2.88,
+      "conditions": "water"
+    },
+    {
+      "int_id": 735,
+      "guest_name": "(R)-2-Phenylpropanoic acid",
+      "guest_mol_id": 177,
+      "host": "beta-CD",
+      "logKa": 1.53,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1125,
+      "guest_name": "Rhodamine B",
+      "guest_mol_id": 152,
+      "host": "beta-CD",
+      "logKa": 3.52,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7410,
+      "guest_name": "1-methylbutylammonium",
+      "guest_mol_id": 1700,
+      "host": "alpha-CD",
+      "logKa": 1.29,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7399,
+      "guest_name": "trans-3-hexenoate",
+      "guest_mol_id": 1688,
+      "host": "alpha-CD",
+      "logKa": 2.21,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1327,
+      "guest_name": "7-Methoxycoumarin",
+      "guest_mol_id": 193,
+      "host": "beta-CD",
+      "logKa": 2.11,
+      "conditions": "water"
+    },
+    {
+      "int_id": 568,
+      "guest_name": "(S)-Mandelic acid methyl ester",
+      "guest_mol_id": 135,
+      "host": "beta-CD",
+      "logKa": 1.82,
+      "conditions": "water"
+    },
+    {
+      "int_id": 463,
+      "guest_name": "(1R,E)-(+)-Camphorquinone 3-oxime",
+      "guest_mol_id": 108,
+      "host": "beta-CD",
+      "logKa": 3.39,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7415,
+      "guest_name": "octan-2-aminium",
+      "guest_mol_id": 1732,
+      "host": "alpha-CD",
+      "logKa": 3.05,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8338,
+      "guest_name": "Bisphenol A",
+      "guest_mol_id": 187,
+      "host": "beta-CD",
+      "logKa": 4.79,
+      "conditions": "water"
+    },
+    {
+      "int_id": 442,
+      "guest_name": "(R)-(+)-3-Bromoisobutyric acid methyl ester",
+      "guest_mol_id": 102,
+      "host": "beta-CD",
+      "logKa": 2.42,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1779,
+      "guest_name": "8-(phenylamino)naphthalene-1-sulfonic acid",
+      "guest_mol_id": 248,
+      "host": "alpha-CD",
+      "logKa": 1.3,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8576,
+      "guest_name": "1-(hydroxymethyl)-ferrocene",
+      "guest_mol_id": 382,
+      "host": "beta-CD",
+      "logKa": 3.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8239,
+      "guest_name": "1-adamantane carboxylate",
+      "guest_mol_id": 1601,
+      "host": "gamma-CD",
+      "logKa": 2.43,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7144,
+      "guest_name": "1-Adamantylammonium chloride",
+      "guest_mol_id": 1596,
+      "host": "beta-CD",
+      "logKa": 3.95,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5649,
+      "guest_name": "1-diadamantylcarboxylic acid",
+      "guest_mol_id": 1058,
+      "host": "beta-CD",
+      "logKa": 5.33,
+      "conditions": "water"
+    },
+    {
+      "int_id": 424,
+      "guest_name": "N-(tert-Butoxycarbonyl)-D-serine",
+      "guest_mol_id": 96,
+      "host": "beta-CD",
+      "logKa": 2.49,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6838,
+      "guest_name": "1-Adamantanol",
+      "guest_mol_id": 936,
+      "host": "beta-CD",
+      "logKa": 5.01,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7391,
+      "guest_name": "Cycloheptanol",
+      "guest_mol_id": 1681,
+      "host": "alpha-CD",
+      "logKa": 1.83,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8575,
+      "guest_name": "1-(hydroxymethyl)-ferrocene",
+      "guest_mol_id": 382,
+      "host": "beta-CD",
+      "logKa": 4.03,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3313,
+      "guest_name": "Procaine hydrochloride",
+      "guest_mol_id": 487,
+      "host": "alpha-CD",
+      "logKa": 1.59,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5147,
+      "guest_name": "1-Butanol",
+      "guest_mol_id": 992,
+      "host": "beta-CD",
+      "logKa": 2.0,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7978,
+      "guest_name": "(-)-camphor",
+      "guest_mol_id": 1954,
+      "host": "alpha-CD",
+      "logKa": 4.96,
+      "conditions": "water"
+    },
+    {
+      "int_id": 767,
+      "guest_name": "Bisphenol A",
+      "guest_mol_id": 187,
+      "host": "beta-CD",
+      "logKa": 4.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7427,
+      "guest_name": "Pentylamine (protonated form)",
+      "guest_mol_id": 680,
+      "host": "beta-CD",
+      "logKa": 0.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8202,
+      "guest_name": "Procaine hydrochloride",
+      "guest_mol_id": 487,
+      "host": "gamma-CD",
+      "logKa": 1.79,
+      "conditions": "water"
+    },
+    {
+      "int_id": 9222,
+      "guest_name": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+      "guest_mol_id": 2205,
+      "host": "beta-CD",
+      "logKa": 4.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1830,
+      "guest_name": "7,8-dimethyl-1H-benzo[g]pteridine-2,4-dione",
+      "guest_mol_id": 415,
+      "host": "beta-CD",
+      "logKa": 2.98,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7370,
+      "guest_name": "Ferroceneacroboxylate",
+      "guest_mol_id": 1673,
+      "host": "beta-CD",
+      "logKa": 3.33,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7390,
+      "guest_name": "Cyclopentanol",
+      "guest_mol_id": 1679,
+      "host": "alpha-CD",
+      "logKa": 1.56,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8578,
+      "guest_name": "1-(hydroxymethyl)-ferrocene",
+      "guest_mol_id": 382,
+      "host": "beta-CD",
+      "logKa": 3.66,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7404,
+      "guest_name": "N-methylbutan-1-aminium",
+      "guest_mol_id": 1699,
+      "host": "alpha-CD",
+      "logKa": 1.24,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8366,
+      "guest_name": "Neutral red hydrochloride",
+      "guest_mol_id": 171,
+      "host": "beta-CD",
+      "logKa": 5.24,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8566,
+      "guest_name": "1-Adamantanol",
+      "guest_mol_id": 936,
+      "host": "beta-CD",
+      "logKa": 4.77,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6000,
+      "guest_name": "Sodium thiocyanate",
+      "guest_mol_id": 1053,
+      "host": "alpha-CD",
+      "logKa": 1.2,
+      "conditions": "water"
+    },
+    {
+      "int_id": 693,
+      "guest_name": "Methylene Blue",
+      "guest_mol_id": 170,
+      "host": "beta-CD",
+      "logKa": 2.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8358,
+      "guest_name": "Thionin",
+      "guest_mol_id": 190,
+      "host": "alpha-CD",
+      "logKa": 2.82,
+      "conditions": "water"
+    },
+    {
+      "int_id": 497,
+      "guest_name": "O,O\u2032-dibenzoyl-d-tartaric acid",
+      "guest_mol_id": 118,
+      "host": "beta-CD",
+      "logKa": 1.51,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7408,
+      "guest_name": "Hexylamine (protonated form)",
+      "guest_mol_id": 681,
+      "host": "alpha-CD",
+      "logKa": 2.59,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7374,
+      "guest_name": "2-naphtalenecarboxylate",
+      "guest_mol_id": 1674,
+      "host": "beta-CD",
+      "logKa": 2.51,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8396,
+      "guest_name": "2-(diethylamino)ethyl 1-cyclohexylcyclohexane-1-carboxylate",
+      "guest_mol_id": 2163,
+      "host": "alpha-CD",
+      "logKa": 2.45,
+      "conditions": "water"
+    },
+    {
+      "int_id": 741,
+      "guest_name": "Brilliant cresyl blue",
+      "guest_mol_id": 179,
+      "host": "beta-CD",
+      "logKa": 2.71,
+      "conditions": "water"
+    },
+    {
+      "int_id": 454,
+      "guest_name": "(1R,3S)-(+)-Camphoric acid",
+      "guest_mol_id": 106,
+      "host": "beta-CD",
+      "logKa": 1.28,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7973,
+      "guest_name": "(+)-camphor",
+      "guest_mol_id": 1202,
+      "host": "alpha-CD",
+      "logKa": 5.79,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6478,
+      "guest_name": "2-aminofluorene",
+      "guest_mol_id": 1354,
+      "host": "beta-CD",
+      "logKa": 3.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1805,
+      "guest_name": "6-Propionyl-2-(dimethy-lamino)-napthalene",
+      "guest_mol_id": 409,
+      "host": "beta-CD",
+      "logKa": 2.94,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7138,
+      "guest_name": "1-Adamantylammonium chloride",
+      "guest_mol_id": 1596,
+      "host": "beta-CD",
+      "logKa": 3.92,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7373,
+      "guest_name": "(Trimethylamino)methyl)ferrocene",
+      "guest_mol_id": 462,
+      "host": "beta-CD",
+      "logKa": 2.85,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8564,
+      "guest_name": "1-Adamantanol",
+      "guest_mol_id": 936,
+      "host": "beta-CD",
+      "logKa": 5.03,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8201,
+      "guest_name": "Procaine hydrochloride",
+      "guest_mol_id": 487,
+      "host": "gamma-CD",
+      "logKa": 1.13,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8323,
+      "guest_name": "Pyronin Y",
+      "guest_mol_id": 146,
+      "host": "gamma-CD",
+      "logKa": 1.6,
+      "conditions": "water"
+    },
+    {
+      "int_id": 363,
+      "guest_name": "N-Acetyl-L-tyrosine",
+      "guest_mol_id": 76,
+      "host": "beta-CD",
+      "logKa": 2.11,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7376,
+      "guest_name": "1-adamantyltrimethylammonium",
+      "guest_mol_id": 1676,
+      "host": "beta-CD",
+      "logKa": 3.59,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8228,
+      "guest_name": "(R)-[1,1\u2032-binaphthalene]-2,2\u2032-diols",
+      "guest_mol_id": 410,
+      "host": "beta-CD",
+      "logKa": 2.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 541,
+      "guest_name": "(1R,2R,5R)-2-Hydroxy-3-pinanone",
+      "guest_mol_id": 126,
+      "host": "beta-CD",
+      "logKa": 3.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7305,
+      "guest_name": "2-Propanol",
+      "guest_mol_id": 933,
+      "host": "beta-CD",
+      "logKa": 2.27,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5646,
+      "guest_name": "9-carboxytriamantane",
+      "guest_mol_id": 1062,
+      "host": "beta-CD",
+      "logKa": 6.47,
+      "conditions": "water"
+    },
+    {
+      "int_id": 547,
+      "guest_name": "(R)-(-)-Mandelic acid",
+      "guest_mol_id": 132,
+      "host": "beta-CD",
+      "logKa": 1.03,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5999,
+      "guest_name": "Sodium hexafluorophosphate",
+      "guest_mol_id": 496,
+      "host": "alpha-CD",
+      "logKa": 1.41,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7429,
+      "guest_name": "1-Methylhexylammonium",
+      "guest_mol_id": 1702,
+      "host": "beta-CD",
+      "logKa": 1.88,
+      "conditions": "water"
+    },
+    {
+      "int_id": 9221,
+      "guest_name": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+      "guest_mol_id": 2205,
+      "host": "beta-CD",
+      "logKa": 5.31,
+      "conditions": "water"
+    },
+    {
+      "int_id": 627,
+      "guest_name": "Pyronin Y",
+      "guest_mol_id": 146,
+      "host": "beta-CD",
+      "logKa": 2.6,
+      "conditions": "water"
+    },
+    {
+      "int_id": 460,
+      "guest_name": "(1R,E)-(+)-Camphorquinone 3-oxime",
+      "guest_mol_id": 108,
+      "host": "beta-CD",
+      "logKa": 3.42,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7395,
+      "guest_name": "(+/-)-2-methylbutanoate",
+      "guest_mol_id": 1685,
+      "host": "alpha-CD",
+      "logKa": 1.37,
+      "conditions": "water"
+    },
+    {
+      "int_id": 487,
+      "guest_name": "(1S,2S)-trans-1,2-Cyclohexanediol",
+      "guest_mol_id": 115,
+      "host": "beta-CD",
+      "logKa": 1.93,
+      "conditions": "water"
+    },
+    {
+      "int_id": 965,
+      "guest_name": "ethyl 5-(6-ethyl-4-Hydroxy-7-methoxy-2-oxo-2H-chromen-3-yl)furan-2-carboxylate",
+      "guest_mol_id": 225,
+      "host": "beta-CD",
+      "logKa": 2.85,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5669,
+      "guest_name": "1-Aminodiamantane",
+      "guest_mol_id": 1061,
+      "host": "gamma-CD",
+      "logKa": 3.75,
+      "conditions": "water"
+    },
+    {
+      "int_id": 770,
+      "guest_name": "Auramine O",
+      "guest_mol_id": 188,
+      "host": "alpha-CD",
+      "logKa": 3.7,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8091,
+      "guest_name": "4-ami-noazobenzene",
+      "guest_mol_id": 2081,
+      "host": "beta-CD",
+      "logKa": 2.66,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8200,
+      "guest_name": "Valethamate bromide",
+      "guest_mol_id": 486,
+      "host": "gamma-CD",
+      "logKa": 2.4,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1802,
+      "guest_name": "6-Phenylamino-naphthalene-2-sulfonic acid anion",
+      "guest_mol_id": 408,
+      "host": "gamma-CD",
+      "logKa": 2.4,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7371,
+      "guest_name": "Ferroceneacroboxylate",
+      "guest_mol_id": 1673,
+      "host": "beta-CD",
+      "logKa": 2.85,
+      "conditions": "water"
+    },
+    {
+      "int_id": 347,
+      "guest_name": "N-Acetyl-D-phenylalanine",
+      "guest_mol_id": 72,
+      "host": "beta-CD",
+      "logKa": 1.78,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8237,
+      "guest_name": "sodium;4-[[4-(dimethylamino)phenyl]diazenyl]benzenesulfonate",
+      "guest_mol_id": 2131,
+      "host": "beta-CD",
+      "logKa": 3.65,
+      "conditions": "water"
+    },
+    {
+      "int_id": 708,
+      "guest_name": "Neutral red hydrochloride",
+      "guest_mol_id": 171,
+      "host": "beta-CD",
+      "logKa": 2.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 596,
+      "guest_name": "Acridine Orange hydrochloride",
+      "guest_mol_id": 141,
+      "host": "beta-CD",
+      "logKa": 3.08,
+      "conditions": "water"
+    },
+    {
+      "int_id": 430,
+      "guest_name": "(R)-3-Bromo-8-camphorsulfonic acid",
+      "guest_mol_id": 98,
+      "host": "beta-CD",
+      "logKa": 3.58,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5655,
+      "guest_name": "9-carboxytriamantane",
+      "guest_mol_id": 1062,
+      "host": "gamma-CD",
+      "logKa": 5.44,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7430,
+      "guest_name": "1-Octylammonium",
+      "guest_mol_id": 686,
+      "host": "beta-CD",
+      "logKa": 2.62,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3348,
+      "guest_name": "Valethamate bromide",
+      "guest_mol_id": 486,
+      "host": "beta-CD",
+      "logKa": 4.09,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3304,
+      "guest_name": "Cinchocaine hydrochloride",
+      "guest_mol_id": 484,
+      "host": "alpha-CD",
+      "logKa": 2.8,
+      "conditions": "water"
+    },
+    {
+      "int_id": 472,
+      "guest_name": "(R)-10-Camphorsulfonic acid",
+      "guest_mol_id": 110,
+      "host": "beta-CD",
+      "logKa": 2.75,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8242,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "beta-CD",
+      "logKa": 4.51,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7979,
+      "guest_name": "(-)-camphor",
+      "guest_mol_id": 1954,
+      "host": "alpha-CD",
+      "logKa": 5.5,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8397,
+      "guest_name": "Safranine T",
+      "guest_mol_id": 172,
+      "host": "beta-CD",
+      "logKa": 2.78,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1833,
+      "guest_name": "2-Phenoxathiin-2-ylquinoxaline",
+      "guest_mol_id": 416,
+      "host": "beta-CD",
+      "logKa": 3.35,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7977,
+      "guest_name": "(-)-camphor",
+      "guest_mol_id": 1954,
+      "host": "alpha-CD",
+      "logKa": 5.33,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7976,
+      "guest_name": "(-)-camphor",
+      "guest_mol_id": 1954,
+      "host": "alpha-CD",
+      "logKa": 5.65,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7969,
+      "guest_name": "(+)-camphor",
+      "guest_mol_id": 1202,
+      "host": "alpha-CD",
+      "logKa": 6.28,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7968,
+      "guest_name": "(+)-camphor",
+      "guest_mol_id": 1202,
+      "host": "alpha-CD",
+      "logKa": 5.98,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5673,
+      "guest_name": "N,N\u2019-bis-(L/D)phenylalanyl perylene diimides",
+      "guest_mol_id": 1734,
+      "host": "beta-CD",
+      "logKa": 3.08,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5672,
+      "guest_name": "N,N\u2019-bis-(L/D)phenylalanyl perylene diimides",
+      "guest_mol_id": 1734,
+      "host": "beta-CD",
+      "logKa": 6.45,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5661,
+      "guest_name": "4,9-diaminodiamantane",
+      "guest_mol_id": 1060,
+      "host": "beta-CD",
+      "logKa": 2.49,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5659,
+      "guest_name": "1-Aminodiamantane",
+      "guest_mol_id": 1061,
+      "host": "beta-CD",
+      "logKa": 3.47,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5650,
+      "guest_name": "4-diadamantylcarboxylic acid",
+      "guest_mol_id": 1063,
+      "host": "beta-CD",
+      "logKa": 4.7,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5647,
+      "guest_name": "9-carboxytriamantane",
+      "guest_mol_id": 1062,
+      "host": "beta-CD",
+      "logKa": 4.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5660,
+      "guest_name": "4-aminodiamantane",
+      "guest_mol_id": 1059,
+      "host": "beta-CD",
+      "logKa": 4.95,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7439,
+      "guest_name": "cis-4-methylcyclohexanol",
+      "guest_mol_id": 1721,
+      "host": "beta-CD",
+      "logKa": 3.16,
+      "conditions": "water"
+    },
+    {
+      "int_id": 764,
+      "guest_name": "New Methylene blue",
+      "guest_mol_id": 186,
+      "host": "gamma-CD",
+      "logKa": 1.94,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1924,
+      "guest_name": "4-(5-(4-(dimethylamino)phenyl)oxazol-2-yl)benzenesulfonate",
+      "guest_mol_id": 439,
+      "host": "beta-CD",
+      "logKa": 3.74,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8574,
+      "guest_name": "1-(hydroxymethyl)-ferrocene",
+      "guest_mol_id": 382,
+      "host": "beta-CD",
+      "logKa": 4.17,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8238,
+      "guest_name": "1-Adamantane acetate potassium salt",
+      "guest_mol_id": 1598,
+      "host": "gamma-CD",
+      "logKa": 3.01,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6719,
+      "guest_name": "Rhodamine B",
+      "guest_mol_id": 152,
+      "host": "beta-CD",
+      "logKa": 3.92,
+      "conditions": "water"
+    },
+    {
+      "int_id": 2345,
+      "guest_name": "2,3-Diazabicyclo(2.2.2)oct-2-ene",
+      "guest_mol_id": 231,
+      "host": "beta-CD",
+      "logKa": 2.94,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7405,
+      "guest_name": "Cyclobutanol",
+      "guest_mol_id": 1680,
+      "host": "alpha-CD",
+      "logKa": 1.48,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7375,
+      "guest_name": "2-naphtalenecarboxylate",
+      "guest_mol_id": 1674,
+      "host": "beta-CD",
+      "logKa": 3.6,
+      "conditions": "water"
+    },
+    {
+      "int_id": 427,
+      "guest_name": "N-Boc-L-serine",
+      "guest_mol_id": 97,
+      "host": "beta-CD",
+      "logKa": 2.45,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3351,
+      "guest_name": "Valethamate bromide",
+      "guest_mol_id": 486,
+      "host": "beta-CD",
+      "logKa": 3.82,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3316,
+      "guest_name": "Chlorpromazine hydrochloride",
+      "guest_mol_id": 483,
+      "host": "beta-CD",
+      "logKa": 4.04,
+      "conditions": "water"
+    },
+    {
+      "int_id": 752,
+      "guest_name": "Toluidine Blue O",
+      "guest_mol_id": 182,
+      "host": "gamma-CD",
+      "logKa": 3.4,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8236,
+      "guest_name": "sodium;4-[[4-(dimethylamino)phenyl]diazenyl]benzenesulfonate",
+      "guest_mol_id": 2131,
+      "host": "beta-CD",
+      "logKa": 2.36,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8198,
+      "guest_name": "Tetracaine hydrochloride",
+      "guest_mol_id": 485,
+      "host": "gamma-CD",
+      "logKa": 2.5,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8241,
+      "guest_name": "Phenolphthalein",
+      "guest_mol_id": 1599,
+      "host": "gamma-CD",
+      "logKa": 3.5,
+      "conditions": "water"
+    },
+    {
+      "int_id": 500,
+      "guest_name": "Dibenzoyl-L-tartaric acid",
+      "guest_mol_id": 119,
+      "host": "beta-CD",
+      "logKa": 1.3,
+      "conditions": "water"
+    },
+    {
+      "int_id": 535,
+      "guest_name": "(R)-2-Cyclohexyl-2-hydroxyacetic acid",
+      "guest_mol_id": 124,
+      "host": "beta-CD",
+      "logKa": 2.81,
+      "conditions": "water"
+    },
+    {
+      "int_id": 478,
+      "guest_name": "(2R)-2-(phenylmethoxycarbonylamino)propanoic acid",
+      "guest_mol_id": 112,
+      "host": "beta-CD",
+      "logKa": 2.17,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7403,
+      "guest_name": "Butylamine (protonated form)",
+      "guest_mol_id": 679,
+      "host": "alpha-CD",
+      "logKa": 1.16,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1074,
+      "guest_name": "Acridine red",
+      "guest_mol_id": 143,
+      "host": "beta-CD",
+      "logKa": 3.42,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1058,
+      "guest_name": "Meldola\u2019s blue",
+      "guest_mol_id": 239,
+      "host": "gamma-CD",
+      "logKa": 4.02,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7137,
+      "guest_name": "1-Adamantane acetate potassium salt",
+      "guest_mol_id": 1598,
+      "host": "beta-CD",
+      "logKa": 5.03,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7440,
+      "guest_name": "trans-4-methylcyclohexanol",
+      "guest_mol_id": 1722,
+      "host": "beta-CD",
+      "logKa": 3.33,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8121,
+      "guest_name": "N-retinylidine-N-ethanolamine",
+      "guest_mol_id": 2100,
+      "host": "gamma-CD",
+      "logKa": 0.44,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7394,
+      "guest_name": "Butanoate",
+      "guest_mol_id": 1698,
+      "host": "alpha-CD",
+      "logKa": 1.1,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1347,
+      "guest_name": "7-Methoxy-8-(3-methylbut-2-enyl)chromen-2-one",
+      "guest_mol_id": 333,
+      "host": "beta-CD",
+      "logKa": 2.09,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1128,
+      "guest_name": "Rhodamine B",
+      "guest_mol_id": 152,
+      "host": "beta-CD",
+      "logKa": 3.58,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1793,
+      "guest_name": "6-Phenylamino-naphthalene-2-sulfonic acid anion",
+      "guest_mol_id": 408,
+      "host": "alpha-CD",
+      "logKa": 1.3,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7143,
+      "guest_name": "1-adamantane carboxylate",
+      "guest_mol_id": 1601,
+      "host": "beta-CD",
+      "logKa": 4.02,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7428,
+      "guest_name": "1-Hexylammonium",
+      "guest_mol_id": 1731,
+      "host": "beta-CD",
+      "logKa": 1.82,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8364,
+      "guest_name": "Berberine chloride",
+      "guest_mol_id": 18,
+      "host": "beta-CD",
+      "logKa": 1.89,
+      "conditions": "water"
+    },
+    {
+      "int_id": 484,
+      "guest_name": "(1R,2R)-trans-1,2-Cyclohexanediol",
+      "guest_mol_id": 114,
+      "host": "beta-CD",
+      "logKa": 1.93,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8227,
+      "guest_name": "(R)-[1,1\u2032-binaphthalene]-2,2\u2032-diols",
+      "guest_mol_id": 410,
+      "host": "beta-CD",
+      "logKa": 2.65,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6001,
+      "guest_name": "Sodium perchlorate",
+      "guest_mol_id": 1054,
+      "host": "alpha-CD",
+      "logKa": 1.36,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1103,
+      "guest_name": "8-(phenylamino)naphthalene-1-sulfonic acid",
+      "guest_mol_id": 248,
+      "host": "beta-CD",
+      "logKa": 2.01,
+      "conditions": "water"
+    },
+    {
+      "int_id": 475,
+      "guest_name": "(S)-10-Camphorsulfonic acid",
+      "guest_mol_id": 111,
+      "host": "beta-CD",
+      "logKa": 2.69,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5935,
+      "guest_name": "Oxazine 1",
+      "guest_mol_id": 1154,
+      "host": "gamma-CD",
+      "logKa": 2.13,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7425,
+      "guest_name": "4-methylphenylacetate",
+      "guest_mol_id": 1710,
+      "host": "beta-CD",
+      "logKa": 1.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1814,
+      "guest_name": "Pyranine",
+      "guest_mol_id": 412,
+      "host": "gamma-CD",
+      "logKa": 2.08,
+      "conditions": "water"
+    },
+    {
+      "int_id": 420,
+      "guest_name": "N-t-Boc-L-Alanine methyl ester",
+      "guest_mol_id": 95,
+      "host": "beta-CD",
+      "logKa": 2.76,
+      "conditions": "water"
+    },
+    {
+      "int_id": 358,
+      "guest_name": "N-Acetyl-L-Tryptophan",
+      "guest_mol_id": 62,
+      "host": "beta-CD",
+      "logKa": 1.23,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1094,
+      "guest_name": "8-(phenylamino)naphthalene-1-sulfonic acid",
+      "guest_mol_id": 248,
+      "host": "beta-CD",
+      "logKa": 2.41,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7416,
+      "guest_name": "1-Octylammonium",
+      "guest_mol_id": 686,
+      "host": "alpha-CD",
+      "logKa": 3.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 445,
+      "guest_name": "(S)-3-Bromo-2-methyl-propionic acid methyl ester",
+      "guest_mol_id": 103,
+      "host": "beta-CD",
+      "logKa": 2.44,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1897,
+      "guest_name": "Phenoxathiine-3-carboxylic acid",
+      "guest_mol_id": 434,
+      "host": "beta-CD",
+      "logKa": 3.18,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7142,
+      "guest_name": "1-adamantane carboxylate",
+      "guest_mol_id": 1601,
+      "host": "beta-CD",
+      "logKa": 3.41,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1785,
+      "guest_name": "8-(phenylamino)naphthalene-1-sulfonic acid",
+      "guest_mol_id": 248,
+      "host": "gamma-CD",
+      "logKa": 2.38,
+      "conditions": "water"
+    },
+    {
+      "int_id": 9223,
+      "guest_name": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+      "guest_mol_id": 2205,
+      "host": "beta-CD",
+      "logKa": 4.72,
+      "conditions": "water"
+    },
+    {
+      "int_id": 366,
+      "guest_name": "(2R)-2-acetamido-3-(4-hydroxyphenyl)propanoic acid",
+      "guest_mol_id": 75,
+      "host": "beta-CD",
+      "logKa": 2.1,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8577,
+      "guest_name": "1-(hydroxymethyl)-ferrocene",
+      "guest_mol_id": 382,
+      "host": "beta-CD",
+      "logKa": 3.78,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7397,
+      "guest_name": "Pentanoate",
+      "guest_mol_id": 1686,
+      "host": "alpha-CD",
+      "logKa": 1.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8326,
+      "guest_name": "Neutral red hydrochloride",
+      "guest_mol_id": 171,
+      "host": "beta-CD",
+      "logKa": 2.74,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1918,
+      "guest_name": "4-(dimethylamino)benzonitrile",
+      "guest_mol_id": 440,
+      "host": "alpha-CD",
+      "logKa": 2.72,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6218,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "beta-CD",
+      "logKa": 4.52,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7393,
+      "guest_name": "2-methylpropanoate",
+      "guest_mol_id": 1684,
+      "host": "alpha-CD",
+      "logKa": 0.85,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8240,
+      "guest_name": "Phenolphthalein",
+      "guest_mol_id": 1599,
+      "host": "beta-CD",
+      "logKa": 4.68,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1329,
+      "guest_name": "7-Methoxycoumarin",
+      "guest_mol_id": 193,
+      "host": "gamma-CD",
+      "logKa": 1.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7407,
+      "guest_name": "Pentylamine (protonated form)",
+      "guest_mol_id": 680,
+      "host": "alpha-CD",
+      "logKa": 1.99,
+      "conditions": "water"
+    },
+    {
+      "int_id": 399,
+      "guest_name": "(2R,3R)-(-)-2-Benzyloxy-1,3,4-butanetriol",
+      "guest_mol_id": 88,
+      "host": "beta-CD",
+      "logKa": 1.92,
+      "conditions": "water"
+    },
+    {
+      "int_id": 550,
+      "guest_name": "(S)-(+)-Mandelic acid",
+      "guest_mol_id": 133,
+      "host": "beta-CD",
+      "logKa": 0.95,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1809,
+      "guest_name": "(R)-[1,1\u2032-binaphthalene]-2,2\u2032-diols",
+      "guest_mol_id": 410,
+      "host": "beta-CD",
+      "logKa": 2.61,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7424,
+      "guest_name": "3-Methoxyphenylacetate",
+      "guest_mol_id": 1711,
+      "host": "beta-CD",
+      "logKa": 1.58,
+      "conditions": "water"
+    },
+    {
+      "int_id": 773,
+      "guest_name": "Thionin",
+      "guest_mol_id": 190,
+      "host": "beta-CD",
+      "logKa": 3.25,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8165,
+      "guest_name": "Cinchocaine hydrochloride",
+      "guest_mol_id": 484,
+      "host": "gamma-CD",
+      "logKa": 2.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1892,
+      "guest_name": "Phenoxathiine-3-carbaldehyde",
+      "guest_mol_id": 432,
+      "host": "beta-CD",
+      "logKa": 3.71,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7417,
+      "guest_name": "Heptanoate",
+      "guest_mol_id": 1690,
+      "host": "beta-CD",
+      "logKa": 2.48,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7396,
+      "guest_name": "Hexanoate",
+      "guest_mol_id": 1687,
+      "host": "alpha-CD",
+      "logKa": 2.48,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8570,
+      "guest_name": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+      "guest_mol_id": 2205,
+      "host": "beta-CD",
+      "logKa": 5.5,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8395,
+      "guest_name": "2-(diethylamino)ethyl 1-cyclohexylcyclohexane-1-carboxylate",
+      "guest_mol_id": 2163,
+      "host": "beta-CD",
+      "logKa": 4.98,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3310,
+      "guest_name": "Valethamate bromide",
+      "guest_mol_id": 486,
+      "host": "alpha-CD",
+      "logKa": 1.9,
+      "conditions": "water"
+    },
+    {
+      "int_id": 439,
+      "guest_name": "(S)-(+)-3-Bromo-2-methyl-1-propanol",
+      "guest_mol_id": 101,
+      "host": "beta-CD",
+      "logKa": 2.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3359,
+      "guest_name": "Procaine hydrochloride",
+      "guest_mol_id": 487,
+      "host": "beta-CD",
+      "logKa": 2.42,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5149,
+      "guest_name": "Tert-butanol",
+      "guest_mol_id": 935,
+      "host": "beta-CD",
+      "logKa": 2.26,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8328,
+      "guest_name": "Neutral red hydrochloride",
+      "guest_mol_id": 171,
+      "host": "beta-CD",
+      "logKa": 1.88,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8363,
+      "guest_name": "Berberine chloride",
+      "guest_mol_id": 18,
+      "host": "beta-CD",
+      "logKa": 1.94,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7398,
+      "guest_name": "trans-2-hexenoate",
+      "guest_mol_id": 1689,
+      "host": "alpha-CD",
+      "logKa": 2.45,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7433,
+      "guest_name": "1-methylcyclohexanol",
+      "guest_mol_id": 1713,
+      "host": "beta-CD",
+      "logKa": 3.06,
+      "conditions": "water"
+    },
+    {
+      "int_id": 448,
+      "guest_name": "(1R)-(+)-Camphanic acid",
+      "guest_mol_id": 104,
+      "host": "beta-CD",
+      "logKa": 2.25,
+      "conditions": "water"
+    },
+    {
+      "int_id": 411,
+      "guest_name": "N-Boc-D-Alanine",
+      "guest_mol_id": 92,
+      "host": "beta-CD",
+      "logKa": 2.59,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8199,
+      "guest_name": "Tetracaine hydrochloride",
+      "guest_mol_id": 485,
+      "host": "gamma-CD",
+      "logKa": 1.66,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3319,
+      "guest_name": "Chlorpromazine hydrochloride",
+      "guest_mol_id": 483,
+      "host": "beta-CD",
+      "logKa": 3.89,
+      "conditions": "water"
+    },
+    {
+      "int_id": 352,
+      "guest_name": "N-Acetyl-L-Phenylalanine",
+      "guest_mol_id": 73,
+      "host": "beta-CD",
+      "logKa": 1.83,
+      "conditions": "water"
+    },
+    {
+      "int_id": 393,
+      "guest_name": "((4R,5R)-2-Phenyl-1,3-dioxolane-4,5-diyl)dimethanol",
+      "guest_mol_id": 86,
+      "host": "beta-CD",
+      "logKa": 2.07,
+      "conditions": "water"
+    },
+    {
+      "int_id": 469,
+      "guest_name": "(1S,E)-(-)-Camphorquinone 3-oxime",
+      "guest_mol_id": 109,
+      "host": "beta-CD",
+      "logKa": 3.37,
+      "conditions": "water"
+    },
+    {
+      "int_id": 4905,
+      "guest_name": "(1S,2R)-(+)-2-Amino-1,2-diphenylethanol",
+      "guest_mol_id": 78,
+      "host": "beta-CD",
+      "logKa": 1.66,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1894,
+      "guest_name": "1-(Phenoxathiin-3-yl)ethan-1-one",
+      "guest_mol_id": 433,
+      "host": "beta-CD",
+      "logKa": 3.89,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7426,
+      "guest_name": "4-methoxyphenylacetate",
+      "guest_mol_id": 1712,
+      "host": "beta-CD",
+      "logKa": 1.84,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7421,
+      "guest_name": "3-phenylbutanoate",
+      "guest_mol_id": 1706,
+      "host": "beta-CD",
+      "logKa": 2.58,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7378,
+      "guest_name": "2-((1R,2R,4S)-bicyclo[2.2.1]heptan-2-yl)acetate",
+      "guest_mol_id": 1678,
+      "host": "beta-CD",
+      "logKa": 3.65,
+      "conditions": "water"
+    },
+    {
+      "int_id": 555,
+      "guest_name": "R(-)-Mandelic acid methyl ester",
+      "guest_mol_id": 134,
+      "host": "beta-CD",
+      "logKa": 1.83,
+      "conditions": "water"
+    },
+    {
+      "int_id": 6214,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "beta-CD",
+      "logKa": 4.28,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8361,
+      "guest_name": "Berberine chloride",
+      "guest_mol_id": 18,
+      "host": "beta-CD",
+      "logKa": 2.29,
+      "conditions": "water"
+    },
+    {
+      "int_id": 743,
+      "guest_name": "(1R2R,3S,5R)-(-)-Pinanediol",
+      "guest_mol_id": 180,
+      "host": "beta-CD",
+      "logKa": 3.81,
+      "conditions": "water"
+    },
+    {
+      "int_id": 402,
+      "guest_name": "(2S,3S)-2-(Benzyloxy)butane-1,3,4-triol",
+      "guest_mol_id": 89,
+      "host": "beta-CD",
+      "logKa": 1.93,
+      "conditions": "water"
+    },
+    {
+      "int_id": 538,
+      "guest_name": "(S)-Hexahydromandelic acid",
+      "guest_mol_id": 125,
+      "host": "beta-CD",
+      "logKa": 2.78,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7413,
+      "guest_name": "1-Heptylamine (fully protonated)",
+      "guest_mol_id": 685,
+      "host": "alpha-CD",
+      "logKa": 3.03,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5652,
+      "guest_name": "1-diadamantylcarboxylic acid",
+      "guest_mol_id": 1058,
+      "host": "gamma-CD",
+      "logKa": 4.71,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8211,
+      "guest_name": "9-Hydroxyphenylfluoron",
+      "guest_mol_id": 167,
+      "host": "beta-CD",
+      "logKa": 2.85,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8233,
+      "guest_name": "1-adamantane carboxylate",
+      "guest_mol_id": 1601,
+      "host": "alpha-CD",
+      "logKa": -3.54,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5996,
+      "guest_name": "Sodium dicyanamide",
+      "guest_mol_id": 1070,
+      "host": "alpha-CD",
+      "logKa": 2.15,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3365,
+      "guest_name": "Chlorpromazine hydrochloride",
+      "guest_mol_id": 483,
+      "host": "gamma-CD",
+      "logKa": 2.53,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5656,
+      "guest_name": "1-Adamantanecarboxylic acid",
+      "guest_mol_id": 297,
+      "host": "gamma-CD",
+      "logKa": 2.34,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7377,
+      "guest_name": "1-adamantyltrimethylammonium",
+      "guest_mol_id": 1676,
+      "host": "beta-CD",
+      "logKa": 3.06,
+      "conditions": "water"
+    },
+    {
+      "int_id": 417,
+      "guest_name": "Boc-D-alanine methyl ester",
+      "guest_mol_id": 94,
+      "host": "beta-CD",
+      "logKa": 2.82,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7414,
+      "guest_name": "1-Methylhexylammonium",
+      "guest_mol_id": 1702,
+      "host": "alpha-CD",
+      "logKa": 2.64,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1097,
+      "guest_name": "8-(phenylamino)naphthalene-1-sulfonic acid",
+      "guest_mol_id": 248,
+      "host": "beta-CD",
+      "logKa": 1.84,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3322,
+      "guest_name": "Chlorpromazine hydrochloride",
+      "guest_mol_id": 483,
+      "host": "beta-CD",
+      "logKa": 3.74,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3307,
+      "guest_name": "Tetracaine hydrochloride",
+      "guest_mol_id": 485,
+      "host": "alpha-CD",
+      "logKa": 2.4,
+      "conditions": "water"
+    },
+    {
+      "int_id": 1063,
+      "guest_name": "Brilliant cresyl blue",
+      "guest_mol_id": 179,
+      "host": "beta-CD",
+      "logKa": 2.93,
+      "conditions": "water"
+    },
+    {
+      "int_id": 405,
+      "guest_name": "O-Benzyl-D-Serine",
+      "guest_mol_id": 90,
+      "host": "beta-CD",
+      "logKa": 1.85,
+      "conditions": "water"
+    },
+    {
+      "int_id": 466,
+      "guest_name": "(1S,E)-(-)-Camphorquinone 3-oxime",
+      "guest_mol_id": 109,
+      "host": "beta-CD",
+      "logKa": 3.39,
+      "conditions": "water"
+    },
+    {
+      "int_id": 8573,
+      "guest_name": "1-(hydroxymethyl)-ferrocene",
+      "guest_mol_id": 382,
+      "host": "beta-CD",
+      "logKa": 4.4,
+      "conditions": "water"
+    },
+    {
+      "int_id": 7402,
+      "guest_name": "Octanoate",
+      "guest_mol_id": 1692,
+      "host": "alpha-CD",
+      "logKa": 3.39,
+      "conditions": "water"
+    },
+    {
+      "int_id": 3374,
+      "guest_name": "Valethamate bromide",
+      "guest_mol_id": 486,
+      "host": "beta-CD",
+      "logKa": 4.2,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5533,
+      "guest_name": "[Amino-[4-[6-[amino(azaniumylidene)methyl]-1H-indol-2-yl]phenyl]methylidene]azanium",
+      "guest_mol_id": 575,
+      "host": "gamma-CD",
+      "logKa": 1.48,
+      "conditions": "water"
+    },
+    {
+      "int_id": 5532,
+      "guest_name": "[Amino-[4-[6-[amino(azaniumylidene)methyl]-1H-indol-2-yl]phenyl]methylidene]azanium",
+      "guest_mol_id": 575,
+      "host": "beta-CD",
+      "logKa": 2.11,
+      "conditions": "water"
+    }
+  ],
+  "total": 400
+}

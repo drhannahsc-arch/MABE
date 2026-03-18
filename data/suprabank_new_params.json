@@ -1,0 +1,39 @@
+{
+  "HG_PARAMS": {
+    "gamma_flat": 0.012422,
+    "k_curvature": 1.149,
+    "dg_dehydr_per_A2": -0.036186,
+    "dehydr_CB": 3.1004,
+    "dehydr_CD": 1.22,
+    "dehydr_other": 2.1602,
+    "k_size_penalty": 0.0,
+    "k_undersize": 0.0,
+    "epsilon_hbond": 0.0,
+    "epsilon_cation": 0.0,
+    "k_electrostatic": 0.0
+  },
+  "HBOND_PARAMS": {
+    "eps_neutral": -2.831,
+    "eps_charge_assisted": -5.693,
+    "eps_oh_pi": -1.5,
+    "water_penalty_per_hb": 3.5,
+    "water_displacement": 1.2
+  },
+  "CONF_SHAPE_PARAMS": {
+    "eps_rotor": 2.669,
+    "f_partial": 0.5,
+    "k_shape": -8.571,
+    "PC_optimal": 0.54,
+    "sigma_PC": 0.15
+  },
+  "PORTAL_PARAMS": {
+    "k_portal_max_kj": 4.08,
+    "note": "Sigmoid-capped: penalty = k \u00d7 (1 - exp(-0.5 \u00d7 excess_d\u00b2))"
+  },
+  "fit_stats": {
+    "n_entries": 1552,
+    "R2": 0.1784,
+    "MAE": 1.623,
+    "MedAE": 1.207
+  }
+}

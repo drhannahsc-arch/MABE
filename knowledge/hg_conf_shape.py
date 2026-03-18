@@ -20,12 +20,12 @@ from rdkit.Chem import AllChem, Descriptors, rdMolDescriptors
 # ═══════════════════════════════════════════════════════════════════════════
 CONF_SHAPE_PARAMS = {
     # Phase 9: conformational entropy
-    "eps_rotor":        2.5,      # kJ/mol per frozen rotor (Mammen 1998: ~3.4)
+    "eps_rotor":        2.669,    # SupraBank re-fit (was 2.5)      # kJ/mol per frozen rotor (Mammen 1998: ~3.4)
     "f_partial":        0.5,      # fraction of rotors actually frozen upon binding
 
     # Phase 10: shape complementarity
-    "k_shape":         -8.0,      # kJ/mol max shape bonus (at optimal PC)
-    "PC_optimal":       0.55,     # optimal packing coefficient (Rebek rule)
+    "k_shape":         -8.571,    # SupraBank re-fit (was -8.0)      # kJ/mol max shape bonus (at optimal PC)
+    "PC_optimal":       0.54,     # SupraBank back-solve (was 0.55 Rebek)     # optimal packing coefficient (Rebek rule)
     "sigma_PC":         0.15,     # width of packing Gaussian
 }
 
@@ -34,6 +34,7 @@ CONF_SHAPE_PARAMS = {
 # HOST CAVITY VOLUMES (Å³, from crystal structures)
 # ═══════════════════════════════════════════════════════════════════════════
 HOST_CAVITY_VOLUME = {
+    "CB5":          82.0,    # Lagona 2005
     "alpha-CD":    174.0,    # Szejtli 1998
     "beta-CD":     262.0,
     "gamma-CD":    427.0,

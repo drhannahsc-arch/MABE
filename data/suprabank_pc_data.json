@@ -1,0 +1,9946 @@
+[
+  {
+    "guest": "Lithium nitrate",
+    "host": "CB5",
+    "logKa": 2.02,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Potassium nitrate",
+    "host": "CB5",
+    "logKa": 4.73,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Calcium nitrate",
+    "host": "CB5",
+    "logKa": 2.64,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Rubidium nitrate",
+    "host": "CB5",
+    "logKa": 3.22,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Cesium nitrate",
+    "host": "CB5",
+    "logKa": 2.61,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Strontium nitrate",
+    "host": "CB5",
+    "logKa": 5.16,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Coptisine",
+    "host": "CB5",
+    "logKa": 4.16,
+    "guest_vol": 268.0,
+    "cavity_vol": 82.0,
+    "PC": 3.2677
+  },
+  {
+    "guest": "Ytterbium nitrate",
+    "host": "CB5",
+    "logKa": 3.71,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Iron(III) nitrate nonahydrate",
+    "host": "CB5",
+    "logKa": 3.66,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Lanthanum(III) nitrate hexahydrate",
+    "host": "CB5",
+    "logKa": 4.17,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Barium nitrate",
+    "host": "CB5",
+    "logKa": 6.44,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Nitric acid",
+    "host": "CB5",
+    "logKa": 0.5,
+    "guest_vol": 44.8,
+    "cavity_vol": 82.0,
+    "PC": 0.5468
+  },
+  {
+    "guest": "Nickel nitrate",
+    "host": "CB5",
+    "logKa": 2.73,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Sodium nitrate",
+    "host": "CB5",
+    "logKa": 3.94,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Magnesium nitrate",
+    "host": "CB5",
+    "logKa": 2.5,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "Sanguinarine",
+    "host": "CB5",
+    "logKa": 4.08,
+    "guest_vol": 277.5,
+    "cavity_vol": 82.0,
+    "PC": 3.3841
+  },
+  {
+    "guest": "Ammonium nitrate",
+    "host": "CB5",
+    "logKa": 2.59,
+    "guest_vol": 42.2,
+    "cavity_vol": 82.0,
+    "PC": 0.5151
+  },
+  {
+    "guest": "cyclopropylmethanaminium",
+    "host": "CB6",
+    "logKa": 4.17,
+    "guest_vol": 85.5,
+    "cavity_vol": 164.0,
+    "PC": 0.5214
+  },
+  {
+    "guest": "Cyclopentanone",
+    "host": "CB6",
+    "logKa": 3.51,
+    "guest_vol": 87.6,
+    "cavity_vol": 164.0,
+    "PC": 0.534
+  },
+  {
+    "guest": "Cesium chloride, Caesium chloride",
+    "host": "CB6",
+    "logKa": 5.31,
+    "guest_vol": 23.8,
+    "cavity_vol": 164.0,
+    "PC": 0.1448
+  },
+  {
+    "guest": "n-Hexane",
+    "host": "CB6",
+    "logKa": 3.3,
+    "guest_vol": 112.0,
+    "cavity_vol": 164.0,
+    "PC": 0.6828
+  },
+  {
+    "guest": "Spermine (fully protonated form)",
+    "host": "CB6",
+    "logKa": 9.52,
+    "guest_vol": 241.1,
+    "cavity_vol": 164.0,
+    "PC": 1.47
+  },
+  {
+    "guest": "1,2-Ethylenediamine (fully protonated)",
+    "host": "CB6",
+    "logKa": 2.3,
+    "guest_vol": 75.0,
+    "cavity_vol": 164.0,
+    "PC": 0.4576
+  },
+  {
+    "guest": "1,7-Heptanediammonium",
+    "host": "CB6",
+    "logKa": 7.23,
+    "guest_vol": 158.6,
+    "cavity_vol": 164.0,
+    "PC": 0.9669
+  },
+  {
+    "guest": "1-propylamine (fully portonated)",
+    "host": "CB6",
+    "logKa": 6.34,
+    "guest_vol": 76.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4652
+  },
+  {
+    "guest": "methane",
+    "host": "CB6",
+    "logKa": 3.3,
+    "guest_vol": 28.3,
+    "cavity_vol": 164.0,
+    "PC": 0.1725
+  },
+  {
+    "guest": "4-aminobutan-1-ol",
+    "host": "CB6",
+    "logKa": 3.34,
+    "guest_vol": 99.7,
+    "cavity_vol": 164.0,
+    "PC": 0.6077
+  },
+  {
+    "guest": "Ethanol",
+    "host": "CB6",
+    "logKa": 1.95,
+    "guest_vol": 54.0,
+    "cavity_vol": 164.0,
+    "PC": 0.3292
+  },
+  {
+    "guest": "Barium cation",
+    "host": "CB6",
+    "logKa": 3.5,
+    "guest_vol": 83.2,
+    "cavity_vol": 164.0,
+    "PC": 0.5071
+  },
+  {
+    "guest": "Propane",
+    "host": "CB6",
+    "logKa": 4.0,
+    "guest_vol": 61.5,
+    "cavity_vol": 164.0,
+    "PC": 0.3752
+  },
+  {
+    "guest": "1-propanol",
+    "host": "CB6",
+    "logKa": 2.85,
+    "guest_vol": 70.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4313
+  },
+  {
+    "guest": "Ethyne",
+    "host": "CB6",
+    "logKa": 2.04,
+    "guest_vol": 34.9,
+    "cavity_vol": 164.0,
+    "PC": 0.2128
+  },
+  {
+    "guest": "cis-2-Butene",
+    "host": "CB6",
+    "logKa": 5.18,
+    "guest_vol": 72.7,
+    "cavity_vol": 164.0,
+    "PC": 0.443
+  },
+  {
+    "guest": "trans-2-Butene",
+    "host": "CB6",
+    "logKa": 4.32,
+    "guest_vol": 72.7,
+    "cavity_vol": 164.0,
+    "PC": 0.443
+  },
+  {
+    "guest": "4-Methylbenzylamine",
+    "host": "CB6",
+    "logKa": 7.71,
+    "guest_vol": 129.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7864
+  },
+  {
+    "guest": "1-hexyl-3-methylimidazol-3-ium;bromide",
+    "host": "CB6",
+    "logKa": 4.54,
+    "guest_vol": 184.9,
+    "cavity_vol": 164.0,
+    "PC": 1.1272
+  },
+  {
+    "guest": "n-Butane",
+    "host": "CB6",
+    "logKa": 5.45,
+    "guest_vol": 78.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4775
+  },
+  {
+    "guest": "Lithium chloride",
+    "host": "CB6",
+    "logKa": 2.41,
+    "guest_vol": 44.0,
+    "cavity_vol": 164.0,
+    "PC": 0.2681
+  },
+  {
+    "guest": "Ethanolamine",
+    "host": "CB6",
+    "logKa": 2.58,
+    "guest_vol": 66.4,
+    "cavity_vol": 164.0,
+    "PC": 0.4046
+  },
+  {
+    "guest": "Acetone",
+    "host": "CB6",
+    "logKa": 3.86,
+    "guest_vol": 64.9,
+    "cavity_vol": 164.0,
+    "PC": 0.3957
+  },
+  {
+    "guest": "6-aminohexan-1-ol",
+    "host": "CB6",
+    "logKa": 2.27,
+    "guest_vol": 133.2,
+    "cavity_vol": 164.0,
+    "PC": 0.8123
+  },
+  {
+    "guest": "1-Pentanoic acid",
+    "host": "CB6",
+    "logKa": 2.7,
+    "guest_vol": 106.9,
+    "cavity_vol": 164.0,
+    "PC": 0.652
+  },
+  {
+    "guest": "1-heptanoic acid",
+    "host": "CB6",
+    "logKa": 2.77,
+    "guest_vol": 140.5,
+    "cavity_vol": 164.0,
+    "PC": 0.8567
+  },
+  {
+    "guest": "propiononitrile",
+    "host": "CB6",
+    "logKa": 2.57,
+    "guest_vol": 63.4,
+    "cavity_vol": 164.0,
+    "PC": 0.3863
+  },
+  {
+    "guest": "2-Methylbutane",
+    "host": "CB6",
+    "logKa": 4.18,
+    "guest_vol": 95.2,
+    "cavity_vol": 164.0,
+    "PC": 0.5802
+  },
+  {
+    "guest": "1-Butene",
+    "host": "CB6",
+    "logKa": 4.9,
+    "guest_vol": 73.0,
+    "cavity_vol": 164.0,
+    "PC": 0.4451
+  },
+  {
+    "guest": "2,2-Dimethylpropane",
+    "host": "CB6",
+    "logKa": 3.3,
+    "guest_vol": 95.3,
+    "cavity_vol": 164.0,
+    "PC": 0.5812
+  },
+  {
+    "guest": "Benzene",
+    "host": "CB6",
+    "logKa": 3.3,
+    "guest_vol": 83.4,
+    "cavity_vol": 164.0,
+    "PC": 0.5085
+  },
+  {
+    "guest": "Sodium cation",
+    "host": "CB6",
+    "logKa": 3.04,
+    "guest_vol": 57.0,
+    "cavity_vol": 164.0,
+    "PC": 0.3475
+  },
+  {
+    "guest": "2-Methylbutane",
+    "host": "CB6",
+    "logKa": 2.48,
+    "guest_vol": 95.2,
+    "cavity_vol": 164.0,
+    "PC": 0.5802
+  },
+  {
+    "guest": "Tetrahydrofuran",
+    "host": "CB6",
+    "logKa": 4.48,
+    "guest_vol": 77.1,
+    "cavity_vol": 164.0,
+    "PC": 0.4703
+  },
+  {
+    "guest": "Barium cation",
+    "host": "CB6",
+    "logKa": 5.23,
+    "guest_vol": 83.2,
+    "cavity_vol": 164.0,
+    "PC": 0.5071
+  },
+  {
+    "guest": "Hexylamine (protonated form)",
+    "host": "CB6",
+    "logKa": 5.22,
+    "guest_vol": 127.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7743
+  },
+  {
+    "guest": "4-Methylbenzylamine",
+    "host": "CB6",
+    "logKa": 7.71,
+    "guest_vol": 129.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7864
+  },
+  {
+    "guest": "1-ethyl-3-methylimidazolium tetrafluoroborate",
+    "host": "CB6",
+    "logKa": 0.0,
+    "guest_vol": 117.8,
+    "cavity_vol": 164.0,
+    "PC": 0.7183
+  },
+  {
+    "guest": "1,4-Butanediammonium",
+    "host": "CB6",
+    "logKa": 7.3,
+    "guest_vol": 108.1,
+    "cavity_vol": 164.0,
+    "PC": 0.6593
+  },
+  {
+    "guest": "1-Octylammonium",
+    "host": "CB6",
+    "logKa": 3.32,
+    "guest_vol": 160.2,
+    "cavity_vol": 164.0,
+    "PC": 0.9765
+  },
+  {
+    "guest": "1,2-Ethylenediamine (fully protonated)",
+    "host": "CB6",
+    "logKa": 1.18,
+    "guest_vol": 75.0,
+    "cavity_vol": 164.0,
+    "PC": 0.4576
+  },
+  {
+    "guest": "1-propanol",
+    "host": "CB6",
+    "logKa": 2.69,
+    "guest_vol": 70.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4313
+  },
+  {
+    "guest": "Ethylamine (protonated form)",
+    "host": "CB6",
+    "logKa": 2.11,
+    "guest_vol": 59.7,
+    "cavity_vol": 164.0,
+    "PC": 0.3643
+  },
+  {
+    "guest": "Pentane",
+    "host": "CB6",
+    "logKa": 3.95,
+    "guest_vol": 95.3,
+    "cavity_vol": 164.0,
+    "PC": 0.5809
+  },
+  {
+    "guest": "n-Heptane",
+    "host": "CB6",
+    "logKa": 1.7,
+    "guest_vol": 128.9,
+    "cavity_vol": 164.0,
+    "PC": 0.7862
+  },
+  {
+    "guest": "Magnesium chloride",
+    "host": "CB6",
+    "logKa": 2.57,
+    "guest_vol": 44.0,
+    "cavity_vol": 164.0,
+    "PC": 0.2681
+  },
+  {
+    "guest": "methane",
+    "host": "CB6",
+    "logKa": 1.7,
+    "guest_vol": 28.3,
+    "cavity_vol": 164.0,
+    "PC": 0.1725
+  },
+  {
+    "guest": "Lanthanum chloride heptahydrate",
+    "host": "CB6",
+    "logKa": 4.16,
+    "guest_vol": 65.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4008
+  },
+  {
+    "guest": "8-aminooctanoic acid",
+    "host": "CB6",
+    "logKa": 3.27,
+    "guest_vol": 169.5,
+    "cavity_vol": 164.0,
+    "PC": 1.0336
+  },
+  {
+    "guest": "Ethene",
+    "host": "CB6",
+    "logKa": 2.4,
+    "guest_vol": 39.8,
+    "cavity_vol": 164.0,
+    "PC": 0.2424
+  },
+  {
+    "guest": "Isobutane-d10",
+    "host": "CB6",
+    "logKa": 5.96,
+    "guest_vol": 78.6,
+    "cavity_vol": 164.0,
+    "PC": 0.4791
+  },
+  {
+    "guest": "Spermine (fully protonated form)",
+    "host": "CB6",
+    "logKa": 10.73,
+    "guest_vol": 241.1,
+    "cavity_vol": 164.0,
+    "PC": 1.47
+  },
+  {
+    "guest": "Cyclopentanone",
+    "host": "CB6",
+    "logKa": 2.9,
+    "guest_vol": 87.6,
+    "cavity_vol": 164.0,
+    "PC": 0.534
+  },
+  {
+    "guest": "Propane-d8",
+    "host": "CB6",
+    "logKa": 5.2,
+    "guest_vol": 61.5,
+    "cavity_vol": 164.0,
+    "PC": 0.3752
+  },
+  {
+    "guest": "1-propanol",
+    "host": "CB6",
+    "logKa": 2.08,
+    "guest_vol": 70.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4313
+  },
+  {
+    "guest": "1,10-Decanediammonium",
+    "host": "CB6",
+    "logKa": 4.22,
+    "guest_vol": 209.1,
+    "cavity_vol": 164.0,
+    "PC": 1.275
+  },
+  {
+    "guest": "Spermidine (fully protonated form)",
+    "host": "CB6",
+    "logKa": 8.61,
+    "guest_vol": 174.5,
+    "cavity_vol": 164.0,
+    "PC": 1.0638
+  },
+  {
+    "guest": "cis-2-Butene",
+    "host": "CB6",
+    "logKa": 3.32,
+    "guest_vol": 72.7,
+    "cavity_vol": 164.0,
+    "PC": 0.443
+  },
+  {
+    "guest": "Furan",
+    "host": "CB6",
+    "logKa": 3.26,
+    "guest_vol": 66.2,
+    "cavity_vol": 164.0,
+    "PC": 0.4037
+  },
+  {
+    "guest": "Cadaverine (fully protonated form)",
+    "host": "CB6",
+    "logKa": 6.39,
+    "guest_vol": 125.3,
+    "cavity_vol": 164.0,
+    "PC": 0.7639
+  },
+  {
+    "guest": "1-Pentanol",
+    "host": "CB6",
+    "logKa": 2.73,
+    "guest_vol": 103.9,
+    "cavity_vol": 164.0,
+    "PC": 0.6338
+  },
+  {
+    "guest": "4-Methylbenzylamine",
+    "host": "CB6",
+    "logKa": 2.69,
+    "guest_vol": 129.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7864
+  },
+  {
+    "guest": "Butylamine (protonated form)",
+    "host": "CB6",
+    "logKa": 6.49,
+    "guest_vol": 93.4,
+    "cavity_vol": 164.0,
+    "PC": 0.5696
+  },
+  {
+    "guest": "Nickel chloride",
+    "host": "CB6",
+    "logKa": 2.59,
+    "guest_vol": 62.1,
+    "cavity_vol": 164.0,
+    "PC": 0.3786
+  },
+  {
+    "guest": "Barium cation",
+    "host": "CB6",
+    "logKa": 4.13,
+    "guest_vol": 83.2,
+    "cavity_vol": 164.0,
+    "PC": 0.5071
+  },
+  {
+    "guest": "4-Methylbenzylamine",
+    "host": "CB6",
+    "logKa": 2.7,
+    "guest_vol": 129.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7864
+  },
+  {
+    "guest": "4-Methylbenzylamine",
+    "host": "CB6",
+    "logKa": 7.7,
+    "guest_vol": 129.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7864
+  },
+  {
+    "guest": "N,N-dimethylformamide",
+    "host": "CB6",
+    "logKa": 3.26,
+    "guest_vol": 77.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4714
+  },
+  {
+    "guest": "Tetrahydrofuran",
+    "host": "CB6",
+    "logKa": 3.23,
+    "guest_vol": 77.1,
+    "cavity_vol": 164.0,
+    "PC": 0.4703
+  },
+  {
+    "guest": "Pentylamine (protonated form)",
+    "host": "CB6",
+    "logKa": 4.38,
+    "guest_vol": 110.0,
+    "cavity_vol": 164.0,
+    "PC": 0.6706
+  },
+  {
+    "guest": "Zinc chloride",
+    "host": "CB6",
+    "logKa": 2.45,
+    "guest_vol": 68.6,
+    "cavity_vol": 164.0,
+    "PC": 0.4181
+  },
+  {
+    "guest": "Xenon",
+    "host": "CB6",
+    "logKa": 3.58,
+    "guest_vol": 42.1,
+    "cavity_vol": 164.0,
+    "PC": 0.2564
+  },
+  {
+    "guest": "[2,2&#39;-bipyridin]-5-amine",
+    "host": "CB6",
+    "logKa": 5.49,
+    "guest_vol": 159.1,
+    "cavity_vol": 164.0,
+    "PC": 0.97
+  },
+  {
+    "guest": "1-dodecyl-3-methylimidazol-3-ium bromide",
+    "host": "CB6",
+    "logKa": 4.0,
+    "guest_vol": 285.8,
+    "cavity_vol": 164.0,
+    "PC": 1.7425
+  },
+  {
+    "guest": "Hexamethylenediamine",
+    "host": "CB6",
+    "logKa": 6.25,
+    "guest_vol": 136.9,
+    "cavity_vol": 164.0,
+    "PC": 0.8348
+  },
+  {
+    "guest": "Ethanol",
+    "host": "CB6",
+    "logKa": 1.41,
+    "guest_vol": 54.0,
+    "cavity_vol": 164.0,
+    "PC": 0.3292
+  },
+  {
+    "guest": "1,3-Propandiamine (fully protonated)",
+    "host": "CB6",
+    "logKa": 0.85,
+    "guest_vol": 91.7,
+    "cavity_vol": 164.0,
+    "PC": 0.5591
+  },
+  {
+    "guest": "2,2-Dimethylpropane",
+    "host": "CB6",
+    "logKa": 1.7,
+    "guest_vol": 95.3,
+    "cavity_vol": 164.0,
+    "PC": 0.5812
+  },
+  {
+    "guest": "1,3-Propandiamine (fully protonated)",
+    "host": "CB6",
+    "logKa": 2.52,
+    "guest_vol": 91.7,
+    "cavity_vol": 164.0,
+    "PC": 0.5591
+  },
+  {
+    "guest": "Hexamethylenediamine",
+    "host": "CB6",
+    "logKa": 6.59,
+    "guest_vol": 136.9,
+    "cavity_vol": 164.0,
+    "PC": 0.8348
+  },
+  {
+    "guest": "Xenon",
+    "host": "CB6",
+    "logKa": 2.34,
+    "guest_vol": 42.1,
+    "cavity_vol": 164.0,
+    "PC": 0.2564
+  },
+  {
+    "guest": "1-Ethyl-3-methylmidazolium bromide",
+    "host": "CB6",
+    "logKa": 4.0,
+    "guest_vol": 117.8,
+    "cavity_vol": 164.0,
+    "PC": 0.7183
+  },
+  {
+    "guest": "1-Heptylamine (fully protonated)",
+    "host": "CB6",
+    "logKa": 3.76,
+    "guest_vol": 143.3,
+    "cavity_vol": 164.0,
+    "PC": 0.8738
+  },
+  {
+    "guest": "Strontium chloride hexahydrate",
+    "host": "CB6",
+    "logKa": 4.91,
+    "guest_vol": 69.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4248
+  },
+  {
+    "guest": "5-aminovaleric acid",
+    "host": "CB6",
+    "logKa": 3.59,
+    "guest_vol": 119.2,
+    "cavity_vol": 164.0,
+    "PC": 0.7268
+  },
+  {
+    "guest": "Aluminum trichloride",
+    "host": "CB6",
+    "logKa": 3.81,
+    "guest_vol": 89.8,
+    "cavity_vol": 164.0,
+    "PC": 0.5476
+  },
+  {
+    "guest": "trans-2-Butene",
+    "host": "CB6",
+    "logKa": 2.51,
+    "guest_vol": 72.7,
+    "cavity_vol": 164.0,
+    "PC": 0.443
+  },
+  {
+    "guest": "Furan",
+    "host": "CB6",
+    "logKa": 4.45,
+    "guest_vol": 66.2,
+    "cavity_vol": 164.0,
+    "PC": 0.4037
+  },
+  {
+    "guest": "1-Butene",
+    "host": "CB6",
+    "logKa": 3.11,
+    "guest_vol": 73.0,
+    "cavity_vol": 164.0,
+    "PC": 0.4451
+  },
+  {
+    "guest": "Xenon",
+    "host": "CB6",
+    "logKa": 3.4,
+    "guest_vol": 42.1,
+    "cavity_vol": 164.0,
+    "PC": 0.2564
+  },
+  {
+    "guest": "1-methyl-3-propylimidazol-1-ium;bromide",
+    "host": "CB6",
+    "logKa": 4.0,
+    "guest_vol": 134.5,
+    "cavity_vol": 164.0,
+    "PC": 0.8204
+  },
+  {
+    "guest": "Propylene",
+    "host": "CB6",
+    "logKa": 3.15,
+    "guest_vol": 56.3,
+    "cavity_vol": 164.0,
+    "PC": 0.3432
+  },
+  {
+    "guest": "1-Heptanol",
+    "host": "CB6",
+    "logKa": 2.64,
+    "guest_vol": 137.6,
+    "cavity_vol": 164.0,
+    "PC": 0.8393
+  },
+  {
+    "guest": "ethane",
+    "host": "CB6",
+    "logKa": 3.41,
+    "guest_vol": 45.0,
+    "cavity_vol": 164.0,
+    "PC": 0.2745
+  },
+  {
+    "guest": "Cyclohexylmethanaminium",
+    "host": "CB6",
+    "logKa": 1.0,
+    "guest_vol": 132.4,
+    "cavity_vol": 164.0,
+    "PC": 0.8075
+  },
+  {
+    "guest": "p-tolylmethanaminium",
+    "host": "CB6",
+    "logKa": 2.51,
+    "guest_vol": 131.7,
+    "cavity_vol": 164.0,
+    "PC": 0.8031
+  },
+  {
+    "guest": "Nonanoic acid",
+    "host": "CB6",
+    "logKa": 2.79,
+    "guest_vol": 173.8,
+    "cavity_vol": 164.0,
+    "PC": 1.0596
+  },
+  {
+    "guest": "1-propanol",
+    "host": "CB6",
+    "logKa": 0.7,
+    "guest_vol": 70.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4313
+  },
+  {
+    "guest": "1-Pentanol",
+    "host": "CB6",
+    "logKa": 2.61,
+    "guest_vol": 103.9,
+    "cavity_vol": 164.0,
+    "PC": 0.6338
+  },
+  {
+    "guest": "n-Hexane",
+    "host": "CB6",
+    "logKa": 1.7,
+    "guest_vol": 112.0,
+    "cavity_vol": 164.0,
+    "PC": 0.6828
+  },
+  {
+    "guest": "Ethylamine (protonated form)",
+    "host": "CB6",
+    "logKa": 3.0,
+    "guest_vol": 59.7,
+    "cavity_vol": 164.0,
+    "PC": 0.3643
+  },
+  {
+    "guest": "Barium chloride",
+    "host": "CB6",
+    "logKa": 5.29,
+    "guest_vol": 83.2,
+    "cavity_vol": 164.0,
+    "PC": 0.5071
+  },
+  {
+    "guest": "Propane",
+    "host": "CB6",
+    "logKa": 5.26,
+    "guest_vol": 61.5,
+    "cavity_vol": 164.0,
+    "PC": 0.3752
+  },
+  {
+    "guest": "Cyclohexane",
+    "host": "CB6",
+    "logKa": 1.4,
+    "guest_vol": 100.5,
+    "cavity_vol": 164.0,
+    "PC": 0.613
+  },
+  {
+    "guest": "Sodium chloride",
+    "host": "CB6",
+    "logKa": 3.89,
+    "guest_vol": 57.0,
+    "cavity_vol": 164.0,
+    "PC": 0.3475
+  },
+  {
+    "guest": "cyclobutylmethanaminium",
+    "host": "CB6",
+    "logKa": 5.57,
+    "guest_vol": 100.9,
+    "cavity_vol": 164.0,
+    "PC": 0.6153
+  },
+  {
+    "guest": "Cyclohexane",
+    "host": "CB6",
+    "logKa": 3.3,
+    "guest_vol": 100.5,
+    "cavity_vol": 164.0,
+    "PC": 0.613
+  },
+  {
+    "guest": "6-phenylpyridin-3-amine",
+    "host": "CB6",
+    "logKa": 4.2,
+    "guest_vol": 163.3,
+    "cavity_vol": 164.0,
+    "PC": 0.9958
+  },
+  {
+    "guest": "Silver chloride",
+    "host": "CB6",
+    "logKa": 3.87,
+    "guest_vol": 44.7,
+    "cavity_vol": 164.0,
+    "PC": 0.2726
+  },
+  {
+    "guest": "Coptisine",
+    "host": "CB6",
+    "logKa": 4.11,
+    "guest_vol": 268.0,
+    "cavity_vol": 164.0,
+    "PC": 1.6339
+  },
+  {
+    "guest": "n-Butane",
+    "host": "CB6",
+    "logKa": 3.64,
+    "guest_vol": 78.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4775
+  },
+  {
+    "guest": "Cadaverine (fully protonated form)",
+    "host": "CB6",
+    "logKa": 10.49,
+    "guest_vol": 125.3,
+    "cavity_vol": 164.0,
+    "PC": 0.7639
+  },
+  {
+    "guest": "2-Methylpentane",
+    "host": "CB6",
+    "logKa": 1.7,
+    "guest_vol": 112.3,
+    "cavity_vol": 164.0,
+    "PC": 0.6847
+  },
+  {
+    "guest": "Pentylamine (protonated form)",
+    "host": "CB6",
+    "logKa": 6.34,
+    "guest_vol": 110.0,
+    "cavity_vol": 164.0,
+    "PC": 0.6706
+  },
+  {
+    "guest": "1-heptyl-3-methylimidazol-3-ium bromide",
+    "host": "CB6",
+    "logKa": 4.0,
+    "guest_vol": 201.7,
+    "cavity_vol": 164.0,
+    "PC": 1.2299
+  },
+  {
+    "guest": "1-methyl-3-pentylimidazol-1-ium bromide",
+    "host": "CB6",
+    "logKa": 5.34,
+    "guest_vol": 168.3,
+    "cavity_vol": 164.0,
+    "PC": 1.026
+  },
+  {
+    "guest": "1H-\u200bImidazolium, 3-\u200bbutyl-\u200b1-\u200bmethyl-\u200b, bromide",
+    "host": "CB6",
+    "logKa": 5.13,
+    "guest_vol": 151.4,
+    "cavity_vol": 164.0,
+    "PC": 0.9229
+  },
+  {
+    "guest": "2-Methylpropane",
+    "host": "CB6",
+    "logKa": 5.93,
+    "guest_vol": 78.6,
+    "cavity_vol": 164.0,
+    "PC": 0.4791
+  },
+  {
+    "guest": "Rubidium chloride",
+    "host": "CB6",
+    "logKa": 4.3,
+    "guest_vol": 23.8,
+    "cavity_vol": 164.0,
+    "PC": 0.1448
+  },
+  {
+    "guest": "1-propylamine (fully portonated)",
+    "host": "CB6",
+    "logKa": 5.19,
+    "guest_vol": 76.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4652
+  },
+  {
+    "guest": "Isobutene",
+    "host": "CB6",
+    "logKa": 4.92,
+    "guest_vol": 72.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4433
+  },
+  {
+    "guest": "Ammonium chloride",
+    "host": "CB6",
+    "logKa": 3.79,
+    "guest_vol": 25.9,
+    "cavity_vol": 164.0,
+    "PC": 0.158
+  },
+  {
+    "guest": "Ytterbium(III) chloride",
+    "host": "CB6",
+    "logKa": 3.5,
+    "guest_vol": 101.9,
+    "cavity_vol": 164.0,
+    "PC": 0.6211
+  },
+  {
+    "guest": "Pentane",
+    "host": "CB6",
+    "logKa": 2.15,
+    "guest_vol": 95.3,
+    "cavity_vol": 164.0,
+    "PC": 0.5809
+  },
+  {
+    "guest": "5-aminopentan-1-ol",
+    "host": "CB6",
+    "logKa": 2.84,
+    "guest_vol": 116.7,
+    "cavity_vol": 164.0,
+    "PC": 0.7116
+  },
+  {
+    "guest": "n-Heptane",
+    "host": "CB6",
+    "logKa": 3.3,
+    "guest_vol": 128.9,
+    "cavity_vol": 164.0,
+    "PC": 0.7862
+  },
+  {
+    "guest": "Isobutene",
+    "host": "CB6",
+    "logKa": 3.28,
+    "guest_vol": 72.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4433
+  },
+  {
+    "guest": "Cyclopentane",
+    "host": "CB6",
+    "logKa": 6.11,
+    "guest_vol": 84.6,
+    "cavity_vol": 164.0,
+    "PC": 0.516
+  },
+  {
+    "guest": "1-Butanol",
+    "host": "CB6",
+    "logKa": 3.09,
+    "guest_vol": 87.6,
+    "cavity_vol": 164.0,
+    "PC": 0.5339
+  },
+  {
+    "guest": "Pyrrole",
+    "host": "CB6",
+    "logKa": 4.56,
+    "guest_vol": 68.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4186
+  },
+  {
+    "guest": "Barium cation",
+    "host": "CB6",
+    "logKa": 4.39,
+    "guest_vol": 83.2,
+    "cavity_vol": 164.0,
+    "PC": 0.5071
+  },
+  {
+    "guest": "2,3-Dimethylbutane",
+    "host": "CB6",
+    "logKa": 3.3,
+    "guest_vol": 112.1,
+    "cavity_vol": 164.0,
+    "PC": 0.6838
+  },
+  {
+    "guest": "Iron(III) chloride",
+    "host": "CB6",
+    "logKa": 5.17,
+    "guest_vol": 79.1,
+    "cavity_vol": 164.0,
+    "PC": 0.4821
+  },
+  {
+    "guest": "3,3-dimethylbutan-1-aminium",
+    "host": "CB6",
+    "logKa": 1.24,
+    "guest_vol": 126.9,
+    "cavity_vol": 164.0,
+    "PC": 0.7738
+  },
+  {
+    "guest": "Potassium chloride",
+    "host": "CB6",
+    "logKa": 3.81,
+    "guest_vol": 23.8,
+    "cavity_vol": 164.0,
+    "PC": 0.1448
+  },
+  {
+    "guest": "o-tolylmethanaminium",
+    "host": "CB6",
+    "logKa": 1.3,
+    "guest_vol": 131.7,
+    "cavity_vol": 164.0,
+    "PC": 0.803
+  },
+  {
+    "guest": "6-Phenylamino-naphthalene-2-sulfonic acid anion",
+    "host": "CB6",
+    "logKa": 1.72,
+    "guest_vol": 251.1,
+    "cavity_vol": 164.0,
+    "PC": 1.5313
+  },
+  {
+    "guest": "4-(2-pyridyl)aniline",
+    "host": "CB6",
+    "logKa": 4.8,
+    "guest_vol": 162.9,
+    "cavity_vol": 164.0,
+    "PC": 0.9932
+  },
+  {
+    "guest": "trans-4-[4-(Dimethylamino)styryl]-1-methylpyridinium iodide",
+    "host": "CB6",
+    "logKa": 6.9,
+    "guest_vol": 243.7,
+    "cavity_vol": 164.0,
+    "PC": 1.486
+  },
+  {
+    "guest": "1-propylamine (fully portonated)",
+    "host": "CB6",
+    "logKa": 3.93,
+    "guest_vol": 76.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4652
+  },
+  {
+    "guest": "1,8-Octanediammonium",
+    "host": "CB6",
+    "logKa": 6.03,
+    "guest_vol": 175.4,
+    "cavity_vol": 164.0,
+    "PC": 1.0693
+  },
+  {
+    "guest": "Cyclopentane",
+    "host": "CB6",
+    "logKa": 4.4,
+    "guest_vol": 84.6,
+    "cavity_vol": 164.0,
+    "PC": 0.516
+  },
+  {
+    "guest": "3-aminopropanoic acid",
+    "host": "CB6",
+    "logKa": 3.37,
+    "guest_vol": 85.8,
+    "cavity_vol": 164.0,
+    "PC": 0.523
+  },
+  {
+    "guest": "Benzene",
+    "host": "CB6",
+    "logKa": 1.7,
+    "guest_vol": 83.4,
+    "cavity_vol": 164.0,
+    "PC": 0.5085
+  },
+  {
+    "guest": "Sodium cation",
+    "host": "CB6",
+    "logKa": 3.47,
+    "guest_vol": 57.0,
+    "cavity_vol": 164.0,
+    "PC": 0.3475
+  },
+  {
+    "guest": "Acetic acid",
+    "host": "CB6",
+    "logKa": 2.18,
+    "guest_vol": 56.8,
+    "cavity_vol": 164.0,
+    "PC": 0.3463
+  },
+  {
+    "guest": "1-propanol",
+    "host": "CB6",
+    "logKa": 2.61,
+    "guest_vol": 70.7,
+    "cavity_vol": 164.0,
+    "PC": 0.4313
+  },
+  {
+    "guest": "4-(2-pyridyl)aniline",
+    "host": "CB6",
+    "logKa": 4.8,
+    "guest_vol": 162.9,
+    "cavity_vol": 164.0,
+    "PC": 0.9932
+  },
+  {
+    "guest": "Ethyne",
+    "host": "CB6",
+    "logKa": 1.67,
+    "guest_vol": 34.9,
+    "cavity_vol": 164.0,
+    "PC": 0.2128
+  },
+  {
+    "guest": "1-propylamine (fully portonated)",
+    "host": "CB6",
+    "logKa": 4.32,
+    "guest_vol": 76.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4652
+  },
+  {
+    "guest": "1-propylamine (fully portonated)",
+    "host": "CB6",
+    "logKa": 5.19,
+    "guest_vol": 76.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4652
+  },
+  {
+    "guest": "2-Methylpentane",
+    "host": "CB6",
+    "logKa": 3.3,
+    "guest_vol": 112.3,
+    "cavity_vol": 164.0,
+    "PC": 0.6847
+  },
+  {
+    "guest": "1-methyl-3-octylimidazol-1-ium;bromide",
+    "host": "CB6",
+    "logKa": 4.0,
+    "guest_vol": 218.5,
+    "cavity_vol": 164.0,
+    "PC": 1.3321
+  },
+  {
+    "guest": "4-Methylbenzylamine",
+    "host": "CB6",
+    "logKa": 2.75,
+    "guest_vol": 129.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7864
+  },
+  {
+    "guest": "6-Azaniumylhexylazanium",
+    "host": "CB6",
+    "logKa": 8.46,
+    "guest_vol": 141.7,
+    "cavity_vol": 164.0,
+    "PC": 0.864
+  },
+  {
+    "guest": "4-Methylbenzylamine",
+    "host": "CB6",
+    "logKa": 2.65,
+    "guest_vol": 129.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7864
+  },
+  {
+    "guest": "2,3-Dimethylbutane",
+    "host": "CB6",
+    "logKa": 1.7,
+    "guest_vol": 112.1,
+    "cavity_vol": 164.0,
+    "PC": 0.6838
+  },
+  {
+    "guest": "ethane",
+    "host": "CB6",
+    "logKa": 4.38,
+    "guest_vol": 45.0,
+    "cavity_vol": 164.0,
+    "PC": 0.2745
+  },
+  {
+    "guest": "2-Methylpropane",
+    "host": "CB6",
+    "logKa": 4.36,
+    "guest_vol": 78.6,
+    "cavity_vol": 164.0,
+    "PC": 0.4791
+  },
+  {
+    "guest": "[2,2&#39;-bipyridin]-5-amine",
+    "host": "CB6",
+    "logKa": 4.87,
+    "guest_vol": 159.1,
+    "cavity_vol": 164.0,
+    "PC": 0.97
+  },
+  {
+    "guest": "benzylazanium",
+    "host": "CB6",
+    "logKa": 2.43,
+    "guest_vol": 115.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7011
+  },
+  {
+    "guest": "Copper chloride",
+    "host": "CB6",
+    "logKa": 2.88,
+    "guest_vol": 62.1,
+    "cavity_vol": 164.0,
+    "PC": 0.3786
+  },
+  {
+    "guest": "trans-4-[4-(Dimethylamino)styryl]-1-methylpyridinium iodide",
+    "host": "CB6",
+    "logKa": 6.9,
+    "guest_vol": 243.7,
+    "cavity_vol": 164.0,
+    "PC": 1.486
+  },
+  {
+    "guest": "Dimethyl sulfoxide",
+    "host": "CB6",
+    "logKa": 3.08,
+    "guest_vol": 72.2,
+    "cavity_vol": 164.0,
+    "PC": 0.44
+  },
+  {
+    "guest": "Calcium chloride",
+    "host": "CB6",
+    "logKa": 4.22,
+    "guest_vol": 57.0,
+    "cavity_vol": 164.0,
+    "PC": 0.3475
+  },
+  {
+    "guest": "Cadaverine (fully protonated form)",
+    "host": "CB6",
+    "logKa": 8.18,
+    "guest_vol": 125.3,
+    "cavity_vol": 164.0,
+    "PC": 0.7639
+  },
+  {
+    "guest": "Ethene",
+    "host": "CB6",
+    "logKa": 3.59,
+    "guest_vol": 39.8,
+    "cavity_vol": 164.0,
+    "PC": 0.2424
+  },
+  {
+    "guest": "Propylene",
+    "host": "CB6",
+    "logKa": 4.4,
+    "guest_vol": 56.3,
+    "cavity_vol": 164.0,
+    "PC": 0.3432
+  },
+  {
+    "guest": "4-Methylbenzylamine",
+    "host": "CB6",
+    "logKa": 2.93,
+    "guest_vol": 129.0,
+    "cavity_vol": 164.0,
+    "PC": 0.7864
+  },
+  {
+    "guest": "Urea",
+    "host": "CB6",
+    "logKa": 1.66,
+    "guest_vol": 54.8,
+    "cavity_vol": 164.0,
+    "PC": 0.3344
+  },
+  {
+    "guest": "Sanguinarine",
+    "host": "CB6",
+    "logKa": 3.83,
+    "guest_vol": 277.5,
+    "cavity_vol": 164.0,
+    "PC": 1.692
+  },
+  {
+    "guest": "cylopenthylmethanaminium",
+    "host": "CB6",
+    "logKa": 5.52,
+    "guest_vol": 116.1,
+    "cavity_vol": 164.0,
+    "PC": 0.708
+  },
+  {
+    "guest": "1-propylamine (fully portonated)",
+    "host": "CB6",
+    "logKa": 5.19,
+    "guest_vol": 76.3,
+    "cavity_vol": 164.0,
+    "PC": 0.4652
+  },
+  {
+    "guest": "1,7-Heptanediammonium",
+    "host": "CB6",
+    "logKa": 4.64,
+    "guest_vol": 158.6,
+    "cavity_vol": 164.0,
+    "PC": 0.9669
+  },
+  {
+    "guest": "[2,2&#39;-bipyridin]-5-amine",
+    "host": "CB6",
+    "logKa": 5.49,
+    "guest_vol": 159.1,
+    "cavity_vol": 164.0,
+    "PC": 0.97
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.54,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Methylene Blue",
+    "host": "CB7",
+    "logKa": 7.1,
+    "guest_vol": 263.6,
+    "cavity_vol": 279.0,
+    "PC": 0.9449
+  },
+  {
+    "guest": "Copper chloride",
+    "host": "CB7",
+    "logKa": 3.75,
+    "guest_vol": 62.1,
+    "cavity_vol": 279.0,
+    "PC": 0.2226
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 3.22,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "5-Bromo-2-adamantanone",
+    "host": "CB7",
+    "logKa": 8.49,
+    "guest_vol": 168.9,
+    "cavity_vol": 279.0,
+    "PC": 0.6054
+  },
+  {
+    "guest": "beta-Pinene",
+    "host": "CB7",
+    "logKa": 1.0,
+    "guest_vol": 154.1,
+    "cavity_vol": 279.0,
+    "PC": 0.5523
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 6.21,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "Cholesterol",
+    "host": "CB7",
+    "logKa": 5.91,
+    "guest_vol": 422.7,
+    "cavity_vol": 279.0,
+    "PC": 1.5152
+  },
+  {
+    "guest": "2-Adamantanone",
+    "host": "CB7",
+    "logKa": 10.59,
+    "guest_vol": 148.9,
+    "cavity_vol": 279.0,
+    "PC": 0.5338
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 7.05,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 9.15,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "p-xylylenediamine dihydrochloride",
+    "host": "CB7",
+    "logKa": 9.52,
+    "guest_vol": 141.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5072
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 7.05,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "Thiabendazole",
+    "host": "CB7",
+    "logKa": 2.18,
+    "guest_vol": 167.9,
+    "cavity_vol": 279.0,
+    "PC": 0.6019
+  },
+  {
+    "guest": "Recombinant insulin human",
+    "host": "CB7",
+    "logKa": 6.18,
+    "guest_vol": 5225.9,
+    "cavity_vol": 279.0,
+    "PC": 18.7308
+  },
+  {
+    "guest": "Sodium cation",
+    "host": "CB7",
+    "logKa": 2.11,
+    "guest_vol": 57.0,
+    "cavity_vol": 279.0,
+    "PC": 0.2042
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.04,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Rubidium chloride",
+    "host": "CB7",
+    "logKa": 3.43,
+    "guest_vol": 23.8,
+    "cavity_vol": 279.0,
+    "PC": 0.0851
+  },
+  {
+    "guest": "(+)-fenchone",
+    "host": "CB7",
+    "logKa": 7.45,
+    "guest_vol": 160.9,
+    "cavity_vol": 279.0,
+    "PC": 0.5766
+  },
+  {
+    "guest": "2,7-bis(2-(trimethyl-azaneyl)ethyl)pyrene-1,3,6,8(2H,7H)-tetraone",
+    "host": "CB7",
+    "logKa": 5.03,
+    "guest_vol": 415.9,
+    "cavity_vol": 279.0,
+    "PC": 1.4908
+  },
+  {
+    "guest": "bis(dimethylpyridinium)diarylethene (open form)",
+    "host": "CB7",
+    "logKa": 8.83,
+    "guest_vol": 410.9,
+    "cavity_vol": 279.0,
+    "PC": 1.4728
+  },
+  {
+    "guest": "(+)-fenchone",
+    "host": "CB7",
+    "logKa": 7.45,
+    "guest_vol": 160.9,
+    "cavity_vol": 279.0,
+    "PC": 0.5766
+  },
+  {
+    "guest": "Barium cation",
+    "host": "CB7",
+    "logKa": 5.11,
+    "guest_vol": 83.2,
+    "cavity_vol": 279.0,
+    "PC": 0.2981
+  },
+  {
+    "guest": "chromium(3+)",
+    "host": "CB7",
+    "logKa": 4.36,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "(R)-1-(2-naphthyl)ethylammonium",
+    "host": "CB7",
+    "logKa": 7.03,
+    "guest_vol": 175.5,
+    "cavity_vol": 279.0,
+    "PC": 0.6291
+  },
+  {
+    "guest": "Aluminum cation",
+    "host": "CB7",
+    "logKa": 3.99,
+    "guest_vol": 39.6,
+    "cavity_vol": 279.0,
+    "PC": 0.1418
+  },
+  {
+    "guest": "Melamine",
+    "host": "CB7",
+    "logKa": 4.17,
+    "guest_vol": 105.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3786
+  },
+  {
+    "guest": "Mercury cation",
+    "host": "CB7",
+    "logKa": 3.0,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "6,7-diazabicyclo(3.2.2)non-6-ene",
+    "host": "CB7",
+    "logKa": 7.32,
+    "guest_vol": 126.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4522
+  },
+  {
+    "guest": "tBu Phe",
+    "host": "CB7",
+    "logKa": 6.6,
+    "guest_vol": 224.8,
+    "cavity_vol": 279.0,
+    "PC": 0.8056
+  },
+  {
+    "guest": "Tetramethyl benzobis (imidazolium)",
+    "host": "CB7",
+    "logKa": 3.82,
+    "guest_vol": 205.8,
+    "cavity_vol": 279.0,
+    "PC": 0.7376
+  },
+  {
+    "guest": "Lithium chloride",
+    "host": "CB7",
+    "logKa": 2.34,
+    "guest_vol": 44.0,
+    "cavity_vol": 279.0,
+    "PC": 0.1576
+  },
+  {
+    "guest": "Eucalyptol",
+    "host": "CB7",
+    "logKa": 5.93,
+    "guest_vol": 166.1,
+    "cavity_vol": 279.0,
+    "PC": 0.5954
+  },
+  {
+    "guest": "Rhodamine methylester chloride",
+    "host": "CB7",
+    "logKa": 3.0,
+    "guest_vol": 305.5,
+    "cavity_vol": 279.0,
+    "PC": 1.0948
+  },
+  {
+    "guest": "bicyclo[2.2.2]octane-1,4-diyldimethanamine",
+    "host": "CB7",
+    "logKa": 14.3,
+    "guest_vol": 181.6,
+    "cavity_vol": 279.0,
+    "PC": 0.6511
+  },
+  {
+    "guest": "Dimethyl sulfoxide",
+    "host": "CB7",
+    "logKa": 2.11,
+    "guest_vol": 72.2,
+    "cavity_vol": 279.0,
+    "PC": 0.2586
+  },
+  {
+    "guest": "2,2,6-trimethylcyclohexan-1-one",
+    "host": "CB7",
+    "logKa": 6.93,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "1-methyl-3-[[4-[(3-methylimidazol-3-ium-1-yl)methyl]phenyl]methyl]imidazol-1-ium",
+    "host": "CB7",
+    "logKa": 6.42,
+    "guest_vol": 262.6,
+    "cavity_vol": 279.0,
+    "PC": 0.9413
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB7",
+    "logKa": 3.28,
+    "guest_vol": 187.0,
+    "cavity_vol": 279.0,
+    "PC": 0.6703
+  },
+  {
+    "guest": "Aluminum cation",
+    "host": "CB7",
+    "logKa": 4.19,
+    "guest_vol": 39.6,
+    "cavity_vol": 279.0,
+    "PC": 0.1418
+  },
+  {
+    "guest": "6-bromo-1,2,3,6,7,7a-hexahydro-3a,6-epoxyisoindole",
+    "host": "CB7",
+    "logKa": 6.46,
+    "guest_vol": 150.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5389
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB7",
+    "logKa": 3.15,
+    "guest_vol": 187.0,
+    "cavity_vol": 279.0,
+    "PC": 0.6703
+  },
+  {
+    "guest": "6-chloro-1,2,3,6,7,7a-hexahydro-3a,6-epoxyisoindole",
+    "host": "CB7",
+    "logKa": 6.8,
+    "guest_vol": 146.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5232
+  },
+  {
+    "guest": "Strontium chloride hexahydrate",
+    "host": "CB7",
+    "logKa": 4.79,
+    "guest_vol": 69.7,
+    "cavity_vol": 279.0,
+    "PC": 0.2497
+  },
+  {
+    "guest": "paraquat",
+    "host": "CB7",
+    "logKa": 5.54,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "1-Methyl-4-(pyridin-4-yl)pyridinium",
+    "host": "CB7",
+    "logKa": 6.08,
+    "guest_vol": 166.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5951
+  },
+  {
+    "guest": "L-Ornithine",
+    "host": "CB7",
+    "logKa": 2.58,
+    "guest_vol": 131.7,
+    "cavity_vol": 279.0,
+    "PC": 0.4722
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 8.38,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "bicyclo[2.2.1]heptan-2-one",
+    "host": "CB7",
+    "logKa": 8.19,
+    "guest_vol": 111.0,
+    "cavity_vol": 279.0,
+    "PC": 0.398
+  },
+  {
+    "guest": "Barium cation",
+    "host": "CB7",
+    "logKa": 4.05,
+    "guest_vol": 83.2,
+    "cavity_vol": 279.0,
+    "PC": 0.2981
+  },
+  {
+    "guest": "1,4-Butanediammonium",
+    "host": "CB7",
+    "logKa": 5.57,
+    "guest_vol": 108.1,
+    "cavity_vol": 279.0,
+    "PC": 0.3876
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 4.9,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "Bicyclo[2.2.2]octane-1,4-diyldimethanol",
+    "host": "CB7",
+    "logKa": 9.79,
+    "guest_vol": 174.6,
+    "cavity_vol": 279.0,
+    "PC": 0.6259
+  },
+  {
+    "guest": "Tetradecyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 6.63,
+    "guest_vol": 312.7,
+    "cavity_vol": 279.0,
+    "PC": 1.1209
+  },
+  {
+    "guest": "L-Arginine",
+    "host": "CB7",
+    "logKa": 3.81,
+    "guest_vol": 166.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5961
+  },
+  {
+    "guest": "L-Lysine",
+    "host": "CB7",
+    "logKa": 2.32,
+    "guest_vol": 148.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5323
+  },
+  {
+    "guest": "D/L-Tryptophan",
+    "host": "CB7",
+    "logKa": 3.2,
+    "guest_vol": 186.8,
+    "cavity_vol": 279.0,
+    "PC": 0.6696
+  },
+  {
+    "guest": "Silver chloride",
+    "host": "CB7",
+    "logKa": 3.54,
+    "guest_vol": 44.7,
+    "cavity_vol": 279.0,
+    "PC": 0.1602
+  },
+  {
+    "guest": "Acridine Yellow G",
+    "host": "CB7",
+    "logKa": 10.16,
+    "guest_vol": 223.1,
+    "cavity_vol": 279.0,
+    "PC": 0.7997
+  },
+  {
+    "guest": "4-((1E,3E)-4-(4-(dimethylamino)phenyl)buta-1,3-dien-1-yl)-1-methylpyridin-1-ium",
+    "host": "CB7",
+    "logKa": 9.61,
+    "guest_vol": 271.4,
+    "cavity_vol": 279.0,
+    "PC": 0.9727
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 3.9,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "Rhodamine B",
+    "host": "CB7",
+    "logKa": 3.16,
+    "guest_vol": 425.2,
+    "cavity_vol": 279.0,
+    "PC": 1.5242
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 9.52,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "Pyrrole",
+    "host": "CB7",
+    "logKa": 3.23,
+    "guest_vol": 68.7,
+    "cavity_vol": 279.0,
+    "PC": 0.2461
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB7",
+    "logKa": 3.2,
+    "guest_vol": 187.0,
+    "cavity_vol": 279.0,
+    "PC": 0.6703
+  },
+  {
+    "guest": "N-((5-bromofuran-2-yl)methyl)prop-2-en-1-amine",
+    "host": "CB7",
+    "logKa": 6.0,
+    "guest_vol": 159.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5728
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.38,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Decyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 6.41,
+    "guest_vol": 245.6,
+    "cavity_vol": 279.0,
+    "PC": 0.8802
+  },
+  {
+    "guest": "4-((1E,3E)-4-(4-(dimethylamino)phenyl)buta-1,3-dien-1-yl)-1-methylpyridin-1-ium",
+    "host": "CB7",
+    "logKa": 10.58,
+    "guest_vol": 271.4,
+    "cavity_vol": 279.0,
+    "PC": 0.9727
+  },
+  {
+    "guest": "1-(3,5-dimethylbenzyl)-1&#39;-(2-(2-(2-methoxyethoxy)ethoxy)ethyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 5.04,
+    "guest_vol": 420.2,
+    "cavity_vol": 279.0,
+    "PC": 1.506
+  },
+  {
+    "guest": "Calcium chloride",
+    "host": "CB7",
+    "logKa": 4.01,
+    "guest_vol": 57.0,
+    "cavity_vol": 279.0,
+    "PC": 0.2042
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 7.41,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "N,N-dimethylformamide",
+    "host": "CB7",
+    "logKa": 2.79,
+    "guest_vol": 77.3,
+    "cavity_vol": 279.0,
+    "PC": 0.2771
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 3.84,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "Dopamine",
+    "host": "CB7",
+    "logKa": 5.67,
+    "guest_vol": 146.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5248
+  },
+  {
+    "guest": "Cyclopentanone",
+    "host": "CB7",
+    "logKa": 5.52,
+    "guest_vol": 87.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3139
+  },
+  {
+    "guest": "Lanthanum chloride heptahydrate",
+    "host": "CB7",
+    "logKa": 5.25,
+    "guest_vol": 65.7,
+    "cavity_vol": 279.0,
+    "PC": 0.2356
+  },
+  {
+    "guest": "Ferrocene",
+    "host": "CB7",
+    "logKa": 6.0,
+    "guest_vol": 70.8,
+    "cavity_vol": 279.0,
+    "PC": 0.2537
+  },
+  {
+    "guest": "Geranylamine",
+    "host": "CB7",
+    "logKa": 6.28,
+    "guest_vol": 179.8,
+    "cavity_vol": 279.0,
+    "PC": 0.6444
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 5.18,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "Glycyl-dl-Tryptophan",
+    "host": "CB7",
+    "logKa": 2.45,
+    "guest_vol": 235.5,
+    "cavity_vol": 279.0,
+    "PC": 0.844
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.23,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Cadaverine (fully protonated form)",
+    "host": "CB7",
+    "logKa": 7.15,
+    "guest_vol": 125.3,
+    "cavity_vol": 279.0,
+    "PC": 0.449
+  },
+  {
+    "guest": "Thr-Gly-Ser-Phe-Met-NH2",
+    "host": "CB7",
+    "logKa": 4.28,
+    "guest_vol": 488.8,
+    "cavity_vol": 279.0,
+    "PC": 1.7519
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 4.0,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "L-Phe-L-leucine-amide",
+    "host": "CB7",
+    "logKa": 7.43,
+    "guest_vol": 277.9,
+    "cavity_vol": 279.0,
+    "PC": 0.9959
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB7",
+    "logKa": 7.03,
+    "guest_vol": 208.3,
+    "cavity_vol": 279.0,
+    "PC": 0.7467
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 6.75,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "AM Phe",
+    "host": "CB7",
+    "logKa": 6.34,
+    "guest_vol": 187.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6713
+  },
+  {
+    "guest": "((3R)-2-amino-3-hydroxybutanoyl)glycyl-L-alanyl-L-phenylalanyl-L-leucine",
+    "host": "CB7",
+    "logKa": 3.26,
+    "guest_vol": 476.3,
+    "cavity_vol": 279.0,
+    "PC": 1.7073
+  },
+  {
+    "guest": "Benzimidazole",
+    "host": "CB7",
+    "logKa": 3.18,
+    "guest_vol": 108.2,
+    "cavity_vol": 279.0,
+    "PC": 0.3876
+  },
+  {
+    "guest": "paraquat",
+    "host": "CB7",
+    "logKa": 5.92,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "Methyl viologen",
+    "host": "CB7",
+    "logKa": 8.78,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "Ferrous cation",
+    "host": "CB7",
+    "logKa": 4.61,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 5.36,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "N1,N1&#39;-(bicyclo[2.2.2]octane-1,4-diylbis(methylene))bis(N3,N3-dimethylpropane-1,3-diamine)",
+    "host": "CB7",
+    "logKa": 15.08,
+    "guest_vol": 374.8,
+    "cavity_vol": 279.0,
+    "PC": 1.3433
+  },
+  {
+    "guest": "Melphalan",
+    "host": "CB7",
+    "logKa": 6.23,
+    "guest_vol": 268.8,
+    "cavity_vol": 279.0,
+    "PC": 0.9633
+  },
+  {
+    "guest": "1,4-Butanediammonium",
+    "host": "CB7",
+    "logKa": 5.57,
+    "guest_vol": 108.1,
+    "cavity_vol": 279.0,
+    "PC": 0.3876
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB7",
+    "logKa": 4.38,
+    "guest_vol": 166.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5951
+  },
+  {
+    "guest": "Thr-Gly-D-Ala-Phe-Met-NH2",
+    "host": "CB7",
+    "logKa": 4.41,
+    "guest_vol": 483.9,
+    "cavity_vol": 279.0,
+    "PC": 1.7346
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 6.01,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 6.25,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "Zinc chloride",
+    "host": "CB7",
+    "logKa": 3.4,
+    "guest_vol": 68.6,
+    "cavity_vol": 279.0,
+    "PC": 0.2458
+  },
+  {
+    "guest": "Ferrous cation",
+    "host": "CB7",
+    "logKa": 3.86,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Magnesium chloride",
+    "host": "CB7",
+    "logKa": 3.24,
+    "guest_vol": 44.0,
+    "cavity_vol": 279.0,
+    "PC": 0.1576
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 6.73,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Mercury cation",
+    "host": "CB7",
+    "logKa": 5.48,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Phe-Gly-Gly",
+    "host": "CB7",
+    "logKa": 6.51,
+    "guest_vol": 254.6,
+    "cavity_vol": 279.0,
+    "PC": 0.9124
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 9.2,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 9.43,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "AM Phe-Gly-Gly",
+    "host": "CB7",
+    "logKa": 9.02,
+    "guest_vol": 284.4,
+    "cavity_vol": 279.0,
+    "PC": 1.0195
+  },
+  {
+    "guest": "Magnesium cation",
+    "host": "CB7",
+    "logKa": 1.62,
+    "guest_vol": 44.0,
+    "cavity_vol": 279.0,
+    "PC": 0.1576
+  },
+  {
+    "guest": "Pentane-1,5-diamine",
+    "host": "CB7",
+    "logKa": 7.15,
+    "guest_vol": 120.0,
+    "cavity_vol": 279.0,
+    "PC": 0.43
+  },
+  {
+    "guest": "Pentane-1,5-diamine",
+    "host": "CB7",
+    "logKa": 8.64,
+    "guest_vol": 120.0,
+    "cavity_vol": 279.0,
+    "PC": 0.43
+  },
+  {
+    "guest": "Methyl viologen",
+    "host": "CB7",
+    "logKa": 7.45,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "Methyl viologen",
+    "host": "CB7",
+    "logKa": 8.84,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "Tetrakis(pyridin-4-ylsulfanyl)-phthalocyaninato zinc(II)",
+    "host": "CB7",
+    "logKa": 4.87,
+    "guest_vol": 852.4,
+    "cavity_vol": 279.0,
+    "PC": 3.0551
+  },
+  {
+    "guest": "Zinc cation",
+    "host": "CB7",
+    "logKa": 2.34,
+    "guest_vol": 39.6,
+    "cavity_vol": 279.0,
+    "PC": 0.1418
+  },
+  {
+    "guest": "Sanguinarine",
+    "host": "CB7",
+    "logKa": 6.15,
+    "guest_vol": 277.5,
+    "cavity_vol": 279.0,
+    "PC": 0.9946
+  },
+  {
+    "guest": "Testosterone",
+    "host": "CB7",
+    "logKa": 3.0,
+    "guest_vol": 291.6,
+    "cavity_vol": 279.0,
+    "PC": 1.0453
+  },
+  {
+    "guest": "L-Histidine",
+    "host": "CB7",
+    "logKa": 2.6,
+    "guest_vol": 138.4,
+    "cavity_vol": 279.0,
+    "PC": 0.4959
+  },
+  {
+    "guest": "Histamine",
+    "host": "CB7",
+    "logKa": 4.51,
+    "guest_vol": 110.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3963
+  },
+  {
+    "guest": "Prednisolone",
+    "host": "CB7",
+    "logKa": 3.0,
+    "guest_vol": 340.1,
+    "cavity_vol": 279.0,
+    "PC": 1.219
+  },
+  {
+    "guest": "(E)-4-(2-(7-(diethylamino)-2-oxo-2H-chromen-3-yl)vinyl)-1-(3-(trimethylammonio)propyl)pyridin-1-ium bromide",
+    "host": "CB7",
+    "logKa": 14.89,
+    "guest_vol": 422.9,
+    "cavity_vol": 279.0,
+    "PC": 1.5158
+  },
+  {
+    "guest": "1-butyl-3-methylimidazol-3-ium chloride",
+    "host": "CB7",
+    "logKa": 6.83,
+    "guest_vol": 151.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5429
+  },
+  {
+    "guest": "8-(phenylamino)naphthalene-1-sulfonic acid",
+    "host": "CB7",
+    "logKa": 3.48,
+    "guest_vol": 251.2,
+    "cavity_vol": 279.0,
+    "PC": 0.9004
+  },
+  {
+    "guest": "iron(3+)",
+    "host": "CB7",
+    "logKa": 5.12,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Cyclohexanone",
+    "host": "CB7",
+    "logKa": 7.28,
+    "guest_vol": 104.1,
+    "cavity_vol": 279.0,
+    "PC": 0.3731
+  },
+  {
+    "guest": "Hexamethylenediamine",
+    "host": "CB7",
+    "logKa": 9.32,
+    "guest_vol": 136.9,
+    "cavity_vol": 279.0,
+    "PC": 0.4907
+  },
+  {
+    "guest": "Gly-tyr-gly",
+    "host": "CB7",
+    "logKa": 3.43,
+    "guest_vol": 264.2,
+    "cavity_vol": 279.0,
+    "PC": 0.9471
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB7",
+    "logKa": 3.87,
+    "guest_vol": 187.0,
+    "cavity_vol": 279.0,
+    "PC": 0.6703
+  },
+  {
+    "guest": "D/L-Tyrosine",
+    "host": "CB7",
+    "logKa": 4.38,
+    "guest_vol": 166.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5969
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 6.08,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "Geranylamine",
+    "host": "CB7",
+    "logKa": 6.51,
+    "guest_vol": 179.8,
+    "cavity_vol": 279.0,
+    "PC": 0.6444
+  },
+  {
+    "guest": "Phosphoramidon",
+    "host": "CB7",
+    "logKa": 3.08,
+    "guest_vol": 471.8,
+    "cavity_vol": 279.0,
+    "PC": 1.6909
+  },
+  {
+    "guest": "Dodecane-trimethylamine",
+    "host": "CB7",
+    "logKa": 5.76,
+    "guest_vol": 279.2,
+    "cavity_vol": 279.0,
+    "PC": 1.0007
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.04,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Coumarin 7",
+    "host": "CB7",
+    "logKa": 8.37,
+    "guest_vol": 303.0,
+    "cavity_vol": 279.0,
+    "PC": 1.0861
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.41,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "1-hexyl-3-methylimidazol-3-ium;bromide",
+    "host": "CB7",
+    "logKa": 7.28,
+    "guest_vol": 184.9,
+    "cavity_vol": 279.0,
+    "PC": 0.6626
+  },
+  {
+    "guest": "Thiazole orange",
+    "host": "CB7",
+    "logKa": 5.45,
+    "guest_vol": 279.0,
+    "cavity_vol": 279.0,
+    "PC": 1.0
+  },
+  {
+    "guest": "Lithium ion",
+    "host": "CB7",
+    "logKa": 1.41,
+    "guest_vol": 44.0,
+    "cavity_vol": 279.0,
+    "PC": 0.1576
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 6.26,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "Trp-met-gly",
+    "host": "CB7",
+    "logKa": 5.36,
+    "guest_vol": 353.8,
+    "cavity_vol": 279.0,
+    "PC": 1.268
+  },
+  {
+    "guest": "Glycyl-phenylalanyl-glycine",
+    "host": "CB7",
+    "logKa": 4.34,
+    "guest_vol": 255.4,
+    "cavity_vol": 279.0,
+    "PC": 0.9154
+  },
+  {
+    "guest": "tyrosylmethionine",
+    "host": "CB7",
+    "logKa": 5.81,
+    "guest_vol": 283.9,
+    "cavity_vol": 279.0,
+    "PC": 1.0176
+  },
+  {
+    "guest": "Cadaverine (fully protonated form)",
+    "host": "CB7",
+    "logKa": 7.15,
+    "guest_vol": 125.3,
+    "cavity_vol": 279.0,
+    "PC": 0.449
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB7",
+    "logKa": 7.25,
+    "guest_vol": 199.5,
+    "cavity_vol": 279.0,
+    "PC": 0.715
+  },
+  {
+    "guest": "Spermine (fully protonated form)",
+    "host": "CB7",
+    "logKa": 8.68,
+    "guest_vol": 241.1,
+    "cavity_vol": 279.0,
+    "PC": 0.8641
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 5.96,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "((Dimethylamino)methyl)ferrocene",
+    "host": "CB7",
+    "logKa": 12.3,
+    "guest_vol": 133.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4774
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 8.48,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.37,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Brilliant green",
+    "host": "CB7",
+    "logKa": 4.23,
+    "guest_vol": 400.1,
+    "cavity_vol": 279.0,
+    "PC": 1.4341
+  },
+  {
+    "guest": "Europium(3+)",
+    "host": "CB7",
+    "logKa": 3.3,
+    "guest_vol": 57.0,
+    "cavity_vol": 279.0,
+    "PC": 0.2042
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.4,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Calcium chloride",
+    "host": "CB7",
+    "logKa": 4.25,
+    "guest_vol": 57.0,
+    "cavity_vol": 279.0,
+    "PC": 0.2042
+  },
+  {
+    "guest": "Ethanol",
+    "host": "CB7",
+    "logKa": 2.49,
+    "guest_vol": 54.0,
+    "cavity_vol": 279.0,
+    "PC": 0.1935
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 3.79,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "Pyronin Y",
+    "host": "CB7",
+    "logKa": 6.66,
+    "guest_vol": 258.2,
+    "cavity_vol": 279.0,
+    "PC": 0.9256
+  },
+  {
+    "guest": "Cyclohexanone",
+    "host": "CB7",
+    "logKa": 7.29,
+    "guest_vol": 104.1,
+    "cavity_vol": 279.0,
+    "PC": 0.3731
+  },
+  {
+    "guest": "((Dimethylamino)methyl)ferrocene",
+    "host": "CB7",
+    "logKa": 12.38,
+    "guest_vol": 133.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4774
+  },
+  {
+    "guest": "Tetradecyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 3.63,
+    "guest_vol": 312.7,
+    "cavity_vol": 279.0,
+    "PC": 1.1209
+  },
+  {
+    "guest": "Cyclic sulfenamide-2a",
+    "host": "CB7",
+    "logKa": 5.0,
+    "guest_vol": 277.6,
+    "cavity_vol": 279.0,
+    "PC": 0.995
+  },
+  {
+    "guest": "Geraniol",
+    "host": "CB7",
+    "logKa": 4.66,
+    "guest_vol": 176.6,
+    "cavity_vol": 279.0,
+    "PC": 0.6331
+  },
+  {
+    "guest": "Acridine Orange hydrochloride",
+    "host": "CB7",
+    "logKa": 2.98,
+    "guest_vol": 258.2,
+    "cavity_vol": 279.0,
+    "PC": 0.9256
+  },
+  {
+    "guest": "Sodium chloride",
+    "host": "CB7",
+    "logKa": 3.41,
+    "guest_vol": 57.0,
+    "cavity_vol": 279.0,
+    "PC": 0.2042
+  },
+  {
+    "guest": "Fenchol",
+    "host": "CB7",
+    "logKa": 6.68,
+    "guest_vol": 166.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5979
+  },
+  {
+    "guest": "6-Methoxy-1-methylquinolinium",
+    "host": "CB7",
+    "logKa": 6.34,
+    "guest_vol": 167.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5996
+  },
+  {
+    "guest": "Tryptamine",
+    "host": "CB7",
+    "logKa": 5.11,
+    "guest_vol": 158.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5679
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 5.5,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 6.48,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "Pancuronium",
+    "host": "CB7",
+    "logKa": 5.77,
+    "guest_vol": 586.2,
+    "cavity_vol": 279.0,
+    "PC": 2.1011
+  },
+  {
+    "guest": "D/L-Adrenaline",
+    "host": "CB7",
+    "logKa": 4.24,
+    "guest_vol": 172.1,
+    "cavity_vol": 279.0,
+    "PC": 0.6167
+  },
+  {
+    "guest": "bis(dimethylpyridinium)diarylethene (closed form)",
+    "host": "CB7",
+    "logKa": 7.85,
+    "guest_vol": 407.1,
+    "cavity_vol": 279.0,
+    "PC": 1.4592
+  },
+  {
+    "guest": "Potassium chloride",
+    "host": "CB7",
+    "logKa": 3.29,
+    "guest_vol": 23.8,
+    "cavity_vol": 279.0,
+    "PC": 0.0851
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.18,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Cetrimonium bromide",
+    "host": "CB7",
+    "logKa": 6.74,
+    "guest_vol": 345.9,
+    "cavity_vol": 279.0,
+    "PC": 1.2398
+  },
+  {
+    "guest": "Cesium chloride, Caesium chloride",
+    "host": "CB7",
+    "logKa": 3.5,
+    "guest_vol": 23.8,
+    "cavity_vol": 279.0,
+    "PC": 0.0851
+  },
+  {
+    "guest": "Cholic acid",
+    "host": "CB7",
+    "logKa": 3.0,
+    "guest_vol": 407.0,
+    "cavity_vol": 279.0,
+    "PC": 1.4588
+  },
+  {
+    "guest": "D/L-Ornithine",
+    "host": "CB7",
+    "logKa": 2.58,
+    "guest_vol": 131.8,
+    "cavity_vol": 279.0,
+    "PC": 0.4724
+  },
+  {
+    "guest": "1-Butanol",
+    "host": "CB7",
+    "logKa": 4.69,
+    "guest_vol": 87.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3138
+  },
+  {
+    "guest": "Proflavine",
+    "host": "CB7",
+    "logKa": 7.3,
+    "guest_vol": 190.4,
+    "cavity_vol": 279.0,
+    "PC": 0.6826
+  },
+  {
+    "guest": "Borneol",
+    "host": "CB7",
+    "logKa": 8.41,
+    "guest_vol": 166.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5966
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB7",
+    "logKa": 7.4,
+    "guest_vol": 199.5,
+    "cavity_vol": 279.0,
+    "PC": 0.715
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 9.43,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 7.05,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "1,1&#39;-Bis(5-carboxypentyl)-4,4&#39;-bipyridinium",
+    "host": "CB7",
+    "logKa": 5.7,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "Melamine",
+    "host": "CB7",
+    "logKa": 4.59,
+    "guest_vol": 105.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3786
+  },
+  {
+    "guest": "Neutral Red protonated",
+    "host": "CB7",
+    "logKa": 5.78,
+    "guest_vol": 240.9,
+    "cavity_vol": 279.0,
+    "PC": 0.8635
+  },
+  {
+    "guest": "Ferrous cation",
+    "host": "CB7",
+    "logKa": 5.06,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Diquat",
+    "host": "CB7",
+    "logKa": 2.54,
+    "guest_vol": 174.1,
+    "cavity_vol": 279.0,
+    "PC": 0.624
+  },
+  {
+    "guest": "Phenylalanylglycine",
+    "host": "CB7",
+    "logKa": 7.48,
+    "guest_vol": 207.1,
+    "cavity_vol": 279.0,
+    "PC": 0.7423
+  },
+  {
+    "guest": "Cesium cation",
+    "host": "CB7",
+    "logKa": 2.84,
+    "guest_vol": 112.0,
+    "cavity_vol": 279.0,
+    "PC": 0.4013
+  },
+  {
+    "guest": "4-(diethylamino)benzonitrile",
+    "host": "CB7",
+    "logKa": 5.34,
+    "guest_vol": 181.2,
+    "cavity_vol": 279.0,
+    "PC": 0.6494
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 8.99,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "[C3mim]Br",
+    "host": "CB7",
+    "logKa": 6.28,
+    "guest_vol": 140.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5037
+  },
+  {
+    "guest": "Aluminum cation",
+    "host": "CB7",
+    "logKa": 4.45,
+    "guest_vol": 39.6,
+    "cavity_vol": 279.0,
+    "PC": 0.1418
+  },
+  {
+    "guest": "1,2,3,6,7,7a-hexahydro-3a,6-epoxyisoindole",
+    "host": "CB7",
+    "logKa": 6.8,
+    "guest_vol": 130.7,
+    "cavity_vol": 279.0,
+    "PC": 0.4684
+  },
+  {
+    "guest": "3,7-Diaminophenoxazinylium chloride",
+    "host": "CB7",
+    "logKa": 7.08,
+    "guest_vol": 187.0,
+    "cavity_vol": 279.0,
+    "PC": 0.6703
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 6.48,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "Phenoxy-1,2-dioxetane",
+    "host": "CB7",
+    "logKa": 7.23,
+    "guest_vol": 280.4,
+    "cavity_vol": 279.0,
+    "PC": 1.005
+  },
+  {
+    "guest": "H-phe-leu-oh",
+    "host": "CB7",
+    "logKa": 6.32,
+    "guest_vol": 273.9,
+    "cavity_vol": 279.0,
+    "PC": 0.9817
+  },
+  {
+    "guest": "cyanine dye LDP",
+    "host": "CB7",
+    "logKa": 4.8,
+    "guest_vol": 352.9,
+    "cavity_vol": 279.0,
+    "PC": 1.2648
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 6.14,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "Carbendazim",
+    "host": "CB7",
+    "logKa": 4.38,
+    "guest_vol": 164.6,
+    "cavity_vol": 279.0,
+    "PC": 0.59
+  },
+  {
+    "guest": "1-Adamantylazanium",
+    "host": "CB7",
+    "logKa": 14.23,
+    "guest_vol": 160.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5749
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 5.7,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 5.3,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "6-(p-toluidino)-2-naphthalenesulfonic acid sodium salt",
+    "host": "CB7",
+    "logKa": 4.53,
+    "guest_vol": 268.1,
+    "cavity_vol": 279.0,
+    "PC": 0.961
+  },
+  {
+    "guest": "Tetrakis(pyridin-4-ylsulfanyl)-phthalocyaninato zinc(II)",
+    "host": "CB7",
+    "logKa": 4.61,
+    "guest_vol": 852.4,
+    "cavity_vol": 279.0,
+    "PC": 3.0551
+  },
+  {
+    "guest": "1-benzyl-3-methylimidazol-3-ium bromide",
+    "host": "CB7",
+    "logKa": 5.9,
+    "guest_vol": 172.9,
+    "cavity_vol": 279.0,
+    "PC": 0.6198
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 4.63,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.54,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 6.39,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 9.48,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "((S)-2-amino-3-(4-(aminomethyl)phenyl)propanoyl)-L-methionine",
+    "host": "CB7",
+    "logKa": 8.72,
+    "guest_vol": 304.2,
+    "cavity_vol": 279.0,
+    "PC": 1.0903
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 5.6,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.03,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Agmatine",
+    "host": "CB7",
+    "logKa": 5.89,
+    "guest_vol": 137.7,
+    "cavity_vol": 279.0,
+    "PC": 0.4935
+  },
+  {
+    "guest": "6-Azaniumylhexylazanium",
+    "host": "CB7",
+    "logKa": 9.32,
+    "guest_vol": 141.7,
+    "cavity_vol": 279.0,
+    "PC": 0.5079
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 5.53,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 8.66,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 5.89,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "paraquat",
+    "host": "CB7",
+    "logKa": 4.97,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "Barium cation",
+    "host": "CB7",
+    "logKa": 6.51,
+    "guest_vol": 83.2,
+    "cavity_vol": 279.0,
+    "PC": 0.2981
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 8.68,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "iron(3+)",
+    "host": "CB7",
+    "logKa": 5.62,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "1-Hexanol",
+    "host": "CB7",
+    "logKa": 5.2,
+    "guest_vol": 121.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4342
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB7",
+    "logKa": 7.12,
+    "guest_vol": 208.3,
+    "cavity_vol": 279.0,
+    "PC": 0.7467
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.41,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Tryptophyl-Glycine",
+    "host": "CB7",
+    "logKa": 5.75,
+    "guest_vol": 236.1,
+    "cavity_vol": 279.0,
+    "PC": 0.8463
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 7.05,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "(Trimethylamino)methyl)ferrocene",
+    "host": "CB7",
+    "logKa": 12.6,
+    "guest_vol": 153.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5511
+  },
+  {
+    "guest": "Aluminum cation",
+    "host": "CB7",
+    "logKa": 4.93,
+    "guest_vol": 39.6,
+    "cavity_vol": 279.0,
+    "PC": 0.1418
+  },
+  {
+    "guest": "Glycyltyrosine",
+    "host": "CB7",
+    "logKa": 2.3,
+    "guest_vol": 215.0,
+    "cavity_vol": 279.0,
+    "PC": 0.7706
+  },
+  {
+    "guest": "D/L-lysine",
+    "host": "CB7",
+    "logKa": 2.94,
+    "guest_vol": 148.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5323
+  },
+  {
+    "guest": "2-(2-amino-3-phenylpropanamido)-4-(methylthio)butanamide",
+    "host": "CB7",
+    "logKa": 7.18,
+    "guest_vol": 278.3,
+    "cavity_vol": 279.0,
+    "PC": 0.9973
+  },
+  {
+    "guest": "Acridine",
+    "host": "CB7",
+    "logKa": 3.81,
+    "guest_vol": 166.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5962
+  },
+  {
+    "guest": "8-(phenylamino)naphthalene-1-sulfonic acid",
+    "host": "CB7",
+    "logKa": 1.15,
+    "guest_vol": 251.2,
+    "cavity_vol": 279.0,
+    "PC": 0.9004
+  },
+  {
+    "guest": "Cetrimonium bromide",
+    "host": "CB7",
+    "logKa": 4.19,
+    "guest_vol": 345.9,
+    "cavity_vol": 279.0,
+    "PC": 1.2398
+  },
+  {
+    "guest": "1-butyl-3-methylimidazolium hexafluorophosphate",
+    "host": "CB7",
+    "logKa": 6.88,
+    "guest_vol": 151.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5429
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 4.48,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "6-methyl-1,2,3,6,7,7a-hexahydro-3a,6-epoxyisoindole",
+    "host": "CB7",
+    "logKa": 6.92,
+    "guest_vol": 147.3,
+    "cavity_vol": 279.0,
+    "PC": 0.528
+  },
+  {
+    "guest": "Pentane-1,5-diamine",
+    "host": "CB7",
+    "logKa": 6.63,
+    "guest_vol": 120.0,
+    "cavity_vol": 279.0,
+    "PC": 0.43
+  },
+  {
+    "guest": "1-Hexanol",
+    "host": "CB7",
+    "logKa": 5.87,
+    "guest_vol": 121.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4342
+  },
+  {
+    "guest": "Coptisine",
+    "host": "CB7",
+    "logKa": 4.27,
+    "guest_vol": 268.0,
+    "cavity_vol": 279.0,
+    "PC": 0.9604
+  },
+  {
+    "guest": "2,3-Diazabicyclo[2.2.1]-hept-2-ene",
+    "host": "CB7",
+    "logKa": 5.0,
+    "guest_vol": 94.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3391
+  },
+  {
+    "guest": "Melamine",
+    "host": "CB7",
+    "logKa": 4.85,
+    "guest_vol": 105.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3786
+  },
+  {
+    "guest": "1-methyl-3-[[6-[(3-methylimidazol-3-ium-1-yl)methyl]naphthalen-2-yl]methyl]imidazol-1-ium",
+    "host": "CB7",
+    "logKa": 6.73,
+    "guest_vol": 306.9,
+    "cavity_vol": 279.0,
+    "PC": 1.1
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 6.2,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Sanguinarine",
+    "host": "CB7",
+    "logKa": 4.66,
+    "guest_vol": 277.5,
+    "cavity_vol": 279.0,
+    "PC": 0.9946
+  },
+  {
+    "guest": "1-Hexanol",
+    "host": "CB7",
+    "logKa": 6.21,
+    "guest_vol": 121.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4342
+  },
+  {
+    "guest": "4-(5-(4-(dimethylamino)phenyl)oxazol-2-yl)benzenesulfonate",
+    "host": "CB7",
+    "logKa": 4.3,
+    "guest_vol": 290.3,
+    "cavity_vol": 279.0,
+    "PC": 1.0405
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.72,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "(2-(2-(2-(2-(4-(pyridine-2-yl)-1H-1,2,3-triazole-1-yl)ethoxy)ethoxy)ethoxy)ethan-1-ol)",
+    "host": "CB7",
+    "logKa": 4.25,
+    "guest_vol": 351.0,
+    "cavity_vol": 279.0,
+    "PC": 1.2579
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 6.53,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "bicyclo[2.2.1]heptan-2-one",
+    "host": "CB7",
+    "logKa": 8.18,
+    "guest_vol": 111.0,
+    "cavity_vol": 279.0,
+    "PC": 0.398
+  },
+  {
+    "guest": "Decyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 6.6,
+    "guest_vol": 245.6,
+    "cavity_vol": 279.0,
+    "PC": 0.8802
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 5.3,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "1-butyl-3-methylimidazol-3-ium;tetrafluoroborate",
+    "host": "CB7",
+    "logKa": 6.88,
+    "guest_vol": 151.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5429
+  },
+  {
+    "guest": "Tryptamine",
+    "host": "CB7",
+    "logKa": 5.11,
+    "guest_vol": 158.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5679
+  },
+  {
+    "guest": "1,3-Dimethylimidazolium",
+    "host": "CB7",
+    "logKa": 4.88,
+    "guest_vol": 100.9,
+    "cavity_vol": 279.0,
+    "PC": 0.3616
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 9.67,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Cetrimonium bromide",
+    "host": "CB7",
+    "logKa": 6.42,
+    "guest_vol": 345.9,
+    "cavity_vol": 279.0,
+    "PC": 1.2398
+  },
+  {
+    "guest": "Acridine (protonated)",
+    "host": "CB7",
+    "logKa": 6.26,
+    "guest_vol": 169.1,
+    "cavity_vol": 279.0,
+    "PC": 0.6062
+  },
+  {
+    "guest": "Rhodamine B",
+    "host": "CB7",
+    "logKa": 5.51,
+    "guest_vol": 425.2,
+    "cavity_vol": 279.0,
+    "PC": 1.5242
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB7",
+    "logKa": 7.02,
+    "guest_vol": 208.3,
+    "cavity_vol": 279.0,
+    "PC": 0.7467
+  },
+  {
+    "guest": "Rubidium cation",
+    "host": "CB7",
+    "logKa": 2.76,
+    "guest_vol": 103.1,
+    "cavity_vol": 279.0,
+    "PC": 0.3697
+  },
+  {
+    "guest": "1,4-Butanediammonium",
+    "host": "CB7",
+    "logKa": 5.48,
+    "guest_vol": 108.1,
+    "cavity_vol": 279.0,
+    "PC": 0.3876
+  },
+  {
+    "guest": "1-methyl-3-octylimidazol-1-ium chloride",
+    "host": "CB7",
+    "logKa": 6.95,
+    "guest_vol": 218.5,
+    "cavity_vol": 279.0,
+    "PC": 0.7831
+  },
+  {
+    "guest": "Dodecyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 6.3,
+    "guest_vol": 279.2,
+    "cavity_vol": 279.0,
+    "PC": 1.0007
+  },
+  {
+    "guest": "Lead cation",
+    "host": "CB7",
+    "logKa": 3.57,
+    "guest_vol": 51.2,
+    "cavity_vol": 279.0,
+    "PC": 0.1836
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 9.67,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Phe-Gly-Gly",
+    "host": "CB7",
+    "logKa": 6.45,
+    "guest_vol": 254.6,
+    "cavity_vol": 279.0,
+    "PC": 0.9124
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB7",
+    "logKa": 7.0,
+    "guest_vol": 199.5,
+    "cavity_vol": 279.0,
+    "PC": 0.715
+  },
+  {
+    "guest": "Aluminum trichloride",
+    "host": "CB7",
+    "logKa": 2.9,
+    "guest_vol": 89.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3219
+  },
+  {
+    "guest": "Fuberidazole",
+    "host": "CB7",
+    "logKa": 1.7,
+    "guest_vol": 162.1,
+    "cavity_vol": 279.0,
+    "PC": 0.581
+  },
+  {
+    "guest": "Lead cation",
+    "host": "CB7",
+    "logKa": 4.89,
+    "guest_vol": 51.2,
+    "cavity_vol": 279.0,
+    "PC": 0.1836
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 6.38,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "Ammonium chloride",
+    "host": "CB7",
+    "logKa": 2.82,
+    "guest_vol": 25.9,
+    "cavity_vol": 279.0,
+    "PC": 0.0929
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 6.32,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 3.31,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "Oxaliplatin",
+    "host": "CB7",
+    "logKa": 5.36,
+    "guest_vol": 122.0,
+    "cavity_vol": 279.0,
+    "PC": 0.4373
+  },
+  {
+    "guest": "2,3-Diazabicyclo(2.2.2)oct-2-ene",
+    "host": "CB7",
+    "logKa": 7.13,
+    "guest_vol": 110.2,
+    "cavity_vol": 279.0,
+    "PC": 0.3951
+  },
+  {
+    "guest": "1,4-Phenylenediamine dihydrochloride",
+    "host": "CB7",
+    "logKa": 6.26,
+    "guest_vol": 107.2,
+    "cavity_vol": 279.0,
+    "PC": 0.3842
+  },
+  {
+    "guest": "Coumarin 30 neutral",
+    "host": "CB7",
+    "logKa": 9.1,
+    "guest_vol": 321.3,
+    "cavity_vol": 279.0,
+    "PC": 1.1516
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 5.51,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 6.83,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "1-(3-aminopropyl)-4-4&#39;-bipyridinium",
+    "host": "CB7",
+    "logKa": 6.63,
+    "guest_vol": 214.9,
+    "cavity_vol": 279.0,
+    "PC": 0.7702
+  },
+  {
+    "guest": "chromium(3+)",
+    "host": "CB7",
+    "logKa": 4.84,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.41,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "L-Arginine",
+    "host": "CB7",
+    "logKa": 2.49,
+    "guest_vol": 166.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5961
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB7",
+    "logKa": 7.26,
+    "guest_vol": 208.3,
+    "cavity_vol": 279.0,
+    "PC": 0.7467
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB7",
+    "logKa": 7.03,
+    "guest_vol": 208.3,
+    "cavity_vol": 279.0,
+    "PC": 0.7467
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB7",
+    "logKa": 7.01,
+    "guest_vol": 208.3,
+    "cavity_vol": 279.0,
+    "PC": 0.7467
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 8.81,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 9.23,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 6.52,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.23,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 8.99,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.23,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Sodium cation",
+    "host": "CB7",
+    "logKa": 3.44,
+    "guest_vol": 57.0,
+    "cavity_vol": 279.0,
+    "PC": 0.2042
+  },
+  {
+    "guest": "7,8-dimethyl-1H-benzo[g]pteridine-2,4-dione",
+    "host": "CB7",
+    "logKa": 3.97,
+    "guest_vol": 203.5,
+    "cavity_vol": 279.0,
+    "PC": 0.7295
+  },
+  {
+    "guest": "N-((5-methylfuran-2-yl)methyl)prop-2-en-1-amine",
+    "host": "CB7",
+    "logKa": 5.94,
+    "guest_vol": 156.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5601
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 5.29,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB7",
+    "logKa": 7.04,
+    "guest_vol": 208.3,
+    "cavity_vol": 279.0,
+    "PC": 0.7467
+  },
+  {
+    "guest": "Methyl viologen",
+    "host": "CB7",
+    "logKa": 6.82,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "paraquat",
+    "host": "CB7",
+    "logKa": 6.23,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "1H-\u200bImidazolium, 3-\u200bbutyl-\u200b1-\u200bmethyl-\u200b, bromide",
+    "host": "CB7",
+    "logKa": 6.8,
+    "guest_vol": 151.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5425
+  },
+  {
+    "guest": "Cesium chloride, Caesium chloride",
+    "host": "CB7",
+    "logKa": 3.51,
+    "guest_vol": 23.8,
+    "cavity_vol": 279.0,
+    "PC": 0.0851
+  },
+  {
+    "guest": "Ferrous cation",
+    "host": "CB7",
+    "logKa": 6.37,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 9.51,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "Tyramine",
+    "host": "CB7",
+    "logKa": 6.58,
+    "guest_vol": 137.9,
+    "cavity_vol": 279.0,
+    "PC": 0.4944
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.41,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "(Z)\u20104\u2010(4\u2010(2\u2010(3\u2032,5\u2032\u2010bis(trifluoromethyl)\u2010[1,1\u2032\u2010biphenyl]\u20104\u2010yl)\u20101\u2010cyanovinyl)phenyl)\u20101\u2010methylpyridin\u20101\u2010ium chloride",
+    "host": "CB7",
+    "logKa": 6.1,
+    "guest_vol": 425.7,
+    "cavity_vol": 279.0,
+    "PC": 1.5258
+  },
+  {
+    "guest": "Berberrubine (deprotonated)",
+    "host": "CB7",
+    "logKa": 4.08,
+    "guest_vol": 276.7,
+    "cavity_vol": 279.0,
+    "PC": 0.9918
+  },
+  {
+    "guest": "(2S)-2-amino-3-phenylpropanoic acidhydrochloride",
+    "host": "CB7",
+    "logKa": 5.6,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "TMPyP4",
+    "host": "CB7",
+    "logKa": 4.91,
+    "guest_vol": 625.4,
+    "cavity_vol": 279.0,
+    "PC": 2.2417
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 7.05,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "Thr-Gly-Gly-Phe-Met-NH2",
+    "host": "CB7",
+    "logKa": 4.15,
+    "guest_vol": 465.7,
+    "cavity_vol": 279.0,
+    "PC": 1.6691
+  },
+  {
+    "guest": "Sulforhodamine b",
+    "host": "CB7",
+    "logKa": 5.6,
+    "guest_vol": 479.7,
+    "cavity_vol": 279.0,
+    "PC": 1.7195
+  },
+  {
+    "guest": "Octyldecyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 6.93,
+    "guest_vol": 379.8,
+    "cavity_vol": 279.0,
+    "PC": 1.3613
+  },
+  {
+    "guest": "D/L-histidine",
+    "host": "CB7",
+    "logKa": 2.6,
+    "guest_vol": 139.0,
+    "cavity_vol": 279.0,
+    "PC": 0.4984
+  },
+  {
+    "guest": "(2S)-2-((2S)-2-((2S)-2-(2-((3R)-2-amino-3-hydroxybutanamido)acetamido)propanamido)-3-phenylpropanamido)-4-methylpentanamide",
+    "host": "CB7",
+    "logKa": 3.54,
+    "guest_vol": 480.9,
+    "cavity_vol": 279.0,
+    "PC": 1.7238
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 5.32,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.36,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 9.4,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 4.3,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 5.06,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "4-(diethylamino)benzonitrile",
+    "host": "CB7",
+    "logKa": 5.2,
+    "guest_vol": 181.2,
+    "cavity_vol": 279.0,
+    "PC": 0.6494
+  },
+  {
+    "guest": "chromium(3+)",
+    "host": "CB7",
+    "logKa": 3.13,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Ytterbium(III) chloride",
+    "host": "CB7",
+    "logKa": 4.42,
+    "guest_vol": 101.9,
+    "cavity_vol": 279.0,
+    "PC": 0.3651
+  },
+  {
+    "guest": "Rhodamine B benzyl ester",
+    "host": "CB7",
+    "logKa": 5.04,
+    "guest_vol": 514.5,
+    "cavity_vol": 279.0,
+    "PC": 1.8442
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 6.48,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "Oxazine 1",
+    "host": "CB7",
+    "logKa": 6.28,
+    "guest_vol": 321.9,
+    "cavity_vol": 279.0,
+    "PC": 1.1536
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB7",
+    "logKa": 4.2,
+    "guest_vol": 166.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5951
+  },
+  {
+    "guest": "1-methyl-3-octylimidazol-1-ium;bromide",
+    "host": "CB7",
+    "logKa": 6.92,
+    "guest_vol": 218.5,
+    "cavity_vol": 279.0,
+    "PC": 0.7831
+  },
+  {
+    "guest": "2,7-bis(2-(trimethyl-azaneyl)ethyl)pyrene-1,3,6,8(2H,7H)-tetraone",
+    "host": "CB7",
+    "logKa": 4.71,
+    "guest_vol": 415.9,
+    "cavity_vol": 279.0,
+    "PC": 1.4908
+  },
+  {
+    "guest": "Neutral Red protonated",
+    "host": "CB7",
+    "logKa": 4.52,
+    "guest_vol": 240.9,
+    "cavity_vol": 279.0,
+    "PC": 0.8635
+  },
+  {
+    "guest": "Rhodamine B",
+    "host": "CB7",
+    "logKa": 5.2,
+    "guest_vol": 425.2,
+    "cavity_vol": 279.0,
+    "PC": 1.5242
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 7.05,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "(+)-fenchone",
+    "host": "CB7",
+    "logKa": 7.45,
+    "guest_vol": 160.9,
+    "cavity_vol": 279.0,
+    "PC": 0.5766
+  },
+  {
+    "guest": "Dodecyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 3.0,
+    "guest_vol": 279.2,
+    "cavity_vol": 279.0,
+    "PC": 1.0007
+  },
+  {
+    "guest": "Acridine Yellow G",
+    "host": "CB7",
+    "logKa": 4.1,
+    "guest_vol": 223.1,
+    "cavity_vol": 279.0,
+    "PC": 0.7997
+  },
+  {
+    "guest": "1-methyl-3-[[4-[4-[(3-methylimidazol-3-ium-1-yl)methyl]phenyl]phenyl]methyl]imidazol-1-ium",
+    "host": "CB7",
+    "logKa": 5.27,
+    "guest_vol": 334.4,
+    "cavity_vol": 279.0,
+    "PC": 1.1985
+  },
+  {
+    "guest": "styrylcoumarin",
+    "host": "CB7",
+    "logKa": 10.08,
+    "guest_vol": 322.7,
+    "cavity_vol": 279.0,
+    "PC": 1.1565
+  },
+  {
+    "guest": "1-hexyl-3-methylimidazol-3-ium;chloride",
+    "host": "CB7",
+    "logKa": 7.3,
+    "guest_vol": 184.9,
+    "cavity_vol": 279.0,
+    "PC": 0.6626
+  },
+  {
+    "guest": "2,3-Diazabicyclo[2.2.1]-hept-2-ene",
+    "host": "CB7",
+    "logKa": 5.58,
+    "guest_vol": 94.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3391
+  },
+  {
+    "guest": "1,1&#39;-(1,4-phenylenebis(methylene))bis(pyridin-1-ium-4-carboxylate)",
+    "host": "CB7",
+    "logKa": 5.81,
+    "guest_vol": 309.4,
+    "cavity_vol": 279.0,
+    "PC": 1.109
+  },
+  {
+    "guest": "butane-1,4-diamine;dihydrochloride",
+    "host": "CB7",
+    "logKa": 5.9,
+    "guest_vol": 103.3,
+    "cavity_vol": 279.0,
+    "PC": 0.3702
+  },
+  {
+    "guest": "1-(3,5-dimethylbenzyl)-1&#39;-(2-(2-(2-methoxyethoxy)ethoxy)ethyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 5.06,
+    "guest_vol": 420.2,
+    "cavity_vol": 279.0,
+    "PC": 1.506
+  },
+  {
+    "guest": "N-(1,3-dihydroxy-2-(hydroxymethyl)propan-2-yl)-11-oxo-2,3,6,7-tetrahydro-1H,5H,11H-pyrano[2,3-f]pyrido[3,2,1-ij]quinoline-10-carboxamide",
+    "host": "CB7",
+    "logKa": 4.2,
+    "guest_vol": 342.9,
+    "cavity_vol": 279.0,
+    "PC": 1.229
+  },
+  {
+    "guest": "Cyclohexanone",
+    "host": "CB7",
+    "logKa": 7.28,
+    "guest_vol": 104.1,
+    "cavity_vol": 279.0,
+    "PC": 0.3731
+  },
+  {
+    "guest": "[Ru(bpy)2dppz]2+",
+    "host": "CB7",
+    "logKa": 3.45,
+    "guest_vol": 240.8,
+    "cavity_vol": 279.0,
+    "PC": 0.8632
+  },
+  {
+    "guest": "beta-Estradiol",
+    "host": "CB7",
+    "logKa": 6.25,
+    "guest_vol": 269.0,
+    "cavity_vol": 279.0,
+    "PC": 0.9641
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB7",
+    "logKa": 7.49,
+    "guest_vol": 199.5,
+    "cavity_vol": 279.0,
+    "PC": 0.715
+  },
+  {
+    "guest": "Histamine",
+    "host": "CB7",
+    "logKa": 4.51,
+    "guest_vol": 110.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3963
+  },
+  {
+    "guest": "17-methoxy-5,7-dioxa-13-azoniapentacyclo[11.8.0.02,10.04,8.015,20]henicosa-1(13),2,4(8),9,14,16,18,20-octaen-16-ol;chloride",
+    "host": "CB7",
+    "logKa": 8.15,
+    "guest_vol": 277.0,
+    "cavity_vol": 279.0,
+    "PC": 0.9927
+  },
+  {
+    "guest": "Tyrosyl-Glycine",
+    "host": "CB7",
+    "logKa": 6.56,
+    "guest_vol": 215.5,
+    "cavity_vol": 279.0,
+    "PC": 0.7726
+  },
+  {
+    "guest": "Rubidium chloride",
+    "host": "CB7",
+    "logKa": 3.42,
+    "guest_vol": 23.8,
+    "cavity_vol": 279.0,
+    "PC": 0.0851
+  },
+  {
+    "guest": "Lanthanum chloride heptahydrate",
+    "host": "CB7",
+    "logKa": 5.28,
+    "guest_vol": 65.7,
+    "cavity_vol": 279.0,
+    "PC": 0.2356
+  },
+  {
+    "guest": "Rhodamine B",
+    "host": "CB7",
+    "logKa": 3.7,
+    "guest_vol": 425.2,
+    "cavity_vol": 279.0,
+    "PC": 1.5242
+  },
+  {
+    "guest": "L-Lysine",
+    "host": "CB7",
+    "logKa": 4.4,
+    "guest_vol": 148.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5323
+  },
+  {
+    "guest": "Thionin",
+    "host": "CB7",
+    "logKa": 7.13,
+    "guest_vol": 195.9,
+    "cavity_vol": 279.0,
+    "PC": 0.702
+  },
+  {
+    "guest": "Neutral red hydrochloride",
+    "host": "CB7",
+    "logKa": 3.81,
+    "guest_vol": 236.6,
+    "cavity_vol": 279.0,
+    "PC": 0.8479
+  },
+  {
+    "guest": "4,4&#39;-Bipyridine dihydrochloride",
+    "host": "CB7",
+    "logKa": 6.54,
+    "guest_vol": 146.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5252
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.07,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Cyclopentanone",
+    "host": "CB7",
+    "logKa": 5.62,
+    "guest_vol": 87.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3139
+  },
+  {
+    "guest": "(Trimethylamino)methyl)ferrocene",
+    "host": "CB7",
+    "logKa": 11.52,
+    "guest_vol": 153.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5511
+  },
+  {
+    "guest": "1-(3,5-dimethylbenzyl)-1&#39;-(2-(2-(2-methoxyethoxy)ethoxy)ethyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 3.28,
+    "guest_vol": 420.2,
+    "cavity_vol": 279.0,
+    "PC": 1.506
+  },
+  {
+    "guest": "Progesterone",
+    "host": "CB7",
+    "logKa": 4.77,
+    "guest_vol": 319.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1453
+  },
+  {
+    "guest": "5-Chloro-2-adamantanone",
+    "host": "CB7",
+    "logKa": 9.03,
+    "guest_vol": 164.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5894
+  },
+  {
+    "guest": "Tropicamide (protonated)",
+    "host": "CB7",
+    "logKa": 3.11,
+    "guest_vol": 278.3,
+    "cavity_vol": 279.0,
+    "PC": 0.9976
+  },
+  {
+    "guest": "Calcium cation",
+    "host": "CB7",
+    "logKa": 3.15,
+    "guest_vol": 57.0,
+    "cavity_vol": 279.0,
+    "PC": 0.2042
+  },
+  {
+    "guest": "Coptisine",
+    "host": "CB7",
+    "logKa": 8.7,
+    "guest_vol": 268.0,
+    "cavity_vol": 279.0,
+    "PC": 0.9604
+  },
+  {
+    "guest": "Glycyl-phenylalanine",
+    "host": "CB7",
+    "logKa": 3.11,
+    "guest_vol": 206.8,
+    "cavity_vol": 279.0,
+    "PC": 0.7413
+  },
+  {
+    "guest": "Octyldecyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 4.45,
+    "guest_vol": 379.8,
+    "cavity_vol": 279.0,
+    "PC": 1.3613
+  },
+  {
+    "guest": "Vecuronium",
+    "host": "CB7",
+    "logKa": 5.67,
+    "guest_vol": 567.4,
+    "cavity_vol": 279.0,
+    "PC": 2.0338
+  },
+  {
+    "guest": "6-bromo-1,2,3,6,7,7a-hexahydro-3a,6-epoxyisoindole",
+    "host": "CB7",
+    "logKa": 6.79,
+    "guest_vol": 150.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5389
+  },
+  {
+    "guest": "TMPyP4",
+    "host": "CB7",
+    "logKa": 19.65,
+    "guest_vol": 625.4,
+    "cavity_vol": 279.0,
+    "PC": 2.2417
+  },
+  {
+    "guest": "6-Phenylamino-naphthalene-2-sulfonic acid anion",
+    "host": "CB7",
+    "logKa": 2.78,
+    "guest_vol": 251.1,
+    "cavity_vol": 279.0,
+    "PC": 0.9001
+  },
+  {
+    "guest": "Strontium chloride hexahydrate",
+    "host": "CB7",
+    "logKa": 4.31,
+    "guest_vol": 69.7,
+    "cavity_vol": 279.0,
+    "PC": 0.2497
+  },
+  {
+    "guest": "Agmatine",
+    "host": "CB7",
+    "logKa": 6.04,
+    "guest_vol": 137.7,
+    "cavity_vol": 279.0,
+    "PC": 0.4935
+  },
+  {
+    "guest": "Potassium chloride",
+    "host": "CB7",
+    "logKa": 3.46,
+    "guest_vol": 23.8,
+    "cavity_vol": 279.0,
+    "PC": 0.0851
+  },
+  {
+    "guest": "1,1&#39;-(1,4-phenylenebis(methylene))bis(pyridin-1-ium-3-carboxylate)",
+    "host": "CB7",
+    "logKa": 5.75,
+    "guest_vol": 309.0,
+    "cavity_vol": 279.0,
+    "PC": 1.1076
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 9.71,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "Fenchol",
+    "host": "CB7",
+    "logKa": 6.93,
+    "guest_vol": 166.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5979
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 6.2,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.38,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Cholesterol",
+    "host": "CB7",
+    "logKa": 5.91,
+    "guest_vol": 422.7,
+    "cavity_vol": 279.0,
+    "PC": 1.5152
+  },
+  {
+    "guest": "Acridine Orange hydrochloride (protonated)",
+    "host": "CB7",
+    "logKa": 5.3,
+    "guest_vol": 258.2,
+    "cavity_vol": 279.0,
+    "PC": 0.9256
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 6.06,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "Barium chloride",
+    "host": "CB7",
+    "logKa": 4.78,
+    "guest_vol": 83.2,
+    "cavity_vol": 279.0,
+    "PC": 0.2981
+  },
+  {
+    "guest": "Pentane-1,5-diamine",
+    "host": "CB7",
+    "logKa": 8.37,
+    "guest_vol": 120.0,
+    "cavity_vol": 279.0,
+    "PC": 0.43
+  },
+  {
+    "guest": "1,2,3,6,7,7a-hexahydro-3a,6-epoxyisoindole",
+    "host": "CB7",
+    "logKa": 6.92,
+    "guest_vol": 130.7,
+    "cavity_vol": 279.0,
+    "PC": 0.4684
+  },
+  {
+    "guest": "N1,N1&#39;-(hexane-1,6-diyl)bis(ethane-1,2-diaminium)",
+    "host": "CB7",
+    "logKa": 11.23,
+    "guest_vol": 241.1,
+    "cavity_vol": 279.0,
+    "PC": 0.8643
+  },
+  {
+    "guest": "D/L-lysine",
+    "host": "CB7",
+    "logKa": 2.94,
+    "guest_vol": 148.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5323
+  },
+  {
+    "guest": "L-Histidine",
+    "host": "CB7",
+    "logKa": 2.57,
+    "guest_vol": 138.4,
+    "cavity_vol": 279.0,
+    "PC": 0.4959
+  },
+  {
+    "guest": "Hexyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 6.74,
+    "guest_vol": 178.4,
+    "cavity_vol": 279.0,
+    "PC": 0.6393
+  },
+  {
+    "guest": "Acetone",
+    "host": "CB7",
+    "logKa": 2.81,
+    "guest_vol": 64.9,
+    "cavity_vol": 279.0,
+    "PC": 0.2326
+  },
+  {
+    "guest": "Glycyl-phenylalanyl-glycine",
+    "host": "CB7",
+    "logKa": 5.37,
+    "guest_vol": 255.4,
+    "cavity_vol": 279.0,
+    "PC": 0.9154
+  },
+  {
+    "guest": "Agmatine",
+    "host": "CB7",
+    "logKa": 6.04,
+    "guest_vol": 137.7,
+    "cavity_vol": 279.0,
+    "PC": 0.4935
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 3.35,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "Pibenzimol HCl",
+    "host": "CB7",
+    "logKa": 9.16,
+    "guest_vol": 383.0,
+    "cavity_vol": 279.0,
+    "PC": 1.3726
+  },
+  {
+    "guest": "Spermine (fully protonated form)",
+    "host": "CB7",
+    "logKa": 7.41,
+    "guest_vol": 241.1,
+    "cavity_vol": 279.0,
+    "PC": 0.8641
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 3.81,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "Strontium cation",
+    "host": "CB7",
+    "logKa": 3.64,
+    "guest_vol": 69.7,
+    "cavity_vol": 279.0,
+    "PC": 0.2497
+  },
+  {
+    "guest": "(Trimethylamino)methyl)ferrocene",
+    "host": "CB7",
+    "logKa": 12.61,
+    "guest_vol": 153.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5511
+  },
+  {
+    "guest": "7-(diethylamino)-N-(1,3-dihydroxy-2-(hydroxymethyl)propan-2-yl)-2-oxo-2H-chromene-3-carboxamide",
+    "host": "CB7",
+    "logKa": 5.52,
+    "guest_vol": 330.9,
+    "cavity_vol": 279.0,
+    "PC": 1.1859
+  },
+  {
+    "guest": "N-((5-chlorofuran-2-yl)methyl)prop-2-en-1-amine",
+    "host": "CB7",
+    "logKa": 5.66,
+    "guest_vol": 155.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5555
+  },
+  {
+    "guest": "D/L-lysine",
+    "host": "CB7",
+    "logKa": 2.9,
+    "guest_vol": 148.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5323
+  },
+  {
+    "guest": "N-((5-chlorofuran-2-yl)methyl)prop-2-en-1-amine",
+    "host": "CB7",
+    "logKa": 6.04,
+    "guest_vol": 155.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5555
+  },
+  {
+    "guest": "bicyclo[2.2.1]heptan-2-one",
+    "host": "CB7",
+    "logKa": 8.18,
+    "guest_vol": 111.0,
+    "cavity_vol": 279.0,
+    "PC": 0.398
+  },
+  {
+    "guest": "Mercury cation",
+    "host": "CB7",
+    "logKa": 4.22,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "4-((4-(benzo[d]thiazol-2-yl)piperazin-1-yl)methyl)-7-methoxy-2H-chromen-2-one",
+    "host": "CB7",
+    "logKa": 4.15,
+    "guest_vol": 355.0,
+    "cavity_vol": 279.0,
+    "PC": 1.2725
+  },
+  {
+    "guest": "iron(3+)",
+    "host": "CB7",
+    "logKa": 3.08,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "(E)-4-(4-(1,4-dioxa-7,13-dithia-10-azacyclopentadecan-10-yl)styryl)-1-methylpyridin-1-ium",
+    "host": "CB7",
+    "logKa": 5.36,
+    "guest_vol": 423.3,
+    "cavity_vol": 279.0,
+    "PC": 1.5171
+  },
+  {
+    "guest": "2-(1H-benzimidazol-2-yl)phenol",
+    "host": "CB7",
+    "logKa": 3.0,
+    "guest_vol": 187.6,
+    "cavity_vol": 279.0,
+    "PC": 0.6722
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB7",
+    "logKa": 5.26,
+    "guest_vol": 166.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5951
+  },
+  {
+    "guest": "2NpCH2ImidMe",
+    "host": "CB7",
+    "logKa": 5.48,
+    "guest_vol": 216.5,
+    "cavity_vol": 279.0,
+    "PC": 0.776
+  },
+  {
+    "guest": "Cyclohexylmethanaminium",
+    "host": "CB7",
+    "logKa": 11.11,
+    "guest_vol": 132.4,
+    "cavity_vol": 279.0,
+    "PC": 0.4746
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 4.72,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB7",
+    "logKa": 4.34,
+    "guest_vol": 166.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5951
+  },
+  {
+    "guest": "Pibenzimol HCl",
+    "host": "CB7",
+    "logKa": 11.8,
+    "guest_vol": 383.0,
+    "cavity_vol": 279.0,
+    "PC": 1.3726
+  },
+  {
+    "guest": "1-Hexanol",
+    "host": "CB7",
+    "logKa": 5.61,
+    "guest_vol": 121.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4342
+  },
+  {
+    "guest": "Mercury cation",
+    "host": "CB7",
+    "logKa": 6.97,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Lanthanum chloride heptahydrate",
+    "host": "CB7",
+    "logKa": 5.18,
+    "guest_vol": 65.7,
+    "cavity_vol": 279.0,
+    "PC": 0.2356
+  },
+  {
+    "guest": "1-Hexanol",
+    "host": "CB7",
+    "logKa": 5.36,
+    "guest_vol": 121.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4342
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.07,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Eucalyptol",
+    "host": "CB7",
+    "logKa": 5.53,
+    "guest_vol": 166.1,
+    "cavity_vol": 279.0,
+    "PC": 0.5954
+  },
+  {
+    "guest": "Serotonin",
+    "host": "CB7",
+    "logKa": 4.83,
+    "guest_vol": 167.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5991
+  },
+  {
+    "guest": "L-Lysine",
+    "host": "CB7",
+    "logKa": 5.49,
+    "guest_vol": 148.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5323
+  },
+  {
+    "guest": "L-Arginine",
+    "host": "CB7",
+    "logKa": 2.51,
+    "guest_vol": 166.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5961
+  },
+  {
+    "guest": "N-(furan-2-ylmethyl)prop-2-en-1-amine",
+    "host": "CB7",
+    "logKa": 6.41,
+    "guest_vol": 139.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5009
+  },
+  {
+    "guest": "Acridine Yellow G",
+    "host": "CB7",
+    "logKa": 4.78,
+    "guest_vol": 223.1,
+    "cavity_vol": 279.0,
+    "PC": 0.7997
+  },
+  {
+    "guest": "Tetramethylrhodamine",
+    "host": "CB7",
+    "logKa": 4.15,
+    "guest_vol": 355.7,
+    "cavity_vol": 279.0,
+    "PC": 1.2748
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB7",
+    "logKa": 6.93,
+    "guest_vol": 199.5,
+    "cavity_vol": 279.0,
+    "PC": 0.715
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB7",
+    "logKa": 5.64,
+    "guest_vol": 217.6,
+    "cavity_vol": 279.0,
+    "PC": 0.7798
+  },
+  {
+    "guest": "D/L-Arginine",
+    "host": "CB7",
+    "logKa": 2.49,
+    "guest_vol": 166.7,
+    "cavity_vol": 279.0,
+    "PC": 0.5975
+  },
+  {
+    "guest": "Ranitidine",
+    "host": "CB7",
+    "logKa": 3.08,
+    "guest_vol": 290.5,
+    "cavity_vol": 279.0,
+    "PC": 1.0413
+  },
+  {
+    "guest": "Melamine",
+    "host": "CB7",
+    "logKa": 4.68,
+    "guest_vol": 105.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3786
+  },
+  {
+    "guest": "Camphor",
+    "host": "CB7",
+    "logKa": 7.29,
+    "guest_vol": 161.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5781
+  },
+  {
+    "guest": "Sodium cation",
+    "host": "CB7",
+    "logKa": 2.18,
+    "guest_vol": 57.0,
+    "cavity_vol": 279.0,
+    "PC": 0.2042
+  },
+  {
+    "guest": "Iron(III) chloride",
+    "host": "CB7",
+    "logKa": 4.18,
+    "guest_vol": 79.1,
+    "cavity_vol": 279.0,
+    "PC": 0.2834
+  },
+  {
+    "guest": "2,2,6-trimethylcyclohexan-1-one",
+    "host": "CB7",
+    "logKa": 6.97,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "Lead cation",
+    "host": "CB7",
+    "logKa": 5.76,
+    "guest_vol": 51.2,
+    "cavity_vol": 279.0,
+    "PC": 0.1836
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 5.3,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB7",
+    "logKa": 4.34,
+    "guest_vol": 166.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5951
+  },
+  {
+    "guest": "iron(3+)",
+    "host": "CB7",
+    "logKa": 2.75,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 6.84,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "tBu Phe-Gly-Gly",
+    "host": "CB7",
+    "logKa": 6.68,
+    "guest_vol": 322.2,
+    "cavity_vol": 279.0,
+    "PC": 1.1548
+  },
+  {
+    "guest": "Tryptamine",
+    "host": "CB7",
+    "logKa": 4.67,
+    "guest_vol": 158.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5679
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 3.63,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB7",
+    "logKa": 6.83,
+    "guest_vol": 199.5,
+    "cavity_vol": 279.0,
+    "PC": 0.715
+  },
+  {
+    "guest": "N-Phenyl-2-naphthylammonium cation",
+    "host": "CB7",
+    "logKa": 5.41,
+    "guest_vol": 214.2,
+    "cavity_vol": 279.0,
+    "PC": 0.7679
+  },
+  {
+    "guest": "beta-Estradiol",
+    "host": "CB7",
+    "logKa": 6.25,
+    "guest_vol": 269.0,
+    "cavity_vol": 279.0,
+    "PC": 0.9641
+  },
+  {
+    "guest": "2,3-Diazabicyclo(2.2.2)oct-2-ene",
+    "host": "CB7",
+    "logKa": 6.0,
+    "guest_vol": 110.2,
+    "cavity_vol": 279.0,
+    "PC": 0.3951
+  },
+  {
+    "guest": "Epiberberine",
+    "host": "CB7",
+    "logKa": 8.79,
+    "guest_vol": 294.5,
+    "cavity_vol": 279.0,
+    "PC": 1.0556
+  },
+  {
+    "guest": "(+)-fenchone",
+    "host": "CB7",
+    "logKa": 7.43,
+    "guest_vol": 160.9,
+    "cavity_vol": 279.0,
+    "PC": 0.5766
+  },
+  {
+    "guest": "Mercury cation",
+    "host": "CB7",
+    "logKa": 4.45,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Rhodamine 6G",
+    "host": "CB7",
+    "logKa": 4.7,
+    "guest_vol": 425.3,
+    "cavity_vol": 279.0,
+    "PC": 1.5242
+  },
+  {
+    "guest": "3,6-Diaminoacridin-10-ium",
+    "host": "CB7",
+    "logKa": 7.23,
+    "guest_vol": 192.9,
+    "cavity_vol": 279.0,
+    "PC": 0.6913
+  },
+  {
+    "guest": "6-Methoxy-1-methylquinolinium",
+    "host": "CB7",
+    "logKa": 6.26,
+    "guest_vol": 167.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5996
+  },
+  {
+    "guest": "Cyclohexanone",
+    "host": "CB7",
+    "logKa": 7.26,
+    "guest_vol": 104.1,
+    "cavity_vol": 279.0,
+    "PC": 0.3731
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB7",
+    "logKa": 6.52,
+    "guest_vol": 199.5,
+    "cavity_vol": 279.0,
+    "PC": 0.715
+  },
+  {
+    "guest": "Barium chloride",
+    "host": "CB7",
+    "logKa": 5.28,
+    "guest_vol": 83.2,
+    "cavity_vol": 279.0,
+    "PC": 0.2981
+  },
+  {
+    "guest": "chromium(3+)",
+    "host": "CB7",
+    "logKa": 5.69,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "1-methyl-1&#39;-(3-aminiopropyl)-4,4&#39;-bipyridinium",
+    "host": "CB7",
+    "logKa": 7.15,
+    "guest_vol": 234.6,
+    "cavity_vol": 279.0,
+    "PC": 0.8408
+  },
+  {
+    "guest": "Pyronine",
+    "host": "CB7",
+    "logKa": 7.17,
+    "guest_vol": 190.6,
+    "cavity_vol": 279.0,
+    "PC": 0.6833
+  },
+  {
+    "guest": "Coumarin 30 neutral",
+    "host": "CB7",
+    "logKa": 4.64,
+    "guest_vol": 321.3,
+    "cavity_vol": 279.0,
+    "PC": 1.1516
+  },
+  {
+    "guest": "paraquat",
+    "host": "CB7",
+    "logKa": 5.17,
+    "guest_vol": 185.3,
+    "cavity_vol": 279.0,
+    "PC": 0.6642
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 3.31,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "N-(furan-2-ylmethyl)prop-2-en-1-amine",
+    "host": "CB7",
+    "logKa": 6.48,
+    "guest_vol": 139.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5009
+  },
+  {
+    "guest": "Gly-AM Phe-Gly",
+    "host": "CB7",
+    "logKa": 6.29,
+    "guest_vol": 283.1,
+    "cavity_vol": 279.0,
+    "PC": 1.0145
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 4.48,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "H-Phe-Met-OH",
+    "host": "CB7",
+    "logKa": 7.15,
+    "guest_vol": 276.0,
+    "cavity_vol": 279.0,
+    "PC": 0.9892
+  },
+  {
+    "guest": "Palmatine",
+    "host": "CB7",
+    "logKa": 3.61,
+    "guest_vol": 321.6,
+    "cavity_vol": 279.0,
+    "PC": 1.1526
+  },
+  {
+    "guest": "Potassium cation",
+    "host": "CB7",
+    "logKa": 1.85,
+    "guest_vol": 91.7,
+    "cavity_vol": 279.0,
+    "PC": 0.3286
+  },
+  {
+    "guest": "beta-Estradiol",
+    "host": "CB7",
+    "logKa": 6.25,
+    "guest_vol": 269.0,
+    "cavity_vol": 279.0,
+    "PC": 0.9641
+  },
+  {
+    "guest": "Dehydrocorydaline",
+    "host": "CB7",
+    "logKa": 3.16,
+    "guest_vol": 337.9,
+    "cavity_vol": 279.0,
+    "PC": 1.211
+  },
+  {
+    "guest": "N-(furan-2-ylmethyl)propan-1-amine",
+    "host": "CB7",
+    "logKa": 5.36,
+    "guest_vol": 145.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5217
+  },
+  {
+    "guest": "L-Arginine",
+    "host": "CB7",
+    "logKa": 5.15,
+    "guest_vol": 166.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5961
+  },
+  {
+    "guest": "Dopamine hydrochloride",
+    "host": "CB7",
+    "logKa": 5.0,
+    "guest_vol": 146.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5248
+  },
+  {
+    "guest": "4-(dimethylamino)benzonitrile",
+    "host": "CB7",
+    "logKa": 5.34,
+    "guest_vol": 147.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5283
+  },
+  {
+    "guest": "Gadolinium(3+)",
+    "host": "CB7",
+    "logKa": 2.93,
+    "guest_vol": 56.6,
+    "cavity_vol": 279.0,
+    "PC": 0.2029
+  },
+  {
+    "guest": "Histamine",
+    "host": "CB7",
+    "logKa": 4.26,
+    "guest_vol": 110.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3963
+  },
+  {
+    "guest": "[Amino-[4-[6-[amino(azaniumylidene)methyl]-1H-indol-2-yl]phenyl]methylidene]azanium",
+    "host": "CB7",
+    "logKa": 7.04,
+    "guest_vol": 258.8,
+    "cavity_vol": 279.0,
+    "PC": 0.9277
+  },
+  {
+    "guest": "3\u2032,4\u2032,7-Trimethoxyflavylium ion",
+    "host": "CB7",
+    "logKa": 4.48,
+    "guest_vol": 270.6,
+    "cavity_vol": 279.0,
+    "PC": 0.9699
+  },
+  {
+    "guest": "Albendazole",
+    "host": "CB7",
+    "logKa": 4.81,
+    "guest_vol": 234.7,
+    "cavity_vol": 279.0,
+    "PC": 0.8413
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 4.48,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "1-ethyl-3-methylimidazolium chloride",
+    "host": "CB7",
+    "logKa": 5.26,
+    "guest_vol": 117.8,
+    "cavity_vol": 279.0,
+    "PC": 0.4222
+  },
+  {
+    "guest": "Tyramine",
+    "host": "CB7",
+    "logKa": 6.58,
+    "guest_vol": 137.9,
+    "cavity_vol": 279.0,
+    "PC": 0.4944
+  },
+  {
+    "guest": "1-Hexanol",
+    "host": "CB7",
+    "logKa": 5.99,
+    "guest_vol": 121.2,
+    "cavity_vol": 279.0,
+    "PC": 0.4342
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 5.3,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "Nickel chloride",
+    "host": "CB7",
+    "logKa": 3.5,
+    "guest_vol": 62.1,
+    "cavity_vol": 279.0,
+    "PC": 0.2226
+  },
+  {
+    "guest": "6-methyl-1,2,3,6,7,7a-hexahydro-3a,6-epoxyisoindole",
+    "host": "CB7",
+    "logKa": 6.75,
+    "guest_vol": 147.3,
+    "cavity_vol": 279.0,
+    "PC": 0.528
+  },
+  {
+    "guest": "Flavopereirine perchlorate",
+    "host": "CB7",
+    "logKa": 7.79,
+    "guest_vol": 231.6,
+    "cavity_vol": 279.0,
+    "PC": 0.8303
+  },
+  {
+    "guest": "1-Adamantylammonium chloride",
+    "host": "CB7",
+    "logKa": 11.04,
+    "guest_vol": 160.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5749
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 6.57,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 6.18,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "Flavopereirine perchlorate",
+    "host": "CB7",
+    "logKa": 7.79,
+    "guest_vol": 231.6,
+    "cavity_vol": 279.0,
+    "PC": 0.8303
+  },
+  {
+    "guest": "Nitric acid",
+    "host": "CB7",
+    "logKa": 2.22,
+    "guest_vol": 44.8,
+    "cavity_vol": 279.0,
+    "PC": 0.1607
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.38,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "N-((5-methylfuran-2-yl)methyl)prop-2-en-1-amine",
+    "host": "CB7",
+    "logKa": 6.04,
+    "guest_vol": 156.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5601
+  },
+  {
+    "guest": "7-Methoxy-4-methylflavylium cation",
+    "host": "CB7",
+    "logKa": 5.9,
+    "guest_vol": 237.0,
+    "cavity_vol": 279.0,
+    "PC": 0.8495
+  },
+  {
+    "guest": "pentane-1,5-diamine dihydrochloride",
+    "host": "CB7",
+    "logKa": 8.15,
+    "guest_vol": 120.0,
+    "cavity_vol": 279.0,
+    "PC": 0.43
+  },
+  {
+    "guest": "N-((5-bromofuran-2-yl)methyl)prop-2-en-1-amine",
+    "host": "CB7",
+    "logKa": 5.91,
+    "guest_vol": 159.8,
+    "cavity_vol": 279.0,
+    "PC": 0.5728
+  },
+  {
+    "guest": "N,N,N-trimethylanthracen-2-aminium chloride",
+    "host": "CB7",
+    "logKa": 5.61,
+    "guest_vol": 237.0,
+    "cavity_vol": 279.0,
+    "PC": 0.8494
+  },
+  {
+    "guest": "2-Aminoanthracene",
+    "host": "CB7",
+    "logKa": 5.9,
+    "guest_vol": 183.0,
+    "cavity_vol": 279.0,
+    "PC": 0.6559
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 9.39,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "1,1&#39;-bis(3-aminopropyl)-4,4&#39;-bipyridinium",
+    "host": "CB7",
+    "logKa": 7.08,
+    "guest_vol": 277.3,
+    "cavity_vol": 279.0,
+    "PC": 0.9937
+  },
+  {
+    "guest": "Acridine red",
+    "host": "CB7",
+    "logKa": 3.84,
+    "guest_vol": 224.9,
+    "cavity_vol": 279.0,
+    "PC": 0.806
+  },
+  {
+    "guest": "Lead cation",
+    "host": "CB7",
+    "logKa": 4.81,
+    "guest_vol": 51.2,
+    "cavity_vol": 279.0,
+    "PC": 0.1836
+  },
+  {
+    "guest": "N-(furan-2-ylmethyl)propan-1-amine",
+    "host": "CB7",
+    "logKa": 5.2,
+    "guest_vol": 145.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5217
+  },
+  {
+    "guest": "3\u2032,4\u2032,7-Trimethoxyflavylium ion",
+    "host": "CB7",
+    "logKa": 6.19,
+    "guest_vol": 270.6,
+    "cavity_vol": 279.0,
+    "PC": 0.9699
+  },
+  {
+    "guest": "6-chloro-1,2,3,6,7,7a-hexahydro-3a,6-epoxyisoindole",
+    "host": "CB7",
+    "logKa": 7.0,
+    "guest_vol": 146.0,
+    "cavity_vol": 279.0,
+    "PC": 0.5232
+  },
+  {
+    "guest": "1-Butanol",
+    "host": "CB7",
+    "logKa": 4.89,
+    "guest_vol": 87.6,
+    "cavity_vol": 279.0,
+    "PC": 0.3138
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.23,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "7-Methoxy-4-methylflavylium cation",
+    "host": "CB7",
+    "logKa": 5.95,
+    "guest_vol": 237.0,
+    "cavity_vol": 279.0,
+    "PC": 0.8495
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB7",
+    "logKa": 10.41,
+    "guest_vol": 154.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5539
+  },
+  {
+    "guest": "D/L-lysine",
+    "host": "CB7",
+    "logKa": 2.94,
+    "guest_vol": 148.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5323
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB7",
+    "logKa": 10.06,
+    "guest_vol": 97.8,
+    "cavity_vol": 279.0,
+    "PC": 0.3505
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 5.51,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "4-(dimethylamino)benzonitrile",
+    "host": "CB7",
+    "logKa": 5.46,
+    "guest_vol": 147.4,
+    "cavity_vol": 279.0,
+    "PC": 0.5283
+  },
+  {
+    "guest": "1-Adamantanamine",
+    "host": "CB7",
+    "logKa": 12.62,
+    "guest_vol": 158.3,
+    "cavity_vol": 279.0,
+    "PC": 0.5674
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.03,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "Barium cation",
+    "host": "CB7",
+    "logKa": 4.56,
+    "guest_vol": 83.2,
+    "cavity_vol": 279.0,
+    "PC": 0.2981
+  },
+  {
+    "guest": "1,1&#39;-bis(5-carboxypentyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB7",
+    "logKa": 6.48,
+    "guest_vol": 376.9,
+    "cavity_vol": 279.0,
+    "PC": 1.3511
+  },
+  {
+    "guest": "Tyramine",
+    "host": "CB7",
+    "logKa": 6.36,
+    "guest_vol": 137.9,
+    "cavity_vol": 279.0,
+    "PC": 0.4944
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB7",
+    "logKa": 5.26,
+    "guest_vol": 158.2,
+    "cavity_vol": 279.0,
+    "PC": 0.5672
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB7",
+    "logKa": 3.08,
+    "guest_vol": 187.0,
+    "cavity_vol": 279.0,
+    "PC": 0.6703
+  },
+  {
+    "guest": "Cholesterol",
+    "host": "CB7",
+    "logKa": 5.91,
+    "guest_vol": 422.7,
+    "cavity_vol": 279.0,
+    "PC": 1.5152
+  },
+  {
+    "guest": "Octyltrimethylammonium bromide",
+    "host": "CB7",
+    "logKa": 6.81,
+    "guest_vol": 212.1,
+    "cavity_vol": 279.0,
+    "PC": 0.7601
+  },
+  {
+    "guest": "Thr-Gly-Ala-Phe-Met-NH2",
+    "host": "CB7",
+    "logKa": 4.11,
+    "guest_vol": 483.4,
+    "cavity_vol": 279.0,
+    "PC": 1.7326
+  },
+  {
+    "guest": "L-Histidine",
+    "host": "CB7",
+    "logKa": 3.38,
+    "guest_vol": 138.4,
+    "cavity_vol": 279.0,
+    "PC": 0.4959
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB7",
+    "logKa": 7.05,
+    "guest_vol": 274.8,
+    "cavity_vol": 279.0,
+    "PC": 0.985
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB7",
+    "logKa": 7.23,
+    "guest_vol": 294.1,
+    "cavity_vol": 279.0,
+    "PC": 1.054
+  },
+  {
+    "guest": "7-(diethylamino)-N-(1,3-dihydroxy-2-(hydroxymethyl)propan-2-yl)-2-oxo-2H-chromene-3-carboxamide",
+    "host": "CB7",
+    "logKa": 7.2,
+    "guest_vol": 330.9,
+    "cavity_vol": 279.0,
+    "PC": 1.1859
+  },
+  {
+    "guest": "bicyclo[2.2.1]heptan-2-one",
+    "host": "CB7",
+    "logKa": 8.17,
+    "guest_vol": 111.0,
+    "cavity_vol": 279.0,
+    "PC": 0.398
+  },
+  {
+    "guest": "2-Adamantylamine hydrochloride",
+    "host": "CB7",
+    "logKa": 14.0,
+    "guest_vol": 158.5,
+    "cavity_vol": 279.0,
+    "PC": 0.5679
+  },
+  {
+    "guest": "bicyclo[2.2.1]heptan-2-one",
+    "host": "CB7",
+    "logKa": 8.11,
+    "guest_vol": 111.0,
+    "cavity_vol": 279.0,
+    "PC": 0.398
+  },
+  {
+    "guest": "chromium(3+)",
+    "host": "CB7",
+    "logKa": 5.69,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "Mercury cation",
+    "host": "CB7",
+    "logKa": 6.97,
+    "guest_vol": 36.4,
+    "cavity_vol": 279.0,
+    "PC": 0.1306
+  },
+  {
+    "guest": "3-benzyl-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 5.64,
+    "guest_vol": 183.9,
+    "cavity_vol": 479.0,
+    "PC": 0.3839
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB8",
+    "logKa": 7.16,
+    "guest_vol": 208.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4349
+  },
+  {
+    "guest": "Indole",
+    "host": "CB8",
+    "logKa": 6.04,
+    "guest_vol": 112.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2349
+  },
+  {
+    "guest": "bis(dimethylpyridinium)diarylethene (open form)",
+    "host": "CB8",
+    "logKa": 7.73,
+    "guest_vol": 410.9,
+    "cavity_vol": 479.0,
+    "PC": 0.8579
+  },
+  {
+    "guest": "1,3-Benzodioxol-5-ol",
+    "host": "CB8",
+    "logKa": 4.32,
+    "guest_vol": 115.7,
+    "cavity_vol": 479.0,
+    "PC": 0.2416
+  },
+  {
+    "guest": "Mono-Trp Gly6 target",
+    "host": "CB8",
+    "logKa": 4.15,
+    "guest_vol": 518.0,
+    "cavity_vol": 479.0,
+    "PC": 1.0814
+  },
+  {
+    "guest": "2-Methoxyphenol",
+    "host": "CB8",
+    "logKa": 4.04,
+    "guest_vol": 117.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2448
+  },
+  {
+    "guest": "Di-Trp Gly4 target",
+    "host": "CB8",
+    "logKa": 5.7,
+    "guest_vol": 782.1,
+    "cavity_vol": 479.0,
+    "PC": 1.6327
+  },
+  {
+    "guest": "Benzamide",
+    "host": "CB8",
+    "logKa": 4.15,
+    "guest_vol": 115.1,
+    "cavity_vol": 479.0,
+    "PC": 0.2402
+  },
+  {
+    "guest": "Serotonin",
+    "host": "CB8",
+    "logKa": 5.15,
+    "guest_vol": 167.2,
+    "cavity_vol": 479.0,
+    "PC": 0.349
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 5.62,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "Copper chloride",
+    "host": "CB8",
+    "logKa": 2.86,
+    "guest_vol": 62.1,
+    "cavity_vol": 479.0,
+    "PC": 0.1296
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 4.75,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "benzene-1,3,5-triol",
+    "host": "CB8",
+    "logKa": 2.6,
+    "guest_vol": 108.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2274
+  },
+  {
+    "guest": "Aniline",
+    "host": "CB8",
+    "logKa": 4.68,
+    "guest_vol": 95.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1991
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 6.08,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "2-Methoxyphenol",
+    "host": "CB8",
+    "logKa": 4.04,
+    "guest_vol": 117.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2448
+  },
+  {
+    "guest": "Methyl viologen",
+    "host": "CB8",
+    "logKa": 5.91,
+    "guest_vol": 185.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3869
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB8",
+    "logKa": 6.64,
+    "guest_vol": 199.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4165
+  },
+  {
+    "guest": "1-methyl-3-[[6-[(3-methylimidazol-3-ium-1-yl)methyl]naphthalen-2-yl]methyl]imidazol-1-ium",
+    "host": "CB8",
+    "logKa": 6.55,
+    "guest_vol": 306.9,
+    "cavity_vol": 479.0,
+    "PC": 0.6407
+  },
+  {
+    "guest": "1-Hydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.6,
+    "guest_vol": 135.6,
+    "cavity_vol": 479.0,
+    "PC": 0.2831
+  },
+  {
+    "guest": "Corticosterone",
+    "host": "CB8",
+    "logKa": 7.11,
+    "guest_vol": 337.3,
+    "cavity_vol": 479.0,
+    "PC": 0.7042
+  },
+  {
+    "guest": "N,N\u2032-dimethyldipyridyliumethylene",
+    "host": "CB8",
+    "logKa": 5.71,
+    "guest_vol": 213.4,
+    "cavity_vol": 479.0,
+    "PC": 0.4456
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 5.26,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "1,1&#39;-diphenyl-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB8",
+    "logKa": 6.46,
+    "guest_vol": 295.4,
+    "cavity_vol": 479.0,
+    "PC": 0.6168
+  },
+  {
+    "guest": "Potassium chloride",
+    "host": "CB8",
+    "logKa": 2.66,
+    "guest_vol": 23.8,
+    "cavity_vol": 479.0,
+    "PC": 0.0496
+  },
+  {
+    "guest": "Prochloraz",
+    "host": "CB8",
+    "logKa": 3.45,
+    "guest_vol": 306.9,
+    "cavity_vol": 479.0,
+    "PC": 0.6406
+  },
+  {
+    "guest": "Trp-Gly-Gly",
+    "host": "CB8",
+    "logKa": 5.3,
+    "guest_vol": 283.9,
+    "cavity_vol": 479.0,
+    "PC": 0.5927
+  },
+  {
+    "guest": "L-phenylalanyl-L-valine",
+    "host": "CB8",
+    "logKa": 6.15,
+    "guest_vol": 257.1,
+    "cavity_vol": 479.0,
+    "PC": 0.5367
+  },
+  {
+    "guest": "N-Acetyl-L-tryptophanamide",
+    "host": "CB8",
+    "logKa": 5.04,
+    "guest_vol": 226.2,
+    "cavity_vol": 479.0,
+    "PC": 0.4723
+  },
+  {
+    "guest": "1-Adamantylazanium",
+    "host": "CB8",
+    "logKa": 9.43,
+    "guest_vol": 160.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3348
+  },
+  {
+    "guest": "(S)-(-)-Propranolol hydrochloride",
+    "host": "CB8",
+    "logKa": 3.48,
+    "guest_vol": 258.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5386
+  },
+  {
+    "guest": "Neutral Red protonated",
+    "host": "CB8",
+    "logKa": 11.26,
+    "guest_vol": 240.9,
+    "cavity_vol": 479.0,
+    "PC": 0.503
+  },
+  {
+    "guest": "Serotonin",
+    "host": "CB8",
+    "logKa": 3.7,
+    "guest_vol": 167.2,
+    "cavity_vol": 479.0,
+    "PC": 0.349
+  },
+  {
+    "guest": "L-Phenylalanyl-L-alanine",
+    "host": "CB8",
+    "logKa": 4.08,
+    "guest_vol": 223.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4657
+  },
+  {
+    "guest": "Oglufanide",
+    "host": "CB8",
+    "logKa": 5.32,
+    "guest_vol": 297.9,
+    "cavity_vol": 479.0,
+    "PC": 0.622
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.79,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "Mono-Trp Gly4 target",
+    "host": "CB8",
+    "logKa": 4.23,
+    "guest_vol": 420.3,
+    "cavity_vol": 479.0,
+    "PC": 0.8775
+  },
+  {
+    "guest": "Trp-Gly-Gly",
+    "host": "CB8",
+    "logKa": 5.11,
+    "guest_vol": 283.9,
+    "cavity_vol": 479.0,
+    "PC": 0.5927
+  },
+  {
+    "guest": "Somatostatin",
+    "host": "CB8",
+    "logKa": 4.23,
+    "guest_vol": 1475.0,
+    "cavity_vol": 479.0,
+    "PC": 3.0794
+  },
+  {
+    "guest": "2,3-Diazabicyclo(2.2.2)oct-2-ene",
+    "host": "CB8",
+    "logKa": 4.2,
+    "guest_vol": 110.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2301
+  },
+  {
+    "guest": "1-(3-aminopropyl)-4-4&#39;-bipyridinium",
+    "host": "CB8",
+    "logKa": 11.08,
+    "guest_vol": 214.9,
+    "cavity_vol": 479.0,
+    "PC": 0.4486
+  },
+  {
+    "guest": "L-Tryptophyl-L-proline",
+    "host": "CB8",
+    "logKa": 5.63,
+    "guest_vol": 275.7,
+    "cavity_vol": 479.0,
+    "PC": 0.5755
+  },
+  {
+    "guest": "L-Tryptophan methyl ester",
+    "host": "CB8",
+    "logKa": 4.15,
+    "guest_vol": 203.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4256
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 6.0,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "Lys-met-ala",
+    "host": "CB8",
+    "logKa": 6.05,
+    "guest_vol": 332.2,
+    "cavity_vol": 479.0,
+    "PC": 0.6936
+  },
+  {
+    "guest": "3,9-Dihydroxytriamantane",
+    "host": "CB8",
+    "logKa": 6.81,
+    "guest_vol": 253.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5285
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.46,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Ala-Lys-Trp-Ala-Ala",
+    "host": "CB8",
+    "logKa": 4.23,
+    "guest_vol": 511.0,
+    "cavity_vol": 479.0,
+    "PC": 1.0669
+  },
+  {
+    "guest": "Dodecane-trimethylamine",
+    "host": "CB8",
+    "logKa": 6.45,
+    "guest_vol": 279.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5829
+  },
+  {
+    "guest": "L-Tryptophan methyl ester",
+    "host": "CB8",
+    "logKa": 4.8,
+    "guest_vol": 203.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4256
+  },
+  {
+    "guest": "Progesterone",
+    "host": "CB8",
+    "logKa": 7.97,
+    "guest_vol": 319.6,
+    "cavity_vol": 479.0,
+    "PC": 0.6671
+  },
+  {
+    "guest": "L-Tryptophanamide",
+    "host": "CB8",
+    "logKa": 5.66,
+    "guest_vol": 190.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3978
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB8",
+    "logKa": 3.72,
+    "guest_vol": 158.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3304
+  },
+  {
+    "guest": "Aniline",
+    "host": "CB8",
+    "logKa": 4.52,
+    "guest_vol": 95.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1991
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB8",
+    "logKa": 3.34,
+    "guest_vol": 166.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3466
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 166.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3466
+  },
+  {
+    "guest": "Cholesterol",
+    "host": "CB8",
+    "logKa": 5.0,
+    "guest_vol": 422.7,
+    "cavity_vol": 479.0,
+    "PC": 0.8826
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 7.84,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.6,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "Vecuronium",
+    "host": "CB8",
+    "logKa": 9.79,
+    "guest_vol": 567.4,
+    "cavity_vol": 479.0,
+    "PC": 1.1846
+  },
+  {
+    "guest": "L-Tyrosyl-L-Lysyl-L-Alanine",
+    "host": "CB8",
+    "logKa": 6.7,
+    "guest_vol": 358.6,
+    "cavity_vol": 479.0,
+    "PC": 0.7486
+  },
+  {
+    "guest": "Tryptamine",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 158.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3308
+  },
+  {
+    "guest": "Fenchol",
+    "host": "CB8",
+    "logKa": 8.51,
+    "guest_vol": 166.8,
+    "cavity_vol": 479.0,
+    "PC": 0.3483
+  },
+  {
+    "guest": "Tropicamide",
+    "host": "CB8",
+    "logKa": 3.15,
+    "guest_vol": 276.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5767
+  },
+  {
+    "guest": "1-Methyl-4-(pyridin-4-yl)pyridinium",
+    "host": "CB8",
+    "logKa": 10.23,
+    "guest_vol": 166.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3466
+  },
+  {
+    "guest": "L-Aspartyl-L-phenylalanine",
+    "host": "CB8",
+    "logKa": 2.9,
+    "guest_vol": 251.3,
+    "cavity_vol": 479.0,
+    "PC": 0.5246
+  },
+  {
+    "guest": "6-Methyl-6-dehydro-17alpha-acetoxyprogesterone",
+    "host": "CB8",
+    "logKa": 7.2,
+    "guest_vol": 375.4,
+    "cavity_vol": 479.0,
+    "PC": 0.7836
+  },
+  {
+    "guest": "4-Chlorophenol",
+    "host": "CB8",
+    "logKa": 4.11,
+    "guest_vol": 107.1,
+    "cavity_vol": 479.0,
+    "PC": 0.2235
+  },
+  {
+    "guest": "Perylene",
+    "host": "CB8",
+    "logKa": 5.79,
+    "guest_vol": 230.6,
+    "cavity_vol": 479.0,
+    "PC": 0.4815
+  },
+  {
+    "guest": "(Trimethylamino)methyl)ferrocene",
+    "host": "CB8",
+    "logKa": 9.91,
+    "guest_vol": 153.8,
+    "cavity_vol": 479.0,
+    "PC": 0.321
+  },
+  {
+    "guest": "2-Hydroxynaphthalene-triethylene-glycol",
+    "host": "CB8",
+    "logKa": 5.23,
+    "guest_vol": 264.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5511
+  },
+  {
+    "guest": "Ampicillin",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 305.3,
+    "cavity_vol": 479.0,
+    "PC": 0.6374
+  },
+  {
+    "guest": "Aspartame",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 269.2,
+    "cavity_vol": 479.0,
+    "PC": 0.562
+  },
+  {
+    "guest": "L-Tryptophanamide",
+    "host": "CB8",
+    "logKa": 6.58,
+    "guest_vol": 190.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3978
+  },
+  {
+    "guest": "Cholic acid",
+    "host": "CB8",
+    "logKa": 5.28,
+    "guest_vol": 407.0,
+    "cavity_vol": 479.0,
+    "PC": 0.8497
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB8",
+    "logKa": 5.6,
+    "guest_vol": 158.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3304
+  },
+  {
+    "guest": "Mono-Trp Gly6 target",
+    "host": "CB8",
+    "logKa": 4.34,
+    "guest_vol": 518.0,
+    "cavity_vol": 479.0,
+    "PC": 1.0814
+  },
+  {
+    "guest": "4-Ethoxyphenol",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 133.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2794
+  },
+  {
+    "guest": "Penicillin G",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 293.1,
+    "cavity_vol": 479.0,
+    "PC": 0.612
+  },
+  {
+    "guest": "Dopamine",
+    "host": "CB8",
+    "logKa": 6.0,
+    "guest_vol": 146.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3057
+  },
+  {
+    "guest": "Estriol",
+    "host": "CB8",
+    "logKa": 5.9,
+    "guest_vol": 277.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5788
+  },
+  {
+    "guest": "Tetrahydrofuran",
+    "host": "CB8",
+    "logKa": 4.05,
+    "guest_vol": 77.1,
+    "cavity_vol": 479.0,
+    "PC": 0.161
+  },
+  {
+    "guest": "Cetrimonium bromide",
+    "host": "CB8",
+    "logKa": 6.02,
+    "guest_vol": 345.9,
+    "cavity_vol": 479.0,
+    "PC": 0.7221
+  },
+  {
+    "guest": "1-methyl-3-[[4-[4-[(3-methylimidazol-3-ium-1-yl)methyl]phenyl]phenyl]methyl]imidazol-1-ium",
+    "host": "CB8",
+    "logKa": 5.3,
+    "guest_vol": 334.4,
+    "cavity_vol": 479.0,
+    "PC": 0.6981
+  },
+  {
+    "guest": "2-Cyanophenol",
+    "host": "CB8",
+    "logKa": 3.76,
+    "guest_vol": 110.0,
+    "cavity_vol": 479.0,
+    "PC": 0.2296
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.32,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "1-((perfluorophenyl)methyl)pyridin-1-ium",
+    "host": "CB8",
+    "logKa": 3.51,
+    "guest_vol": 196.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4108
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB8",
+    "logKa": 7.03,
+    "guest_vol": 199.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4165
+  },
+  {
+    "guest": "4-Bromophenol",
+    "host": "CB8",
+    "logKa": 3.96,
+    "guest_vol": 112.3,
+    "cavity_vol": 479.0,
+    "PC": 0.2345
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.77,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Drospirenone",
+    "host": "CB8",
+    "logKa": 8.06,
+    "guest_vol": 352.4,
+    "cavity_vol": 479.0,
+    "PC": 0.7358
+  },
+  {
+    "guest": "1,5-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.11,
+    "guest_vol": 143.9,
+    "cavity_vol": 479.0,
+    "PC": 0.3005
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.56,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "4-Ethoxyphenol",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 133.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2794
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.88,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "Methyl viologen",
+    "host": "CB8",
+    "logKa": 5.2,
+    "guest_vol": 185.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3869
+  },
+  {
+    "guest": "Leu-Met-Gly-Gly-Tyr",
+    "host": "CB8",
+    "logKa": 6.8,
+    "guest_vol": 497.4,
+    "cavity_vol": 479.0,
+    "PC": 1.0384
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 3.46,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Prednisolone",
+    "host": "CB8",
+    "logKa": 6.0,
+    "guest_vol": 340.1,
+    "cavity_vol": 479.0,
+    "PC": 0.71
+  },
+  {
+    "guest": "Tryptamine",
+    "host": "CB8",
+    "logKa": 4.73,
+    "guest_vol": 158.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3308
+  },
+  {
+    "guest": "glycyl-l-tryptophyl-glycine",
+    "host": "CB8",
+    "logKa": 4.32,
+    "guest_vol": 284.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5929
+  },
+  {
+    "guest": "1-NAPTHYL-NHCOO-5KPEGOME",
+    "host": "CB8",
+    "logKa": 4.81,
+    "guest_vol": 226.6,
+    "cavity_vol": 479.0,
+    "PC": 0.473
+  },
+  {
+    "guest": "Aluminum trichloride",
+    "host": "CB8",
+    "logKa": 2.9,
+    "guest_vol": 89.8,
+    "cavity_vol": 479.0,
+    "PC": 0.1875
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.36,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "4-ethylphenol",
+    "host": "CB8",
+    "logKa": 3.08,
+    "guest_vol": 125.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2613
+  },
+  {
+    "guest": "3-Methoxy-2-naphthol",
+    "host": "CB8",
+    "logKa": 5.2,
+    "guest_vol": 160.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3344
+  },
+  {
+    "guest": "3-Methoxyphenol",
+    "host": "CB8",
+    "logKa": 3.81,
+    "guest_vol": 117.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2446
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 4.63,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "quinoline",
+    "host": "CB8",
+    "logKa": 3.34,
+    "guest_vol": 122.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2566
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.79,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "Sanguinarine",
+    "host": "CB8",
+    "logKa": 4.08,
+    "guest_vol": 277.5,
+    "cavity_vol": 479.0,
+    "PC": 0.5793
+  },
+  {
+    "guest": "cis-azobenzene-TEG",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 311.5,
+    "cavity_vol": 479.0,
+    "PC": 0.6503
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.98,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "N-Acetyl-L-tryptophanamide",
+    "host": "CB8",
+    "logKa": 5.04,
+    "guest_vol": 226.2,
+    "cavity_vol": 479.0,
+    "PC": 0.4723
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB8",
+    "logKa": 6.92,
+    "guest_vol": 294.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6139
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 8.19,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "Iron(III) chloride",
+    "host": "CB8",
+    "logKa": 2.97,
+    "guest_vol": 79.1,
+    "cavity_vol": 479.0,
+    "PC": 0.1651
+  },
+  {
+    "guest": "2NpCH2ImidMe",
+    "host": "CB8",
+    "logKa": 4.6,
+    "guest_vol": 216.5,
+    "cavity_vol": 479.0,
+    "PC": 0.452
+  },
+  {
+    "guest": "Prednisolone",
+    "host": "CB8",
+    "logKa": 6.15,
+    "guest_vol": 340.1,
+    "cavity_vol": 479.0,
+    "PC": 0.71
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.56,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "1-Hydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.6,
+    "guest_vol": 135.6,
+    "cavity_vol": 479.0,
+    "PC": 0.2831
+  },
+  {
+    "guest": "Methyl pyridinium paracyclophane iodide",
+    "host": "CB8",
+    "logKa": 12.59,
+    "guest_vol": 298.9,
+    "cavity_vol": 479.0,
+    "PC": 0.6241
+  },
+  {
+    "guest": "Phenyl-\u03b2-D-galactopyranoside",
+    "host": "CB8",
+    "logKa": 4.4,
+    "guest_vol": 225.1,
+    "cavity_vol": 479.0,
+    "PC": 0.47
+  },
+  {
+    "guest": "Coptisine",
+    "host": "CB8",
+    "logKa": 4.1,
+    "guest_vol": 268.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5594
+  },
+  {
+    "guest": "Magnesium chloride",
+    "host": "CB8",
+    "logKa": 2.72,
+    "guest_vol": 44.0,
+    "cavity_vol": 479.0,
+    "PC": 0.0918
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.56,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "PDI-Bis(Et-Me2N-Et-OH)",
+    "host": "CB8",
+    "logKa": 5.3,
+    "guest_vol": 561.3,
+    "cavity_vol": 479.0,
+    "PC": 1.1718
+  },
+  {
+    "guest": "4-Cyanophenol",
+    "host": "CB8",
+    "logKa": 3.51,
+    "guest_vol": 110.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2313
+  },
+  {
+    "guest": "2-Chlorophenol",
+    "host": "CB8",
+    "logKa": 4.9,
+    "guest_vol": 107.0,
+    "cavity_vol": 479.0,
+    "PC": 0.2233
+  },
+  {
+    "guest": "3-Cyanophenol",
+    "host": "CB8",
+    "logKa": 3.72,
+    "guest_vol": 110.3,
+    "cavity_vol": 479.0,
+    "PC": 0.2302
+  },
+  {
+    "guest": "4-Chlorophenol",
+    "host": "CB8",
+    "logKa": 4.11,
+    "guest_vol": 107.1,
+    "cavity_vol": 479.0,
+    "PC": 0.2235
+  },
+  {
+    "guest": "2-Cyanophenol",
+    "host": "CB8",
+    "logKa": 3.28,
+    "guest_vol": 110.0,
+    "cavity_vol": 479.0,
+    "PC": 0.2296
+  },
+  {
+    "guest": "3-Cyanophenol",
+    "host": "CB8",
+    "logKa": 3.72,
+    "guest_vol": 110.3,
+    "cavity_vol": 479.0,
+    "PC": 0.2302
+  },
+  {
+    "guest": "2,7-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.2,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Indole",
+    "host": "CB8",
+    "logKa": 5.83,
+    "guest_vol": 112.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2349
+  },
+  {
+    "guest": "1-NAPTHYL-NHCOO-5KPEGOME",
+    "host": "CB8",
+    "logKa": 4.48,
+    "guest_vol": 226.6,
+    "cavity_vol": 479.0,
+    "PC": 0.473
+  },
+  {
+    "guest": "2-Chlorophenol",
+    "host": "CB8",
+    "logKa": 4.9,
+    "guest_vol": 107.0,
+    "cavity_vol": 479.0,
+    "PC": 0.2233
+  },
+  {
+    "guest": "6-Methoxy-2-naphthol",
+    "host": "CB8",
+    "logKa": 5.7,
+    "guest_vol": 160.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3351
+  },
+  {
+    "guest": "3-((perfluorophenyl)methyl)-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 6.83,
+    "guest_vol": 209.6,
+    "cavity_vol": 479.0,
+    "PC": 0.4375
+  },
+  {
+    "guest": "3,9-Dihydroxytriamantane",
+    "host": "CB8",
+    "logKa": 6.86,
+    "guest_vol": 253.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5285
+  },
+  {
+    "guest": "Hydrocortisone",
+    "host": "CB8",
+    "logKa": 6.6,
+    "guest_vol": 346.0,
+    "cavity_vol": 479.0,
+    "PC": 0.7224
+  },
+  {
+    "guest": "2,7-Dimethyldiazaphenanthrenium",
+    "host": "CB8",
+    "logKa": 4.89,
+    "guest_vol": 201.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4213
+  },
+  {
+    "guest": "17-alpha-Ethinyl estradiol",
+    "host": "CB8",
+    "logKa": 6.26,
+    "guest_vol": 291.2,
+    "cavity_vol": 479.0,
+    "PC": 0.6078
+  },
+  {
+    "guest": "Methionyl-Tyrosyl-Glycyl-Glycyl-Tyrosine",
+    "host": "CB8",
+    "logKa": 6.8,
+    "guest_vol": 525.9,
+    "cavity_vol": 479.0,
+    "PC": 1.0978
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.86,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.83,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "3-(3,4,5-trifluorobenzyl)-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 6.01,
+    "guest_vol": 200.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4175
+  },
+  {
+    "guest": "((Dimethylamino)methyl)ferrocene",
+    "host": "CB8",
+    "logKa": 9.84,
+    "guest_vol": 133.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2781
+  },
+  {
+    "guest": "1,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.88,
+    "guest_vol": 144.2,
+    "cavity_vol": 479.0,
+    "PC": 0.301
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.48,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "N-Acetyl-L-Tryptophan",
+    "host": "CB8",
+    "logKa": 5.0,
+    "guest_vol": 223.2,
+    "cavity_vol": 479.0,
+    "PC": 0.4661
+  },
+  {
+    "guest": "2-Hydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.95,
+    "guest_vol": 135.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2837
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 3.11,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.86,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Tropicamide (protonated)",
+    "host": "CB8",
+    "logKa": 6.6,
+    "guest_vol": 278.3,
+    "cavity_vol": 479.0,
+    "PC": 0.581
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB8",
+    "logKa": 3.95,
+    "guest_vol": 166.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3466
+  },
+  {
+    "guest": "2-Hydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.15,
+    "guest_vol": 135.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2837
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.97,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.77,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Tryptamine",
+    "host": "CB8",
+    "logKa": 5.11,
+    "guest_vol": 158.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3308
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB8",
+    "logKa": 7.23,
+    "guest_vol": 294.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6139
+  },
+  {
+    "guest": "Phenyl-\u03b2-D-galactopyranoside",
+    "host": "CB8",
+    "logKa": 4.48,
+    "guest_vol": 225.1,
+    "cavity_vol": 479.0,
+    "PC": 0.47
+  },
+  {
+    "guest": "1,1&#39;-bis(4-methoxyphenyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB8",
+    "logKa": 6.59,
+    "guest_vol": 346.8,
+    "cavity_vol": 479.0,
+    "PC": 0.724
+  },
+  {
+    "guest": "Hydroquinone",
+    "host": "CB8",
+    "logKa": 4.11,
+    "guest_vol": 100.6,
+    "cavity_vol": 479.0,
+    "PC": 0.21
+  },
+  {
+    "guest": "bis(dimethylpyridinium)diarylethene (closed form)",
+    "host": "CB8",
+    "logKa": 9.79,
+    "guest_vol": 407.1,
+    "cavity_vol": 479.0,
+    "PC": 0.85
+  },
+  {
+    "guest": "Thionin",
+    "host": "CB8",
+    "logKa": 16.4,
+    "guest_vol": 195.9,
+    "cavity_vol": 479.0,
+    "PC": 0.4089
+  },
+  {
+    "guest": "Decyltrimethylammonium bromide",
+    "host": "CB8",
+    "logKa": 6.68,
+    "guest_vol": 245.6,
+    "cavity_vol": 479.0,
+    "PC": 0.5127
+  },
+  {
+    "guest": "N,N,N-trimethyl-1-(perfluorophenyl)methanaminium",
+    "host": "CB8",
+    "logKa": 3.6,
+    "guest_vol": 192.4,
+    "cavity_vol": 479.0,
+    "PC": 0.4017
+  },
+  {
+    "guest": "Mono-Trp Gly6 target",
+    "host": "CB8",
+    "logKa": 4.34,
+    "guest_vol": 518.0,
+    "cavity_vol": 479.0,
+    "PC": 1.0814
+  },
+  {
+    "guest": "3,9-Dihydroxytriamantane",
+    "host": "CB8",
+    "logKa": 6.98,
+    "guest_vol": 253.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5285
+  },
+  {
+    "guest": "Sodium chloride",
+    "host": "CB8",
+    "logKa": 2.49,
+    "guest_vol": 57.0,
+    "cavity_vol": 479.0,
+    "PC": 0.119
+  },
+  {
+    "guest": "L-Tryptophyl-L-proline",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 275.7,
+    "cavity_vol": 479.0,
+    "PC": 0.5755
+  },
+  {
+    "guest": "Progesterone",
+    "host": "CB8",
+    "logKa": 7.91,
+    "guest_vol": 319.6,
+    "cavity_vol": 479.0,
+    "PC": 0.6671
+  },
+  {
+    "guest": "4-Ethoxyphenol",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 133.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2794
+  },
+  {
+    "guest": "1,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.88,
+    "guest_vol": 144.2,
+    "cavity_vol": 479.0,
+    "PC": 0.301
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.97,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Gly-Gly-Trp",
+    "host": "CB8",
+    "logKa": 3.49,
+    "guest_vol": 284.5,
+    "cavity_vol": 479.0,
+    "PC": 0.594
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB8",
+    "logKa": 6.67,
+    "guest_vol": 199.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4165
+  },
+  {
+    "guest": "Thiazole orange",
+    "host": "CB8",
+    "logKa": 11.78,
+    "guest_vol": 279.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5825
+  },
+  {
+    "guest": "2-(2,5-dihydroxyphenyl)acetic acid",
+    "host": "CB8",
+    "logKa": 2.15,
+    "guest_vol": 145.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3037
+  },
+  {
+    "guest": "Aniline",
+    "host": "CB8",
+    "logKa": 4.52,
+    "guest_vol": 95.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1991
+  },
+  {
+    "guest": "Pyronin Y",
+    "host": "CB8",
+    "logKa": 23.48,
+    "guest_vol": 258.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5391
+  },
+  {
+    "guest": "Tetramethyl benzobis (imidazolium)",
+    "host": "CB8",
+    "logKa": 5.41,
+    "guest_vol": 205.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4296
+  },
+  {
+    "guest": "L-alanyl-L-tyrosyl-L-leucine",
+    "host": "CB8",
+    "logKa": 5.51,
+    "guest_vol": 347.8,
+    "cavity_vol": 479.0,
+    "PC": 0.726
+  },
+  {
+    "guest": "1-methyl-1&#39;-(3-aminiopropyl)-4,4&#39;-bipyridinium",
+    "host": "CB8",
+    "logKa": 6.86,
+    "guest_vol": 234.6,
+    "cavity_vol": 479.0,
+    "PC": 0.4898
+  },
+  {
+    "guest": "N-Acetyl-L-tryptophanamide",
+    "host": "CB8",
+    "logKa": 5.4,
+    "guest_vol": 226.2,
+    "cavity_vol": 479.0,
+    "PC": 0.4723
+  },
+  {
+    "guest": "2,3-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.51,
+    "guest_vol": 143.7,
+    "cavity_vol": 479.0,
+    "PC": 0.3
+  },
+  {
+    "guest": "D/L-Adrenaline",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 172.1,
+    "cavity_vol": 479.0,
+    "PC": 0.3592
+  },
+  {
+    "guest": "2,3-Diazabicyclo[2.2.1]-hept-2-ene",
+    "host": "CB8",
+    "logKa": 3.44,
+    "guest_vol": 94.6,
+    "cavity_vol": 479.0,
+    "PC": 0.1975
+  },
+  {
+    "guest": "Methylene Blue",
+    "host": "CB8",
+    "logKa": 12.03,
+    "guest_vol": 263.6,
+    "cavity_vol": 479.0,
+    "PC": 0.5504
+  },
+  {
+    "guest": "5-Hydroxy-L-Tryptophan",
+    "host": "CB8",
+    "logKa": 4.34,
+    "guest_vol": 195.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4077
+  },
+  {
+    "guest": "Geranylamine",
+    "host": "CB8",
+    "logKa": 8.93,
+    "guest_vol": 179.8,
+    "cavity_vol": 479.0,
+    "PC": 0.3753
+  },
+  {
+    "guest": "3-(3,5-difluorobenzyl)-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 5.79,
+    "guest_vol": 194.1,
+    "cavity_vol": 479.0,
+    "PC": 0.4052
+  },
+  {
+    "guest": "Mono-Trp Gly4 target",
+    "host": "CB8",
+    "logKa": 4.28,
+    "guest_vol": 420.3,
+    "cavity_vol": 479.0,
+    "PC": 0.8775
+  },
+  {
+    "guest": "3,9-Dihydroxytriamantane",
+    "host": "CB8",
+    "logKa": 7.08,
+    "guest_vol": 253.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5285
+  },
+  {
+    "guest": "glycyl-l-tryptophyl-glycine",
+    "host": "CB8",
+    "logKa": 6.7,
+    "guest_vol": 284.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5929
+  },
+  {
+    "guest": "Aniline",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 95.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1991
+  },
+  {
+    "guest": "Trp-Gly-Gly",
+    "host": "CB8",
+    "logKa": 5.08,
+    "guest_vol": 283.9,
+    "cavity_vol": 479.0,
+    "PC": 0.5927
+  },
+  {
+    "guest": "Tetramethyl benzobis (imidazolium)",
+    "host": "CB8",
+    "logKa": 5.7,
+    "guest_vol": 205.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4296
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 8.19,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "3-(2,3,5,6-tetrafluorobenzyl)-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 5.52,
+    "guest_vol": 204.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4269
+  },
+  {
+    "guest": "3,9-Dihydroxytriamantane",
+    "host": "CB8",
+    "logKa": 6.97,
+    "guest_vol": 253.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5285
+  },
+  {
+    "guest": "5-Hydroxy-L-Tryptophan",
+    "host": "CB8",
+    "logKa": 3.9,
+    "guest_vol": 195.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4077
+  },
+  {
+    "guest": "Cesium chloride, Caesium chloride",
+    "host": "CB8",
+    "logKa": 2.55,
+    "guest_vol": 23.8,
+    "cavity_vol": 479.0,
+    "PC": 0.0496
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB8",
+    "logKa": 7.0,
+    "guest_vol": 294.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6139
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.66,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "1,1&#39;-bis(4-aminophenyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB8",
+    "logKa": 5.83,
+    "guest_vol": 319.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6662
+  },
+  {
+    "guest": "Ranitidine",
+    "host": "CB8",
+    "logKa": 3.3,
+    "guest_vol": 290.5,
+    "cavity_vol": 479.0,
+    "PC": 0.6065
+  },
+  {
+    "guest": "1-methyl-3-[[4-[(3-methylimidazol-3-ium-1-yl)methyl]phenyl]methyl]imidazol-1-ium",
+    "host": "CB8",
+    "logKa": 6.29,
+    "guest_vol": 262.6,
+    "cavity_vol": 479.0,
+    "PC": 0.5483
+  },
+  {
+    "guest": "sodium benzoate",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 109.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2292
+  },
+  {
+    "guest": "1,1&#39;-bis(4-cyanophenyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB8",
+    "logKa": 6.4,
+    "guest_vol": 332.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6932
+  },
+  {
+    "guest": "Geranylamine",
+    "host": "CB8",
+    "logKa": 8.87,
+    "guest_vol": 179.8,
+    "cavity_vol": 479.0,
+    "PC": 0.3753
+  },
+  {
+    "guest": "4-Iodophenol",
+    "host": "CB8",
+    "logKa": 4.11,
+    "guest_vol": 121.4,
+    "cavity_vol": 479.0,
+    "PC": 0.2535
+  },
+  {
+    "guest": "1,3-Benzodioxol-5-ol",
+    "host": "CB8",
+    "logKa": 3.62,
+    "guest_vol": 115.7,
+    "cavity_vol": 479.0,
+    "PC": 0.2416
+  },
+  {
+    "guest": "2-Hydroxynaphthalene-triethylene-glycol",
+    "host": "CB8",
+    "logKa": 6.13,
+    "guest_vol": 264.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5511
+  },
+  {
+    "guest": "2-Hydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.4,
+    "guest_vol": 135.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2837
+  },
+  {
+    "guest": "Memantine",
+    "host": "CB8",
+    "logKa": 11.12,
+    "guest_vol": 191.7,
+    "cavity_vol": 479.0,
+    "PC": 0.4002
+  },
+  {
+    "guest": "2-Hydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 6.43,
+    "guest_vol": 135.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2837
+  },
+  {
+    "guest": "2,7-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.2,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "1,7-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.73,
+    "guest_vol": 143.9,
+    "cavity_vol": 479.0,
+    "PC": 0.3004
+  },
+  {
+    "guest": "N,N,N-trimethylanthracen-2-aminium chloride",
+    "host": "CB8",
+    "logKa": 12.0,
+    "guest_vol": 237.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4947
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB8",
+    "logKa": 7.26,
+    "guest_vol": 208.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4349
+  },
+  {
+    "guest": "L-Alanyl-L-phenylalanine",
+    "host": "CB8",
+    "logKa": 2.7,
+    "guest_vol": 223.7,
+    "cavity_vol": 479.0,
+    "PC": 0.467
+  },
+  {
+    "guest": "1,1&#39;-bis(3-aminopropyl)-4,4&#39;-bipyridinium",
+    "host": "CB8",
+    "logKa": 6.86,
+    "guest_vol": 277.3,
+    "cavity_vol": 479.0,
+    "PC": 0.5788
+  },
+  {
+    "guest": "Benzene",
+    "host": "CB8",
+    "logKa": 3.6,
+    "guest_vol": 83.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1741
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.82,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "Acetone",
+    "host": "CB8",
+    "logKa": 3.73,
+    "guest_vol": 64.9,
+    "cavity_vol": 479.0,
+    "PC": 0.1355
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.26,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "rotenone",
+    "host": "CB8",
+    "logKa": 3.68,
+    "guest_vol": 348.2,
+    "cavity_vol": 479.0,
+    "PC": 0.727
+  },
+  {
+    "guest": "4-Iodophenol",
+    "host": "CB8",
+    "logKa": 4.11,
+    "guest_vol": 121.4,
+    "cavity_vol": 479.0,
+    "PC": 0.2535
+  },
+  {
+    "guest": "Cyclopentanone",
+    "host": "CB8",
+    "logKa": 3.04,
+    "guest_vol": 87.6,
+    "cavity_vol": 479.0,
+    "PC": 0.1828
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 7.08,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "Mono-Trp Gly6 target",
+    "host": "CB8",
+    "logKa": 4.18,
+    "guest_vol": 518.0,
+    "cavity_vol": 479.0,
+    "PC": 1.0814
+  },
+  {
+    "guest": "1,3-Dihydroxybenzene",
+    "host": "CB8",
+    "logKa": 3.72,
+    "guest_vol": 100.3,
+    "cavity_vol": 479.0,
+    "PC": 0.2094
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 5.21,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 4.34,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "4-Bromophenol",
+    "host": "CB8",
+    "logKa": 3.96,
+    "guest_vol": 112.3,
+    "cavity_vol": 479.0,
+    "PC": 0.2345
+  },
+  {
+    "guest": "methionyllysylalanine",
+    "host": "CB8",
+    "logKa": 5.59,
+    "guest_vol": 331.5,
+    "cavity_vol": 479.0,
+    "PC": 0.6921
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.33,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "4-Cyanophenol",
+    "host": "CB8",
+    "logKa": 3.72,
+    "guest_vol": 110.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2313
+  },
+  {
+    "guest": "Phenyl-\u03b2-D-galactopyranoside",
+    "host": "CB8",
+    "logKa": 4.48,
+    "guest_vol": 225.1,
+    "cavity_vol": 479.0,
+    "PC": 0.47
+  },
+  {
+    "guest": "Mono-Trp Gly4 target",
+    "host": "CB8",
+    "logKa": 4.34,
+    "guest_vol": 420.3,
+    "cavity_vol": 479.0,
+    "PC": 0.8775
+  },
+  {
+    "guest": "3-(2,3,5,6-tetrafluorobenzyl)-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 6.36,
+    "guest_vol": 204.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4269
+  },
+  {
+    "guest": "Octyltrimethylammonium bromide",
+    "host": "CB8",
+    "logKa": 6.02,
+    "guest_vol": 212.1,
+    "cavity_vol": 479.0,
+    "PC": 0.4427
+  },
+  {
+    "guest": "Camphor",
+    "host": "CB8",
+    "logKa": 7.48,
+    "guest_vol": 161.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3367
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB8",
+    "logKa": 6.6,
+    "guest_vol": 208.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4349
+  },
+  {
+    "guest": "Acetone",
+    "host": "CB8",
+    "logKa": 2.99,
+    "guest_vol": 64.9,
+    "cavity_vol": 479.0,
+    "PC": 0.1355
+  },
+  {
+    "guest": "L-Tryptophan methyl ester",
+    "host": "CB8",
+    "logKa": 6.11,
+    "guest_vol": 203.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4256
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.74,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "Dodecyltrimethylammonium bromide",
+    "host": "CB8",
+    "logKa": 6.45,
+    "guest_vol": 279.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5829
+  },
+  {
+    "guest": "Tetrahydrofuran",
+    "host": "CB8",
+    "logKa": 4.13,
+    "guest_vol": 77.1,
+    "cavity_vol": 479.0,
+    "PC": 0.161
+  },
+  {
+    "guest": "Propranolol",
+    "host": "CB8",
+    "logKa": 3.48,
+    "guest_vol": 258.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5386
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 6.97,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "2,7-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.82,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "(S)-(-)-Propranolol hydrochloride",
+    "host": "CB8",
+    "logKa": 4.4,
+    "guest_vol": 258.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5386
+  },
+  {
+    "guest": "4-Methoxyphenol",
+    "host": "CB8",
+    "logKa": 3.38,
+    "guest_vol": 117.0,
+    "cavity_vol": 479.0,
+    "PC": 0.2443
+  },
+  {
+    "guest": "3-Chlorophenol",
+    "host": "CB8",
+    "logKa": 4.78,
+    "guest_vol": 107.4,
+    "cavity_vol": 479.0,
+    "PC": 0.2242
+  },
+  {
+    "guest": "Lithium chloride",
+    "host": "CB8",
+    "logKa": 1.69,
+    "guest_vol": 44.0,
+    "cavity_vol": 479.0,
+    "PC": 0.0918
+  },
+  {
+    "guest": "1&#39;,1&#39;&#39;&#39;-(([1,1&#39;-binaphthalene]-2,2&#39;-diylbis(oxy))bis(hexane-6,1-diyl))bis(1-methyl-[4,4&#39;-bipyridine]-1,1&#39;-diium)",
+    "host": "CB8",
+    "logKa": 7.0,
+    "guest_vol": 777.4,
+    "cavity_vol": 479.0,
+    "PC": 1.6229
+  },
+  {
+    "guest": "benzene-1,3,5-triol",
+    "host": "CB8",
+    "logKa": 3.71,
+    "guest_vol": 108.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2274
+  },
+  {
+    "guest": "Nandrolone-17-propionate",
+    "host": "CB8",
+    "logKa": 6.69,
+    "guest_vol": 329.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6871
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 6.98,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "2-Phenylethylamine",
+    "host": "CB8",
+    "logKa": 3.9,
+    "guest_vol": 129.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2698
+  },
+  {
+    "guest": "4-Fluorophenol",
+    "host": "CB8",
+    "logKa": 3.83,
+    "guest_vol": 97.4,
+    "cavity_vol": 479.0,
+    "PC": 0.2034
+  },
+  {
+    "guest": "4-Iodophenol",
+    "host": "CB8",
+    "logKa": 3.61,
+    "guest_vol": 121.4,
+    "cavity_vol": 479.0,
+    "PC": 0.2535
+  },
+  {
+    "guest": "2,3-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.28,
+    "guest_vol": 143.7,
+    "cavity_vol": 479.0,
+    "PC": 0.3
+  },
+  {
+    "guest": "3-Methoxy-2-naphthol",
+    "host": "CB8",
+    "logKa": 5.2,
+    "guest_vol": 160.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3344
+  },
+  {
+    "guest": "Acetaminophen",
+    "host": "CB8",
+    "logKa": 3.85,
+    "guest_vol": 140.3,
+    "cavity_vol": 479.0,
+    "PC": 0.2929
+  },
+  {
+    "guest": "Coumarin 30 neutral",
+    "host": "CB8",
+    "logKa": 11.16,
+    "guest_vol": 321.3,
+    "cavity_vol": 479.0,
+    "PC": 0.6707
+  },
+  {
+    "guest": "Gly-Gly-Trp",
+    "host": "CB8",
+    "logKa": 4.4,
+    "guest_vol": 284.5,
+    "cavity_vol": 479.0,
+    "PC": 0.594
+  },
+  {
+    "guest": "Indole",
+    "host": "CB8",
+    "logKa": 5.83,
+    "guest_vol": 112.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2349
+  },
+  {
+    "guest": "Beta-estradiol 3-benzoate",
+    "host": "CB8",
+    "logKa": 6.26,
+    "guest_vol": 360.8,
+    "cavity_vol": 479.0,
+    "PC": 0.7533
+  },
+  {
+    "guest": "1,2-Dihydroxybenzene",
+    "host": "CB8",
+    "logKa": 4.3,
+    "guest_vol": 100.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2098
+  },
+  {
+    "guest": "naphthalene",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 127.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2655
+  },
+  {
+    "guest": "3,6-Diaminoacridin-10-ium",
+    "host": "CB8",
+    "logKa": 15.33,
+    "guest_vol": 192.9,
+    "cavity_vol": 479.0,
+    "PC": 0.4027
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB8",
+    "logKa": 7.26,
+    "guest_vol": 208.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4349
+  },
+  {
+    "guest": "Tetradecyltrimethylammonium bromide",
+    "host": "CB8",
+    "logKa": 6.16,
+    "guest_vol": 312.7,
+    "cavity_vol": 479.0,
+    "PC": 0.6529
+  },
+  {
+    "guest": "naproxen",
+    "host": "CB8",
+    "logKa": 3.3,
+    "guest_vol": 214.7,
+    "cavity_vol": 479.0,
+    "PC": 0.4482
+  },
+  {
+    "guest": "Hydroquinone",
+    "host": "CB8",
+    "logKa": 4.11,
+    "guest_vol": 100.6,
+    "cavity_vol": 479.0,
+    "PC": 0.21
+  },
+  {
+    "guest": "Proflavine",
+    "host": "CB8",
+    "logKa": 7.28,
+    "guest_vol": 190.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3976
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB8",
+    "logKa": 6.28,
+    "guest_vol": 294.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6139
+  },
+  {
+    "guest": "2-Cyanophenol",
+    "host": "CB8",
+    "logKa": 3.28,
+    "guest_vol": 110.0,
+    "cavity_vol": 479.0,
+    "PC": 0.2296
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB8",
+    "logKa": 6.97,
+    "guest_vol": 294.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6139
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB8",
+    "logKa": 6.34,
+    "guest_vol": 294.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6139
+  },
+  {
+    "guest": "Serotonin",
+    "host": "CB8",
+    "logKa": 3.7,
+    "guest_vol": 167.2,
+    "cavity_vol": 479.0,
+    "PC": 0.349
+  },
+  {
+    "guest": "Cholic acid",
+    "host": "CB8",
+    "logKa": 5.3,
+    "guest_vol": 407.0,
+    "cavity_vol": 479.0,
+    "PC": 0.8497
+  },
+  {
+    "guest": "Spironolactone",
+    "host": "CB8",
+    "logKa": 6.0,
+    "guest_vol": 390.1,
+    "cavity_vol": 479.0,
+    "PC": 0.8143
+  },
+  {
+    "guest": "Phenylalanylglycine",
+    "host": "CB8",
+    "logKa": 6.28,
+    "guest_vol": 207.1,
+    "cavity_vol": 479.0,
+    "PC": 0.4324
+  },
+  {
+    "guest": "L-Alanyl-L-phenylalanine",
+    "host": "CB8",
+    "logKa": 3.85,
+    "guest_vol": 223.7,
+    "cavity_vol": 479.0,
+    "PC": 0.467
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.59,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Indole",
+    "host": "CB8",
+    "logKa": 5.2,
+    "guest_vol": 112.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2349
+  },
+  {
+    "guest": "Methyl viologen",
+    "host": "CB8",
+    "logKa": 6.18,
+    "guest_vol": 185.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3869
+  },
+  {
+    "guest": "benzene-1,3,5-triol",
+    "host": "CB8",
+    "logKa": 2.57,
+    "guest_vol": 108.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2274
+  },
+  {
+    "guest": "bis(dimethylpyridinium)diarylethene (closed form)",
+    "host": "CB8",
+    "logKa": 9.79,
+    "guest_vol": 407.1,
+    "cavity_vol": 479.0,
+    "PC": 0.85
+  },
+  {
+    "guest": "naphthalene",
+    "host": "CB8",
+    "logKa": 4.59,
+    "guest_vol": 127.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2655
+  },
+  {
+    "guest": "4-Cyanophenol",
+    "host": "CB8",
+    "logKa": 3.51,
+    "guest_vol": 110.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2313
+  },
+  {
+    "guest": "L-Aspartyl-L-phenylalanine",
+    "host": "CB8",
+    "logKa": 3.85,
+    "guest_vol": 251.3,
+    "cavity_vol": 479.0,
+    "PC": 0.5246
+  },
+  {
+    "guest": "Tryptophol",
+    "host": "CB8",
+    "logKa": 4.26,
+    "guest_vol": 155.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3241
+  },
+  {
+    "guest": "3-Chlorophenol",
+    "host": "CB8",
+    "logKa": 4.78,
+    "guest_vol": 107.4,
+    "cavity_vol": 479.0,
+    "PC": 0.2242
+  },
+  {
+    "guest": "Indole",
+    "host": "CB8",
+    "logKa": 6.2,
+    "guest_vol": 112.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2349
+  },
+  {
+    "guest": "4-(dimethylamino)benzonitrile",
+    "host": "CB8",
+    "logKa": 8.83,
+    "guest_vol": 147.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3077
+  },
+  {
+    "guest": "Indole",
+    "host": "CB8",
+    "logKa": 5.26,
+    "guest_vol": 112.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2349
+  },
+  {
+    "guest": "3-Hydroxyadamantan-1-aminium",
+    "host": "CB8",
+    "logKa": 7.15,
+    "guest_vol": 169.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3538
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB8",
+    "logKa": 6.74,
+    "guest_vol": 208.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4349
+  },
+  {
+    "guest": "alanylmethionyltyrosine",
+    "host": "CB8",
+    "logKa": 5.21,
+    "guest_vol": 350.1,
+    "cavity_vol": 479.0,
+    "PC": 0.7309
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.75,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 5.18,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB8",
+    "logKa": 3.6,
+    "guest_vol": 158.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3304
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB8",
+    "logKa": 8.04,
+    "guest_vol": 158.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3304
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB8",
+    "logKa": 5.65,
+    "guest_vol": 158.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3304
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB8",
+    "logKa": 3.7,
+    "guest_vol": 158.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3304
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB8",
+    "logKa": 5.92,
+    "guest_vol": 217.6,
+    "cavity_vol": 479.0,
+    "PC": 0.4542
+  },
+  {
+    "guest": "Silver chloride",
+    "host": "CB8",
+    "logKa": 2.32,
+    "guest_vol": 44.7,
+    "cavity_vol": 479.0,
+    "PC": 0.0933
+  },
+  {
+    "guest": "N,N\u2032-dimethyldipyridyliumethylene",
+    "host": "CB8",
+    "logKa": 5.7,
+    "guest_vol": 213.4,
+    "cavity_vol": 479.0,
+    "PC": 0.4456
+  },
+  {
+    "guest": "Met-Arg-Gly-Gly-Tyr",
+    "host": "CB8",
+    "logKa": 5.68,
+    "guest_vol": 527.3,
+    "cavity_vol": 479.0,
+    "PC": 1.1009
+  },
+  {
+    "guest": "6,7-diazabicyclo(3.2.2)non-6-ene",
+    "host": "CB8",
+    "logKa": 5.77,
+    "guest_vol": 126.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2634
+  },
+  {
+    "guest": "Methyl viologen",
+    "host": "CB8",
+    "logKa": 5.48,
+    "guest_vol": 185.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3869
+  },
+  {
+    "guest": "Estrone",
+    "host": "CB8",
+    "logKa": 6.4,
+    "guest_vol": 263.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5491
+  },
+  {
+    "guest": "Eucalyptol",
+    "host": "CB8",
+    "logKa": 8.36,
+    "guest_vol": 166.1,
+    "cavity_vol": 479.0,
+    "PC": 0.3468
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB8",
+    "logKa": 6.68,
+    "guest_vol": 199.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4165
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 7.23,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.56,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "Mono-Trp Gly4 target",
+    "host": "CB8",
+    "logKa": 4.26,
+    "guest_vol": 420.3,
+    "cavity_vol": 479.0,
+    "PC": 0.8775
+  },
+  {
+    "guest": "2,7-Dimethyldiazaphenanthrenium",
+    "host": "CB8",
+    "logKa": 5.0,
+    "guest_vol": 201.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4213
+  },
+  {
+    "guest": "Di-Trp Gly4 target",
+    "host": "CB8",
+    "logKa": 5.74,
+    "guest_vol": 782.1,
+    "cavity_vol": 479.0,
+    "PC": 1.6327
+  },
+  {
+    "guest": "L-phenylalanyl-L-valine",
+    "host": "CB8",
+    "logKa": 4.04,
+    "guest_vol": 257.1,
+    "cavity_vol": 479.0,
+    "PC": 0.5367
+  },
+  {
+    "guest": "Prednisolone",
+    "host": "CB8",
+    "logKa": 6.15,
+    "guest_vol": 340.1,
+    "cavity_vol": 479.0,
+    "PC": 0.71
+  },
+  {
+    "guest": "Phe-Gly-Gly",
+    "host": "CB8",
+    "logKa": 11.18,
+    "guest_vol": 254.6,
+    "cavity_vol": 479.0,
+    "PC": 0.5314
+  },
+  {
+    "guest": "Indole",
+    "host": "CB8",
+    "logKa": 4.52,
+    "guest_vol": 112.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2349
+  },
+  {
+    "guest": "Zinc chloride",
+    "host": "CB8",
+    "logKa": 2.67,
+    "guest_vol": 68.6,
+    "cavity_vol": 479.0,
+    "PC": 0.1431
+  },
+  {
+    "guest": "chloramphenicol",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 256.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5345
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 4.18,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "Testosterone",
+    "host": "CB8",
+    "logKa": 8.04,
+    "guest_vol": 291.6,
+    "cavity_vol": 479.0,
+    "PC": 0.6089
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.53,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "1,4-dimethoxybenzene",
+    "host": "CB8",
+    "logKa": 3.63,
+    "guest_vol": 133.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2792
+  },
+  {
+    "guest": "ceftazidime",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 447.0,
+    "cavity_vol": 479.0,
+    "PC": 0.9332
+  },
+  {
+    "guest": "Lanthanum chloride heptahydrate",
+    "host": "CB8",
+    "logKa": 3.76,
+    "guest_vol": 65.7,
+    "cavity_vol": 479.0,
+    "PC": 0.1372
+  },
+  {
+    "guest": "2NpCH2ImidMe",
+    "host": "CB8",
+    "logKa": 5.9,
+    "guest_vol": 216.5,
+    "cavity_vol": 479.0,
+    "PC": 0.452
+  },
+  {
+    "guest": "Tropicamide (protonated)",
+    "host": "CB8",
+    "logKa": 6.6,
+    "guest_vol": 278.3,
+    "cavity_vol": 479.0,
+    "PC": 0.581
+  },
+  {
+    "guest": "3-(3,4,5-trifluorobenzyl)-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 5.98,
+    "guest_vol": 200.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4175
+  },
+  {
+    "guest": "4-Fluorophenol",
+    "host": "CB8",
+    "logKa": 3.83,
+    "guest_vol": 97.4,
+    "cavity_vol": 479.0,
+    "PC": 0.2034
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 4.53,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "Pancuronium",
+    "host": "CB8",
+    "logKa": 8.3,
+    "guest_vol": 586.2,
+    "cavity_vol": 479.0,
+    "PC": 1.2238
+  },
+  {
+    "guest": "Methyl pyridinium paracyclophane iodide",
+    "host": "CB8",
+    "logKa": 10.88,
+    "guest_vol": 298.9,
+    "cavity_vol": 479.0,
+    "PC": 0.6241
+  },
+  {
+    "guest": "Benzamide",
+    "host": "CB8",
+    "logKa": 4.11,
+    "guest_vol": 115.1,
+    "cavity_vol": 479.0,
+    "PC": 0.2402
+  },
+  {
+    "guest": "3,5-Dimethyladamantan-1-aminium",
+    "host": "CB8",
+    "logKa": 12.04,
+    "guest_vol": 193.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4046
+  },
+  {
+    "guest": "1-NAPTHYL-NHCOO-5KPEGOME",
+    "host": "CB8",
+    "logKa": 4.15,
+    "guest_vol": 226.6,
+    "cavity_vol": 479.0,
+    "PC": 0.473
+  },
+  {
+    "guest": "L-methionyl-L-lysylglycylglycyl-L-tyrosine",
+    "host": "CB8",
+    "logKa": 6.38,
+    "guest_vol": 507.9,
+    "cavity_vol": 479.0,
+    "PC": 1.0604
+  },
+  {
+    "guest": "1,5-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.11,
+    "guest_vol": 143.9,
+    "cavity_vol": 479.0,
+    "PC": 0.3005
+  },
+  {
+    "guest": "1-((perfluorophenyl)methyl)pyridin-1-ium",
+    "host": "CB8",
+    "logKa": 6.67,
+    "guest_vol": 196.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4108
+  },
+  {
+    "guest": "Hexyltrimethylammonium bromide",
+    "host": "CB8",
+    "logKa": 5.58,
+    "guest_vol": 178.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3724
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB8",
+    "logKa": 7.31,
+    "guest_vol": 199.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4165
+  },
+  {
+    "guest": "2,3-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.51,
+    "guest_vol": 143.7,
+    "cavity_vol": 479.0,
+    "PC": 0.3
+  },
+  {
+    "guest": "1,3-Benzodioxol-5-ol",
+    "host": "CB8",
+    "logKa": 4.3,
+    "guest_vol": 115.7,
+    "cavity_vol": 479.0,
+    "PC": 0.2416
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 3.07,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Tetrahydrofuran",
+    "host": "CB8",
+    "logKa": 4.07,
+    "guest_vol": 77.1,
+    "cavity_vol": 479.0,
+    "PC": 0.161
+  },
+  {
+    "guest": "Aniline",
+    "host": "CB8",
+    "logKa": 4.4,
+    "guest_vol": 95.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1991
+  },
+  {
+    "guest": "3,9-Dihydroxytriamantane",
+    "host": "CB8",
+    "logKa": 6.97,
+    "guest_vol": 253.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5285
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 6.74,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "6-Methoxy-2-naphthol",
+    "host": "CB8",
+    "logKa": 5.71,
+    "guest_vol": 160.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3351
+  },
+  {
+    "guest": "Glycyl-phenylalanine",
+    "host": "CB8",
+    "logKa": 3.85,
+    "guest_vol": 206.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4318
+  },
+  {
+    "guest": "Cobaltocene hexafluorophosphate",
+    "host": "CB8",
+    "logKa": 8.28,
+    "guest_vol": 71.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1486
+  },
+  {
+    "guest": "L-Tyrosine",
+    "host": "CB8",
+    "logKa": 3.9,
+    "guest_vol": 166.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3466
+  },
+  {
+    "guest": "2,7-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.68,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "4-Nitro-D-phenylalanine",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 182.8,
+    "cavity_vol": 479.0,
+    "PC": 0.3816
+  },
+  {
+    "guest": "3-((perfluorophenyl)methyl)-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 2.85,
+    "guest_vol": 209.6,
+    "cavity_vol": 479.0,
+    "PC": 0.4375
+  },
+  {
+    "guest": "5-Hydroxy-L-Tryptophan",
+    "host": "CB8",
+    "logKa": 3.89,
+    "guest_vol": 195.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4077
+  },
+  {
+    "guest": "p-Benzoquinone",
+    "host": "CB8",
+    "logKa": 2.7,
+    "guest_vol": 95.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2
+  },
+  {
+    "guest": "Diethyl ether",
+    "host": "CB8",
+    "logKa": 3.86,
+    "guest_vol": 87.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1824
+  },
+  {
+    "guest": "Phenyl-\u03b2-D-glucopyranoside",
+    "host": "CB8",
+    "logKa": 5.0,
+    "guest_vol": 225.1,
+    "cavity_vol": 479.0,
+    "PC": 0.47
+  },
+  {
+    "guest": "Phenyl-\u03b2-D-glucopyranoside",
+    "host": "CB8",
+    "logKa": 5.04,
+    "guest_vol": 225.1,
+    "cavity_vol": 479.0,
+    "PC": 0.47
+  },
+  {
+    "guest": "Met-Lys-Val-Gly-Tyr",
+    "host": "CB8",
+    "logKa": 5.21,
+    "guest_vol": 560.4,
+    "cavity_vol": 479.0,
+    "PC": 1.1699
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 8.19,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "Mono-methyl viologen Gly4 scaffold",
+    "host": "CB8",
+    "logKa": 6.32,
+    "guest_vol": 555.9,
+    "cavity_vol": 479.0,
+    "PC": 1.1605
+  },
+  {
+    "guest": "N-Acetyl-L-tryptophanamide",
+    "host": "CB8",
+    "logKa": 5.32,
+    "guest_vol": 226.2,
+    "cavity_vol": 479.0,
+    "PC": 0.4723
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB8",
+    "logKa": 6.67,
+    "guest_vol": 208.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4349
+  },
+  {
+    "guest": "beta-Estradiol-17-acetate",
+    "host": "CB8",
+    "logKa": 6.81,
+    "guest_vol": 305.4,
+    "cavity_vol": 479.0,
+    "PC": 0.6375
+  },
+  {
+    "guest": "N,N,N-trimethylanthracen-2-aminium chloride",
+    "host": "CB8",
+    "logKa": 7.3,
+    "guest_vol": 237.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4947
+  },
+  {
+    "guest": "Hydroquinone",
+    "host": "CB8",
+    "logKa": 3.62,
+    "guest_vol": 100.6,
+    "cavity_vol": 479.0,
+    "PC": 0.21
+  },
+  {
+    "guest": "1-phenylpyrrolidine-2,5-dione",
+    "host": "CB8",
+    "logKa": 4.48,
+    "guest_vol": 157.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3277
+  },
+  {
+    "guest": "3-(3,5-difluorobenzyl)-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 5.84,
+    "guest_vol": 194.1,
+    "cavity_vol": 479.0,
+    "PC": 0.4052
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecane-4,9-diol",
+    "host": "CB8",
+    "logKa": 6.91,
+    "guest_vol": 208.3,
+    "cavity_vol": 479.0,
+    "PC": 0.4349
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.8,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "Diethyl ether",
+    "host": "CB8",
+    "logKa": 3.78,
+    "guest_vol": 87.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1824
+  },
+  {
+    "guest": "1,2-Dihydroxybenzene",
+    "host": "CB8",
+    "logKa": 4.3,
+    "guest_vol": 100.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2098
+  },
+  {
+    "guest": "L-Phenylalanine",
+    "host": "CB8",
+    "logKa": 3.7,
+    "guest_vol": 158.2,
+    "cavity_vol": 479.0,
+    "PC": 0.3304
+  },
+  {
+    "guest": "Calcium chloride",
+    "host": "CB8",
+    "logKa": 3.31,
+    "guest_vol": 57.0,
+    "cavity_vol": 479.0,
+    "PC": 0.119
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 3.31,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "2-Hydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.79,
+    "guest_vol": 135.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2837
+  },
+  {
+    "guest": "Prednisolone",
+    "host": "CB8",
+    "logKa": 6.15,
+    "guest_vol": 340.1,
+    "cavity_vol": 479.0,
+    "PC": 0.71
+  },
+  {
+    "guest": "Mono-Trp Gly4 target",
+    "host": "CB8",
+    "logKa": 4.23,
+    "guest_vol": 420.3,
+    "cavity_vol": 479.0,
+    "PC": 0.8775
+  },
+  {
+    "guest": "L-Phenylalanyl-L-alanine",
+    "host": "CB8",
+    "logKa": 5.99,
+    "guest_vol": 223.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4657
+  },
+  {
+    "guest": "Oxazine 1",
+    "host": "CB8",
+    "logKa": 5.76,
+    "guest_vol": 321.9,
+    "cavity_vol": 479.0,
+    "PC": 0.6719
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 6.26,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "Benzene",
+    "host": "CB8",
+    "logKa": 3.6,
+    "guest_vol": 83.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1741
+  },
+  {
+    "guest": "L-Tyrosyl-L-methionyl-L-alanine",
+    "host": "CB8",
+    "logKa": 5.89,
+    "guest_vol": 349.6,
+    "cavity_vol": 479.0,
+    "PC": 0.7299
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 4.49,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "1,3-Dihydroxybenzene",
+    "host": "CB8",
+    "logKa": 3.72,
+    "guest_vol": 100.3,
+    "cavity_vol": 479.0,
+    "PC": 0.2094
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 4.75,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "Rubidium chloride",
+    "host": "CB8",
+    "logKa": 2.64,
+    "guest_vol": 23.8,
+    "cavity_vol": 479.0,
+    "PC": 0.0496
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB8",
+    "logKa": 7.0,
+    "guest_vol": 199.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4165
+  },
+  {
+    "guest": "Phenyl-\u03b2-D-galactopyranoside",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 225.1,
+    "cavity_vol": 479.0,
+    "PC": 0.47
+  },
+  {
+    "guest": "Testosterone",
+    "host": "CB8",
+    "logKa": 8.04,
+    "guest_vol": 291.6,
+    "cavity_vol": 479.0,
+    "PC": 0.6089
+  },
+  {
+    "guest": "Strontium chloride hexahydrate",
+    "host": "CB8",
+    "logKa": 3.63,
+    "guest_vol": 69.7,
+    "cavity_vol": 479.0,
+    "PC": 0.1455
+  },
+  {
+    "guest": "Diethyl ether",
+    "host": "CB8",
+    "logKa": 3.61,
+    "guest_vol": 87.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1824
+  },
+  {
+    "guest": "glycylglycyl-L-tryptophylglycylglycine",
+    "host": "CB8",
+    "logKa": 4.4,
+    "guest_vol": 380.2,
+    "cavity_vol": 479.0,
+    "PC": 0.7938
+  },
+  {
+    "guest": "1,5-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.23,
+    "guest_vol": 143.9,
+    "cavity_vol": 479.0,
+    "PC": 0.3005
+  },
+  {
+    "guest": "Acetonitrile",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 46.8,
+    "cavity_vol": 479.0,
+    "PC": 0.0977
+  },
+  {
+    "guest": "Pyronine",
+    "host": "CB8",
+    "logKa": 13.51,
+    "guest_vol": 190.6,
+    "cavity_vol": 479.0,
+    "PC": 0.398
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 4.34,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "methionylphenylalanylalanine",
+    "host": "CB8",
+    "logKa": 6.85,
+    "guest_vol": 341.7,
+    "cavity_vol": 479.0,
+    "PC": 0.7133
+  },
+  {
+    "guest": "1,7-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 4.73,
+    "guest_vol": 143.9,
+    "cavity_vol": 479.0,
+    "PC": 0.3004
+  },
+  {
+    "guest": "Ytterbium(III) chloride",
+    "host": "CB8",
+    "logKa": 3.44,
+    "guest_vol": 101.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2126
+  },
+  {
+    "guest": "beta-Estradiol",
+    "host": "CB8",
+    "logKa": 6.28,
+    "guest_vol": 269.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5616
+  },
+  {
+    "guest": "Trp-Gly-Gly",
+    "host": "CB8",
+    "logKa": 5.3,
+    "guest_vol": 283.9,
+    "cavity_vol": 479.0,
+    "PC": 0.5927
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 6.6,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "4-(dimethylamino)benzonitrile",
+    "host": "CB8",
+    "logKa": 8.9,
+    "guest_vol": 147.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3077
+  },
+  {
+    "guest": "Coumarin 6",
+    "host": "CB8",
+    "logKa": 11.92,
+    "guest_vol": 310.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6474
+  },
+  {
+    "guest": "1-methyl-3-((perfluorophenyl)methyl)-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 3.76,
+    "guest_vol": 199.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4154
+  },
+  {
+    "guest": "L-tyrosyl-L-leucyl-L-alanine",
+    "host": "CB8",
+    "logKa": 8.14,
+    "guest_vol": 346.3,
+    "cavity_vol": 479.0,
+    "PC": 0.723
+  },
+  {
+    "guest": "1,1&#39;-bis(4-(ethoxycarbonyl)phenyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB8",
+    "logKa": 6.28,
+    "guest_vol": 420.0,
+    "cavity_vol": 479.0,
+    "PC": 0.8767
+  },
+  {
+    "guest": "N,N,N-trimethyl-1-(perfluorophenyl)methanaminium",
+    "host": "CB8",
+    "logKa": 6.75,
+    "guest_vol": 192.4,
+    "cavity_vol": 479.0,
+    "PC": 0.4017
+  },
+  {
+    "guest": "Nortestosterone",
+    "host": "CB8",
+    "logKa": 7.32,
+    "guest_vol": 274.8,
+    "cavity_vol": 479.0,
+    "PC": 0.5737
+  },
+  {
+    "guest": "methionylleucylalanine",
+    "host": "CB8",
+    "logKa": 6.14,
+    "guest_vol": 319.8,
+    "cavity_vol": 479.0,
+    "PC": 0.6676
+  },
+  {
+    "guest": "1,1&#39;-bis(4-nitrophenyl)-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB8",
+    "logKa": 6.0,
+    "guest_vol": 345.4,
+    "cavity_vol": 479.0,
+    "PC": 0.721
+  },
+  {
+    "guest": "Hydroquinone",
+    "host": "CB8",
+    "logKa": 3.46,
+    "guest_vol": 100.6,
+    "cavity_vol": 479.0,
+    "PC": 0.21
+  },
+  {
+    "guest": "Lys-Ala-Trp-Ala-Ala",
+    "host": "CB8",
+    "logKa": 3.79,
+    "guest_vol": 510.9,
+    "cavity_vol": 479.0,
+    "PC": 1.0667
+  },
+  {
+    "guest": "Gly-Gly-Trp",
+    "host": "CB8",
+    "logKa": 3.61,
+    "guest_vol": 284.5,
+    "cavity_vol": 479.0,
+    "PC": 0.594
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 4.92,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "Hydroquinone",
+    "host": "CB8",
+    "logKa": 3.62,
+    "guest_vol": 100.6,
+    "cavity_vol": 479.0,
+    "PC": 0.21
+  },
+  {
+    "guest": "1,2-Dihydroxybenzene",
+    "host": "CB8",
+    "logKa": 4.0,
+    "guest_vol": 100.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2098
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.6,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "3-Indolepropionic acid",
+    "host": "CB8",
+    "logKa": 3.36,
+    "guest_vol": 174.4,
+    "cavity_vol": 479.0,
+    "PC": 0.364
+  },
+  {
+    "guest": "Acetone",
+    "host": "CB8",
+    "logKa": 3.6,
+    "guest_vol": 64.9,
+    "cavity_vol": 479.0,
+    "PC": 0.1355
+  },
+  {
+    "guest": "N,N\u2019-Dimethyl-1,2-bis-(4-pyridinium)- ethylene",
+    "host": "CB8",
+    "logKa": 5.86,
+    "guest_vol": 213.4,
+    "cavity_vol": 479.0,
+    "PC": 0.4455
+  },
+  {
+    "guest": "3-(4-hydroxyphenyl)-2-oxopropanoic acid",
+    "host": "CB8",
+    "logKa": 4.23,
+    "guest_vol": 157.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3283
+  },
+  {
+    "guest": "1,1&#39;-di-p-tolyl-[4,4&#39;-bipyridine]-1,1&#39;-diium",
+    "host": "CB8",
+    "logKa": 6.34,
+    "guest_vol": 329.3,
+    "cavity_vol": 479.0,
+    "PC": 0.6874
+  },
+  {
+    "guest": "L-Tryptophanamide",
+    "host": "CB8",
+    "logKa": 5.66,
+    "guest_vol": 190.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3978
+  },
+  {
+    "guest": "Epinephrine,L-Adrenaline",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 172.1,
+    "cavity_vol": 479.0,
+    "PC": 0.3592
+  },
+  {
+    "guest": "5-Methoxyindole",
+    "host": "CB8",
+    "logKa": 4.66,
+    "guest_vol": 137.3,
+    "cavity_vol": 479.0,
+    "PC": 0.2866
+  },
+  {
+    "guest": "L-methionyl-L-lysyl-L-alanylglycyl-L-tyrosine",
+    "host": "CB8",
+    "logKa": 6.05,
+    "guest_vol": 526.2,
+    "cavity_vol": 479.0,
+    "PC": 1.0985
+  },
+  {
+    "guest": "Tryptamine",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 158.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3308
+  },
+  {
+    "guest": "Anthracene",
+    "host": "CB8",
+    "logKa": 6.2,
+    "guest_vol": 171.0,
+    "cavity_vol": 479.0,
+    "PC": 0.357
+  },
+  {
+    "guest": "Methyl pyridinium paracyclophane iodide",
+    "host": "CB8",
+    "logKa": 12.59,
+    "guest_vol": 298.9,
+    "cavity_vol": 479.0,
+    "PC": 0.6241
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 6.43,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Phenylalanylglycine",
+    "host": "CB8",
+    "logKa": 4.4,
+    "guest_vol": 207.1,
+    "cavity_vol": 479.0,
+    "PC": 0.4324
+  },
+  {
+    "guest": "Benzimidazole",
+    "host": "CB8",
+    "logKa": 3.88,
+    "guest_vol": 108.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2258
+  },
+  {
+    "guest": "L-methionyl-L-leucylglycylglycyl-L-tyrosine",
+    "host": "CB8",
+    "logKa": 6.52,
+    "guest_vol": 496.5,
+    "cavity_vol": 479.0,
+    "PC": 1.0366
+  },
+  {
+    "guest": "L-Tryptophan methyl ester",
+    "host": "CB8",
+    "logKa": 4.15,
+    "guest_vol": 203.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4256
+  },
+  {
+    "guest": "2-Hydroxynaphthalene-triethylene-glycol",
+    "host": "CB8",
+    "logKa": 5.52,
+    "guest_vol": 264.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5511
+  },
+  {
+    "guest": "Leu-met-ala",
+    "host": "CB8",
+    "logKa": 6.22,
+    "guest_vol": 319.4,
+    "cavity_vol": 479.0,
+    "PC": 0.6668
+  },
+  {
+    "guest": "2-Hydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 5.79,
+    "guest_vol": 135.9,
+    "cavity_vol": 479.0,
+    "PC": 0.2837
+  },
+  {
+    "guest": "Recombinant insulin human",
+    "host": "CB8",
+    "logKa": 5.52,
+    "guest_vol": 5225.9,
+    "cavity_vol": 479.0,
+    "PC": 10.91
+  },
+  {
+    "guest": "bis(dimethylpyridinium)diarylethene (open form)",
+    "host": "CB8",
+    "logKa": 7.0,
+    "guest_vol": 410.9,
+    "cavity_vol": 479.0,
+    "PC": 0.8579
+  },
+  {
+    "guest": "L-Tyrosyl-L-Phenylalanyl-L-alanine",
+    "host": "CB8",
+    "logKa": 6.54,
+    "guest_vol": 369.7,
+    "cavity_vol": 479.0,
+    "PC": 0.7718
+  },
+  {
+    "guest": "3,9-Dihydroxytriamantane",
+    "host": "CB8",
+    "logKa": 6.67,
+    "guest_vol": 253.2,
+    "cavity_vol": 479.0,
+    "PC": 0.5285
+  },
+  {
+    "guest": "methionyltyrosylalanine",
+    "host": "CB8",
+    "logKa": 6.6,
+    "guest_vol": 349.4,
+    "cavity_vol": 479.0,
+    "PC": 0.7294
+  },
+  {
+    "guest": "Coumarin 7",
+    "host": "CB8",
+    "logKa": 9.81,
+    "guest_vol": 303.0,
+    "cavity_vol": 479.0,
+    "PC": 0.6326
+  },
+  {
+    "guest": "7-Dehydrocholesterol",
+    "host": "CB8",
+    "logKa": 5.0,
+    "guest_vol": 416.5,
+    "cavity_vol": 479.0,
+    "PC": 0.8696
+  },
+  {
+    "guest": "Memantine",
+    "host": "CB8",
+    "logKa": 12.92,
+    "guest_vol": 191.7,
+    "cavity_vol": 479.0,
+    "PC": 0.4002
+  },
+  {
+    "guest": "Tetramethyl benzobis (imidazolium)",
+    "host": "CB8",
+    "logKa": 5.76,
+    "guest_vol": 205.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4296
+  },
+  {
+    "guest": "Aniline",
+    "host": "CB8",
+    "logKa": 4.3,
+    "guest_vol": 95.4,
+    "cavity_vol": 479.0,
+    "PC": 0.1991
+  },
+  {
+    "guest": "Methyl pyridinium paracyclophane iodide",
+    "host": "CB8",
+    "logKa": 12.59,
+    "guest_vol": 298.9,
+    "cavity_vol": 479.0,
+    "PC": 0.6241
+  },
+  {
+    "guest": "(6E,9E,16E,19E)-1,5,15(1,4),11(4,1)-tetrapyridin-1-iuma-3,8,13,18(1,4)-tetrabenzenacycloicosaphane-6,9,16,19-tetraene-11,51,111,151-tetraium",
+    "host": "CB8",
+    "logKa": 5.26,
+    "guest_vol": 747.9,
+    "cavity_vol": 479.0,
+    "PC": 1.5614
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 5.18,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "1,2-Dihydroxybenzene",
+    "host": "CB8",
+    "logKa": 4.0,
+    "guest_vol": 100.5,
+    "cavity_vol": 479.0,
+    "PC": 0.2098
+  },
+  {
+    "guest": "2,6-Dihydroxynaphthalene",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 144.3,
+    "cavity_vol": 479.0,
+    "PC": 0.3012
+  },
+  {
+    "guest": "Dopamine hydrochloride",
+    "host": "CB8",
+    "logKa": 3.0,
+    "guest_vol": 146.4,
+    "cavity_vol": 479.0,
+    "PC": 0.3057
+  },
+  {
+    "guest": "N-Acetyl-L-Tryptophan",
+    "host": "CB8",
+    "logKa": 3.49,
+    "guest_vol": 223.2,
+    "cavity_vol": 479.0,
+    "PC": 0.4661
+  },
+  {
+    "guest": "p-Benzoquinone",
+    "host": "CB8",
+    "logKa": 2.7,
+    "guest_vol": 95.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2
+  },
+  {
+    "guest": "2,2,6,6-tetramethyl-4-(methylamino)cyclohexan-1-one",
+    "host": "CB8",
+    "logKa": 6.55,
+    "guest_vol": 199.8,
+    "cavity_vol": 479.0,
+    "PC": 0.4172
+  },
+  {
+    "guest": "Acridine (protonated)",
+    "host": "CB8",
+    "logKa": 9.72,
+    "guest_vol": 169.1,
+    "cavity_vol": 479.0,
+    "PC": 0.3531
+  },
+  {
+    "guest": "Aspartame",
+    "host": "CB8",
+    "logKa": 2.9,
+    "guest_vol": 269.2,
+    "cavity_vol": 479.0,
+    "PC": 0.562
+  },
+  {
+    "guest": "4-Methoxyphenol",
+    "host": "CB8",
+    "logKa": 3.71,
+    "guest_vol": 117.0,
+    "cavity_vol": 479.0,
+    "PC": 0.2443
+  },
+  {
+    "guest": "Berberine chloride",
+    "host": "CB8",
+    "logKa": 6.98,
+    "guest_vol": 294.1,
+    "cavity_vol": 479.0,
+    "PC": 0.6139
+  },
+  {
+    "guest": "3-benzyl-1-vinyl-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 5.15,
+    "guest_vol": 183.9,
+    "cavity_vol": 479.0,
+    "PC": 0.3839
+  },
+  {
+    "guest": "Testosterone",
+    "host": "CB8",
+    "logKa": 8.04,
+    "guest_vol": 291.6,
+    "cavity_vol": 479.0,
+    "PC": 0.6089
+  },
+  {
+    "guest": "Barium chloride",
+    "host": "CB8",
+    "logKa": 3.95,
+    "guest_vol": 83.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1736
+  },
+  {
+    "guest": "glycyl-l-tryptophyl-glycine",
+    "host": "CB8",
+    "logKa": 4.23,
+    "guest_vol": 284.0,
+    "cavity_vol": 479.0,
+    "PC": 0.5929
+  },
+  {
+    "guest": "Oglufanide",
+    "host": "CB8",
+    "logKa": 4.4,
+    "guest_vol": 297.9,
+    "cavity_vol": 479.0,
+    "PC": 0.622
+  },
+  {
+    "guest": "1-methyl-3-((perfluorophenyl)methyl)-1H-imidazol-3-ium",
+    "host": "CB8",
+    "logKa": 6.85,
+    "guest_vol": 199.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4154
+  },
+  {
+    "guest": "Phenol",
+    "host": "CB8",
+    "logKa": 3.97,
+    "guest_vol": 92.2,
+    "cavity_vol": 479.0,
+    "PC": 0.1925
+  },
+  {
+    "guest": "trans-azobenzene-TEG",
+    "host": "CB8",
+    "logKa": 4.16,
+    "guest_vol": 311.4,
+    "cavity_vol": 479.0,
+    "PC": 0.6502
+  },
+  {
+    "guest": "1-(hydroxymethyl)-ferrocene",
+    "host": "CB8",
+    "logKa": 6.92,
+    "guest_vol": 97.8,
+    "cavity_vol": 479.0,
+    "PC": 0.2041
+  },
+  {
+    "guest": "4-Iodophenol",
+    "host": "CB8",
+    "logKa": 4.11,
+    "guest_vol": 121.4,
+    "cavity_vol": 479.0,
+    "PC": 0.2535
+  },
+  {
+    "guest": "3-Methoxyphenol",
+    "host": "CB8",
+    "logKa": 3.81,
+    "guest_vol": 117.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2446
+  },
+  {
+    "guest": "4-Methoxyphenol",
+    "host": "CB8",
+    "logKa": 3.7,
+    "guest_vol": 117.0,
+    "cavity_vol": 479.0,
+    "PC": 0.2443
+  },
+  {
+    "guest": "L-phenylalanyl-L-valine",
+    "host": "CB8",
+    "logKa": 6.18,
+    "guest_vol": 257.1,
+    "cavity_vol": 479.0,
+    "PC": 0.5367
+  },
+  {
+    "guest": "Trp-Gly-Gly",
+    "host": "CB8",
+    "logKa": 9.56,
+    "guest_vol": 283.9,
+    "cavity_vol": 479.0,
+    "PC": 0.5927
+  },
+  {
+    "guest": "Nickel chloride",
+    "host": "CB8",
+    "logKa": 2.73,
+    "guest_vol": 62.1,
+    "cavity_vol": 479.0,
+    "PC": 0.1296
+  },
+  {
+    "guest": "(6E,9E,16E,19E)-1,5,15(1,4),11(4,1)-tetrapyridin-1-iuma-3,8,13,18(1,4)-tetrabenzenacycloicosaphane-6,9,16,19-tetraene-11,51,111,151-tetraium",
+    "host": "CB8",
+    "logKa": 7.76,
+    "guest_vol": 747.9,
+    "cavity_vol": 479.0,
+    "PC": 1.5614
+  },
+  {
+    "guest": "3,7-Diaminophenoxazinylium chloride",
+    "host": "CB8",
+    "logKa": 14.86,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  },
+  {
+    "guest": "bis(dimethylpyridinium)diarylethene (closed form)",
+    "host": "CB8",
+    "logKa": 7.0,
+    "guest_vol": 407.1,
+    "cavity_vol": 479.0,
+    "PC": 0.85
+  },
+  {
+    "guest": "2-Phenylethylamine",
+    "host": "CB8",
+    "logKa": 3.9,
+    "guest_vol": 129.2,
+    "cavity_vol": 479.0,
+    "PC": 0.2698
+  },
+  {
+    "guest": "N-Acetyl-L-Tryptophan",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 223.2,
+    "cavity_vol": 479.0,
+    "PC": 0.4661
+  },
+  {
+    "guest": "L-tyrosyl-L-tyrosyl-L-alanine",
+    "host": "CB8",
+    "logKa": 6.15,
+    "guest_vol": 378.1,
+    "cavity_vol": 479.0,
+    "PC": 0.7894
+  },
+  {
+    "guest": "propanil",
+    "host": "CB8",
+    "logKa": 3.9,
+    "guest_vol": 178.7,
+    "cavity_vol": 479.0,
+    "PC": 0.3731
+  },
+  {
+    "guest": "Testosterone",
+    "host": "CB8",
+    "logKa": 8.04,
+    "guest_vol": 291.6,
+    "cavity_vol": 479.0,
+    "PC": 0.6089
+  },
+  {
+    "guest": "L-tyrosyl-L-alanyl-L-leucine",
+    "host": "CB8",
+    "logKa": 4.47,
+    "guest_vol": 347.4,
+    "cavity_vol": 479.0,
+    "PC": 0.7252
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.79,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "N,N,N-trimethylanthracen-2-aminium chloride",
+    "host": "CB8",
+    "logKa": 4.6,
+    "guest_vol": 237.0,
+    "cavity_vol": 479.0,
+    "PC": 0.4947
+  },
+  {
+    "guest": "N-Acetyl-L-Tryptophan",
+    "host": "CB8",
+    "logKa": 4.7,
+    "guest_vol": 223.2,
+    "cavity_vol": 479.0,
+    "PC": 0.4661
+  },
+  {
+    "guest": "pentacyclo[7.3.1.14,12.02,7.06,11]tetradecan-4-ol",
+    "host": "CB8",
+    "logKa": 6.87,
+    "guest_vol": 199.5,
+    "cavity_vol": 479.0,
+    "PC": 0.4165
+  },
+  {
+    "guest": "2,7-dimethyldiazapyrenium",
+    "host": "CB8",
+    "logKa": 5.95,
+    "guest_vol": 217.6,
+    "cavity_vol": 479.0,
+    "PC": 0.4542
+  },
+  {
+    "guest": "1-Adamantanol",
+    "host": "CB8",
+    "logKa": 6.79,
+    "guest_vol": 154.5,
+    "cavity_vol": 479.0,
+    "PC": 0.3226
+  },
+  {
+    "guest": "L-Tryptophan",
+    "host": "CB8",
+    "logKa": 5.2,
+    "guest_vol": 187.0,
+    "cavity_vol": 479.0,
+    "PC": 0.3904
+  }
+]

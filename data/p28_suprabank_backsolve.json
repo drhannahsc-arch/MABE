@@ -1,0 +1,49 @@
+{
+  "parameter": "P28_PC_opt",
+  "source": "SupraBank (suprabank.org)",
+  "license": "CC-BY-4.0",
+  "total_cb_entries": 1312,
+  "entries_with_pc": 1135,
+  "cb7_unique_guests_pc_0.3_0.8": 128,
+  "methods": {
+    "gaussian_envelope": {
+      "PC_opt": 0.5385,
+      "PC_opt_err": 0.0198,
+      "sigma_PC": 0.115,
+      "R2": 0.7198
+    },
+    "adamantane_quadratic": {
+      "PC_opt": 0.4859,
+      "series": {
+        "2-adamantanone": [
+          0.534,
+          10.59
+        ],
+        "1-adamantanol": [
+          0.554,
+          10.255333333333333
+        ],
+        "5-Cl-2-adamantanone": [
+          0.589,
+          9.03
+        ],
+        "5-Br-2-adamantanone": [
+          0.605,
+          8.49
+        ]
+      }
+    },
+    "top_binder_mean": {
+      "PC_opt": 0.5444,
+      "range": [
+        0.4746,
+        0.6511
+      ]
+    }
+  },
+  "adopted_value": 0.4859,
+  "prior_rebek_1998": {
+    "PC_opt": 0.55,
+    "sigma": 0.09
+  }
+}
