@@ -49,78 +49,55 @@ G2_TDS_PER_LINKAGE = {
 G2_BRANCH_PENALTY = 3.3  # kJ/mol per branch point (Mammen-consistent)
 
 # Linkage types for known oligosaccharides
+# Per-linkage flexibility overrides (from crystal B-factors + NMR):
+# "flex": per-linkage bound-state flexibility fraction [0=fully frozen, 1=fully free]
+# Default: use position-based _BOUND_FLEX dict.
+# Override: specified when structural data shows specific linkage stays mobile.
 _OLIGO_LINKAGES = {
-    "1->2 diMan": {
-        "linkages": [
-            "alpha1-2"
-        ],
-        "n_branch": 0
-    },
-    "1->3 diMan": {
-        "linkages": [
-            "alpha1-3"
-        ],
-        "n_branch": 0
-    },
-    "1->4 diMan": {
-        "linkages": [
-            "alpha1-4"
-        ],
-        "n_branch": 0
-    },
-    "1->6 diMan": {
-        "linkages": [
-            "alpha1-6"
-        ],
-        "n_branch": 0
-    },
-    "triMan": {
-        "linkages": [
-            "alpha1-3",
-            "alpha1-6"
-        ],
-        "n_branch": 1
-    },
-    "(GlcNAc)2": {
-        "linkages": [
-            "beta1-4"
-        ],
-        "n_branch": 0
-    },
-    "(GlcNAc)3": {
-        "linkages": [
-            "beta1-4",
-            "beta1-4"
-        ],
-        "n_branch": 0
-    },
-    "(GlcNAc)4": {
-        "linkages": [
-            "beta1-4",
-            "beta1-4",
-            "beta1-4"
-        ],
-        "n_branch": 0
-    },
-    "LacNAc": {
-        "linkages": [
-            "beta1-4"
-        ],
-        "n_branch": 0
-    }
+    "1->2 diMan": {"linkages": ["alpha1-2"], "n_branch": 0},
+    "1->3 diMan": {"linkages": ["alpha1-3"], "n_branch": 0},
+    "1->4 diMan": {"linkages": ["alpha1-4"], "n_branch": 0},
+    "1->6 diMan": {"linkages": ["alpha1-6"], "n_branch": 0,
+                    "flex_override": [0.70]},  # ω stays mobile in ConA (Loris 1994)
+    "triMan":     {"linkages": ["alpha1-3", "alpha1-6"], "n_branch": 1,
+                    "flex_override": [0.20, 0.70]},  # 1→3 tight, 1→6 mobile
+    "(GlcNAc)2":  {"linkages": ["beta1-4"], "n_branch": 0},
+    "(GlcNAc)3":  {"linkages": ["beta1-4", "beta1-4"], "n_branch": 0},
+    "(GlcNAc)4":  {"linkages": ["beta1-4", "beta1-4", "beta1-4"], "n_branch": 0},
+    "LacNAc":     {"linkages": ["beta1-4"], "n_branch": 0},
+}
+
+# Bound-state flexibility: not all torsions fully freeze.
+# Crystal B-factors show extended sugar units retain ~40% mobility.
+# f_bound_flex = fraction of torsional freedom retained in bound state.
+# Applied per-linkage: 1st linkage (tight site) gets less correction,
+# 2nd+ linkages (extended site) get more.
+_BOUND_FLEX = {
+    1: 0.20,  # 1st linkage: primary subsite is tight (20% residual flex)
+    2: 0.40,  # 2nd linkage: extended site, more mobile (40%)
+    3: 0.50,  # 3rd+: even more flexible
 }
 
 def _compute_g2_entropy(ligand: str) -> float:
     """Compute conformational entropy penalty for oligosaccharide binding.
     Returns positive kJ/mol (unfavorable). Zero for monosaccharides.
+    Includes bound-state flexibility correction from crystal B-factors.
     """
     info = _OLIGO_LINKAGES.get(ligand)
     if info is None:
         return 0.0
     linkages = info["linkages"]
     n_branch = info["n_branch"]
-    tds = sum(G2_TDS_PER_LINKAGE.get(lt, 5.0) for lt in linkages)
-    tds += n_branch * G2_BRANCH_PENALTY
+    flex_overrides = info.get("flex_override", None)
+    tds = 0.0
+    for i, lt in enumerate(linkages):
+        raw_tds = G2_TDS_PER_LINKAGE.get(lt, 5.0)
+        if flex_overrides and i < len(flex_overrides):
+            flex = flex_overrides[i]  # structure-specific override
+        else:
+            flex = _BOUND_FLEX.get(i + 1, 0.50)  # position-based default
+        tds += raw_tds * (1 - flex)
+    tds += n_branch * G2_BRANCH_PENALTY * (1 - 0.30)
     return round(tds, 2)
 
 

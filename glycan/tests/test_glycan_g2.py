@@ -70,13 +70,20 @@ class TestG2Oligosaccharides:
     def test_trimannoside_includes_branch(self):
         from glycan.scorer import _compute_g2_entropy, G2_BRANCH_PENALTY
         tds = _compute_g2_entropy("triMan")
-        assert tds > 15.0, f"triMan TdS={tds}, expected >15 (2 linkages + branch)"
+        assert tds > 6.0, f"triMan TdS={tds}, expected >6 (flex-corrected)"
 
-    def test_16_linkage_most_expensive(self):
+    def test_16_raw_tds_highest(self):
+        """Raw (pre-flexibility) TdS for α1→6 must be highest."""
+        from glycan.scorer import G2_TDS_PER_LINKAGE
+        assert G2_TDS_PER_LINKAGE["alpha1-6"] > G2_TDS_PER_LINKAGE["alpha1-3"], \
+            "Raw α1→6 TdS must exceed α1→3 (3 torsions vs 2)"
+
+    def test_16_effective_lower_in_cona(self):
+        """Effective TdS for ConA 1→6 diMan is LOWER than 1→3 due to bound-state flexibility."""
         from glycan.scorer import _compute_g2_entropy
         a16 = _compute_g2_entropy("1->6 diMan")
         a13 = _compute_g2_entropy("1->3 diMan")
-        assert a16 > a13, f"1→6 ({a16}) should cost more than 1→3 ({a13})"
+        assert a16 < a13, f"1→6 ConA arm stays mobile: effective {a16} < {a13}"
 
 
 class TestG2ScorerIntegration:

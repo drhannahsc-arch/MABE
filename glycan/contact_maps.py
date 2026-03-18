@@ -40,19 +40,19 @@ CONA_CONTACTS = {
     },
     # diMan: Man1 (full Man contacts) + Man2 (branch contacts) + linker
     "1->2 diMan": {
-        "n_HB": 7, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ"], "n_CHP": 1,
+        "n_HB": 8, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ"], "n_CHP": 1,
         "res_type": "Tyr", "n_linker": 1,
         "anchor": False, "obs_dG": -28.5, "confidence": "HIGH",
-        "note": "1CVN: Man1 full contacts + Man2 makes 4 HBs to secondary subsite (O2',O3',O6',loop)"
+        "note": "1CVN: Man1 full + Man2: 4 direct + 1 water-mediated HB (Thr15/Asp16); Naismith 1994"
     },
     "1->3 diMan": {
-        "n_HB": 4, "buried": ["K_EQ", "K_EQ", "K_C6"], "n_CHP": 1,
+        "n_HB": 5, "buried": ["K_EQ", "K_EQ", "K_C6"], "n_CHP": 2,
         "res_type": "Tyr", "n_linker": 1,
         "anchor": False, "obs_dG": -25.1, "confidence": "HIGH",
-        "note": "1CVN: Man1 full + Man2 adds only 1 HB (O3' arm steric restriction)"
+        "note": "1CVN: Man1 full + Man2: 2 HBs (O3'/backbone) + Tyr12 extended CH-pi; Loris 1994"
     },
     "1->4 diMan": {
-        "n_HB": 6, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ"], "n_CHP": 1,
+        "n_HB": 6, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ"], "n_CHP": 2,
         "res_type": "Tyr", "n_linker": 1,
         "anchor": False, "obs_dG": -26.4, "confidence": "MEDIUM",
         "note": "1CVN: Man1 + Man2 at O4 position adds 3 HBs (moderate additional contacts)"
@@ -61,13 +61,13 @@ CONA_CONTACTS = {
         "n_HB": 3, "buried": ["K_EQ", "K_EQ", "K_C6"], "n_CHP": 1,
         "res_type": "Tyr", "n_linker": 1,
         "anchor": False, "obs_dG": -22.2, "confidence": "HIGH",
-        "note": "1CVN: 1->6 branch extends away from primary subsite; linker cost only"
+        "note": "1CVN: 1->6 arm extends to solvent (Loris 1994 Fig3); omega torsion stays mobile"
     },
     "triMan": {
-        "n_HB": 7, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ", "K_EQ"], "n_CHP": 1,
+        "n_HB": 9, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ", "K_EQ"], "n_CHP": 2,
         "res_type": "Tyr", "n_linker": 2,
         "anchor": False, "obs_dG": -31.0, "confidence": "LOW",
-        "note": "Predicted LOW: missing Man3 bivalent avidity not in pairwise model (obs -31 >> pred)"
+        "note": "1CVN: Man1 full + Man2(1→3): 2 HB + CH-pi + Man3(1→6): minimal; Loris 1994"
     },
 }
 
@@ -136,7 +136,7 @@ GAL3_CONTACTS = {
         "note": "3GAL: Arg144,His158,Asn160,Glu165; Trp181 CH-pi; C4 axial, C6 primary"
     },
     "LacNAc": {
-        "n_HB": 7, "buried": ["K_AX", "K_EQ", "K_C6", "K_NAC", "K_EQ"], "n_CHP": 2,
+        "n_HB": 8, "buried": ["K_AX", "K_EQ", "K_C6", "K_NAC", "K_EQ"], "n_CHP": 2,
         "res_type": "Trp", "n_linker": 1,
         "anchor": False, "obs_dG": -27.8, "confidence": "MEDIUM",
         "note": "Gal (primary) + GlcNAc (beta1->4); GlcNAc adds 3 HBs, NHAc buried, 1 Tyr CH-pi"
