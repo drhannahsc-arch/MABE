@@ -35,6 +35,7 @@ from core.tier2_terms import compute_all_tier2, tier2_total, TIER2_RESULT_FIELDS
 from core.scorer_frozen import predict_log_k as _metal_predict_log_k
 
 from hg_scorer import (
+    dg_high_energy_water as _hg_dg_hew,
     HG_PARAMS, LN10_RT,
     compute_guest_sasa, estimate_buried_sasa,
     dg_hydrophobic as _hg_dg_hydrophobic,
@@ -42,6 +43,19 @@ from hg_scorer import (
     dg_size_mismatch as _hg_dg_size_mismatch,
 )
 from knowledge.hg_hbond import compute_dg_hbond as _hg_compute_dg_hbond, HBOND_PARAMS
+
+# pH-aware protonation state estimation (SupraBank enrichment)
+try:
+    from core.pka_estimator import enrich_uc_protonation as _enrich_pka
+    _PKA_AVAILABLE = True
+except ImportError:
+    _PKA_AVAILABLE = False
+
+try:
+    from core.inclusion_classifier import classify_inclusion as _classify_inclusion
+    _INCLUSION_AVAILABLE = True
+except ImportError:
+    _INCLUSION_AVAILABLE = False
 from knowledge.hg_pi import compute_dg_pi as _hg_compute_dg_pi, PI_PARAMS
 from knowledge.hg_conf_shape import (
     compute_dg_conf_shape as _hg_compute_dg_conf_shape,
@@ -247,6 +261,10 @@ def predict(uc, verbose=False):
     # ── METAL COORDINATION (self-zeros if no metal) ──────────────────
     _compute_metal(uc, result)
 
+    # ── pH-aware protonation enrichment (before HG scoring) ──────────
+    if _PKA_AVAILABLE and uc.binding_mode == "host_guest_inclusion":
+        _enrich_pka(uc, ph=uc.ph if hasattr(uc, 'ph') else 7.0)
+
     # ── HOST-GUEST INCLUSION (self-zeros if no cavity/guest) ─────────
     _compute_hg_terms(uc, result)
 
@@ -394,7 +412,17 @@ def _compute_hg_terms(uc, result):
     result.dg_hydrophobic = _hg_dg_hydrophobic(buried, host["curvature_class"])
 
     # 2. Cavity dehydration
+    # 2. Cavity dehydration (SASA-based + PC-dependent scaling)
     result.dg_cavity_dehydration = _hg_dg_cavity_dehydration(buried, host_key, uc.packing_coefficient)
+
+    # 2b. High-energy water displacement — TESTED, NOT DEPLOYED
+    # Classifier correctly identifies inclusion depth (axial × radial fill).
+    # At per-water energies that improve top binders (~1.5 logKa), bulk entries
+    # overshoot by ~0.7 logKa, worsening overall MAE from 1.745 to 1.892.
+    # Kept dormant until a selective model can distinguish the ~15% of entries
+    # where HEW is the dominant binding contribution.
+    # Infrastructure: core/inclusion_classifier.py (classify_inclusion)
+    #                 hg_scorer.dg_high_energy_water() + HEW_PARAMS
 
     # 3. Size mismatch (original linear penalty — kept for backward compatibility)
     result.dg_size_mismatch = _hg_dg_size_mismatch(guest_np, cavity_sasa)

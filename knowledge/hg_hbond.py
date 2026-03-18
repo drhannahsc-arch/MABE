@@ -105,7 +105,10 @@ def dg_hbond_net(hbond_counts: dict) -> float:
     )
 
     # Unfavorable: water H-bonds broken
-    dg_water = hbond_counts["n_water_displaced"] * HBOND_PARAMS["water_penalty_per_hb"]
+    # Charge-assisted H-bonds: reduced water penalty (ion-dipole overwhelms)
+    n_neutral_displaced = (hbond_counts["n_neutral"] + hbond_counts["n_oh_pi"]) * HBOND_PARAMS["water_displacement"]
+    n_charged_displaced = hbond_counts["n_charge_assisted"] * HBOND_PARAMS["water_displacement"] * 0.3  # 70% reduction
+    dg_water = (n_neutral_displaced + n_charged_displaced) * HBOND_PARAMS["water_penalty_per_hb"]
 
     return dg_formed + dg_water
 

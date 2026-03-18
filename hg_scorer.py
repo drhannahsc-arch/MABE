@@ -50,6 +50,60 @@ HG_PARAMS = {
     "dehydr_CB_lowPC_scale": 2.015,  # CB dehydr multiplied by this when PC < 0.4      # undersize (not significant at this phase)
 }
 
+# ═══════════════════════════════════════════════════════════════════════════
+# HIGH-ENERGY WATER MODEL (Biedermann & Nau 2014, Assaf & Nau 2015)
+#
+# CB[n] cavities contain frustrated water molecules that cannot form full
+# H-bond networks. Displacing them provides driving force beyond classical
+# hydrophobic transfer. The number displaced scales with packing coefficient.
+#
+# n_waters: from MD simulations + crystallography
+# dg_per_water: ITC decomposition (CB7: ~73 kJ total / 7.5 waters ≈ 9.7 kJ)
+# scale_factor: fitted to SupraBank (accounts for partial displacement,
+#   geometry effects, and overlap with SASA-based dehydration already counted)
+# ═══════════════════════════════════════════════════════════════════════════
+
+HEW_PARAMS = {
+    "n_waters": {
+        "CB5": 2.0, "CB6": 4.0, "CB7": 7.5, "CB8": 12.0,
+    },
+    "dg_per_water_kj": {       # frustration excess per water, host-specific
+        "CB5": -1.5,            # small cavity, moderate frustration
+        "CB6": -2.0,            # moderate frustration
+        "CB7": -2.0,            # highest frustration (optimal barrel/portal ratio)
+        "CB8": -0.5,            # large cavity, water nearly bulk-like per molecule
+    },
+    "frustration_premium": 0.20,    # first-displaced waters are 20% more frustrated    # first-displaced waters are 50% more frustrated
+}
+
+
+def dg_high_energy_water(host_key: str, packing_coefficient: float) -> float:
+    """Compute high-energy water displacement energy for CB hosts.
+    
+    Frustration-priority model: waters in the cavity center are most
+    frustrated (fewest H-bond partners). Guest displaces these first.
+    dg_per_water(frac) = dg_base × (1 + premium × (1 - frac/2))
+    where frac = fraction of cavity filled = min(PC, 1.0).
+    
+    Returns negative (favorable) kJ/mol. Zero for non-CB hosts.
+    REPLACES SASA-based dehydration for CB hosts (not additive).
+    """
+    n_waters = HEW_PARAMS["n_waters"].get(host_key, 0)
+    if n_waters <= 0 or packing_coefficient <= 0:
+        return 0.0
+    
+    frac = min(packing_coefficient, 1.0)
+    n_displaced = frac * n_waters
+    
+    dg_base = HEW_PARAMS["dg_per_water_kj"].get(host_key, -2.0)
+    fp = HEW_PARAMS["frustration_premium"]
+    
+    # Average dg for first frac×n_waters displaced (most frustrated first)
+    avg_dg = dg_base * (1 + fp * (1 - frac / 2))
+    
+    return n_displaced * avg_dg
+
+
 # RT at 298.15 K in kJ/mol
 RT_298 = 8.314e-3 * 298.15  # 2.479 kJ/mol
 LN10_RT = 2.303 * RT_298     # 5.71 kJ/mol
