@@ -134,15 +134,24 @@ class TestHepatocyte:
 # ── B cell (qualitative only — no proxy) ────────────────────────────────
 
 class TestBCell:
-    def test_qualitative_only(self):
+    def test_scored_with_siglec2_proxy(self):
+        """B cell now has Siglec2 proxy — should be scored, not qualitative."""
         recs = recommend_pulldown("b_cell", bead_diameter_nm=50)
         assert len(recs) >= 1
-        assert recs[0].dG_pred is None
-        assert recs[0].confidence == "LOW"
+        assert recs[0].dG_pred is not None
+        assert recs[0].scorer_proxy == "Siglec2"
+        assert recs[0].confidence == "MEDIUM"
 
-    def test_default_c1_position(self):
+    def test_neu5ac_sugar(self):
+        """B cell should recommend Neu5Ac."""
         recs = recommend_pulldown("b_cell", bead_diameter_nm=50)
-        assert "C1" in recs[0].position
+        assert recs[0].sugar == "Neu5Ac"
+
+    def test_has_feasible_linker(self):
+        """B cell Neu5Ac should have feasible linker design (C8 or C9)."""
+        recs = recommend_pulldown("b_cell", bead_diameter_nm=50)
+        feasible = [r for r in recs if r.linker and r.linker.feasible]
+        assert len(feasible) >= 1
 
 
 # ── NK cell ─────────────────────────────────────────────────────────────

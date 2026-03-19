@@ -145,20 +145,24 @@ class TestCrossScaffold:
 # ── Coverage checks ─────────────────────────────────────────────────────
 
 class TestCoverage:
-    def test_all_scaffolds_have_6_positions(self):
-        """Every entry should have C1-C6."""
+    def test_all_scaffolds_have_positions(self):
+        """Every entry should have C1-C6 (hexoses) or C1-C9 (Neu5Ac)."""
         for key in POSITION_CONTACTS:
             scaffold, ligand = key
             positions = classify_all_positions(scaffold, ligand)
-            assert len(positions) == 6, f"{scaffold}/{ligand} has {len(positions)} positions"
+            if ligand == "Neu5Ac":
+                assert len(positions) == 9, f"{scaffold}/{ligand} has {len(positions)} positions, expected 9"
+            else:
+                assert len(positions) == 6, f"{scaffold}/{ligand} has {len(positions)} positions, expected 6"
 
     def test_all_scaffolds_present(self):
-        """All 5 scaffolds × their anchor ligands are mapped."""
+        """All scaffolds x their anchor ligands are mapped."""
         expected = {
             ("ConA", "Man"), ("ConA", "Glc"),
             ("Davis", "Glc"),
             ("PNA", "Gal"), ("Gal3", "Gal"),
             ("WGA", "GlcNAc"),
+            ("Siglec2", "Neu5Ac"),
         }
         assert expected == set(POSITION_CONTACTS.keys())
 
@@ -169,3 +173,41 @@ class TestCoverage:
     def test_error_on_unknown_position(self):
         with pytest.raises(ValueError):
             classify_position("ConA", "Man", "C7")
+
+
+# ── Siglec2 / Neu5Ac (sialic acid) ─────────────────────────────────────
+
+class TestSiglec2Neu5Ac:
+    def test_pharmacophore_positions(self):
+        """C1 (COO-), C4, C5 (NHAc), C7 are ESSENTIAL."""
+        for pos in ["C1", "C4", "C5", "C7"]:
+            cls = classify_position("Siglec2", "Neu5Ac", pos)
+            assert cls.classification == ESSENTIAL, f"Neu5Ac {pos} should be ESSENTIAL"
+
+    def test_ring_positions(self):
+        """C2 (keto), C3 (CH2), C6 (ring) are RING."""
+        for pos in ["C2", "C3", "C6"]:
+            cls = classify_position("Siglec2", "Neu5Ac", pos)
+            assert cls.classification == RING, f"Neu5Ac {pos} should be RING"
+
+    def test_candidate_positions(self):
+        """C8, C9 (glycerol sidechain) are CANDIDATE."""
+        for pos in ["C8", "C9"]:
+            cls = classify_position("Siglec2", "Neu5Ac", pos)
+            assert cls.classification == CANDIDATE, f"Neu5Ac {pos} should be CANDIDATE"
+
+    def test_attachment_sites_are_c8_c9(self):
+        sites = get_attachment_sites("Siglec2", "Neu5Ac")
+        positions = {s.position for s in sites}
+        assert positions == {"C8", "C9"}
+
+    def test_c9_preferred_for_click(self):
+        """C9 is the standard click site for sialic acid (C9-azido-Neu5Ac)."""
+        cls = classify_position("Siglec2", "Neu5Ac", "C9")
+        assert cls.classification == CANDIDATE
+        assert "azido" in cls.note.lower() or "click" in cls.note.lower()
+
+    def test_nine_positions_total(self):
+        """Neu5Ac has 9 carbons -> 9 positions."""
+        all_pos = classify_all_positions("Siglec2", "Neu5Ac")
+        assert len(all_pos) == 9

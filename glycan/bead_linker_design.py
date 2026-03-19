@@ -70,6 +70,14 @@ EXIT_VECTORS = {
                                  "note": "C2-OH equatorial; exits along groove rim"},
     ("WGA", "GlcNAc", "C1"):   {"depth_A": 7.0,  "exit": "axial_out",
                                  "note": "Anomeric; solvent-facing in 2UVO"},
+    # ── Siglec-2 / Neu5Ac ──────────────────────────────────────────────
+    # C8, C9 on glycerol sidechain. Extends into solvent from C6.
+    # Pocket depth minimal (glycerol is fully solvent-exposed).
+    # C9-azido-Neu5Ac is a standard bioorthogonal tool (Prescher 2004).
+    ("Siglec2", "Neu5Ac", "C8"): {"depth_A": 4.0, "exit": "axial_out",
+                                    "note": "C8-OH on glycerol sidechain; fully solvent-exposed in 5VKM"},
+    ("Siglec2", "Neu5Ac", "C9"): {"depth_A": 3.0, "exit": "axial_out",
+                                    "note": "C9-OH terminal glycerol; most solvent-exposed; standard click site (C9-azido-Neu5Ac)"},
 }
 
 # Exit angle penalty: equatorial exit requires extra path length to clear

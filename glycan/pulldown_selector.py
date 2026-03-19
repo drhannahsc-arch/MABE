@@ -171,11 +171,11 @@ CELL_LECTIN_DB: dict[str, list[LectinEntry]] = {
         LectinEntry(
             lectin="CD22 (Siglec-2)",
             sugar_preference="sialic acid (Neu5Ac)",
-            sugar_for_scorer=None,
+            sugar_for_scorer="Neu5Ac",
             density_per_cell=20000,
-            scorer_proxy=None,
-            proxy_confidence="LOW",
-            source="Tedder 2005 Annu Rev Immunol 23:515",
+            scorer_proxy="Siglec2",
+            proxy_confidence="MEDIUM",
+            source="Tedder 2005 Annu Rev Immunol 23:515; Kelm 2002 Eur J Biochem 269:5322",
         ),
     ],
 

@@ -138,6 +138,32 @@ POSITION_CONTACTS = {
         "C6": {"hb": 1, "desolv": "K_EQ", "chp": 0, "burial": "partial",
                "note": "C6-OH; less deeply buried than in ConA"},
     },
+
+    # ── Siglec-2 (CD22) — Neu5Ac (sialic acid) ────────────────────────
+    # 9-carbon α-keto acid. PDB 5VKM (Ereno-Orbea 2017).
+    # Key: Arg120 salt bridge to C1-COO⁻ (conserved in all Siglecs).
+    # Glycerol sidechain C7-C9 extends from C6; C8/C9 solvent-exposed.
+    # C9-azido-Neu5Ac is a standard click chemistry tool (Prescher 2004).
+    ("Siglec2", "Neu5Ac"): {
+        "C1": {"hb": 2, "desolv": "K_COO", "chp": 0, "burial": "partial",
+               "note": "COO- salt bridge to Arg120; 2 HBs; essential pharmacophore"},
+        "C2": {"hb": 0, "desolv": None,   "chp": 0, "burial": "exposed", "ring": True,
+               "note": "Keto carbon (C2=O); part of ring; no free OH"},
+        "C3": {"hb": 0, "desolv": None,   "chp": 0, "burial": "exposed", "ring": True,
+               "note": "Ring CH2; no OH at C3 in Neu5Ac"},
+        "C4": {"hb": 1, "desolv": "K_EQ", "chp": 0, "burial": "partial",
+               "note": "C4-OH; HB to protein backbone in 5VKM"},
+        "C5": {"hb": 1, "desolv": "K_NAC", "chp": 0, "burial": "partial", "ring": False,
+               "note": "NHAc at C5; carbonyl accepts HB; buried"},
+        "C6": {"hb": 0, "desolv": None,   "chp": 0, "burial": "exposed", "ring": True,
+               "note": "Ring C6 connects to glycerol chain; no OH at C6"},
+        "C7": {"hb": 1, "desolv": "K_EQ", "chp": 0, "burial": "partial",
+               "note": "C7-OH (glycerol sidechain); HB to protein"},
+        "C8": {"hb": 0, "desolv": None,   "chp": 0, "burial": "exposed",
+               "note": "C8-OH (glycerol); solvent-exposed in 5VKM"},
+        "C9": {"hb": 0, "desolv": None,   "chp": 0, "burial": "exposed",
+               "note": "C9-OH (terminal glycerol); solvent-exposed; C9-azido is standard click tool"},
+    },
 }
 
 
@@ -177,7 +203,7 @@ def classify_position(scaffold: str, ligand: str, position: str) -> PositionClas
     burial = entry["burial"]
     note = entry["note"]
 
-    if position == "C5":
+    if entry.get("ring", position == "C5"):  # default: C5 is ring for hexoses
         classification = RING
     elif n_hb > 0 or desolv is not None:
         classification = ESSENTIAL
@@ -203,8 +229,7 @@ def classify_all_positions(scaffold: str, ligand: str) -> list[PositionClassific
     if key not in POSITION_CONTACTS:
         raise ValueError(f"No position contacts for ({scaffold}, {ligand})")
     return [classify_position(scaffold, ligand, pos)
-            for pos in ["C1", "C2", "C3", "C4", "C5", "C6"]
-            if pos in POSITION_CONTACTS[key]]
+            for pos in POSITION_CONTACTS[key]]
 
 
 def get_attachment_sites(scaffold: str, ligand: str) -> list[PositionClassification]:
