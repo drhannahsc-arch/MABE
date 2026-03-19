@@ -33,6 +33,17 @@ K_DESOLV_C6   = +11.2  # kJ/mol  primary OH (C6-CH2OH, Schwarz Table I) [LOCKED 
 K_DESOLV_AX   = +6.3   # kJ/mol  axial OH [PROVISIONAL v2.2 — needs Schwarz-corrected validation]
 # Estimate pending direct measurement
 K_DESOLV_NAC  = +8.5   # kJ/mol  N-acetyl burial [ESTIMATE v2.2]
+# Carboxylate burial (Neu5Ac COO- at Siglec binding sites)
+# Carboxylate is more strongly hydrated than primary OH (charge + 2 acceptors)
+# Constrained: K_C6 < K_COO < 3*K_C6. Initial estimate from Marcus ion hydration
+# analogy (COO- ~3x more hydrated than -CH2OH) tempered by partial charge screening.
+K_DESOLV_COO  = +15.0  # kJ/mol  carboxylate burial [PROVISIONAL v2.4]
+
+# Structural water bridge (G5)
+# Conserved water molecules bridging sugar-OH to protein residues.
+# Back-solved from osmotic stress data + galectin mutant series.
+# Source: Clarke 2001 JACS; Chervenak 1995 ConA water displacement mutants.
+EPS_WATER_BRIDGE = -3.5  # kJ/mol per conserved water [LOCKED v2.3]
 
 # Residue-type CH-pi dispatch
 CH_PI_EPS = {
@@ -49,6 +60,7 @@ K_DESOLV = {
     "K_AX":  K_DESOLV_AX,
     "K_C6":  K_DESOLV_C6,
     "K_NAC": K_DESOLV_NAC,
+    "K_COO": K_DESOLV_COO,
 }
 
 # Davis receptor DG0 (re-anchored v5 with CH-pi explicit)
@@ -62,9 +74,3 @@ DG0 = {
     "Gal3":  None,  # computed from Gal anchor at runtime
     "Davis": DG0_DAVIS,
 }
-
-# G5: Structural water bridges (conserved ordered waters at sugar-protein interface)
-# Source: osmotic stress experiments (Chervenak & Toone 1994, Robinson & Stokes)
-# Cross-check: solvent isotope effect data (Lemieux)
-# Back-solved from galectin mutant series (mabe/glycan/structural_water.py)
-EPS_WATER_BRIDGE = -3.5  # kJ/mol per conserved water [LOCKED v2.3]

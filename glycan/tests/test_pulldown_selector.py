@@ -84,10 +84,12 @@ class TestTCell:
         assert len(recs) >= 1
         assert any("Galectin" in r.lectin for r in recs)
 
-    def test_gal3_uses_gal(self):
+    def test_gal3_uses_gal_or_lacnac(self):
         recs = recommend_pulldown("t_cell", bead_diameter_nm=50)
         gal3 = [r for r in recs if "Galectin-3" in r.lectin]
-        assert gal3[0].sugar == "Gal"
+        # With oligo scoring, LacNAc may rank above Gal (stronger binder)
+        sugars = {r.sugar for r in gal3}
+        assert "Gal" in sugars or "LacNAc" in sugars
 
     def test_alias_works(self):
         recs_alias = recommend_pulldown("t cell", bead_diameter_nm=50)

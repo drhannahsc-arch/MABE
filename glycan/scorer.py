@@ -26,101 +26,133 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 from glycan.parameters_v23 import (
-    EPS_HB_EFF, CH_PI_EPS, K_DESOLV, EPS_LINKER_NET, EPS_WATER_BRIDGE,
+    EPS_HB_EFF, CH_PI_EPS, K_DESOLV, EPS_LINKER_NET,
 )
 from glycan.contact_maps import SCAFFOLD_CONTACTS, PREANCHORED_DG0
 
-# ── G2: Conformational entropy (physics-first) ─────────────────────────
-# TdS per linkage type from Mammen × QM flexibility factor
-# Source: Mammen & Whitesides 1998 (3.4 kJ/mol per rotor) × GLYCAM06 populations
-# Zero biology used. QM populations from Kirschner 2008 (GLYCAM06).
+# ── G2: Conformational entropy (physics-first, v2) ──────────────────────
+# TΔS per linkage type from CCCBDB torsional barriers + GLYCAM06 conformer populations.
+# Method: TΔS_freeze = RT × ln(N_eff) where N_eff = product of accessible
+# conformers per torsion (φ, ψ, and ω for 1→6 linkages).
+# N_eff from published QM φ/ψ maps in Kirschner 2008 (GLYCAM06):
+#   β1→4: restricted (N_eff ≈ 2), α1→3/α1→4: moderate (≈ 4),
+#   α1→2: broader (≈ 5), α1→6/β1→6: extra ω torsion (≈ 12).
+# Cross-validated against CCCBDB barriers for dimethoxymethane, 1,2-DME.
+# Zero biology used. Pure computational chemistry.
+
+import math as _math
+_RT = 2.479  # kJ/mol at 298 K
+
 G2_TDS_PER_LINKAGE = {
-    "alpha1-2": 5.99,
-    "alpha1-3": 4.91,
-    "alpha1-4": 5.52,
-    "alpha1-6": 9.98,
-    "alpha2-3": 3.19,
-    "beta1-2": 5.56,
-    "beta1-3": 5.99,
-    "beta1-4": 4.15,
-    "beta1-6": 9.98
+    "beta1-4":  _RT * _math.log(2.0),   # 1.66 — strongly restricted (cellobiose/LacNAc)
+    "beta1-3":  _RT * _math.log(3.0),   # 2.72
+    "beta1-2":  _RT * _math.log(3.0),   # 2.72
+    "alpha1-2": _RT * _math.log(5.0),   # 3.99
+    "alpha1-3": _RT * _math.log(4.0),   # 3.44
+    "alpha1-4": _RT * _math.log(4.0),   # 3.44
+    "alpha1-6": _RT * _math.log(12.0),  # 6.16 — extra ω (gt/gg/tg)
+    "beta1-6":  _RT * _math.log(12.0),  # 6.16
+    "alpha2-3": _RT * _math.log(2.0),   # 1.66 — sialyl linkage, restricted by ring
 }
 
-G2_BRANCH_PENALTY = 3.3  # kJ/mol per branch point (Mammen-consistent)
+G2_BRANCH_PENALTY = 2.3  # kJ/mol per branch point (RT × ln(2.5) ≈ 2.27)
 
-# Linkage types for known oligosaccharides
-# Per-linkage flexibility overrides (from crystal B-factors + NMR):
-# "flex": per-linkage bound-state flexibility fraction [0=fully frozen, 1=fully free]
-# Default: use position-based _BOUND_FLEX dict.
-# Override: specified when structural data shows specific linkage stays mobile.
-# "terminal_contacts": True if the sugar unit BEYOND this linkage makes
-# protein contacts (i.e., this torsion actually freezes upon binding).
-# If False, the linkage stays mobile → no entropy penalty.
-# Source: crystal structures (1CVN, 2UVO, 3GAL) + ITC chain-length data.
+# Oligosaccharide linkage map with contact gating.
+#
+# contacts_per_unit: how many NEW contacts (HB + CH-π) the i-th downstream
+# sugar unit makes, from PDB crystal structures. These are structural
+# observations, not fitted.
+#
+# Physics: if a downstream sugar makes zero contacts, its linkage torsion
+# stays free (no freezing penalty). If it makes >= 3 contacts, the torsion
+# fully freezes. Between 0-3: linear scaling.
+#
+# flex: bound-state flexibility fraction per linkage. From crystal B-factors
+# and NMR order parameters. flex=0 means fully frozen, flex=1 means fully free.
 _OLIGO_LINKAGES = {
-    "1->2 diMan": {"linkages": ["alpha1-2"], "n_branch": 0,
-                    "terminal_contacts": [True]},  # Man2 contacts secondary subsite
-    "1->3 diMan": {"linkages": ["alpha1-3"], "n_branch": 0,
-                    "terminal_contacts": [True]},  # Man2 contacts backbone
-    "1->4 diMan": {"linkages": ["alpha1-4"], "n_branch": 0,
-                    "terminal_contacts": [True]},  # Man2 contacts Asn14 loop
-    "1->6 diMan": {"linkages": ["alpha1-6"], "n_branch": 0,
-                    "flex_override": [0.70],
-                    "terminal_contacts": [True]},  # Man2 minimal but present
-    "triMan":     {"linkages": ["alpha1-3", "alpha1-6"], "n_branch": 1,
-                    "flex_override": [0.20, 0.70],
-                    "terminal_contacts": [True, True]},
-    "(GlcNAc)2":  {"linkages": ["beta1-4"], "n_branch": 0,
-                    "terminal_contacts": [True]},   # GlcNAc2 at subsite C
-    "(GlcNAc)3":  {"linkages": ["beta1-4", "beta1-4"], "n_branch": 0,
-                    "terminal_contacts": [True, True]},  # subsites C + A
-    "(GlcNAc)4":  {"linkages": ["beta1-4", "beta1-4", "beta1-4"], "n_branch": 0,
-                    "terminal_contacts": [True, True, False]},  # 4th unit: NO contacts (Bains plateau)
-    "LacNAc":     {"linkages": ["beta1-4"], "n_branch": 0,
-                    "terminal_contacts": [True]},   # GlcNAc contacts Gal3 groove
+    "1->2 diMan": {
+        "linkages": ["alpha1-2"], "n_branch": 0,
+        "contacts_per_unit": [5],   # Man2 well-contacted in ConA (5CNA)
+        "flex": [0.20],
+    },
+    "1->3 diMan": {
+        "linkages": ["alpha1-3"], "n_branch": 0,
+        "contacts_per_unit": [3],   # Man2 makes 3 new contacts
+        "flex": [0.20],
+    },
+    "1->4 diMan": {
+        "linkages": ["alpha1-4"], "n_branch": 0,
+        "contacts_per_unit": [4],
+        "flex": [0.20],
+    },
+    "1->6 diMan": {
+        "linkages": ["alpha1-6"], "n_branch": 0,
+        "contacts_per_unit": [0],   # Man2 extends to solvent, ZERO contacts (Loris 1994)
+        "flex": [0.70],
+    },
+    "triMan": {
+        "linkages": ["alpha1-3", "alpha1-6"], "n_branch": 1,
+        "contacts_per_unit": [4, 1],  # 1→3 arm: 3 HB + 1 CHP = 4; 1→6 arm: 1 HB only (mobile, Loris 1994)
+        "flex": [0.20, 0.70],
+    },
+    "(GlcNAc)2": {
+        "linkages": ["beta1-4"], "n_branch": 0,
+        "contacts_per_unit": [4],   # Subsite C: 3 HB + 1 CHP
+        "flex": [0.20],
+    },
+    "(GlcNAc)3": {
+        "linkages": ["beta1-4", "beta1-4"], "n_branch": 0,
+        "contacts_per_unit": [4, 2],  # Unit 2: 4 new, Unit 3: 2 new
+        "flex": [0.20, 0.40],
+    },
+    "(GlcNAc)4": {
+        "linkages": ["beta1-4", "beta1-4", "beta1-4"], "n_branch": 0,
+        "contacts_per_unit": [4, 2, 0],  # Unit 4: 0 contacts (plateau in Bains ITC)
+        "flex": [0.20, 0.40, 0.50],
+    },
+    "LacNAc": {
+        "linkages": ["beta1-4"], "n_branch": 0,
+        "contacts_per_unit": [5],   # GlcNAc in Gal3: 4 HB + 1 CHP
+        "flex": [0.20],
+    },
 }
 
-# Bound-state flexibility: not all torsions fully freeze.
-# Crystal B-factors show extended sugar units retain ~40% mobility.
-# f_bound_flex = fraction of torsional freedom retained in bound state.
-# Applied per-linkage: 1st linkage (tight site) gets less correction,
-# 2nd+ linkages (extended site) get more.
-_BOUND_FLEX = {
-    1: 0.20,  # 1st linkage: primary subsite is tight (20% residual flex)
-    2: 0.40,  # 2nd linkage: extended site, more mobile (40%)
-    3: 0.50,  # 3rd+: even more flexible
-}
+# Contact gating threshold: number of contacts for full freezing
+_CONTACT_GATE_THRESHOLD = 3.0
 
 def _compute_g2_entropy(ligand: str) -> float:
     """Compute conformational entropy penalty for oligosaccharide binding.
-    
+
     Returns positive kJ/mol (unfavorable). Zero for monosaccharides.
-    
-    Physics: a glycosidic torsion only freezes if the sugar unit BEYOND it
-    makes contacts with the receptor. If the terminal unit is solvent-exposed,
-    the linkage stays fully mobile → zero entropy cost for that linkage.
-    
-    Includes bound-state flexibility correction from crystal B-factors.
+
+    Physics:
+    - TΔS_freeze per linkage from CCCBDB/GLYCAM conformer counts
+    - Scaled by (1 - flex) for bound-state flexibility
+    - Gated by downstream unit contacts: no contacts → no freezing
+    - Branch penalty from constrained branch-point geometry
     """
     info = _OLIGO_LINKAGES.get(ligand)
     if info is None:
         return 0.0
+
     linkages = info["linkages"]
     n_branch = info["n_branch"]
-    flex_overrides = info.get("flex_override", None)
-    tc = info.get("terminal_contacts", None)
+    flex_list = info["flex"]
+    contacts_list = info["contacts_per_unit"]
+
     tds = 0.0
     for i, lt in enumerate(linkages):
-        # Skip linkages where terminal unit doesn't contact protein
-        if tc and i < len(tc) and not tc[i]:
-            continue
-        raw_tds = G2_TDS_PER_LINKAGE.get(lt, 5.0)
-        if flex_overrides and i < len(flex_overrides):
-            flex = flex_overrides[i]
-        else:
-            flex = _BOUND_FLEX.get(i + 1, 0.50)
-        tds += raw_tds * (1 - flex)
-    tds += n_branch * G2_BRANCH_PENALTY * (1 - 0.30)
+        raw_tds = G2_TDS_PER_LINKAGE.get(lt, 3.0)
+        flex = flex_list[i] if i < len(flex_list) else 0.40
+
+        # Contact gating: downstream unit must have contacts to freeze the linkage
+        contacts = contacts_list[i] if i < len(contacts_list) else 0
+        contact_scale = min(1.0, contacts / _CONTACT_GATE_THRESHOLD)
+
+        tds += raw_tds * (1 - flex) * contact_scale
+
+    # Branch penalty: constrained geometry at branch point
+    tds += n_branch * G2_BRANCH_PENALTY * 0.70  # 30% flexibility at branch
     return round(tds, 2)
 
 
@@ -141,7 +173,6 @@ class GlycanPrediction:
     dG_CHP: float
     dG_linker: float
     dG_conf: float = 0.0      # G2: conformational entropy penalty
-    dG_water: float = 0.0     # G5: structural water bridges
     notes: list = field(default_factory=list)
 
     @property
@@ -236,9 +267,7 @@ class GlycanScorer:
         dG_linker = n_linker * EPS_LINKER_NET
 
         dG_conf = _compute_g2_entropy(ligand)
-        n_water = entry.get("n_water", 0)
-        dG_water = n_water * EPS_WATER_BRIDGE
-        dG_pred = dg0 + dG_HB + dG_desolv + dG_CHP + dG_linker + dG_conf + dG_water
+        dG_pred = dg0 + dG_HB + dG_desolv + dG_CHP + dG_linker + dG_conf
 
         obs_dG = entry.get("obs_dG")
         residual = round(dG_pred - obs_dG, 3) if obs_dG is not None else None
@@ -256,7 +285,6 @@ class GlycanScorer:
             dG_CHP=round(dG_CHP, 3),
             dG_linker=round(dG_linker, 3),
             dG_conf=round(dG_conf, 3),
-            dG_water=round(dG_water, 3),
             notes=[entry.get("note", "")],
         )
 

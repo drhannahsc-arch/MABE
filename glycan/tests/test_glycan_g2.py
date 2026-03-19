@@ -11,7 +11,7 @@ sys.path.insert(0, _ROOT)
 
 
 class TestG2PhysicsValues:
-    """Verify TdS values from Mammen × QM flexibility factor."""
+    """Verify TdS values from CCCBDB/GLYCAM conformer analysis (v2)."""
 
     def test_ordering_alpha16_gt_alpha14(self):
         from glycan.scorer import G2_TDS_PER_LINKAGE
@@ -26,13 +26,15 @@ class TestG2PhysicsValues:
     def test_beta14_range(self):
         from glycan.scorer import G2_TDS_PER_LINKAGE
         tds = G2_TDS_PER_LINKAGE["beta1-4"]
-        assert 2.0 < tds < 8.0, f"β1→4 TdS={tds} outside physical range"
+        assert 1.0 < tds < 4.0, f"β1→4 TdS={tds} outside CCCBDB range (RT×ln(2) ≈ 1.7)"
 
-    def test_alpha16_has_three_torsions(self):
-        """α1→6 should have much higher TdS due to omega torsion."""
+    def test_alpha16_highest(self):
+        """α1→6 should be highest due to extra omega torsion (3 rotamers)."""
         from glycan.scorer import G2_TDS_PER_LINKAGE
-        assert G2_TDS_PER_LINKAGE["alpha1-6"] > 8.0, \
-            "α1→6 should be > 8 kJ/mol (3 torsions)"
+        assert G2_TDS_PER_LINKAGE["alpha1-6"] > 5.0, \
+            "α1→6 should be > 5 kJ/mol (RT×ln(12) ≈ 6.2)"
+        # Must be at least 1.5× higher than α1→3 (extra torsion)
+        assert G2_TDS_PER_LINKAGE["alpha1-6"] > 1.5 * G2_TDS_PER_LINKAGE["alpha1-3"]
 
     def test_all_linkages_positive(self):
         from glycan.scorer import G2_TDS_PER_LINKAGE
@@ -70,7 +72,9 @@ class TestG2Oligosaccharides:
     def test_trimannoside_includes_branch(self):
         from glycan.scorer import _compute_g2_entropy, G2_BRANCH_PENALTY
         tds = _compute_g2_entropy("triMan")
-        assert tds > 6.0, f"triMan TdS={tds}, expected >6 (flex-corrected)"
+        # triMan: 1→3 linkage (frozen, 5 contacts) + 1→6 linkage (partial, 2 contacts) + branch
+        assert tds > 4.0, f"triMan TdS={tds}, expected >4 (two linkages + branch)"
+        assert tds < 8.0, f"triMan TdS={tds}, expected <8 (contact gating limits penalty)"
 
     def test_16_raw_tds_highest(self):
         """Raw (pre-flexibility) TdS for α1→6 must be highest."""
@@ -79,11 +83,20 @@ class TestG2Oligosaccharides:
             "Raw α1→6 TdS must exceed α1→3 (3 torsions vs 2)"
 
     def test_16_effective_lower_in_cona(self):
-        """Effective TdS for ConA 1→6 diMan is LOWER than 1→3 due to bound-state flexibility."""
+        """Effective TdS for ConA 1→6 diMan is ZERO — downstream Man has no contacts."""
         from glycan.scorer import _compute_g2_entropy
         a16 = _compute_g2_entropy("1->6 diMan")
         a13 = _compute_g2_entropy("1->3 diMan")
-        assert a16 < a13, f"1→6 ConA arm stays mobile: effective {a16} < {a13}"
+        assert a16 == 0.0, f"1→6 diMan: downstream Man has 0 contacts → G2 must be 0, got {a16}"
+        assert a13 > 0, f"1→3 diMan should have nonzero G2"
+
+    def test_contact_gating_zero_contacts(self):
+        """Linkage with zero downstream contacts → zero G2 penalty."""
+        from glycan.scorer import _compute_g2_entropy
+        # (GlcNAc)4: 4th unit adds 0 contacts → same G2 as (GlcNAc)3
+        g3 = _compute_g2_entropy("(GlcNAc)3")
+        g4 = _compute_g2_entropy("(GlcNAc)4")
+        assert g4 == g3, f"(GlcNAc)4 G2={g4} should equal (GlcNAc)3 G2={g3} (4th unit uncontacted)"
 
 
 class TestG2ScorerIntegration:

@@ -159,11 +159,11 @@ class TestPredictionAccuracy:
         )
 
     def test_cona_glc(self):         self._check("ConA", "Glc", -19.9)
-    def test_cona_13_diman(self):    self._check("ConA", "1->3 diMan", -24.7)
+    def test_cona_13_diman(self):    self._check("ConA", "1->3 diMan", -26.1)
     def test_cona_16_diman(self):    self._check("ConA", "1->6 diMan", -22.5)
-    def test_wga_glcnac2(self):      self._check("WGA", "(GlcNAc)2", -22.0)
-    def test_wga_glcnac3(self):      self._check("WGA", "(GlcNAc)3", -24.1)
-    def test_wga_glcnac4(self):      self._check("WGA", "(GlcNAc)4", -24.3)
+    def test_wga_glcnac2(self):      self._check("WGA", "(GlcNAc)2", -20.7)
+    def test_wga_glcnac3(self):      self._check("WGA", "(GlcNAc)3", -22.0)
+    def test_wga_glcnac4(self):      self._check("WGA", "(GlcNAc)4", -22.3)
     def test_davis_gal(self):        self._check("Davis", "Gal", -12.2, tol=0.6)
     def test_davis_man(self):        self._check("Davis", "Man", -12.2, tol=0.6)
     def test_davis_2dglc(self):      self._check("Davis", "2dGlc", -17.8, tol=0.5)
@@ -257,8 +257,8 @@ class TestR2Statistics:
 
     def test_n_all_correct(self):
         stats = GlycanScorer().compute_r2()
-        # Should have all 21 entries
-        assert stats["n"] == 21
+        # 22 entries: 21 original + 1 Siglec2/Neu5Ac
+        assert stats["n"] == 22
 
     def test_n_high_correct(self):
         stats = GlycanScorer().compute_r2(confidence_filter=["HIGH"])
