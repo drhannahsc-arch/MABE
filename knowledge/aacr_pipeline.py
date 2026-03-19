@@ -394,6 +394,48 @@ def run_aacr_pipeline(
             for arm, n in sorted(arm_counts.items(), key=lambda x: -x[1])[:10]:
                 print(f"    {arm:35s}: {n}")
 
+        # ── Step 7: Scaffold ranking + construct spec for top nominee ──
+        if result.nominated:
+            try:
+                from core.scaffold_realization_ranker import rank_scaffolds, scaffold_comparison_table
+                from core.spacing_valency_optimizer import full_construct_spec
+
+                top = result.nominated[0]
+                feat = top.features
+
+                print(f"\n{'═' * 70}")
+                print(f"SCAFFOLD RANKING — {top.name[:50]}")
+                print(f"{'═' * 70}")
+
+                scaffolds = rank_scaffolds(
+                    binder_mw=feat.mw,
+                    binder_n_hbd=feat.n_hbd,
+                    binder_n_aromatic=feat.n_aromatic_rings,
+                    target_valency=10,
+                )
+                print(scaffold_comparison_table(scaffolds[:5]))
+
+                constructs = full_construct_spec(
+                    binder_name=top.name,
+                    binder_mw=feat.mw,
+                    binder_n_rotatable=feat.n_rotatable,
+                    scaffold_results=scaffolds[:5],
+                )
+
+                print(f"\n{'─' * 70}")
+                print(f"CONSTRUCT SPECIFICATIONS (top 5 scaffolds)")
+                print(f"{'─' * 70}")
+                print(f"{'Scaffold':30s} {'Val':>4s} {'Space':>6s} "
+                      f"{'BCR':>5s} {'DC':>8s} {'Adj':>4s} {'$/mg':>6s}")
+                for c in constructs:
+                    print(f"{c['scaffold_name'][:30]:30s} "
+                          f"{c['binder_valency']:4d} {c['binder_spacing_nm']:5.1f}nm "
+                          f"{c['predicted_bcr_activation']:5.3f} "
+                          f"{c['predicted_dc_activation']:>8s} "
+                          f"{c['adjuvant_valency']:4d} {c['est_cost_per_mg']:6.1f}")
+            except Exception as e:
+                print(f"\n  [Scaffold ranking skipped: {e}]")
+
     return result
 
 
