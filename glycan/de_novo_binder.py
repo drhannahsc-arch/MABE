@@ -68,6 +68,9 @@ EPS_BORONIC_DIOL = -8.0      # kJ/mol per boronic acid + cis-1,2-diol match (cov
 CAVITY_OPTIMAL_VOL_A3 = 180.0  # Optimal cavity for pyranose (~160-200 A3)
 CAVITY_PENALTY_PER_A3 = 0.02  # kJ/mol per A3 deviation from optimal
 EPS_FLEXIBILITY_PENALTY = 0.3  # kJ/mol per rotatable bond beyond 6
+EPS_AXIAL_CLASH = 1.5          # kJ/mol per axial OH disrupting CH-pi contacts
+                               # Asensio 2013: axial OH on alpha-face sterically
+                               # clashes with aromatic surface, reducing CH-pi quality
 
 
 # ---------------------------------------------------------------------------
@@ -252,7 +255,8 @@ class BinderScore:
     dG_shape: float
     dG_boronic: float
     dG_flexibility: float
-    sa_score: float
+    dG_axial_clash: float = 0.0   # penalty for axial OH disrupting CH-pi
+    sa_score: float = 10.0
     descriptor: Optional[ReceptorDescriptor] = None
 
 
@@ -333,10 +337,24 @@ def score_glycan_binder(
     excess_rot = max(0, descriptor.n_rotatable_bonds - 6)
     dG_flexibility = excess_rot * EPS_FLEXIBILITY_PENALTY
 
-    # Total: favorable (negative) + penalties (positive)
-    # chpi and hb are favorable (negative)
-    # desolv, shape, flexibility are penalties (positive, make dG less negative)
-    dG_total = dG_chpi + dG_hb + dG_desolv - dG_shape + dG_boronic - dG_flexibility
+    # Alpha-face disruption: axial OHs clash with aromatic CH-pi surface
+    # Only applies when receptor makes CH-pi contacts (has aromatic surface)
+    # Asensio 2013: axial substituents on sugar alpha-face sterically
+    # interfere with face-on aromatic stacking geometry
+    dG_axial_clash = 0.0
+    if chpi_contacts > 0 and sugar.n_ax_OH > 0:
+        dG_axial_clash = sugar.n_ax_OH * EPS_AXIAL_CLASH
+
+    # Total: all terms use sign convention where negative = favorable
+    # dG_chpi:   negative (favorable)
+    # dG_hb:     negative (favorable)
+    # dG_desolv: positive (penalty)
+    # dG_shape:  positive (penalty)
+    # dG_boronic: negative (favorable)
+    # dG_flexibility: positive (penalty)
+    # dG_axial_clash: positive (penalty)
+    dG_total = (dG_chpi + dG_hb + dG_desolv + dG_shape
+                + dG_boronic + dG_flexibility + dG_axial_clash)
 
     return BinderScore(
         smiles=smiles, target=target,
@@ -347,6 +365,7 @@ def score_glycan_binder(
         dG_shape=round(dG_shape, 2),
         dG_boronic=round(dG_boronic, 2),
         dG_flexibility=round(dG_flexibility, 2),
+        dG_axial_clash=round(dG_axial_clash, 2),
         sa_score=round(descriptor.sa_score, 2),
         descriptor=descriptor,
     )
