@@ -37,7 +37,151 @@ _project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
-from acoustic.impedance_db import get_material, AcousticMaterial
+try:
+    from acoustic.impedance_db import get_material, AcousticMaterial
+    _ACOUSTIC_AVAILABLE = True
+except ImportError:
+    _ACOUSTIC_AVAILABLE = False
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# COMPATIBILITY DATACLASSES — Orchestrator + Assembly Composer
+#
+# These were in the original core/assembly.py before it was replaced by the
+# acoustic particle module. The orchestrator, assembly_composer, and
+# structural_library all import from core.assembly expecting these classes.
+# ═══════════════════════════════════════════════════════════════════════════
+
+@dataclass
+class StructuralConstraint:
+    """Scaffold that positions recognition chemistry."""
+    name: str = ""
+    type: str = "none"               # "none", "dna_origami_cage", "mof", "zeolite", "mip", etc.
+    geometry: str = "free"
+    interior_volume_nm3: Optional[float] = None
+    pore_size_nm: float = 0.0
+    max_interior_sites: int = 1
+    recognition_spacing_nm: float = 0.0
+    ph_stable_range: tuple = (0.0, 14.0)
+    temp_stable_c: tuple = (0, 100)
+    cost_per_unit: str = ""
+    synthesis_complexity: str = "standard"  # "trivial", "standard", "complex", "expert"
+    notes: str = ""
+
+
+@dataclass
+class SelectivityFilter:
+    """Selectivity mechanism beyond recognition chemistry."""
+    name: str = ""
+    mechanism: str = "none"          # "none", "pore_exclusion", "molecular_sieve", "template_imprint", etc.
+    description: str = ""
+    selectivity_enhancement: str = ""
+
+
+@dataclass
+class ReleaseMechanism:
+    """How to release captured target."""
+    name: str = ""
+    trigger: str = "none"            # "ph_shift", "competitor", "thermal", "electrochemical", "none", etc.
+    description: str = ""
+    reversible: bool = True
+    cycles: int = 1
+    trigger_conditions: str = ""
+    release_efficiency: str = ""
+    notes: str = ""
+
+
+@dataclass
+class RecognitionChemistry:
+    """What chemical groups perform binding."""
+    name: str = ""
+    type: str = ""                   # "chelator", "dnazyme", "peptide", "aptamer", "generative", etc.
+    donor_atoms: list = field(default_factory=list)   # ["N", "O", "S"]
+    donor_type: str = "unknown"      # "hard", "borderline", "soft", "mixed"
+    structure: str = ""              # SMILES, sequence, or description
+    denticity: int = 0
+    stability_constant_log: float = 0.0
+    hsab_match: float = 0.0
+    chelate_rings: int = 0
+    kd_um: Optional[float] = None
+    source_tool: str = ""
+    source_candidate_name: str = ""
+    notes: str = ""
+
+
+@dataclass
+class InteriorSite:
+    """One binding site inside a scaffold."""
+    recognition: Optional[RecognitionChemistry] = None
+    copies: int = 1
+    position_description: str = ""
+    attachment_chemistry: str = ""
+
+
+@dataclass
+class InteriorDesign:
+    """How recognition elements are arranged inside scaffold."""
+    description: str = ""
+    design_level: str = "simple"     # "simple", "composite", "tertiary"
+    design_rationale: str = ""
+    total_binding_sites: int = 1
+    unique_recognition_types: int = 1
+    site_spacing_nm: float = 0.0
+    avidity_factor: float = 1.0
+    cooperativity: str = "none"
+    cooperativity_note: str = ""
+    geometric_match: str = ""
+    kinetic_trapping: str = ""
+    self_binding: bool = False
+    sites: list = field(default_factory=list)
+    notes: str = ""
+
+    def summary(self) -> str:
+        return f"{self.design_level} design: {self.total_binding_sites} site(s), avidity {self.avidity_factor:.1f}x"
+
+
+@dataclass
+class BinderAssembly:
+    """Complete binder assembly: recognition + structure + selectivity + release."""
+    name: str = ""
+    description: str = ""
+    design_level: str = "simple"
+    interior: Optional[InteriorDesign] = None
+    structure: Optional[StructuralConstraint] = None
+    selectivity: Optional[SelectivityFilter] = None
+    release: Optional[ReleaseMechanism] = None
+    composite_score: float = 0.0
+    confidence: str = "moderate"
+    confidence_reasoning: str = ""
+    estimated_cost: str = ""
+    community_lab_feasible: bool = False
+    failure_modes: list = field(default_factory=list)
+    what_improves_odds: list = field(default_factory=list)
+
+    def full_report(self) -> str:
+        lines = [
+            f"Assembly: {self.name}",
+            f"  {self.description}",
+            f"  Score: {self.composite_score:.0%} ({self.confidence})",
+            f"  Cost: {self.estimated_cost}",
+        ]
+        if self.structure:
+            lines.append(f"  Structure: {self.structure.name} ({self.structure.type})")
+        if self.selectivity and self.selectivity.mechanism != "none":
+            lines.append(f"  Selectivity: {self.selectivity.name}")
+        if self.release:
+            lines.append(f"  Release: {self.release.name} (trigger: {self.release.trigger})")
+        if self.interior:
+            lines.append(f"  Interior: {self.interior.summary()}")
+        if self.failure_modes:
+            lines.append(f"  Failure modes:")
+            for fm in self.failure_modes:
+                lines.append(f"    - {fm}")
+        if self.what_improves_odds:
+            lines.append(f"  Improvements:")
+            for imp in self.what_improves_odds:
+                lines.append(f"    + {imp}")
+        return "\n".join(lines)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -249,6 +393,11 @@ def build_acoustic_particle(
     If target_freq_Hz > 0 and coating_thickness_m == 0, auto-calculates
     coating thickness to hit the target resonance.
     """
+    if not _ACOUSTIC_AVAILABLE:
+        raise ImportError(
+            "acoustic.impedance_db is required for build_acoustic_particle(). "
+            "Install the acoustic module or ensure it is on sys.path."
+        )
     core = get_material(core_material)
     coating = get_material(coating_material)
 
