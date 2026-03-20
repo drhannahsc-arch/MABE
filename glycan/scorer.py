@@ -115,6 +115,16 @@ _OLIGO_LINKAGES = {
         "contacts_per_unit": [5],   # GlcNAc in Gal3: 4 HB + 1 CHP
         "flex": [0.20],
     },
+    "maltose": {
+        "linkages": ["alpha1-4"], "n_branch": 0,
+        "contacts_per_unit": [1],   # Non-reducing Glc: 1 HB only (limited extended contacts in ConA)
+        "flex": [0.40],
+    },
+    "isomaltose": {
+        "linkages": ["alpha1-6"], "n_branch": 0,
+        "contacts_per_unit": [0],   # 1->6: extends to solvent, no contacts (like 1->6 diMan)
+        "flex": [0.70],
+    },
 }
 
 # Contact gating threshold: number of contacts for full freezing

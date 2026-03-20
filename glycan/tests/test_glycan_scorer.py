@@ -175,10 +175,10 @@ class TestPredictionAccuracy:
             assert p.dG_pred < 0, f"{p.scaffold}/{p.ligand}: pred={p.dG_pred} should be < 0"
 
     def test_residual_sign_matches_direction(self):
-        """Residuals should be small for HIGH-confidence entries."""
-        preds = [p for p in _get_predictions() if p.confidence == "HIGH"]
+        """Residuals should be small for HIGH-confidence entries with obs data."""
+        preds = [p for p in _get_predictions()
+                 if p.confidence == "HIGH" and p.residual is not None]
         for p in preds:
-            assert p.residual is not None
             assert abs(p.residual) < 2.0, (
                 f"{p.scaffold}/{p.ligand}: HIGH residual too large: {p.residual:.2f}"
             )
@@ -257,12 +257,13 @@ class TestR2Statistics:
 
     def test_n_all_correct(self):
         stats = GlycanScorer().compute_r2()
-        # 22 entries: 21 original + 1 Siglec2/Neu5Ac
-        assert stats["n"] == 22
+        # 31 entries with obs_dG (excludes 4 NB deoxy entries)
+        assert stats["n"] == 31
 
     def test_n_high_correct(self):
         stats = GlycanScorer().compute_r2(confidence_filter=["HIGH"])
-        assert stats["n"] == 15
+        # Original 15 + 1-deoxy-Glc + 1-F-Glc + DGL Man + DGL Glc + DGL 1->3 diMan = 20
+        assert stats["n"] == 20
 
 
 # ══════════════════════════════════════════════════════════════════════════

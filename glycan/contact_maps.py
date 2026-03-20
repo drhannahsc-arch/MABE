@@ -69,6 +69,66 @@ CONA_CONTACTS = {
         "anchor": False, "obs_dG": -31.0, "confidence": "LOW",
         "note": "1CVN: Man1 full + Man2(1->3): 3 HB + CH-pi + Man3(1->6): 1 HB, mobile; Loris 1994. Man3 OH mostly solvent-exposed."
     },
+    # ── Deoxy-glucose series (Schwarz 1996 Biochem. J. 316:123) ────────
+    # Parent is Glc (above). Each derivative removes one OH.
+    # ConA pharmacophore: C3, C4, C6 essential; C1, C2 non-essential.
+    "1-deoxy-Glc": {
+        "n_HB": 0, "buried": ["K_EQ", "K_C6"], "n_CHP": 0,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": False, "obs_dG": -16.2, "confidence": "HIGH",
+        "note": "Schwarz 1996 BJ 316:123 Table 1. C1 absent: anomeric center gone, ring misorients; HBs and CH-pi lost. OHs still desolvate in pocket. Ka=690"
+    },
+    "2-deoxy-Glc": {
+        "n_HB": 1, "buried": ["K_EQ", "K_C6"], "n_CHP": 0,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": False, "obs_dG": None, "confidence": "NB",
+        "note": "NB. Schwarz 1996. C2-OH absent: ring geometry disrupted, CH-pi face altered. No heat detected."
+    },
+    "3-deoxy-Glc": {
+        "n_HB": 0, "buried": ["K_EQ", "K_C6"], "n_CHP": 0,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": False, "obs_dG": None, "confidence": "NB",
+        "note": "NB. Schwarz 1996. C3-OH = Asp208 HB: critical contact lost. No heat detected."
+    },
+    "4-deoxy-Glc": {
+        "n_HB": 0, "buried": ["K_EQ"], "n_CHP": 0,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": False, "obs_dG": None, "confidence": "NB",
+        "note": "NB. Schwarz 1996. C4-OH = Arg228 HB: critical contact lost. No heat detected."
+    },
+    "6-deoxy-Glc": {
+        "n_HB": 0, "buried": ["K_EQ", "K_EQ"], "n_CHP": 0,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": False, "obs_dG": None, "confidence": "NB",
+        "note": "NB. Schwarz 1996. C6-OH = Asn14 HB: critical primary OH contact lost. No heat detected."
+    },
+    # ── Fluoro-glucose series (Schwarz 1996 Biochem. J. 316:123) ───────
+    # F replaces OH: preserves electronegativity, eliminates H-bond donation.
+    "1-F-Glc": {
+        "n_HB": 2, "buried": ["K_EQ", "K_EQ", "K_C6"], "n_CHP": 1,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": False, "obs_dG": -20.4, "confidence": "HIGH",
+        "note": "Schwarz 1996. C1-F: retains positioning; C1 not in binding pocket buried set. Same map as Glc. Ka=3750"
+    },
+    "2-F-Glc": {
+        "n_HB": 2, "buried": ["K_EQ", "K_EQ", "K_C6"], "n_CHP": 1,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": False, "obs_dG": -18.7, "confidence": "MEDIUM",
+        "note": "Schwarz 1996. C2-F: C2 solvent-exposed in ConA-Glc. Same map as Glc; residual from subtle F effects. Ka=1880"
+    },
+    # ── Maltose / Isomaltose (Chervenak & Toone 1995 Table 2) ──────────
+    "maltose": {
+        "n_HB": 3, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ"], "n_CHP": 1,
+        "res_type": "Tyr", "n_linker": 1,
+        "anchor": False, "obs_dG": -18.3, "confidence": "MEDIUM",
+        "note": "Chervenak 1995 #15. alpha1->4 Glc-Glc. Primary Glc: 2 HB; glycosidic O4 retains Arg228 contact; non-reducing Glc: 1 buried OH. Ka=1600"
+    },
+    "isomaltose": {
+        "n_HB": 2, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ"], "n_CHP": 1,
+        "res_type": "Tyr", "n_linker": 1,
+        "anchor": False, "obs_dG": -18.4, "confidence": "MEDIUM",
+        "note": "Chervenak 1995 #16. alpha1->6 Glc-Glc. 1->6 arm extends to solvent (mobile); 1 OH enters pocket region. Ka=1700"
+    },
 }
 
 # ══════════════════════════════════════════════════════════════════════════
@@ -205,7 +265,40 @@ SIGLEC2_CONTACTS = {
     },
 }
 
-# ── Registry ────────────────────────────────────────────────────────────
+# ======================================================================
+# DGL (Dioclea grandiflora lectin) -- ConA homologue
+# Same binding site topology as ConA (conserved Asp/Arg/Asn + Tyr CH-pi).
+# Different DG0 due to slightly different extended site geometry.
+# Source: Chervenak & Toone 1995 Biochemistry 34:5685, Tables 2-3.
+# ======================================================================
+DGL_CONTACTS = {
+    "Man": {
+        "n_HB": 3, "buried": ["K_EQ", "K_EQ", "K_C6"], "n_CHP": 1,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": True, "obs_dG": -20.3, "confidence": "HIGH",
+        "note": "Chervenak 1995 Table 3. Same binding site as ConA. Ka=3600 (vs ConA 7600). DGL/ConA ratio=0.47"
+    },
+    "Glc": {
+        "n_HB": 2, "buried": ["K_EQ", "K_EQ", "K_C6"], "n_CHP": 1,
+        "res_type": "Tyr", "n_linker": 0,
+        "anchor": False, "obs_dG": -17.6, "confidence": "HIGH",
+        "note": "Chervenak 1995. Ka=1200 (vs ConA 2400). Same selectivity: Man > Glc. DGL/ConA ratio=0.50"
+    },
+    "1->3 diMan": {
+        "n_HB": 5, "buried": ["K_EQ", "K_EQ", "K_C6"], "n_CHP": 2,
+        "res_type": "Tyr", "n_linker": 1,
+        "anchor": False, "obs_dG": -22.8, "confidence": "HIGH",
+        "note": "Chervenak 1995. Ka=10000 (vs ConA 30000). DGL/ConA ratio=0.33"
+    },
+    "triMan": {
+        "n_HB": 9, "buried": ["K_EQ", "K_EQ", "K_C6", "K_EQ"], "n_CHP": 2,
+        "res_type": "Tyr", "n_linker": 2,
+        "anchor": False, "obs_dG": -33.5, "confidence": "MEDIUM",
+        "note": "Chervenak 1995. Ka=740000 (vs ConA 260000). REVERSED: DGL binds triMan 2.8x tighter than ConA. Extended site geometry differs."
+    },
+}
+
+# -- Registry ----
 
 SCAFFOLD_CONTACTS = {
     "ConA":    CONA_CONTACTS,
@@ -214,6 +307,7 @@ SCAFFOLD_CONTACTS = {
     "Gal3":    GAL3_CONTACTS,
     "Davis":   DAVIS_CONTACTS,
     "Siglec2": SIGLEC2_CONTACTS,
+    "DGL":     DGL_CONTACTS,
 }
 
 # Pre-anchored DG0 for Davis (v2.3 locked; others computed at runtime from anchor)
