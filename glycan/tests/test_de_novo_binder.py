@@ -182,7 +182,7 @@ class TestScoringPhysics:
         bs = score_glycan_binder("c1ccc(O)cc1", "Glc")
         expected = (bs.dG_chpi + bs.dG_hb + bs.dG_desolv
                     + bs.dG_shape + bs.dG_boronic + bs.dG_flexibility
-                    + bs.dG_axial_clash)
+                    + bs.dG_axial_clash + bs.dG_preorg)
         assert abs(bs.dG_total - expected) < 0.01
 
 

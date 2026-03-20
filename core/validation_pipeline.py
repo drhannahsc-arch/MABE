@@ -374,7 +374,7 @@ def validate_denovo() -> ValidationResult:
     KNOWN = {
         "Davis anth.+diurea": ("NC(=O)Nc1ccc2cc3ccc(NC(N)=O)cc3cc2c1", "Glc"),
         "Ke anthracene": ("c1ccc2cc3ccccc3cc2c1", "Glc"),
-        "Phenylboronic acid": ("OB(O)c1ccccc1", "Neu5Ac"),
+        "Phenylboronic acid": ("OB(O)c1ccccc1", "Fru"),
     }
 
     entries = []

@@ -174,6 +174,15 @@ class ReceptorDescriptor:
     estimated_cavity_A3: float = 0.0
     sa_score: float = 10.0
     valid: bool = False
+    # Topology (new)
+    topology: str = "open"       # "open", "cleft", "macrocyclic", "cage", "linear"
+    n_aromatic_atoms: int = 0
+    n_ring_atoms: int = 0
+    n_nonring_atoms: int = 0
+    max_ring_size: int = 0
+    is_macrocyclic: bool = False
+    burial_fraction: float = 0.2  # what fraction of sugar OH the receptor buries
+    preorg_bonus_kj: float = 0.0  # macrocyclic effect (negative = favorable)
 
 
 def compute_receptor_descriptor(smiles: str) -> ReceptorDescriptor:
@@ -190,15 +199,16 @@ def compute_receptor_descriptor(smiles: str) -> ReceptorDescriptor:
                          if all(mol.GetBondWithIdx(b).GetIsAromatic() for b in r))
 
     # Large aromatics: count fused aromatic systems with >= 10 aromatic atoms
-    aromatic_atoms = sum(1 for a in mol.GetAtoms() if a.GetIsAromatic())
+    n_aromatic_atoms = sum(1 for a in mol.GetAtoms() if a.GetIsAromatic())
     n_large = 0
-    if aromatic_atoms >= 10:
-        n_large = aromatic_atoms // 10  # rough: 1 per 10 aromatic atoms
+    if n_aromatic_atoms >= 10:
+        n_large = n_aromatic_atoms // 10
 
     n_hbd = Descriptors.NumHDonors(mol)
     n_hba = Descriptors.NumHAcceptors(mol)
     n_rot = Descriptors.NumRotatableBonds(mol)
     mw = Descriptors.MolWt(mol)
+    n_heavy = mol.GetNumHeavyAtoms()
 
     # Count urea groups: N-C(=O)-N pattern
     urea_pat = Chem.MolFromSmarts("[NX3]C(=O)[NX3]")
@@ -208,20 +218,82 @@ def compute_receptor_descriptor(smiles: str) -> ReceptorDescriptor:
     boronic_pat = Chem.MolFromSmarts("[B]([OH])([OH])")
     n_boronic = len(mol.GetSubstructMatches(boronic_pat)) if boronic_pat else 0
     if n_boronic == 0:
-        # Try alternate pattern B(O)O
         boronic_pat2 = Chem.MolFromSmarts("[BX3](O)(O)")
         n_boronic = len(mol.GetSubstructMatches(boronic_pat2)) if boronic_pat2 else 0
 
-    # Cavity volume estimate: MW-based heuristic (rough)
-    # ~1 A3 per dalton for organic molecules, cavity ~ 30-40% of total
-    est_cavity = mw * 0.35
+    # ── Topology analysis ──
+    ring_sizes = [len(r) for r in ri.AtomRings()]
+    max_ring = max(ring_sizes) if ring_sizes else 0
+    is_macro = max_ring > 8
 
-    # SA score (from de_novo_generator if available)
+    ring_atom_set = set()
+    for ring in ri.AtomRings():
+        ring_atom_set.update(ring)
+    n_ring_atoms = len(ring_atom_set)
+    n_nonring = n_heavy - n_ring_atoms
+
+    # Topology classification
+    if is_macro:
+        topology = "macrocyclic"
+    elif ri.NumRings() >= 3 and n_nonring >= 6 and n_aromatic_atoms >= 6:
+        # Multiple ring systems connected by substantial linkers -> cage
+        topology = "cage"
+    elif ri.NumRings() >= 1 and n_nonring >= 4 and n_aromatic_atoms >= 6:
+        # Aromatic core with pendant arms -> cleft
+        topology = "cleft"
+    elif ri.NumRings() >= 1 and n_aromatic_atoms >= 5:
+        # Simple aromatic -> open
+        topology = "open"
+    else:
+        topology = "linear"
+
+    # ── Cavity estimate (topology-dependent) ──
+    if topology == "macrocyclic":
+        # Cavity from ring size: ~7 A3 per ring atom
+        est_cavity = max_ring * 7.0
+    elif topology == "cage":
+        # Enclosed cavity: aromatic surface * arm enclosure factor
+        arm_fraction = min(1.0, n_nonring / max(n_aromatic_atoms, 1))
+        est_cavity = n_aromatic_atoms * arm_fraction * 14.0
+    elif topology == "cleft":
+        # Partial pocket: aromatic surface + arm contribution
+        arm_fraction = min(1.0, n_nonring / max(n_aromatic_atoms, 1))
+        est_cavity = n_aromatic_atoms * arm_fraction * 12.0
+    elif topology == "open":
+        # Flat surface: minimal cavity (just surface contact area)
+        est_cavity = n_aromatic_atoms * 2.0
+    else:
+        est_cavity = 0.0
+
+    # ── Burial fraction (how much of sugar gets enclosed) ──
+    # Open: ~20% (just surface contact)
+    # Cleft: ~40% (partial enclosure from arms)
+    # Macrocyclic: ~60% (ring wraps around)
+    # Cage: ~80% (full enclosure)
+    burial_map = {"open": 0.20, "cleft": 0.40, "macrocyclic": 0.60,
+                  "cage": 0.80, "linear": 0.10}
+    burial_frac = burial_map.get(topology, 0.20)
+
+    # ── Preorganization bonus ──
+    # Macrocyclic effect: pre-organized receptors don't pay conformational
+    # entropy on binding. Literature: 1-3 kcal/mol = 4-12 kJ/mol
+    # Cram 1986: macrocyclic effect ~ 10 kJ/mol for crown ethers
+    # Scale by ring size relative to target
+    if topology == "macrocyclic":
+        preorg = -8.0  # kJ/mol (strong, full ring)
+    elif topology == "cage":
+        preorg = -5.0  # kJ/mol (partially preorganized)
+    elif topology == "cleft" and n_rot <= 3:
+        preorg = -2.0  # kJ/mol (rigid cleft)
+    else:
+        preorg = 0.0
+
+    # SA score
     try:
         from core.de_novo_generator import sa_score_smiles
         sa = sa_score_smiles(smiles)
     except (ImportError, Exception):
-        sa = 5.0  # default mid-range
+        sa = 5.0
 
     return ReceptorDescriptor(
         smiles=smiles,
@@ -236,6 +308,14 @@ def compute_receptor_descriptor(smiles: str) -> ReceptorDescriptor:
         estimated_cavity_A3=est_cavity,
         sa_score=sa,
         valid=True,
+        topology=topology,
+        n_aromatic_atoms=n_aromatic_atoms,
+        n_ring_atoms=n_ring_atoms,
+        n_nonring_atoms=n_nonring,
+        max_ring_size=max_ring,
+        is_macrocyclic=is_macro,
+        burial_fraction=burial_frac,
+        preorg_bonus_kj=preorg,
     )
 
 
@@ -256,6 +336,7 @@ class BinderScore:
     dG_boronic: float
     dG_flexibility: float
     dG_axial_clash: float = 0.0   # penalty for axial OH disrupting CH-pi
+    dG_preorg: float = 0.0        # macrocyclic preorganization (negative = favorable)
     sa_score: float = 10.0
     descriptor: Optional[ReceptorDescriptor] = None
 
@@ -308,18 +389,27 @@ def score_glycan_binder(
     n_hb = min(receptor_hb_capacity, sugar_hb_sites)
     dG_hb = n_hb * EPS_HB
 
-    # Desolvation: buried OHs pay desolvation penalty (partially offset by H-bonds)
-    # Assume receptor buries ~60% of sugar OHs that make contacts
-    n_buried_eq = min(int(sugar.n_eq_OH * 0.6 + 0.5), n_hb)
+    # Desolvation: buried OHs pay desolvation penalty
+    # In enclosed receptors (cage/cleft), H-bonds from multiple directions
+    # COMPENSATE desolvation costs. Open receptors offer no such geometric
+    # advantage. Compensation fraction = how much of the raw desolvation
+    # penalty is offset by the receptor's H-bond architecture.
+    bf = descriptor.burial_fraction
+    compensation_map = {"open": 0.0, "cleft": 0.3, "macrocyclic": 0.4,
+                        "cage": 0.6, "linear": 0.0}
+    comp = compensation_map.get(descriptor.topology, 0.0)
+    eff_factor = 1.0 - comp  # effective desolvation = raw * eff_factor
+
+    n_buried_eq = min(int(sugar.n_eq_OH * bf + 0.5), n_hb)
     n_buried_ax = min(sugar.n_ax_OH, max(0, n_hb - n_buried_eq))
-    n_buried_c6 = min(sugar.n_primary_OH, 1) if n_hb >= 2 else 0
+    n_buried_c6 = min(sugar.n_primary_OH, 1) if n_hb >= 2 and bf >= 0.3 else 0
     dG_desolv = (
-        n_buried_eq * K_DESOLV_EQ
-        + n_buried_ax * K_DESOLV_AX
-        + n_buried_c6 * K_DESOLV_C6
+        n_buried_eq * K_DESOLV_EQ * eff_factor
+        + n_buried_ax * K_DESOLV_AX * eff_factor
+        + n_buried_c6 * K_DESOLV_C6 * eff_factor
     )
     if sugar.n_NAc > 0 and receptor_hb_capacity >= sugar_hb_sites:
-        dG_desolv += K_DESOLV_NAC
+        dG_desolv += K_DESOLV_NAC * eff_factor
 
     # Shape: cavity volume match to pyranose
     vol_diff = abs(descriptor.estimated_cavity_A3 - sugar.molecular_volume_A3)
@@ -345,16 +435,21 @@ def score_glycan_binder(
     if chpi_contacts > 0 and sugar.n_ax_OH > 0:
         dG_axial_clash = sugar.n_ax_OH * EPS_AXIAL_CLASH
 
+    # Preorganization: macrocyclic/cage receptors don't pay conformational
+    # entropy on binding (Cram 1986, macrocyclic effect)
+    dG_preorg = descriptor.preorg_bonus_kj  # already negative for preorganized
+
     # Total: all terms use sign convention where negative = favorable
-    # dG_chpi:   negative (favorable)
-    # dG_hb:     negative (favorable)
-    # dG_desolv: positive (penalty)
-    # dG_shape:  positive (penalty)
-    # dG_boronic: negative (favorable)
+    # dG_chpi:       negative (favorable)
+    # dG_hb:         negative (favorable)
+    # dG_desolv:     positive (penalty)
+    # dG_shape:      positive (penalty)
+    # dG_boronic:    negative (favorable)
     # dG_flexibility: positive (penalty)
     # dG_axial_clash: positive (penalty)
+    # dG_preorg:     negative (favorable, for preorganized receptors)
     dG_total = (dG_chpi + dG_hb + dG_desolv + dG_shape
-                + dG_boronic + dG_flexibility + dG_axial_clash)
+                + dG_boronic + dG_flexibility + dG_axial_clash + dG_preorg)
 
     return BinderScore(
         smiles=smiles, target=target,
@@ -366,6 +461,7 @@ def score_glycan_binder(
         dG_boronic=round(dG_boronic, 2),
         dG_flexibility=round(dG_flexibility, 2),
         dG_axial_clash=round(dG_axial_clash, 2),
+        dG_preorg=round(dG_preorg, 2),
         sa_score=round(descriptor.sa_score, 2),
         descriptor=descriptor,
     )
