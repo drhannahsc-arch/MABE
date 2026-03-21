@@ -511,27 +511,263 @@ def run_properties(smiles):
 
 
 # ======================================================================
+# PART 10: PFAS-free coating design
+# ======================================================================
+
+def run_coating(substrate="polyester", color="blue", oil=True, breathable=True):
+    print("=" * 70)
+    print(f"PART 10: PFAS-FREE COATING DESIGN")
+    print("=" * 70)
+    print()
+
+    from core.pfas_free_coating import design_coating, CoatingTargets, SUBSTRATES
+
+    sub = SUBSTRATES.get(substrate)
+    if sub is None:
+        print(f"  Unknown substrate '{substrate}'. Available: {', '.join(SUBSTRATES.keys())}")
+        return
+
+    tgt = CoatingTargets(
+        water_contact_angle=150,
+        oil_contact_angle=130 if oil else 0,
+        color=color if color else "",
+        wvtr=10000 if breathable else 0,
+        durable=True,
+    )
+
+    d = design_coating(sub, tgt)
+    print(d.summary)
+    print()
+    for k, (t, a, ok) in d.target_checks.items():
+        tag = "PASS" if ok else "FAIL"
+        if isinstance(a, float):
+            print(f"  {k}: target={t} actual={a:.1f} [{tag}]")
+        else:
+            print(f"  {k}: [{tag}]")
+    print()
+
+
+# ======================================================================
+# PART 11: Smart window design
+# ======================================================================
+
+def run_window(n_panes=2, iridescent=True):
+    print("=" * 70)
+    print(f"PART 11: SMART WINDOW DESIGN")
+    print("=" * 70)
+    print()
+
+    from core.smart_window import design_window, WindowTargets
+
+    tgt = WindowTargets(
+        iridescent=iridescent,
+        n_panes=n_panes,
+        u_value_target=2.0 if n_panes == 2 else 1.0,
+    )
+    d = design_window(tgt)
+    print(d.summary)
+    print()
+    for k, (t, a, ok) in d.target_checks.items():
+        tag = "PASS" if ok else "FAIL"
+        if isinstance(a, float):
+            print(f"  {k}: target={t} actual={a:.3f} [{tag}]")
+        else:
+            print(f"  {k}: [{tag}]")
+    print()
+
+
+# ======================================================================
+# PART 12: Switchable window
+# ======================================================================
+
+def run_switchable(mechanism="electrochromic"):
+    print("=" * 70)
+    print(f"PART 12: SWITCHABLE WINDOW -- {mechanism}")
+    print("=" * 70)
+    print()
+
+    from core.switchable_window import design_switchable_window, SwitchableTargets
+
+    tgt = SwitchableTargets(switching_mechanism=mechanism)
+    d = design_switchable_window(tgt)
+    print(d.summary)
+    print()
+    for k, (t, a, ok) in d.target_checks.items():
+        tag = "PASS" if ok else "FAIL"
+        if isinstance(a, float):
+            print(f"  {k}: target={t} actual={a:.3f} [{tag}]")
+        else:
+            print(f"  {k}: [{tag}]")
+    print()
+
+
+# ======================================================================
+# PART 13: Oriented window
+# ======================================================================
+
+def run_oriented(orientation="interior", switchable=False):
+    print("=" * 70)
+    print(f"PART 13: ORIENTED WINDOW -- {orientation.upper()}")
+    print("=" * 70)
+    print()
+
+    from core.window_orientation import (
+        design_oriented_window, OrientedWindowTargets, Orientation,
+    )
+
+    orient_map = {
+        "exterior": Orientation.EXTERIOR,
+        "interior": Orientation.INTERIOR,
+        "igu": Orientation.IGU_SURFACE_2,
+        "dual": Orientation.DUAL,
+    }
+    orient = orient_map.get(orientation.lower(), Orientation.INTERIOR)
+
+    tgt = OrientedWindowTargets(orientation=orient, switchable=switchable)
+    d = design_oriented_window(tgt)
+    print(d.summary)
+    print()
+    for k, (t, a, ok) in d.target_checks.items():
+        tag = "PASS" if ok else "FAIL"
+        if isinstance(a, float):
+            print(f"  {k}: target={t} actual={a:.3f} [{tag}]")
+        else:
+            print(f"  {k}: [{tag}]")
+    print()
+
+
+# ======================================================================
+# PART 14: Self-assembly material design
+# ======================================================================
+
+def run_material(monomer_name=None):
+    print("=" * 70)
+    print(f"PART 14: SELF-ASSEMBLY MATERIAL DESIGN")
+    print("=" * 70)
+    print()
+
+    from core.assembly_engine import (
+        design_material, urea_tape_monomer, tripodal_linker_monomer,
+        mof_paddle_wheel, pi_stacking_monomer,
+    )
+
+    library = {
+        "urea-tape": urea_tape_monomer,
+        "tripodal": tripodal_linker_monomer,
+        "paddlewheel": mof_paddle_wheel,
+        "pyrene-stack": pi_stacking_monomer,
+    }
+
+    if monomer_name and monomer_name in library:
+        monomers = [(monomer_name, library[monomer_name]())]
+    else:
+        monomers = [(n, f()) for n, f in library.items()]
+
+    for name, mono in monomers:
+        d = design_material(mono)
+        print(d.summary)
+        if d.stacking_scores:
+            print(f"  Stacking interactions:")
+            for s in d.stacking_scores[:4]:
+                print(f"    {s.face_a} <-> {s.face_b}: dG={s.dG_net:+.1f} kJ/mol "
+                      f"({s.interaction.value})")
+        print()
+
+
+# ======================================================================
+# PART 15: Scaffold-to-monomer catalog
+# ======================================================================
+
+def run_catalog():
+    print("=" * 70)
+    print(f"PART 15: SCAFFOLD -> MATERIAL CATALOG")
+    print("=" * 70)
+    print()
+
+    from core.scaffold_to_monomer import print_material_catalog
+    print_material_catalog()
+    print()
+
+
+# ======================================================================
+# PART 16: Photonic nanoparticle design
+# ======================================================================
+
+def run_photonic(color="blue", material="SiO2", ordered=True):
+    print("=" * 70)
+    print(f"PART 16: PHOTONIC NANOPARTICLE DESIGN -- {color} {'opal' if ordered else 'glass'}")
+    print("=" * 70)
+    print()
+
+    from core.photonic_assembly import design_photonic_particles
+
+    d = design_photonic_particles(color, material, ordered)
+    print(d.summary)
+    print()
+
+    if not ordered:
+        print("  Comparison: ordered vs disordered for same color:")
+        d_ord = design_photonic_particles(color, material, ordered=True)
+        print(f"    Ordered:    d={d_ord.diameter_nm:.0f}nm lambda={d_ord.peak_wavelength_nm:.0f}nm "
+              f"angle-dependent")
+        print(f"    Disordered: d={d.diameter_nm:.0f}nm lambda={d.peak_wavelength_nm:.0f}nm "
+              f"angle-independent")
+        print()
+
+    # All colors for this material
+    print(f"  Color palette ({material}, {'ordered' if ordered else 'glass'}):")
+    from core.photonic_assembly import _COLOR_WAVELENGTHS
+    for c in ["violet", "blue", "green", "yellow", "orange", "red"]:
+        dc = design_photonic_particles(c, material, ordered)
+        print(f"    {c:8s}: d={dc.diameter_nm:5.0f}nm -> {dc.peak_wavelength_nm:.0f}nm")
+    print()
+
+
+# ======================================================================
 # Main
 # ======================================================================
 
 def main():
     parser = argparse.ArgumentParser(
-        description="MABE Glycan Binder Design -- Full Modular Stack",
+        description="MABE -- Modality-Agnostic Binding Engine",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""Examples:
+  === Glycan / Molecular Binding ===
   python trial_bindings.py                              # Scorer + Glc de novo
   python trial_bindings.py --target GalNAc              # Tn antigen binders
-  python trial_bindings.py --target Fru --construct     # Fructose + full construct
-  python trial_bindings.py --smiles "OB(O)c1ccccc1"    # Score phenylboronic acid
+  python trial_bindings.py --target Fru --construct     # Fructose + construct
+  python trial_bindings.py --smiles "OB(O)c1ccccc1"    # Score custom SMILES
   python trial_bindings.py --props "OB(O)c1ccccc1"     # Full property report
-  python trial_bindings.py --demand                     # Show all demand vectors
+  python trial_bindings.py --demand                     # Demand vectors
   python trial_bindings.py --compare                    # Fixed vs grammar
-  python trial_bindings.py --metal Cu2+                 # Metal chelator design
-  python trial_bindings.py --metal Fe3+                 # Iron chelator
-  python trial_bindings.py --host beta-CD               # beta-CD guest design
-  python trial_bindings.py --score-only                 # Lectin scorer only
-  python trial_bindings.py --skip-scorer --target Man   # Skip scorer
+  python trial_bindings.py --metal Cu2+                 # Metal chelator
+  python trial_bindings.py --host beta-CD               # Host-guest
+
+  === Coatings ===
+  python trial_bindings.py --coating                    # PFAS-free (polyester, blue)
+  python trial_bindings.py --coating --substrate glass --color green
+  python trial_bindings.py --coating --substrate steel --no-color --no-breathe
+
+  === Windows ===
+  python trial_bindings.py --window                     # Iridescent double-pane
+  python trial_bindings.py --window --panes 3           # Triple-pane
+  python trial_bindings.py --switchable                 # Electrochromic
+  python trial_bindings.py --switchable --mechanism photochromic
+  python trial_bindings.py --oriented interior          # Interior retrofit
+  python trial_bindings.py --oriented dual --switchable # Both sides + switching
+
+  === Materials ===
+  python trial_bindings.py --material                   # All library monomers
+  python trial_bindings.py --material paddlewheel       # MOF node
+  python trial_bindings.py --catalog                    # Full scaffold catalog
+
+  === Photonics ===
+  python trial_bindings.py --photonic blue              # Blue FCC opal
+  python trial_bindings.py --photonic red --glass       # Red photonic glass
+  python trial_bindings.py --photonic green --particle TiO2
 """)
+
+    # Glycan args
     parser.add_argument("--target", default="Glc",
                         choices=["Glc", "Gal", "Man", "GalNAc", "GlcNAc",
                                  "Fuc", "Fru", "Neu5Ac"])
@@ -543,65 +779,133 @@ def main():
     parser.add_argument("--props", type=str, default=None,
                         help="Full property + synthesis report for SMILES")
     parser.add_argument("--construct", action="store_true",
-                        help="Full construct assembly (recognition+linker+click+bead)")
+                        help="Full construct assembly")
     parser.add_argument("--demand", action="store_true",
-                        help="Show physics demand vectors for all sugars")
+                        help="Show physics demand vectors")
     parser.add_argument("--compare", action="store_true",
                         help="Fixed library vs grammar comparison")
     parser.add_argument("--metal", type=str, default=None,
-                        help="Design metal chelator (e.g., Cu2+, Fe3+, Pb2+)")
+                        help="Design metal chelator (e.g., Cu2+, Fe3+)")
     parser.add_argument("--host", type=str, default=None,
-                        help="Design guest for host (e.g., beta-CD, alpha-CD)")
+                        help="Design guest for host (e.g., beta-CD)")
+
+    # Coating args
+    parser.add_argument("--coating", action="store_true",
+                        help="PFAS-free coating design")
+    parser.add_argument("--substrate", type=str, default="polyester",
+                        help="Substrate material (cotton, polyester, glass, steel, etc.)")
+    parser.add_argument("--color", type=str, default="blue",
+                        help="Structural color for coating")
+    parser.add_argument("--no-color", action="store_true",
+                        help="No structural color")
+    parser.add_argument("--no-oil", action="store_true",
+                        help="Skip oil repulsion")
+    parser.add_argument("--no-breathe", action="store_true",
+                        help="Non-breathable coating")
+
+    # Window args
+    parser.add_argument("--window", action="store_true",
+                        help="Smart window design")
+    parser.add_argument("--panes", type=int, default=2,
+                        help="Number of panes (2 or 3)")
+    parser.add_argument("--no-iridescent", action="store_true",
+                        help="Disable iridescent layer")
+    parser.add_argument("--switchable", action="store_true",
+                        help="Switchable opacity window")
+    parser.add_argument("--mechanism", type=str, default="electrochromic",
+                        choices=["electrochromic", "photochromic", "magnetochromic"],
+                        help="Switching mechanism")
+    parser.add_argument("--oriented", type=str, default=None,
+                        choices=["exterior", "interior", "igu", "dual"],
+                        help="Window orientation")
+
+    # Material args
+    parser.add_argument("--material", nargs="?", const="all", default=None,
+                        help="Self-assembly material design (name or 'all')")
+    parser.add_argument("--catalog", action="store_true",
+                        help="Print full scaffold -> material catalog")
+
+    # Photonic args
+    parser.add_argument("--photonic", type=str, default=None,
+                        help="Photonic nanoparticle design (color name)")
+    parser.add_argument("--particle", type=str, default="SiO2",
+                        help="Particle material (SiO2, polystyrene, TiO2, etc.)")
+    parser.add_argument("--glass", action="store_true",
+                        help="Photonic glass (disordered) instead of opal")
 
     args = parser.parse_args()
 
+    # Detect which mode
+    any_new_mode = (args.coating or args.window or args.switchable
+                    or args.oriented or args.material or args.catalog
+                    or args.photonic)
+
     print()
-    print("  MABE Trial Bindings -- Full Modular Stack")
+    print("  MABE -- Modality-Agnostic Binding Engine")
     print("  MAAD Scientist Technologies Inc.")
     print()
 
-    # Scorer
-    if not args.skip_scorer and not args.metal and not args.host:
-        if not args.demand and not args.props:
-            run_scorer()
+    # ── Glycan / Molecular modes ──
+    if not any_new_mode:
+        if not args.skip_scorer and not args.metal and not args.host:
+            if not args.demand and not args.props:
+                run_scorer()
 
-    # Custom SMILES
-    if args.smiles:
-        run_custom_smiles(args.smiles, args.target)
+        if args.smiles:
+            run_custom_smiles(args.smiles, args.target)
 
-    # Property report
-    if args.props:
-        run_properties(args.props)
+        if args.props:
+            run_properties(args.props)
 
-    # Demand vectors
-    if args.demand:
-        run_demand()
+        if args.demand:
+            run_demand()
 
-    # Comparison
-    if args.compare:
-        run_compare(args.target, args.candidates)
+        if args.compare:
+            run_compare(args.target, args.candidates)
 
-    # Metal
-    if args.metal:
-        run_metal(args.metal)
+        if args.metal:
+            run_metal(args.metal)
 
-    # Host-guest
-    if args.host:
-        run_host(args.host)
+        if args.host:
+            run_host(args.host)
 
-    # De novo (glycan)
-    if not args.score_only and not args.metal and not args.host and not args.demand and not args.props:
-        try:
-            from rdkit import Chem
-        except ImportError:
-            print("ERROR: RDKit required for de novo generation.")
-            print("  Install: pip install rdkit")
-            sys.exit(1)
-        run_denovo(args.target, args.candidates)
+        if not args.score_only and not args.metal and not args.host and not args.demand and not args.props:
+            try:
+                from rdkit import Chem
+            except ImportError:
+                print("ERROR: RDKit required for de novo generation.")
+                sys.exit(1)
+            run_denovo(args.target, args.candidates)
 
-    # Construct assembly
-    if args.construct:
-        run_construct(args.target, min(args.candidates, 100))
+        if args.construct:
+            run_construct(args.target, min(args.candidates, 100))
+
+    # ── Coating mode ──
+    if args.coating:
+        c = "" if args.no_color else args.color
+        run_coating(args.substrate, c, not args.no_oil, not args.no_breathe)
+
+    # ── Window modes ──
+    if args.window:
+        run_window(args.panes, not args.no_iridescent)
+
+    if args.switchable and not args.oriented:
+        run_switchable(args.mechanism)
+
+    if args.oriented:
+        run_oriented(args.oriented, args.switchable)
+
+    # ── Material modes ──
+    if args.material:
+        name = None if args.material == "all" else args.material
+        run_material(name)
+
+    if args.catalog:
+        run_catalog()
+
+    # ── Photonic mode ──
+    if args.photonic:
+        run_photonic(args.photonic, args.particle, not args.glass)
 
 
 if __name__ == "__main__":
